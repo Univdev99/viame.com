@@ -1,0 +1,15 @@
+http://winless.org/online-less-compiler
+
+.bootstrap {
+  @import (less) 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css';
+}
+
+INTO bootstrap.css
+REMOVE HTML and BODY
+REMOVE name on anything -backdrop
+
+.bootstrap {
+  @import (less) 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.css';
+}
+
+INTO bootstrap-theme.css

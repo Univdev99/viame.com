@@ -1,0 +1,226 @@
+<?php $module = 'message'; ?>
+
+<div class="cm decorated padded m_<?= $module ?> m-<?= $this->internal->target->currentModule->module_id ?>-<?= $this->internal->target->currentModule->counter ?> id_<?= $this->object->counter ?>">
+<div class="hd">
+    <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div>
+    </div>
+    <div class="con">
+    	<table class="table">
+            <tr>
+                <td class="lt"></td>
+
+                <td class="mn1"><a href="<?= '/' . $this->SEO_Urlify($this->internal->target->currentModule->display ? $this->internal->target->currentModule->display : $this->internal->target->currentModule->m_display) . '/s' . (isset($this->internal->target->pre) ? $this->internal->target->pre : '') . '/' . $this->internal->target->currentModule->m_name . '/p/mid/' . $this->internal->params->mid . '/' ?>"><?= $this->escape(isset($this->internal->target->currentModule->display) && $this->internal->target->currentModule->display ? $this->internal->target->currentModule->display : $this->internal->target->currentModule->m_display) ?></a></td>
+                <td class="sep"></td>
+                <td class="mn2"><?php if (!$this->masked && isset($this->internal->member) && ($this->internal->member->site_admin || $this->internal->member->profile->site_admin)) { ?>
+                    <div class="administer">  
+                    <a href="<?= $this->internal->target->pre ?>/message/edit/p/mid/<?= $this->object->matrix_counter ?>/id/<?= $this->object->counter ?>/" class="edit">Edit Message</a>
+                    <a href="<?= $this->internal->target->pre ?>/message/delete/p/mid/<?= $this->object->matrix_counter ?>/id/<?= $this->object->counter ?>/" onclick="return confirm('Are you sure you want to delete this message?\nAny threaded messages will be discarded as well.');" class="delete">Delete Message</a>
+                    </div>
+                    <?php } ?></td>
+                <td class="rt"></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="bd">
+
+    <table class="display params" style="background-color: #eee; font-weight: bold; margin: 0 0 2em 0;">
+        <tr>
+            <td style="border-bottom: 1px solid #d9d9d9; padding-left: 5px;">
+                 [ <?= (isset($this->prev_object) ? '<a href="' . $this->ContentLink(array('object' => $this->prev_object, 'view' => $this)) . '">Previous</a>' : 'Previous') ?> | 
+                 <?= (isset($this->next_object) ? '<a href="' . $this->ContentLink(array('object' => $this->next_object, 'view' => $this)) . '">Next</a>' : 'Next') ?> ] - [ 
+                 <a href="<?= $this->internal->target->pre ?>/message/view/p/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/">First</a> | 
+                 <a href="<?= $this->internal->target->pre ?>/message/view/p/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/last/">Last</a> ]
+                 
+                <?php
+                //if (!$this->masked && isset($this->internal->member) && (is_null($this->internal->target->acl->privilege) || ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT))) {
+                if (!$this->masked &&
+                    (
+                        !isset($this->internal->member) ||
+                        (isset($this->internal->member) && (is_null($this->internal->target->acl->privilege) || ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT)))
+                    )
+                ) {
+                ?>
+                 - [ <a href="<?= '/' . $this->SEO_Urlify($this->internal->target->currentModule->display ? $this->internal->target->currentModule->display : $this->internal->target->currentModule->m_display) . '/s' . $this->internal->target->pre ?>/message/create/p/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/">Post</a> | <a href="<?= '/' . $this->SEO_Urlify($this->internal->target->currentModule->display ? $this->internal->target->currentModule->display : $this->internal->target->currentModule->m_display) . '/s' . $this->internal->target->pre ?>/message/create/p/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/pid/<?= $this->object->counter ?>/">Reply</a> ]
+                <?php } ?>
+                 
+                 - [ <a href="<?= '/' . $this->SEO_Urlify($this->internal->target->currentModule->display ? $this->internal->target->currentModule->display : $this->internal->target->currentModule->m_display) . '/s' . $this->internal->target->pre . '/' . $module . '/p/mid/' . $this->internal->target->currentModule->counter . '/' ?>">List Messages</a> ]
+            </td>
+            <td class="ralign" style="border-bottom: 1px solid #d9d9d9; font-size: 85%; padding-right: 5px;">
+                <form action="<?= $this->internal->target->pre ?>/message/view/p/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/">
+                    Jump to Msg # : <input type="text" name="id" size="2" style="width: 4em;" /> <input type="submit" value="Go" />
+                </form>
+            </td>
+        </tr>
+    </table>   
+    
+    <?php
+    // Moderate Message Link
+    if (!$this->object->status && !$this->masked && ($this->internal->target->acl->owner ||
+        ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_MODERATE))) {
+    ?>
+    <div class="calign errors" style="font-size: 125%; font-weight: bold;">
+    Moderate Message : 
+    <a href="<?= $this->internal->target->pre ?>/message/moderate/p/mid/<?= $this->object->matrix_counter ?>/id/<?= $this->object->counter ?>/status/approve/">Approve</a> - 
+    <a href="<?= $this->internal->target->pre ?>/message/moderate/p/mid/<?= $this->object->matrix_counter ?>/id/<?= $this->object->counter ?>/status/reject/">Reject</a>
+    </div>
+    <?php } ?>
+    
+    <table class="display"><tr><td style="border: none;">
+        <div class="title<?= ($this->object->active == false ? ' draftitem' : '') ?><?= ($this->object->published_display_activated == false ? ' futureitem' : '') ?><?= ($this->object->published_display_expired == true ? ' expireditem' : '') ?>"><h1><?= $this->escape($this->object->title) ?><?= ($this->object->active == false ? ' <span class="drafttype">(Draft)</span>' : '') ?><?= ($this->object->published_display_activated == false ? ' <span class="futuretype">(Future)</span>' : '') ?><?= ($this->object->published_display_expired == true ? ' <span class="expiredtype">(Expired)</span>' : '') ?></h1></div>
+        <?= isset($this->object->heading) && $this->object->heading ? '<div class="heading"><h2>'. $this->escape($this->object->heading) .'</h2></div>' : '' ?>
+    </td><td class="ralign" style="border: none; font-weight: bold;">
+        Msg # <?= $this->object->counter ?>
+        <?php if ($this->object->parent_counter) { ?>
+        <br />
+        In Reply To Msg # <a href="<?= $this->internal->target->pre ?>/message/view/p/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->parent_counter ?>/"><?= $this->object->parent_counter ?></a>
+        <?php } ?>
+    </td></tr></table>
+    
+    <div class="part1">
+        <div class="author">By <?= $this->ProfileDisplay(array('profile' => $this->object, 'internal' => $this->internal)) ?></div>
+        
+        <div class="datetime">Posted: 
+        <?php
+            $date = new Zend_Date();
+            $date->set($this->object->published_display_date, Zend_Date::ISO_8601);
+            if (isset($this->internal->member)) {
+                $date->setTimezone($this->internal->member->timezone);
+            }
+            else {
+                $date->setTimezone($this->internal->config->timezone);
+            }
+            echo $date->toString(Zend_Date::DATETIME_LONG);
+        ?>
+        </div>
+        
+        <div class="relay">
+            <?= $this->partial('partials/_AddThis.phtml', 'system', array('internal' => $this->internal)); ?>
+            
+            <?= $this->PrintEmailLink(array('link' => '', 'internal' => $this->internal)) ?>
+        </div>
+    </div>
+
+    <?php if ($this->internal->target->currentModule->interactive && ($this->masked ? $this->object->x_interactive : true)) { ?>
+        <div class="interact">&nbsp;
+            <?php /*
+            <div class="comments"><span class="begin_comment_count">&nbsp;</span><a href="#comments_list" class="comment_count"><?= $this->object->total_comments_count ?></a><span class="end_comment_count">&nbsp;</span> <a href="#comments_list">Comment(s)</a>
+            <?php if (($this->internal->target->acl->allowed === null || $this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT) && $this->object->allow_comments) { ?>
+            - <a href="#post_a_comment">Post a Comment</a>
+            <?php } ?>
+            </div>
+            */ ?>
+            <div class="rating">Rating <span class="count rc<?= floor($this->object->rating * 2) ?>"><?= ($this->object->rating ? $this->object->rating : '') ?></span></div>
+        </div>    
+    <?php } ?>
+    
+    <?php if ($this->internal->community->meta_stocks && isset($this->object->symbols) && !is_null($this->object->symbols)) { echo $this->RelatedQuotes(array('symbols' => $this->object->symbols, 'internal' => $this->internal, 'which_part' => '1')); } ?>
+    
+    <div class="part2">
+        <div id="div-gpt-ad-1391041957016-0" class="advertisement" style="float: right; margin: 0 0 1em 1em; width: 120px; height: 240px;">
+<script type='text/javascript'>
+googletag.pubads().display('/1063461/VM-Platform-Message_View_Default-120x240', [120, 240], 'div-gpt-ad-1391041957016-0');
+</script>
+        </div>
+            
+        <div class="content"><?= $this->object->content ?></div>
+    </div>
+    
+    <?= $this->partial('partials/_SocialBookmarks.phtml', 'system', array('internal' => $this->internal)); ?>
+    
+    <?php if ($this->internal->community->meta_stocks && isset($this->object->symbols) && !is_null($this->object->symbols)) { echo $this->RelatedQuotes(array('symbols' => $this->object->symbols, 'internal' => $this->internal, 'which_part' => '2')); } ?>
+    
+    <div class="part3" style="margin-bottom: 3em;">
+    <?php if ($this->internal->target->currentModule->interactive && ($this->masked ? $this->object->x_interactive : true)) { ?>
+        <div class="interact">
+            <?php /*
+            <div class="comments"><span class="begin_comment_count">&nbsp;</span><a href="#comments_list" class="comment_count"><?= $this->object->total_comments_count ?></a><span class="end_comment_count">&nbsp;</span> <a href="#comments_list">Comment(s)</a>
+            <?php if (($this->internal->target->acl->allowed === null || $this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT) && $this->object->allow_comments) { ?>
+            - <a href="#post_a_comment">Post a Comment</a>
+            <?php } ?>
+            </div>
+            */ ?>
+            
+            <?php if (($this->internal->target->acl->allowed === null || $this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT) &&
+                $this->object->allow_ratings) { ?>
+            <div class="rateit">Rate It : 
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/1/" rel="nofollow" title="1 Star - Awful">1</a>
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/2/" rel="nofollow" title="2 Stars - Poor">2</a>
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/3/" rel="nofollow" title="3 Stars - Average">3</a>
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/4/" rel="nofollow" title="4 Stars - Good">4</a>
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/5/" rel="nofollow" title="5 Stars - Excellent">5</a>
+                </span></span></span></span></span>
+            </div>
+            <?php } ?>
+            
+        </div>
+    <?php } ?>
+    </div>
+    
+    <?php
+    // Moderate Message Link
+    if (!$this->object->status && !$this->masked && ($this->internal->target->acl->owner ||
+        ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_MODERATE))) {
+    ?>
+    <div class="calign errors" style="font-size: 125%; font-weight: bold;">
+    Moderate Message : 
+    <a href="<?= $this->internal->target->pre ?>/message/moderate/p/mid/<?= $this->object->matrix_counter ?>/id/<?= $this->object->counter ?>/status/approve/">Approve</a> - 
+    <a href="<?= $this->internal->target->pre ?>/message/moderate/p/mid/<?= $this->object->matrix_counter ?>/id/<?= $this->object->counter ?>/status/reject/">Reject</a>
+    </div>
+    <?php } ?>
+    
+    <div style="clear: both; margin: 1em 0;">
+    <table class="display params" style="background-color: #eee; font-weight: bold; margin: 2em 0 0 0;">
+        <tr>
+            <td style="border-bottom: 1px solid #d9d9d9; padding-left: 5px;">
+                 [ <?= (isset($this->prev_object) ? '<a href="' . $this->ContentLink(array('object' => $this->prev_object, 'view' => $this)) . '">Previous</a>' : 'Previous') ?> | 
+                 <?= (isset($this->next_object) ? '<a href="' . $this->ContentLink(array('object' => $this->next_object, 'view' => $this)) . '">Next</a>' : 'Next') ?> ] - [ 
+                 <a href="<?= $this->internal->target->pre ?>/message/view/p/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/">First</a> | 
+                 <a href="<?= $this->internal->target->pre ?>/message/view/p/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/last/">Last</a> ]
+                 
+                <?php
+                //if (!$this->masked && isset($this->internal->member) && (is_null($this->internal->target->acl->privilege) || ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT))) {
+                if (!$this->masked &&
+                    (
+                        !isset($this->internal->member) ||
+                        (isset($this->internal->member) && (is_null($this->internal->target->acl->privilege) || ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT)))
+                    )
+                ) {
+                ?>
+                 - [ <a href="<?= '/' . $this->SEO_Urlify($this->internal->target->currentModule->display ? $this->internal->target->currentModule->display : $this->internal->target->currentModule->m_display) . '/s' . $this->internal->target->pre ?>/message/create/p/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/">Post</a> | <a href="<?= '/' . $this->SEO_Urlify($this->internal->target->currentModule->display ? $this->internal->target->currentModule->display : $this->internal->target->currentModule->m_display) . '/s' . $this->internal->target->pre ?>/message/create/p/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/pid/<?= $this->object->counter ?>/">Reply</a> ]
+                <?php } ?>
+                 
+                 - [ <a href="<?= '/' . $this->SEO_Urlify($this->internal->target->currentModule->display ? $this->internal->target->currentModule->display : $this->internal->target->currentModule->m_display) . '/s' . $this->internal->target->pre . '/' . $module . '/p/mid/' . $this->internal->target->currentModule->counter . '/' ?>">List Messages</a> ]
+            </td>
+            <td class="ralign" style="border-bottom: 1px solid #d9d9d9; font-size: 85%; padding-right: 5px;">
+                <form action="<?= $this->internal->target->pre ?>/message/view/p/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/">
+                    Jump to Msg # : <input type="text" name="id" size="2" style="width: 4em;" /> <input type="submit" value="Go" />
+                </form>
+            </td>
+        </tr>
+    </table>    
+    </div>
+    
+    <div style="clear: both;"></div>
+
+    <?php /* if ($this->internal->target->currentModule->interactive && ($this->masked ? $this->object->x_interactive : true)) { ?>
+    <div class="comments">
+    <?php
+        echo $this->action('list', 'comments', 'system', (array) $this->internal->params);
+    ?>
+    </div>
+    <?php } */ ?>
+
+
+</div>
+<div class="ft">
+    <div class="dec">
+        <div class="lt"></div><div class="mn"></div><div class="rt"></div>
+
+    </div>
+</div>
+<span class="icon"></span>
+</div>
+
+
+<?php $this->TextAds(); ?>

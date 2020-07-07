@@ -1,0 +1,22 @@
+<?php
+if (isset($this->communities)) {
+    $this->headStyle()->captureStart();
+?>
+#list_communities_cm p {
+    margin: .5em 0;
+}
+<?php
+    $this->headStyle()->captureEnd();
+
+    $this->placeholder('temp')->captureStart();
+
+    foreach ($this->communities as $community) {
+        echo "<p><a href=\"http://" . (isset($this->internal->vars->language) ? $this->internal->vars->language. '.' : '') . (isset($community->hostname) ? $community->hostname : $community->name . '.' . $this->internal->config->default_domain) . "/\">$community->display</a></p>\n";
+    }
+
+    $this->placeholder('temp')->captureEnd();
+
+    echo $this->CM(array('id' => 'list_communities_cm', 'static_host' => $this->internal->vars->static_host, 'class' => 'cm', 'hd' => 'Communities', 'bd' => $this->placeholder('temp')));
+    $this->placeholder('temp')->set(null);
+}
+?>

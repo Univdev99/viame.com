@@ -1,0 +1,75 @@
+<!--
+See http://developer.yahoo.com/ypatterns/pattern.php?pattern=searchpagination
+-->
+
+<?php if ($this->pageCount > 1) { ?>
+    <div class="paginator">
+
+<?php
+$qs = '?';
+$ts = '';
+if (isset($this->internal->vars->query_string) && $this->internal->vars->query_string) {
+    $ts = $this->internal->vars->query_string;
+    
+    // Remove paginator parameters
+    foreach (array('limit', 'page') as $temp_param) {
+        $ts = preg_replace("/&*$temp_param=[^&]*/", '', $ts);
+    }
+}
+
+if ($ts) { $qs .= $ts . '&'; }
+?>
+
+<?php
+#$params = '';
+#if (isset($this->form)) {
+#    $param_array = array();
+#    foreach ($this->form->getElements() as $element) {
+#        if ($element->getValue() && isset($this->internal->params->{$element->getName()})) {
+#            #$params .= $element->getName() . '=' . $element->getValue . '&';
+#            $params .= $element->getName() . '=' . $this->internal->params->{$element->getName()} . '&';
+#        }
+#    }
+#}
+?>
+
+        <!-- First page link -->
+        <?php if (isset($this->previous)) { ?>
+          <a href="<?= $this->escape($qs . 'limit=' . $this->itemCountPerPage . '&page=' . $this->first) ?>">First</a>
+        <?php } else { ?>
+          <span class="disabled">First</span>
+        <?php } ?>
+        
+        <!-- Previous page link -->
+        <?php if (isset($this->previous)) { ?>
+          <a href="<?= $this->escape($qs . 'limit=' . $this->itemCountPerPage . '&page=' . $this->previous) ?>">&laquo; Previous</a>
+        <?php } else { ?>
+          <span class="disabled">&laquo; Previous</span>
+        <?php } ?>
+        
+        <!-- Numbered page links -->
+        <?php foreach ($this->pagesInRange as $page) {
+            if ($page != $this->current) { ?>
+          <a href="<?= $this->escape($qs . 'limit=' . $this->itemCountPerPage . '&page=' . $page) ?>"><?= $page ?></a>
+        <?php } else { ?>
+          <?= $page ?>
+        <?php
+            }
+        } ?>
+        
+        <!-- Next page link -->
+        <?php if (isset($this->next)) { ?>
+          <a href="<?= $this->escape($qs . 'limit=' . $this->itemCountPerPage . '&page=' . $this->next) ?>">Next &raquo;</a>
+        <?php } else { ?>
+          <span class="disabled">Next &raquo;</span>
+        <?php } ?>
+        
+        <!-- Last page link -->
+        <?php if (isset($this->next)) { ?>
+          <a href="<?= $this->escape($qs . 'limit=' . $this->itemCountPerPage . '&page=' . $this->last) ?>">Last</a>
+        <?php } else { ?>
+          <span class="disabled">Last</span>
+        <?php } ?>
+        
+    </div>
+<?php } ?>

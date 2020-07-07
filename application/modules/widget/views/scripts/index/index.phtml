@@ -1,0 +1,36 @@
+<h1>Manage Widgets</h1>
+
+<table width="100%" class="decorated">
+    <tr>
+        <th rowspan="2">Widget Type</th>
+        <th rowspan="2">Display Title</th>
+        <th colspan="2">Display</th>
+        <th width="10%" rowspan="2">Active</th>
+        <th width="10%" rowspan="2">Delete</th>
+    </tr>
+    <tr>
+        <th width="10%">On Home</th>
+        <th width="10%">Border Box</th>
+    </tr>
+<?php
+    foreach ($this->widgets as $widget) {
+        $widget = (array) $widget;
+?>
+    <tr<?=(!$widget['active'] ? " bgcolor='#666666'" : "")?>>
+        <td><?=($widget['active'] ? '<a href="' . $this->internal->target->pre . '/widget/edit/p/wid/'.$widget['id'].'/id/'.$widget['counter'].'/" title="'.$widget['description'].'">'.$widget['w_display'].'</a>' : $widget['w_display'])?></td>
+        <td><?=$widget['display']?></td>
+        
+        <td style="text-align: center;"><a href="<?= $this->internal->target->pre ?>/widget/edit/p/wid/<?=$widget['id']?>/id/<?=$widget['counter']?>/vmpd_fp/1/override/1/widget/<?= $widget['widget'] ? '0' : '1' ?>/" class="check_link toggle<?= ($widget['widget'] ? '' : ' inactive') ?>" title="Toggle Widget On Home"><?= $widget['widget'] ? 'Visible' : 'Hidden' ?></a></td>
+        <td style="text-align: center;"><a href="<?= $this->internal->target->pre ?>/widget/edit/p/wid/<?=$widget['id']?>/id/<?=$widget['counter']?>/vmpd_fp/1/override/1/display_cm/<?= $widget['display_cm'] ? '0' : '1' ?>/" class="check_link toggle<?= ($widget['display_cm'] ? '' : ' inactive') ?>" title="Toggle Border Box"><?= $widget['display_cm'] ? 'With Border Box' : 'Without Border Box' ?></a></td>
+        
+        <td style="text-align: center;"><a href="<?= $this->internal->target->pre ?>/widget/active/p/wid/<?=$widget['id']?>/id/<?=$widget['counter']?>/" class="check_link toggle<?= ($widget['active'] ? '' : ' inactive') ?>" title="Toggle Active Status"><?= $widget['active'] ? 'Active' : 'Inactive' ?></a></td>
+        <td style="text-align: center;"><a href="<?= $this->internal->target->pre ?>/widget/delete/p/wid/<?=$widget['id']?>/id/<?=$widget['counter']?>/" class="delete_link inactive toggle" onclick="return (confirm('Are you sure you want to delete the widget <?=$widget['w_display']?>?'));" title="Delete Widget">Delete</a></td>
+    </tr>
+<?php
+    }
+?>
+</table>
+
+<form action="<?= $this->internal->target->pre ?>/widget/add/">
+    <input type="submit" value="Add New Widget" name="create" />
+</form>

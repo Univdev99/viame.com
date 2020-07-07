@@ -1,0 +1,18 @@
+<table>
+    <tr>
+        <th scope="col">Date/Time</th>
+        <th scope="col">Priority</th>
+        <th scope="col">Module</th>
+        <th scope="col">Profile</th>
+        <th scope="col">Message</th>
+    </tr>
+<?php foreach ($this->logs as $log) { ?>
+    <tr>
+        <td><?= $log->creation ?></td>
+        <td><?= $log->priority ?> : <?= $log->priority_name ?></td>
+        <td><?= $log->m_display ?> (<?= $log->matrix_counter ?>)</td>
+        <td><?= $log->profile_id ?></td>
+        <td><?= $this->translate($log->message) ?></td>
+    </tr>
+<?php } ?>
+</table>

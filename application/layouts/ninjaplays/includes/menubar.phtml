@@ -1,0 +1,61 @@
+<?php
+    $id = 'menubar';
+?>
+
+<?php $this->inlineScript()->captureStart() ?>
+YAHOO.util.Event.onAvailable("toolbar", function () {
+    var centerSubMenu = (function (p_sType, p_aArgs) {
+        //for (var key in this.parent) {
+        //    alert(key + " = " + this.parent[key]);
+        //}
+        
+        if (/^MenuBar/.test(this.parent.parent)) {
+            YAHOO.util.Dom.setX(this.srcElement,
+                YAHOO.util.Dom.getX(this.parent.srcElement) +
+                ((this.parent.srcElement.offsetWidth - this.srcElement.offsetWidth) / 2)
+            );
+        }
+	});
+	
+    function loadToolbar() {
+        var omenubar = new YAHOO.widget.MenuBar("menubar", {
+            autosubmenudisplay: true,
+            showdelay: 0,
+            hidedelay: 750,
+            shadow: false,
+            lazyload: true });
+        omenubar.render();
+        omenubar.show();
+        omenubar.subscribe("show", centerSubMenu); 
+	    
+        var omenubar2 = new YAHOO.widget.MenuBar("menubar2", {
+            autosubmenudisplay: true,
+            showdelay: 0,
+            hidedelay: 750,
+            shadow: false,
+            lazyload: true });
+        omenubar2.render();
+        omenubar2.show();
+        omenubar2.subscribe("show", centerSubMenu); 
+        
+        // Rendering menus changes display type to block.  Have to revert this back manually
+        YAHOO.util.Dom.setStyle(['menubar', 'menubar2'], 'display', 'inline-block');
+        
+        YAHOO.util.Dom.setStyle('toolbar', 'visibility', 'visible');
+    }
+    
+    loadToolbar();
+    // onContentReady to onAvailable
+    //YAHOO.util.Event.onDOMReady(loadToolbar);
+});
+<?php $this->inlineScript()->captureEnd() ?>
+
+
+<?php
+if (isset($this->internal->member)) {
+    echo $this->render('includes/member.phtml');
+}
+else {
+    echo $this->render('includes/nonmember-new.phtml');
+}
+?>

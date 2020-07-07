@@ -1,0 +1,60 @@
+<?php
+$module = 'portfolio';
+
+if (isset($this->objects) && $this->objects) {
+    $counter = 0;
+    
+    foreach ($this->objects as $object) {
+        $counter++;
+        if ($this->internal->target->acl->owner ||
+            $object->allowed === null ||
+            $object->show_on_fail ||
+            ($object->allowed && ($object->privilege >= ViaMe_Controller_Action::ACL_READ)) ||
+            ($this->internal->target->acl->recursive && ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_READ))) {
+            
+            // Create the link
+            $link = 'http://' . $this->internal->vars->host . '/' . $this->SEO_Urlify($object->title) . '/s';
+            if ($this->masked) {
+                $link .= $this->internal->target->pre . '/portfolio/view/p/mid/' . $this->masked . '/id/' . $object->counter . '/';
+            }
+            else {
+                if ($object->com_id && ((isset($this->internal->params->com_id) && $this->internal->params->com_id) || $object->com_id != $this->internal->community->id)) { $link .= '/com/' . $object->com_id; }
+                elseif ($object->net_id) { $link .= '/net/' . $object->net_id; }
+                elseif ($object->via_id) { $link .= '/via/' . $object->via_id; }
+                
+                $link .= '/portfolio/view/p/mid/' . $object->matrix_counter . '/id/' . $object->counter . '/';
+            }
+?>
+<div class="<?= $module ?> <?= ($counter % 2) ? 'odd' : 'even' ?><?= (isset($this->widget->widget_hide_summary) && $this->widget->widget_hide_summary) ? ' hide_summary' : '' ?><?= ($counter == 1) ? ' firstitem' : (($counter == count($this->objects)) ? ' lastitem' : '') ?><?= ($object->active == false ? ' draftitem' : '') ?><?= ($object->published_display_activated == false ? ' futureitem' : '') ?><?= ($object->published_display_expired == true ? ' expireditem' : '') ?>">
+    <div class="title"><a href="<?= $link ?>"><?= $this->escape($object->title) ?></a><?= ($object->active == false ? ' <span class="drafttype">(Draft)</span>' : '') ?><?= ($object->published_display_activated == false ? ' <span class="futuretype">(Future)</span>' : '') ?><?= ($object->published_display_expired == true ? ' <span class="expiredtype">(Expired)</span>' : '') ?></div>
+    
+<?php if ($this->widget->interactive && ($this->masked ? $this->portfolio->x_interactive : true)) { ?>
+    <div class="interact">
+    <a href="<?= $link ?>#comments_list"><?= $object->total_comments_count ?> Comment(s)</a> - Average Rating : <?= ($object->rating ? $object->rating : 'N/A') ?>
+    </div>
+<?php } ?>
+    <div class="datetime">
+<?php
+        $date = new Zend_Date();
+        $date->set($object->published_display_date, Zend_Date::ISO_8601);
+        if (isset($this->internal->member)) {
+            $date->setTimezone($this->internal->member->timezone);
+            echo $date->toString(Zend_Date::DATE_MEDIUM) . ' <span class="time">' . $date->toString(Zend_Date::TIME_SHORT) . '</span>';
+        }
+        else {
+            $date->setTimezone($this->internal->config->timezone);
+            echo $date->toString(Zend_Date::DATE_MEDIUM . ' ' . Zend_Date::TIME_SHORT . ' z');
+        }
+?>
+    </div>
+    <div class="author">By <?= $this->ProfileDisplay(array('profile' => $object, 'internal' => $this->internal)) ?></div>
+    
+    <?= isset($object->summary) && $object->summary ? '<div class="summary">'. $this->escape($object->summary) . '</div>' : '' ?>
+    
+    <div class="more_link"><a href="<?= $link ?>">&raquo; <?= $this->escape($object->more_link ? $object->more_link : 'More') ?></a></div>
+</div>
+<?php
+        }
+    }
+}
+?>

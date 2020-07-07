@@ -1,0 +1,44 @@
+<h1>ACLs</h1>
+
+<ul>
+    <li><a href="<?= $this->internal->target->pre ?>/acl/control/">Space (<?= (isset($this->acls[0][0][0]) ? $this->acls[0][0][0] : 0) ?>)</a> : 
+<?php
+    if ($this->status === true) { echo 'On - Default Allowed'; }
+    elseif ($this->status === false) { echo 'On - Default Denied'; }
+    else { echo 'Off'; }
+?>
+
+/ <a href="<?= $this->internal->target->pre ?>/acl/delete/purge/">Purge</a>
+
+<?php foreach ($this->internal->target->modules as $module) { ?>
+    <ul>
+        <li><a href="<?= $this->internal->target->pre ?>/acl/control/p/mod/<?= $module->module_id ?>/mid/<?= $module->counter ?>/"><?= ($module->display ? $module->display : $module->m_display) ?> (<?= (isset($this->acls[$module->module_id][$module->counter][0]) ? $this->acls[$module->module_id][$module->counter][0] : 0) ?>)</a> :
+<?php
+        if ($module->acl === true) { echo 'On - Default Allowed'; }
+        elseif ($module->acl === false) { echo 'On - Default Denied'; }
+        else { echo 'Off'; }
+?>
+
+/ <a href="<?= $this->internal->target->pre ?>/acl/delete/purge/mod/<?= $module->module_id ?>/mid/<?= $module->counter ?>/">Purge</a>
+
+<?php
+        if (isset($this->acls[$module->module_id][$module->counter]) && count($this->acls[$module->module_id][$module->counter]) > 0) {
+            echo '<ul>';
+            foreach ($this->acls[$module->module_id][$module->counter] as $key => $val) {
+                if ($key) {
+?>
+            <li>
+                <a href="<?= $this->internal->target->pre ?>/acl/control/p/mod/<?= $module->module_id ?>/mid/<?= $module->counter ?>/iid/<?= $val ?>/">Item #<?= $key ?> (<?= $val?>)</a>
+                / <a href="<?= $this->internal->target->pre ?>/acl/delete/purge/mod/<?= $module->module_id ?>/mid/<?= $module->counter ?>/iid/<?= $val ?>/">Purge</a>
+            </li>
+<?php
+                }
+            }
+            echo '</ul>';
+        }
+?>
+        </li>
+    </ul>
+<?php } ?>
+    </li>
+</ul>

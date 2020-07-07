@@ -1,0 +1,115 @@
+<p>Welcome and thank you for becoming a member of <strong><?= $this->title ?></strong>. We are excited to have you on board and look forward to providing you with exceptional service. Your transaction has been successfully processed and you should now have proper access using your <?= $this->internal->community->display ?> account. You can access the Members Only Section
+<?php
+if (isset($this->access_selected->w_member_start) && $this->access_selected->w_member_start && strtotime($this->access_selected->w_member_start) > strtotime(date('Y-m-d'))) {
+    echo ' beginning ';
+    
+    $date = new Zend_Date();
+    $date->set($this->access_selected->w_member_start, Zend_Date::ISO_8601);
+    if (isset($this->internal->member)) {
+        $date->setTimezone($this->internal->member->timezone);
+        echo $date->toString(Zend_Date::DATE_LONG);
+    }
+    else {
+        $date->setTimezone($this->internal->config->timezone);
+        echo $date->toString(Zend_Date::DATE_LONG);
+    }
+    
+    echo ' ';
+}
+?>
+by logging in here:</p>
+<?php
+    $url = 'http://' . $this->internal->vars->host;
+    
+    if ($this->access_selected->net_id) {
+        $url .= '/net/' . $this->access_selected->net_id;
+    }
+    elseif ($this->access_selected->via_id) {
+        $url .= '/via/' . $this->access_selected->via_id;
+    }
+    
+    if ($this->access_selected->module_id) {
+        $url .= '/p/' . $this->internal->module_modules[$this->access_selected->module_id]->name;
+        
+        if ($this->access_selected->matrix_counter) {
+            $url .= '/mid/' . $this->access_selected->matrix_counter;
+            
+            if ($this->access_selected->item_counter) {
+                $url .= '/id/' . $this->access_selected->item_counter;
+            }
+        }
+    }
+    
+    $url .= '/';
+?>
+<p style="text-align: center;"><a href="<?= $url ?>?vmpd_paid=1"><span style="font-size: 116%; font-weight: bold;"><?= ((isset($this->access_selected->title) && $this->access_selected->title) ? $this->access_selected->title : $this->title)?> Members Only Section</span><br /><?= $url ?>?vmpd_paid=1</a></p>
+<p align="center" style="text-align: center;"><img border="0" src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/scnurm/logo.png" alt="Under the Radar Movers Logo" /></p>
+
+<p>We suggest you bookmark this link for future reference.  Use your <strong><?= $this->internal->community->display ?></strong> credentials to login. If you have trouble signing in or have forgotten your password, <a href="http://<?= $this->internal->vars->host ?>/member/reset/">click here</a> to have your password reset.</p>
+
+<p>The details of your subscription are:</p>
+<table width="100%" cellspacing="2" cellpadding="3">
+    <tr>
+        <th>Product</th>
+        <th>Price</th>
+    </tr>
+    <tr>
+        <td colspan="2"><hr size="1" noshade="noshade" /></td>
+    </tr>
+    <tr>
+        <td><?= (isset($this->access_selected->display) && $this->access_selected->display ? $this->access_selected->display : $this->access_selected->title) ?></td>
+        <td align="right">
+<?php
+$currency = new ViaMe_Currency('USD');
+echo $currency->toCurrency($this->access_selected->w_member_amount);
+echo ' / ' . ($this->access_selected->w_member_quantity > 1 ? $this->access_selected->w_member_quantity . ' ' : '') . $this->access_selected->w_member_interval . ($this->access_selected->w_member_quantity > 1 ? 's' : '');
+if ($this->access_selected->w_member_auto_renew) {
+    echo ' (Recurring)';
+}
+?>
+        </td>
+    </tr>
+</table>
+
+
+<p>Before you run off, please take a few minutes to read the following important points that will help you take full advantage and maximize all of the features and benefits this exceptional investing service has to offer.</p>
+<dl>
+    <dt style="font-size: 14px; font-weight: bold;">Daily Newsletter:</dt>
+    <dd>
+        <p><strong>You should immediately start receiving our daily newsletter edition via email.</strong> It's your choice to read each one daily in its entirety or not. However, to get the most out of your subscription, we suggest you try to read most of the daily newsletter as we may periodically back reference or build upon ideas from past editions. Daily newsletters may also cover very important <strong>technical charting</strong> and <strong>fundamental lessons</strong> to <strong>help you become a better investor or trader</strong>.</p>
+        <p>Email delivery can be unreliable at times. If you do not receive the newsletter in your inbox, please check your spam folder. Additionally, if your email provider has whitelist functionality, <strong>please consider whitelisting us</strong>.</p>
+    </dd>
+    <dt style="font-size: 14px; font-weight: bold;">SMS Text Alerts:</dt>
+    <dd>
+        <p>As a member of <strong><?= (isset($this->access_selected->display) && $this->access_selected->display ? $this->access_selected->display : $this->access_selected->title) ?></strong>, your subscription includes access to our <strong>SMS text alert service</strong>. We will use this notification service as a method of delivering timely information to our subscribers. We will send out notifications from time-to-time on <strong>newly suggested ideas</strong>, and when a <strong>new daily newsletter</strong> is out for delivery.</p>
+        <p><strong>The text messages will come from a US based long code (phone number) or short code.</strong> We will make every effort to keep this number consistent, but as our capacity needs increase, <strong>this number may periodically change</strong>. However, we will do our best to impact as few people and give you as much notice as possible.</p>
+        <p>Any type of alert notification service, including but not limited to SMS text messages, is subject to the reliability of many different service parts. While we make every effort to ensure notification deliverability, the sending and receiving of alert notifications should be considered as such, and <strong>there is no guarantee, implied or otherwise, that an alert will be sent or received</strong>.</p>
+        <p>If you haven't already setup your text alerts, please follow the instructions below.</p>
+        <p><strong>SMS Alert Setup Instructions:</strong></p>
+        <ol style="margin-bottom: 1em;">
+            <li>After you have confirmed your registration email account, log in and go to: <a href="https://www.smallcapnetwork.com/profile/alert/add/?type=2&vmpd_nar=1">https://www.smallcapnetwork.com/profile/alert/add/?type=2&vmpd_nar=1</a></li>
+            <li>Make sure the <strong>Alert Type</strong> is set to "<strong>SMS Text Message</strong>".</li>
+            <li>In the Identifier field, enter the <strong>FULL INTERNATIONAL NUMBER</strong> of your cell phone or other device. The number should be comprised of a <strong>COUNTRY CODE</strong>, <strong>AREA CODE</strong>, and <strong>PHONE NUMBER</strong>. For example, if you lived in Los Angeles, California, you would enter something like "12135551212" (<strong>notice the 1 in the front, as that is the country code for the US</strong>). If you do not know your country code, <a href="http://countrycode.org/" target="_blank">click here</a>&nbsp;(an alternate list can also be found <a href="http://en.wikipedia.org/wiki/List_of_country_calling_codes#Ordered_by_code" target="_blank">here</a>). <strong>Do not include any other non-numeric characters</strong>, such as plus signs, parenthesis, or hyphens. After entering your full international phone number, click the "<strong>Create Alert</strong>" button.</li>
+            <li>The system will send you a confirmation code that you will need to enter on the next step.</li>
+            <li>You will be redirected to a page where you will need to enter the confirmation code that was sent to your device. Enter the confirmation code in the Confirmation Code field and hit the "<strong>Confirm Alert</strong>" button. If you do not receive the confirmation code within 5 minutes, you can either click the "<strong>Re-Send Confirmation Code</strong>" button, or delete the newly created alert and try your request again.</li>
+            <li><strong>That's it. You're all set to receive alerts!</strong></li>
+        </ol>
+    </dd>
+    <dt style="font-size: 14px; font-weight: bold;">Member Section:</dt>
+    <dd>
+        <p>Our password protected <strong>Member Section</strong> contains an archive of all of our past newsletter editions. This section is available to Members only.</p>
+        <p>Keep in mind; since you are just now coming into <strong>
+            <?= (isset($this->access_selected->display) && $this->access_selected->display ? $this->access_selected->display : $this->access_selected->title) ?>
+        </strong>, <strong>it's important to review the dates and information with respect to each individual idea via our email newsletter</strong>. Why is this so important? Because often times, the day we suggest an idea is the day we believe the idea is ready to start performing. However, some end up requiring a little more time before the idea in question starts providing the type of returns we expect.</p>
+        <p>It's also quite alright to be patient, read our daily email newsletter and <strong>be selective as to which ideas you choose to trade or invest in and when</strong>. It's our philosophy that all stocks come back to center at some point, so <strong>patience is often rewarded on both the buy and sell side of the markets</strong>.</p>
+        <p>By taking the time to get to know our style and methodologies, in addition to getting comfortable with all of the information and analysis we provide daily, you will then be able to <strong>take full advantage of all we have to offer</strong>.</p>
+    </dd>
+</dl>
+<p><strong>A long-term commitment to the markets and the desire for an ongoing education of both technicals and fundamentals will help ensure you get the most from your investing or trading portfolio. <strong><?= (isset($this->access_selected->display) && $this->access_selected->display ? $this->access_selected->display : $this->access_selected->title) ?></strong> is here to help you accomplish all of that, for as long as you're committed to being a Member of this very unique and valuable service.</strong></p>
+<p>Should you ever have any questions or comments, simply reply to any one of our daily newsletters or fill out the <a href="mailto:customerservice@smallcapnetwork.com">contact us form</a> located in the <a href="<?= $url ?>?vmpd_paid=1"><strong>Member Section</strong></a>. We will always do our best to respond in a timely manner.</p>
+
+
+<p>Thank you again for subscribing. If you should have any questions or problems with your order, please contact our customer service team by sending an email to <a href="mailto:<?= $this->internal->community->email ?>"><?= $this->internal->community->email ?></a>. We are committed to providing you with great customer service, so please don't hesitate to contact us at any time.</p>
+<p>Sincerely,</p>
+<p><strong><?= $this->internal->community->display ?></strong></p>
+<p style="color: #f00;">Note: Charges will appear on your statement as <?= $this->internal->community->display ?>.</p>

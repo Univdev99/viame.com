@@ -1,0 +1,39 @@
+<?php
+    $id = 'menubar';
+?>
+
+<?php $this->inlineScript()->captureStart() ?>
+YAHOO.util.Event.onContentReady("fixed", function () {
+    function loadFixed() {
+        var omenubar = new YAHOO.widget.MenuBar("menubar", {
+            autosubmenudisplay: true,
+            showdelay: 0,
+            hidedelay: 750,
+            lazyload: true });
+        omenubar.render();
+        omenubar.show();
+        
+        var omenubar2 = new YAHOO.widget.MenuBar("menubar2", {
+            autosubmenudisplay: true,
+            showdelay: 0,
+            hidedelay: 750,
+            lazyload: true });
+        omenubar2.render();
+        omenubar2.show();
+    }
+    
+    YAHOO.util.Event.onDOMReady(loadFixed);
+});
+
+
+<?php $this->inlineScript()->captureEnd() ?>
+
+
+<?php
+if (isset($this->internal->member)) {
+    echo $this->render('../default/includes/member.phtml');
+}
+else {
+    echo $this->render('../default/includes/nonmember.phtml');
+}
+?>

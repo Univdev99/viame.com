@@ -1,0 +1,101 @@
+<?php $this->placeholder('temp')->captureStart(); ?>
+<p class="success">You have successfully verified your account and it is now active.</p>
+
+<h2>Welcome to the <?= $this->internal->community->display ?> Community! Immediately start publishing articles, analysis, stock picks and ratings or peruse the Internet's premier site online dedicated to uncovering small cap stocks for BIG returns!</h2>
+
+<table style="margin-top: 2em;">
+    <tr>
+        <td valign="top" style="width: 31%; padding-left: 55px; padding-right: 5px; background: url(<?= $this->internal->vars->static_host ?>/css/theme/default/assets/modules/member/register_verify/1.png) no-repeat;"><p><strong>Publish An Article</strong></p><p>Share your thoughts and opinions on your interests.</p></td>
+        <td style="width: 2%; border-left: 1px dotted #999;">&nbsp;</td>
+        <td valign="top" style="width: 31%; padding-left: 53px; padding-right: 5px; background: url(<?= $this->internal->vars->static_host ?>/css/theme/default/assets/modules/member/register_verify/2.png) no-repeat;"><p><strong>Publish An Analysis</strong></p><p>Create a customizable research report on stocks, mutual funds and other equities.</p></td>
+        <td style="width: 2%; border-left: 1px dotted #999;">&nbsp;</td>
+        <td valign="top" style="width: 31%; padding-left: 54px; background: url(<?= $this->internal->vars->static_host ?>/css/theme/default/assets/modules/member/register_verify/3.png) no-repeat;"><p><strong>Publish Stock Picks &amp; Ratings</strong></p><p>Let investors know which stocks you think are poised for big returns.</p></td>
+    </tr>
+</table>
+
+<p style="text-align: center; margin-top: 3em;">
+    <a href="<?= $this->internal->target->pre ?>/member/login/verify/vmpd_nar/1/?redirect=<?= '%2Fvia%2F' . $this->member_profile_id . '%2F' ?>"><img src="<?= $this->internal->vars->static_host ?>/css/theme/default/assets/modules/member/register_verify/start_publishing.png" alt="Start Publishing"></a>
+
+<?php if (isset($this->internal->params->redirect) && $this->internal->params->redirect) { ?>
+    <a href="<?= $this->internal->target->pre ?>/member/login/verify/vmpd_nar/1/?redirect=<?= $this->internal->params->redirect ?>" style="margin-left: 5em;"><img src="<?= $this->internal->vars->static_host ?>/css/theme/default/assets/modules/member/register_verify/continue.png" alt="Continue"></a>
+<?php } ?>
+</p>
+
+<?php
+$SCNEO_LINK = 'https://www.smallcapnetwork.com/?vmpd_ckstr[click_track]=SCN-Confirmed-Landing&vmpd_ckstr_redirect=/pages/SCNEO/v1/';
+?>
+<hr size="1" noshade="noshade" style="margin-bottom: 2em;" />
+<div style="font-size: 120%; line-height: 140%;">
+    <p style="text-align: center;"><a href="<?= $SCNEO_LINK ?>"><img src="<?= $this->internal->vars->static_host ?>/pages/SCNEO/v1/inc/img/logo_EO.png" alt="SmallCap Network Elite Opportunity"></a></p>
+    <p>If you're dead serious about consistently outperforming the major indexes and identifying individual stocks poised for enormous returns, then considering a subscription to our premium service, the <strong><a href="<?= $SCNEO_LINK ?>">SmallCap Network Elite Opportunity (SCN EO)</a> is a must</strong>.</p>
+    
+    <p><strong><a href="<?= $SCNEO_LINK ?>">SCN EO</a></strong> is rapidly becoming one of the most sought after fee based services for professional traders and serious investors interested in knowing what these markets are on the verge of doing each and every day. Knowing when these markets are topping or bottoming out is one of the most critical components to savvy trading and investing. Knowing which sectors are hot and which ones are not can make the difference between modest and stellar returns.</p>
+    
+    <p>The <strong><a href="<?= $SCNEO_LINK ?>">SCN EO</a></strong> service is published in the middle of every trading day and provides daily market commentary, technical analysis, select ETF trades for a long or short market and more importantly, individual company ideas the <strong>SCN EO Analytical Team</strong> has identified as early opportunities for potentially blockbuster returns. In addition, when to buy, when to sell and how to manage one's dynamic portfolio are all just a few components to this all-encompassing valuable service.</p>
+    
+    <p>Now that you've become a Member of the SmallCap Network Community, you are entitled to an exclusive <strong><a href="<?= $SCNEO_LINK ?>">Two-Week FREE Trial to SCN EO</a></strong>.</p>
+    
+    <p style="text-align: center; margin-top: 3em;">
+        <a href="<?= $SCNEO_LINK ?>"><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/modules/member/register_verify/scn_eo.png" alt="SmallCap Network Elite Opportunity"></a>
+    </p>
+</div>
+
+<?php /* Already created the default modules in the verification
+<p style="text-align: center; margin-top: 3em;"><a href="<?= $this->internal->target->pre ?>/member/login/verify/vmpd_nar/1/?redirect=%2Fvia%2F<?= $this->member_profile_id ?>%2Fprofile%2Fsetup%2Fp%2Fvmpd_nar%2F1%2F"><img src="<?= $this->internal->vars->static_host ?>/css/theme/default/assets/modules/member/register_verify/start_publishing.png"></a></p>
+
+<p style="text-align: right; color: #ccc; margin-top: 3em;"><a href="<?= $this->internal->target->pre ?>/member/login/verify/vmpd_nar/1/<?= (isset($this->internal->params->redirect) && $this->internal->params->redirect ? '?redirect=' . $this->internal->params->redirect : '') ?>" style="color: #ccc;">Continue and bypass default module setup &raquo;</a></p>
+*/ ?>
+
+<?php /* Investing Channel Co-Registration
+<hr />
+<p style="margin-top: 1em; font-size: 16px;"><strong>Thank you for signing up today. Below are some free offers you might be interested in. Please understand that they are completely optional and don't require a credit card.</strong></p>
+<?php
+$partner_url = 'http://valid1.net/default.aspx?bdlid=1124&';
+foreach (array('email' => 'email', 'first_name' => 'first_name', 'last_name' => 'last_name', 'postal_code' => 'zip', 'country' => 'country', 'dob' => 'date_of_birth', 'gender' => 'gender') as $key => $val) {
+    if (isset($this->member->{$key}) && $this->member->{$key}) {
+        $partner_url .= $val . '=' . urlencode($this->member->{$key}) . '&';
+    }
+}
+$partner_url .= 'redirect_url=';
+
+if (isset($this->internal->params->redirect) && $this->internal->params->redirect) {
+    $partner_url .= $this->internal->params->redirect;
+}
+else {
+    $partner_url .= '%2Fvia%2F' . $this->member_profile_id . '%2F';
+}
+?>
+<iframe src ="<?= $partner_url ?>" width="100%" height="1200" align="middle" frameborder="0"></iframe>
+*/ ?>
+
+<?php $this->placeholder('temp')->captureEnd(); ?>
+
+<?php
+echo $this->CM(array(
+    'class' => 'cm decorated plain successmessage',
+    'hd' => 'Verification Successful',
+    'hd2' => 'Thank you for verifying your account',
+    'bd' => $this->placeholder('temp')
+));
+$this->placeholder('temp')->set(null);
+?>
+
+<!-- Google Code for SCN Community Conversion Page -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var google_conversion_id = 1071423029;
+var google_conversion_language = "en";
+var google_conversion_format = "3";
+var google_conversion_color = "ffffff";
+var google_conversion_label = "GEaDCIP3rwQQtbzy_gM";
+var google_conversion_value = 1.000000;
+var google_remarketing_only = false;
+/* ]]> */
+</script>
+<script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js">
+</script>
+<noscript>
+<div style="display:inline;">
+<img height="1" width="1" style="border-style:none;" alt="" src="//www.googleadservices.com/pagead/conversion/1071423029/?value=1.000000&amp;label=GEaDCIP3rwQQtbzy_gM&amp;guid=ON&amp;script=0"/>
+</div>
+</noscript>

@@ -1,0 +1,159 @@
+/* SmallCapNetwork Community Stylesheet */
+
+/* @import url(../default/stylesheet.css); */
+
+/*
+.yui-t3 .yui-b {float:left;width:18.4615em;*width:18em;}
+.yui-t3 #yui-main .yui-b {margin-left:19.4615em;*margin-left:19em;}
+*/
+
+/* Accomodate Fixed? */
+#page { padding-bottom: 5em; }
+/* Turn On the Logo Area */
+/* #fixed .yuimenubaritem.logo { display: block !important; } */
+
+#page_header{
+	background-color: #dadada;
+    background: url(assets/hd_bg.png);
+    margin-bottom: 1em;
+}
+#page_header, #page_header a {
+	color: #000;
+    text-decoration: none;
+}
+#page_header .top { border-bottom: 2px solid #bfbfbf; }
+#page_header .top .slider {
+	position: absolute;
+    top: -17px;
+    z-index: 1;
+	background-color: #9d9d9d;
+    width: 100%;
+}
+#page_header .top .slider .centerblock {
+	display: inline-block;
+    width: 974px;
+    height: 0;
+}
+#page_header .top .slider .contentarea {
+	position: relative;
+    float: right;
+    background: url(assets/gray_box.png) no-repeat bottom center;
+    top: -4px;
+    right: 310px;
+    padding: 5px 0;
+    font-weight: bold;
+    font-size: 75%;
+    text-transform: uppercase;
+    color: #fff;
+}
+#page_header .top .slider .contentarea a { color: #fff; }
+#page_header .top .slider .dec {
+    position: relative;
+    float: right;
+    top: 3px;
+    right: 310px;
+    width: 6px;
+    height: 23px;
+    background: url(assets/gray_box.png) no-repeat bottom right;
+}
+#page_header .top .slider .dec.left { background-position: bottom left; }
+#page_header .top table { margin-bottom: 0; }
+#page_header .top table td {
+	border: none;
+    padding: .5em 0;
+}
+#page_header .top table form {
+	width: 214px;
+    height: 30px;
+    margin: .5em 0;
+    background: url(assets/stockhome_bg.png) no-repeat;
+}
+#page_header .top table form input {
+	border: none;
+	width: 180px;
+	margin: 7px 0 7px 7px;
+	padding: 0;
+    font-size: 92%;
+    color: #8d8d8d;
+    outline: none;
+}
+
+#page_header .nav {
+	background-color: #f1f1f1;
+    border-bottom: 3px solid #ab0d0d;
+    margin-left: -1px;
+}
+#page_header .nav #navbar {
+	width: 974px;
+    margin: auto;
+    background: none;
+}
+.yui-skin-sam #page_header .nav #navbar.yuimenubar {
+	text-transform: uppercase;
+    font-weight: bold;
+    font-size: 75%;
+    border: none;
+    border-right: 1px solid #bfbfbf;
+}
+.yui-skin-sam #page_header .nav #navbar .yuimenubaritem {
+	border: none;
+	border-left: 1px solid #bfbfbf;
+}
+.yui-skin-sam #page_header .nav #navbar .yuimenubaritemlabel {
+	border: none;
+	padding: .35em 1.61em;
+	cursor: pointer;
+}
+.yui-skin-sam #page_header .nav #navbar .yuimenubaritem.first-of-type .yuimenubaritemlabel {
+	padding-right: 16.1px;
+    padding-left: 16.1px;
+}
+.yui-skin-sam #page_header .nav #navbar .yuimenubaritemlabel:hover {
+	background-color: #ab0d0d;
+	color: #fff;
+}
+
+
+/* Special */
+#specialhome {
+    background-color: #efefef;
+    border-bottom: 1px solid #a7a7a7;
+    font-size: 92%;
+}
+#specialhome table { margin-bottom: 0; }
+#specialhome table td {
+    text-align: left;
+    border: none;
+}
+#specialhome .shanghai_composite_index { width: 100%; }
+#specialhome .title {
+	color: #ab0000;
+    font-weight: bold;
+    margin-bottom: .5em;
+}
+#specialhome .shanghai_composite_index tr.odd { background-color: #fff; }
+#specialhome .shanghai_composite_index td {
+    padding: 3px 6px;
+	text-align: right;
+}
+#specialhome .shanghai_composite_index td:first-child {	text-align: left; }
+
+
+#page_body {
+    padding-top: 1em;
+}
+
+
+#page_footer {
+    margin: 1em 0;
+}
+#page_footer, #page_footer a, #page_footer p {
+	font-size: 90%;
+    color: #9e9e9e;
+    text-decoration: none;
+}
+#page_footer ul { margin: 0 0 .3em 0; }
+
+
+/* Member Registration Form */
+#member_form dl.zend_form fieldset#fieldset-personal { background:url(../smallcapnetwork/assets/modules/member/register/personal_background.png) no-repeat top right; }

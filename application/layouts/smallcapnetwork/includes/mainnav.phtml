@@ -1,0 +1,672 @@
+<?php $this->inlineScript()->captureStart() ?>
+YAHOO.util.Event.onAvailable("mainnav", function () {
+    YUI({ fetchCSS: true }).use('node-menunav', function(Y) {
+        var menu = Y.one("#mainnav");
+        menu.plug(Y.Plugin.NodeMenuNav);
+        menu.setStyle('display', 'block');
+        menu.setStyle('visibility', 'visible');
+    });
+});
+<?php $this->inlineScript()->captureEnd() ?>
+
+<?php
+$pre = '';
+if (isset($this->internal->params->com_id) && $this->internal->params->com_id) {
+    $pre = '/com/' . $this->internal->params->com_id;
+}
+
+// NOTE - This whole mainnav should probably be cached for up to 4 hours or so
+//   If we do cache it, must remove all references to member and anything personalized to profile or member
+?>
+
+<div class="mainnav_interior bscontainer">
+    <table width="100%" cellpadding="0" cellspacing="0"><tr>
+        <td class="first">
+            <div id="mainnav" class="yui3-menu yui3-menu-horizontal yui3-menubuttonnav" style="display: none; visibility: hidden;">
+                <div class="yui3-menu-content">
+                    <ul class="first-of-type">
+                        <li class="yui3-menuitem first-of-type home"><a class="yui3-menuitem-content" href="<?= $pre ?>/"><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/logo/logo5.png" width="164" height="42" alt="SmallCap Network" /></a></li>
+                        <li>
+                            <a class="yui3-menu-label" href="/Member-Articles/s<?= $pre ?>/article/p/mid/8/"><em>Articles</em></a>
+                            <div id="nav-menu-article" class="yui3-menu">
+                                <div class="yui3-menu-content">
+                                    <div class="yui3-g">
+                                        <div class="yui3-u-1-4 first-of-type"><div class="content_area">
+
+<?php
+if ($db = Zend_Registry::get('db')) {
+    $null_val = new Zend_Db_Expr('null');
+    $select = $db->select()
+        ->from(array('obj' => 'article_articles'), array('*',
+            'allowed'       => $null_val,
+            'privilege'     => $null_val,
+            'filter'        => $null_val,
+            'recursive'     => $null_val
+        ))
+        ->where('obj.active=?', 't')
+                
+        ->join(array('x' => 'module_matrix'), 'obj.com_id=x.com_id AND obj.net_id=x.net_id AND obj.via_id=x.via_id AND obj.module_id=x.module_id AND obj.matrix_counter=x.counter',
+            array(
+                'x_interactive' => 'interactive'
+            )
+        )
+        ->where('x.active=?', 't')
+        
+        ->join(array('m' => 'module_modules'), 'x.module_id=m.id',
+            array('m_name' => 'name', 'm_display' => 'display')
+        )
+        ->where('m.active=?', 't')
+        
+        ->join(array('p' => 'profile_profiles'), 'obj.profile_id = p.id',
+            array(
+                'name' => 'name',
+                'p_id' => 'id',
+                'p_name' => 'name',
+                'p_site_admin' => 'site_admin',
+                'p_active' => 'active'
+            )
+        )
+        ->where('p.active=?', 't')
+        
+        ->join(array('b' => 'member_members'), 'p.member_id = b.id',
+            array(
+            'b_id' => 'id',
+            'b_site_admin' => 'site_admin',
+            'b_active' => 'active',
+            'b_email' => 'email'
+            )
+        )
+        ->where('b.active=?', 't')
+        
+        ->join(array('c' => 'system_communities'), 'p.community_id = c.id',
+            array(
+            'c_id' => 'id',
+            'c_name' => 'name',
+            'c_hostname' => 'hostname'
+            )
+        )
+        ->where('c.active=?', 't')
+
+        ->where('obj.acl ISNULL')
+        ->where('x.acl ISNULL')
+        #->where('x.community_mask ISNULL')
+        #->where('x.network_mask ISNULL')
+        #->where('x.profile_mask ISNULL')
+        ->where('obj.activation ISNULL OR obj.activation <= now()')
+        ->where('obj.expiration ISNULL OR obj.expiration >= now()')
+        
+        ->where("NOT ('{21066,15181}' @> ARRAY[obj.profile_id] :: bigint[])") // Elite Opportunity Pro, Investorideas.com
+        ->where('obj.com_id=2 OR p.community_id=2')
+        ->where("obj.creation>=(now()-'5 days'::interval)")
+    ;
+    
+    if (isset($this->internal->member)) {
+        $select->joinLeft(array('vc' => 'contact_contacts'), $db->quoteInto("p.id = vc.contact_profile_id AND vc.profile_id=? AND vc.status='t' AND vc.active='t'", $this->internal->member->profile->id),
+            array(
+                'vc_status' => 'status',
+                'vc_display' => 'display'
+            )
+        );
+    }
+    
+    $select->limit(1)->order('obj.total_views_count DESC');
+    
+    if ($item = $db->fetchRow($select)) {
+?>
+                                            <div style="width: 220px; white-space: normal;">
+                                                <p><strong>Featured Article</strong></p>
+                                                <div style="margin-left: .5em; margin-bottom: 1em;">
+                                                    <a href="<?php $backup_module=$this->module; $this->module='article'; echo $this->ContentLink(array('object' => $item, 'view' => $this)); $this->module=$backup_module; ?>"><?= $this->escape($item->title) ?></a>
+                                                    <span style="font-size: 10px; color: #fff; white-space: nowrap;"> - By <?= $this->ProfileDisplay(array('profile' => $item, 'internal' => $this->internal)) ?></span>
+                                                </div>
+                                            </div>
+<?php
+        
+    }
+}
+?>
+                                            
+                                            <p><strong>Latest Top Articles</strong></p>
+                                            <ul>
+                                                <li><a href="/Member-Articles/s<?= $pre ?>/article/p/mid/8/?vmep_vmqa_where=yLfTxL%2FO6LKtq9ik3MaW1dS8lox4jKx0j9LVvNuIqKHOs%2BLIvdvasJg%3D">Most Recent</a></li>
+                                                <li><a href="/Member-Articles/s<?= $pre ?>/article/p/mid/8/?vmep_vmqa_where=yLfTxL%2FO6LKtq9ik3MaW1dS8lox4jKx0j9LVvNuIqKHOs%2BLIvdvasJg%3D&vmep_order=2bTixLfE763U5eeiy9Dj1dk%3D">Most Read</a></li>
+                                                <li><a href="/Member-Articles/s<?= $pre ?>/article/p/mid/8/?vmep_vmqa_where=yLfTxL%2FO6LKtq9ik3MaW1dS8lox4jKx0j9LVvNuIqKHOs%2BLIvdvasJg%3D&vmep_order=2bTixLfE3LPc29mx3NTNytS63Nc%3D">Most Commented</a></li>
+                                                <li><a href="/Member-Articles/s<?= $pre ?>/article/p/mid/8/?vmep_vmqa_where=yLfTxL%2FO6LKtq9ik3MaW1dS8lox4jKx0j9LVvNuIqKHOs%2BLIvdvasJg%3D&vmep_order=qJSvr5C4vImX4NW30c%2FVk5Vu">Most Popular</a></li>
+                                            </ul>
+                                        </div></div>
+                                        <div class="yui3-u-1-4"><div class="content_area">
+                                            <?php /*
+                                            <p><strong>Categories</strong></p>
+                                            <ul style="margin-bottom: 1em;" class="first-of-type">
+                                                <li class="first-of-type"><a href="/Stocks-In-Focus/s<?= $pre ?>/article/p/mid/3/">Stocks In Focus</a></li>
+                                                <li><a href="/Small-Caps/s<?= $pre ?>/article/p/mid/1/">Small Caps</a></li>
+                                                <li><a href="/Micro-Caps/s<?= $pre ?>/article/p/mid/2/">Micro Caps</a></li>
+                                                <li><a href="/Small-Cap-Biotech-Analysis/s<?= $pre ?>/article/p/mid/5/">Small Cap Biotech</a></li>
+                                                <li class="last-of-type"><a href="/How-To-For-Penny-Stocks/s<?= $pre ?>/article/p/mid/9/">&quot;How To&quot; For Stocks</a></li>
+                                            </ul>
+                                            */ ?>
+                                            
+                                            <p><strong>SCN Newsletter</strong></p>
+                                            <ul class="last-of-type">
+                                                <li><a href="<?= $pre ?>/article/view/p/mid/7/id/last/">Most Recent Edition</a></li>
+                                                <li><a href="/Newsletter-Archives/s<?= $pre ?>/article/p/mid/7/">Newsletter Archives</a></li>
+                                            </ul>
+                                        </div></div>
+                                        <?php /*
+                                        <div class="yui3-u-1-4"><div class="content_area">
+                                            <p><strong>Market Cap</strong></p>
+                                            <ul style="margin-bottom: 1em;" class="first-of-type">
+                                                <li class="first-of-type"><a href="/Member-Articles/s<?= $pre ?>/article/p/mid/8/?vmep_qvd_where=0qbgzrDZ2KfQ3rKAmZGel5V1npN7lak%3D">Large-Cap (Over $10B)</a></li>
+                                                <li><a href="/Member-Articles/s<?= $pre ?>/article/p/mid/8/?vmep_qvd_where=0qbgzrDZ2KfQ3rKAmpGel5V1npN7lZmFvbKUsMnT2czZpNHEu6GqdJ%2BepHOYkZ6XlQ%3D%3D">Mid-Cap ($2B - $10B)</a></li>
+                                                <li><a href="/Member-Articles/s<?= $pre ?>/article/p/mid/8/?vmep_qvd_where=0qbgzrDZ2KfQ3rKAmpael5V1npN7hbqSs47hpNrM09vEqM%2FTh5epdJ%2BepHOYkZ4%3D">Small-Cap ($250M - $2B)</a></li>
+                                                <li class="last-of-type"><a href="/Member-Articles/s<?= $pre ?>/article/p/mid/8/?vmep_qvd_where=0qbgzrDZ2KfQ3rB1nZGel5V1npM%3D">Micro-Cap (Under $250M)</a></li>
+                                            </ul>
+                                            
+                                            <p><strong>Stock Price</strong></p>
+                                            <ul class="last-of-type">
+                                                <li class="first-of-type"><a href="/Member-Articles/s<?= $pre ?>/article/p/mid/8/?vmep_qvd_where=0abh14eW">Under $1</a></li>
+                                                <li><a href="/Member-Articles/s<?= $pre ?>/article/p/mid/8/?vmep_qvd_where=0abh14miqmSwvLhj1MLh26F6">$1 - $5</a></li>
+                                                <li class="last-of-type"><a href="/Member-Articles/s<?= $pre ?>/article/p/mid/8/?vmep_qvd_where=0abh14mirg%3D%3D">Over $5</a></li>
+                                            </ul>
+                                        </div></div>
+                                        <div class="yui3-u-1-4 last-of-type"><div class="content_area">                               
+                                            <p><strong>Type</strong></p>
+                                            <ul style="margin-bottom: 1em;" class="first-of-type">
+                                                <li class="first-of-type"><a href="/Member-Articles/s<?= $pre ?>/article/p/mid/8/?vmep_qvd_where=2b7eyIiMwms%3D">Indices</a></li>
+                                                <li><a href="/Member-Articles/s<?= $pre ?>/article/p/mid/8/?vmep_qvd_where=2b7eyIiMyGs%3D">Options</a></li>
+                                                <li><a href="/Member-Articles/s<?= $pre ?>/article/p/mid/8/?vmep_qvd_where=2b7eyIiMxms%3D">Mutual Funds</a></li>
+                                                <li><a href="/Member-Articles/s<?= $pre ?>/article/p/mid/8/?vmep_qvd_where=2b7eyIiMvms%3D">ETFs</a></li>
+                                                <li class="last-of-type"><a href="/Member-Articles/s<?= $pre ?>/article/p/mid/8/?vmep_qvd_where=2b7eyIiMvGs%3D">Currency</a></li>    
+                                            </ul>
+                                            
+                                            <p><strong>Industry / Sector</strong></p>
+                                            <ul class="last-of-type">
+                                                <li class="first-of-type">Industry</li>
+                                                <li class="last-of-type">Sector</li>    
+                                            </ul>
+                                        </div></div>
+                                        */ ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        
+                        <?php /*
+                        <li>
+                            <a class="yui3-menu-label" href="/Member-Blog-Posts/s<?= $pre ?>/blog/p/mid/3/"><em>Blog Posts</em></a>
+                            <div id="nav-menu-article" class="yui3-menu">
+                                <div class="yui3-menu-content">
+                                    <div class="yui3-g">
+                                        <div class="yui3-u-1-3 first-of-type"><div class="content_area">
+
+<?php
+if ($db = Zend_Registry::get('db')) {
+    $null_val = new Zend_Db_Expr('null');
+    $select = $db->select()
+        ->from(array('obj' => 'blog_blogs'), array('*',
+            'allowed'       => $null_val,
+            'privilege'     => $null_val,
+            'filter'        => $null_val,
+            'recursive'     => $null_val
+        ))
+        ->where('obj.active=?', 't')
+                
+        ->join(array('x' => 'module_matrix'), 'obj.com_id=x.com_id AND obj.net_id=x.net_id AND obj.via_id=x.via_id AND obj.module_id=x.module_id AND obj.matrix_counter=x.counter',
+            array(
+                'x_interactive' => 'interactive'
+            )
+        )
+        ->where('x.active=?', 't')
+        
+        ->join(array('m' => 'module_modules'), 'x.module_id=m.id',
+            array('m_name' => 'name', 'm_display' => 'display')
+        )
+        ->where('m.active=?', 't')
+        
+        ->join(array('p' => 'profile_profiles'), 'obj.profile_id = p.id',
+            array(
+                'name' => 'name',
+                'p_id' => 'id',
+                'p_name' => 'name',
+                'p_site_admin' => 'site_admin',
+                'p_active' => 'active'
+            )
+        )
+        ->where('p.active=?', 't')
+        
+        ->join(array('b' => 'member_members'), 'p.member_id = b.id',
+            array(
+            'b_id' => 'id',
+            'b_site_admin' => 'site_admin',
+            'b_active' => 'active',
+            'b_email' => 'email'
+            )
+        )
+        ->where('b.active=?', 't')
+        
+        ->join(array('c' => 'system_communities'), 'p.community_id = c.id',
+            array(
+            'c_id' => 'id',
+            'c_name' => 'name',
+            'c_hostname' => 'hostname'
+            )
+        )
+        ->where('c.active=?', 't')
+
+        ->where('obj.acl ISNULL')
+        ->where('x.acl ISNULL')
+        #->where('x.community_mask ISNULL')
+        #->where('x.network_mask ISNULL')
+        #->where('x.profile_mask ISNULL')
+        ->where('obj.activation ISNULL OR obj.activation <= now()')
+        ->where('obj.expiration ISNULL OR obj.expiration >= now()')
+        
+        ->where("NOT ('{15181}' @> ARRAY[obj.profile_id] :: bigint[])")
+        ->where('obj.com_id=2 OR p.community_id=2')
+        ->where("obj.creation>=(now()-'5 days'::interval)")
+    ;
+    
+    if (isset($this->internal->member)) {
+        $select->joinLeft(array('vc' => 'contact_contacts'), $db->quoteInto("p.id = vc.contact_profile_id AND vc.profile_id=? AND vc.status='t' AND vc.active='t'", $this->internal->member->profile->id),
+            array(
+                'vc_status' => 'status',
+                'vc_display' => 'display'
+            )
+        );
+    }
+    
+    $select->limit(1)->order('obj.total_views_count DESC');
+    
+    if ($item = $db->fetchRow($select)) {
+?>
+                                            <div style="width: 220px; white-space: normal;">
+                                                <p><strong>Featured Blog Post</strong></p>
+                                                <div style="margin-left: .5em; margin-bottom: 1em;">
+                                                    <a href="<?php $backup_module=$this->module; $this->module='blog'; echo $this->ContentLink(array('object' => $item, 'view' => $this)); $this->module=$backup_module; ?>"><?= $this->escape($item->title) ?></a>
+                                                    <span style="font-size: 10px; color: #fff; white-space: nowrap;"> - By <?= $this->ProfileDisplay(array('profile' => $item, 'internal' => $this->internal)) ?></span>
+                                                </div>
+                                            </div>
+<?php
+        
+    }
+}
+?>
+
+                                            <p><strong>Top Blog Posts</strong></p>
+                                            <ul>
+                                                <li><a href="/Member-Blog-Posts/s<?= $pre ?>/blog/p/mid/3/?vmep_vmqa_where=yLfTxL%2FO6LKtq9ik3MaW1dS8lox4jKx0j9LVvNuIqKHOs%2BLIvdvasJg%3D">Most Recent</a></li>
+                                                <li><a href="/Member-Blog-Posts/s<?= $pre ?>/blog/p/mid/3/?vmep_vmqa_where=yLfTxL%2FO6LKtq9ik3MaW1dS8lox4jKx0j9LVvNuIqKHOs%2BLIvdvasJg%3D&vmep_order=2bTixLfE763U5eeiy9Dj1dk%3D">Most Read</a></li>
+                                                <li><a href="/Member-Blog-Posts/s<?= $pre ?>/blog/p/mid/3/?vmep_vmqa_where=yLfTxL%2FO6LKtq9ik3MaW1dS8lox4jKx0j9LVvNuIqKHOs%2BLIvdvasJg%3D&vmep_order=2bTixLfE3LPc29mx3NTNytS63Nc%3D">Most Commented</a></li>
+                                                <li><a href="/Member-Blog-Posts/s<?= $pre ?>/blog/p/mid/3/?vmep_vmqa_where=yLfTxL%2FO6LKtq9ik3MaW1dS8lox4jKx0j9LVvNuIqKHOs%2BLIvdvasJg%3D&vmep_order=qJSvr5C4vImX4NW30c%2FVk5Vu">Most Popular</a></li>
+                                            </ul>
+                                        </div></div>
+                                        <div class="yui3-u-1-3"><div class="content_area">
+                                            <p><strong>Market Cap</strong></p>
+                                            <ul style="margin-bottom: 1em;" class="first-of-type">
+                                                <li class="first-of-type"><a href="/Member-Blog-Posts/s<?= $pre ?>/blog/p/mid/3/?vmep_qvd_where=0qbgzrDZ2KfQ3rKAmZGel5V1npN7lak%3D">Large-Cap (Over $10B)</a></li>
+                                                <li><a href="/Member-Blog-Posts/s<?= $pre ?>/blog/p/mid/3/?vmep_qvd_where=0qbgzrDZ2KfQ3rKAmpGel5V1npN7lZmFvbKUsMnT2czZpNHEu6GqdJ%2BepHOYkZ6XlQ%3D%3D">Mid-Cap ($2B - $10B)</a></li>
+                                                <li><a href="/Member-Blog-Posts/s<?= $pre ?>/blog/p/mid/3/?vmep_qvd_where=0qbgzrDZ2KfQ3rKAmpael5V1npN7hbqSs47hpNrM09vEqM%2FTh5epdJ%2BepHOYkZ4%3D">Small-Cap ($250M - $2B)</a></li>
+                                                <li class="last-of-type"><a href="/Member-Blog-Posts/s<?= $pre ?>/blog/p/mid/3/?vmep_qvd_where=0qbgzrDZ2KfQ3rB1nZGel5V1npM%3D">Micro-Cap (Under $250M)</a></li>
+                                            </ul>
+                                            
+                                            <p><strong>Stock Price</strong></p>
+                                            <ul class="last-of-type">
+                                                <li class="first-of-type"><a href="/Member-Blog-Posts/s<?= $pre ?>/blog/p/mid/3/?vmep_qvd_where=0abh14eW">Under $1</a></li>
+                                                <li><a href="/Member-Blog-Posts/s<?= $pre ?>/blog/p/mid/3/?vmep_qvd_where=0abh14miqmSwvLhj1MLh26F6">$1 - $5</a></li>
+                                                <li class="last-of-type"><a href="/Member-Blog-Posts/s<?= $pre ?>/blog/p/mid/3/?vmep_qvd_where=0abh14mirg%3D%3D">Over $5</a></li>
+                                            </ul>
+                                        </div></div>
+                                        <div class="yui3-u-1-3 last-of-type"><div class="content_area">                               
+                                            <p><strong>Type</strong></p>
+                                            <ul style="margin-bottom: 1em;" class="first-of-type">
+                                                <li class="first-of-type"><a href="/Member-Blog-Posts/s<?= $pre ?>/blog/p/mid/3/?vmep_qvd_where=2b7eyIiMwms%3D">Indices</a></li>
+                                                <li><a href="/Member-Blog-Posts/s<?= $pre ?>/blog/p/mid/3/?vmep_qvd_where=2b7eyIiMyGs%3D">Options</a></li>
+                                                <li><a href="/Member-Blog-Posts/s<?= $pre ?>/blog/p/mid/3/?vmep_qvd_where=2b7eyIiMxms%3D">Mutual Funds</a></li>
+                                                <li><a href="/Member-Blog-Posts/s<?= $pre ?>/blog/p/mid/3/?vmep_qvd_where=2b7eyIiMvms%3D">ETFs</a></li>
+                                                <li class="last-of-type"><a href="/Member-Blog-Posts/s<?= $pre ?>/blog/p/mid/3/?vmep_qvd_where=2b7eyIiMvGs%3D">Currency</a></li>    
+                                            </ul>
+
+                                            <p><strong>Industry / Sector</strong></p>
+                                            <ul class="last-of-type">
+                                                <li class="first-of-type">Industry</li>
+                                                <li class="last-of-type">Sector</li>    
+                                            </ul>
+                                        </div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        */ ?>
+                        
+                        <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="/Stock-Quotes/s/quote/">Ratings</a></li>
+                        
+                        <?php /*
+                        <li>
+                            <a class="yui3-menu-label" href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/"><em>Stock Picks</em></a>
+                            <div id="nav-menu-stock_picks" class="yui3-menu">
+                                <div class="yui3-menu-content">
+                                    <div class="yui3-g">
+                                        <div class="yui3-u-1-4 first-of-type"><div class="content_area">
+                                            <p><strong>Best Performers</strong></p>
+                                            <ul style="margin-bottom: 1em;" class="first-of-type">
+                                                <li class="first-of-type"><a href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/?vmep_qvd_join_where=qJSvr5C4vImX3eSo1sDe2c6o04%2B61d6yzuLZsNjA3tnOqNOMiZU%3D&vmep_order=jW2xsoyxvpeys5xrkKS9qLGKwaaQjdyw3uHZotjT18rKcbGyjLG%2Bl7KznKbU0OHMxLnT0LvE6bbY0dlv1MLh245um6aapsWJwrG5a9fR09XEteDMrsqls9%2FT4qLcxtvXxLXgzK7Kom2Z3uO20dXX1tNumpN0jqiHvq%2FAiLuks4%2FUtdPRqtXrrdLToLLYxtzG2arb06rV663S051s&vmep_vmqa_where=yLfTxL%2FO6LKtq9ik3MaW1dS8lox4jLBk08%2Ftto%2BbqNDTudPVwcblbQ%3D%3D">Last 7 Days</a></li>
+                                                <li><a href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/?vmep_qvd_join_where=qJSvr5C4vImX3eSo1sDe2c6o04%2B61d6yzuLZsNjA3tnOqNOMiZU%3D&vmep_order=jW2xsoyxvpeys5xrkKS9qLGKwaaQjdyw3uHZotjT18rKcbGyjLG%2Bl7KznKbU0OHMxLnT0LvE6bbY0dlv1MLh245um6aapsWJwrG5a9fR09XEteDMrsqls9%2FT4qLcxtvXxLXgzK7Kom2Z3uO20dXX1tNumpN0jqiHvq%2FAiLuks4%2FUtdPRqtXrrdLToLLYxtzG2arb06rV663S051s&vmep_vmqa_where=yLfTxL%2FO6LKtq9ik3MaW1dS8lox4jKx0j9LVvNuIqKHOs%2BLIvdvasJg%3D">Last 30 Days</a></li>
+                                                <li><a href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/?vmep_qvd_join_where=qJSvr5C4vImX3eSo1sDe2c6o04%2B61d6yzuLZsNjA3tnOqNOMiZU%3D&vmep_order=jW2xsoyxvpeys5xrkKS9qLGKwaaQjdyw3uHZotjT18rKcbGyjLG%2Bl7KznKbU0OHMxLnT0LvE6bbY0dlv1MLh245um6aapsWJwrG5a9fR09XEteDMrsqls9%2FT4qLcxtvXxLXgzK7Kom2Z3uO20dXX1tNumpN0jqiHvq%2FAiLuks4%2FUtdPRqtXrrdLToLLYxtzG2arb06rV663S051s&vmep_vmqa_where=yLfTxL%2FO6LKtq9ik3MaW1dS8lox4jLJ0j9LVvNuIqKHOs%2BLIvdvasJg%3D">Last 90 Days</a></li>
+                                                <li><a href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/?vmep_qvd_join_where=qJSvr5C4vImX3eSo1sDe2c6o04%2B61d6yzuLZsNjA3tnOqNOMiZU%3D&vmep_order=jW2xsoyxvpeys5xrkKS9qLGKwaaQjdyw3uHZotjT18rKcbGyjLG%2Bl7KznKbU0OHMxLnT0LvE6bbY0dlv1MLh245um6aapsWJwrG5a9fR09XEteDMrsqls9%2FT4qLcxtvXxLXgzK7Kom2Z3uO20dXX1tNumpN0jqiHvq%2FAiLuks4%2FUtdPRqtXrrdLToLLYxtzG2arb06rV663S051s&vmep_vmqa_where=yLfTxL%2FO6LKtq9ik3MaW1dS8lox4jKp2n47YpOHUlaGfrtzXsNfvpduX">Last 120 Days</a></li>
+                                                <li class="last-of-type"><a href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/?vmep_qvd_join_where=qJSvr5C4vImX3eSo1sDe2c6o04%2B61d6yzuLZsNjA3tnOqNOMiZU%3D&vmep_order=jW2xsoyxvpeys5xrkKS9qLGKwaaQjdyw3uHZotjT18rKcbGyjLG%2Bl7KznKbU0OHMxLnT0LvE6bbY0dlv1MLh245um6aapsWJwrG5a9fR09XEteDMrsqls9%2FT4qLcxtvXxLXgzK7Kom2Z3uO20dXX1tNumpN0jqiHvq%2FAiLuks4%2FUtdPRqtXrrdLToLLYxtzG2arb06rV663S051s">All Time</a></li>  
+                                            </ul>
+                                            
+                                            <p><strong>Top Stock Picks</strong></p>
+                                            <ul class="last-of-type">
+                                                <li><a href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/?vmep_vmqa_where=yLfTxL%2FO6LKtq9ik3MaW1dS8lox4jKx0j9LVvNuIqKHOs%2BLIvdvasJg%3D">Most Recent</a></li>
+                                                <li><a href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/?vmep_vmqa_where=yLfTxL%2FO6LKtq9ik3MaW1dS8lox4jKx0j9LVvNuIqKHOs%2BLIvdvasJg%3D&vmep_order=2bTixLfE763U5eeiy9Dj1dk%3D">Most Viewed</a></li>
+                                                <li><a href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/?vmep_vmqa_where=yLfTxL%2FO6LKtq9ik3MaW1dS8lox4jKx0j9LVvNuIqKHOs%2BLIvdvasJg%3D&vmep_order=2bTixLfE3LPc29mx3NTNytS63Nc%3D">Most Commented</a></li>
+                                                <li><a href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/?vmep_vmqa_where=yLfTxL%2FO6LKtq9ik3MaW1dS8lox4jKx0j9LVvNuIqKHOs%2BLIvdvasJg%3D&vmep_order=qJSvr5C4vImX4NW30c%2FVk5Vu">Most Popular</a></li>
+                                            </ul>
+                                        </div></div>
+                                        <div class="yui3-u-1-4"><div class="content_area">
+                                            <p><strong>Long / Short</strong></p>
+                                            <ul style="margin-bottom: 1em;" class="first-of-type">
+                                                <li class="first-of-type"><a href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/?vmep_vmqa_where=1bThzL%2FO6LKsnw%3D%3D">Long Picks</a></li>
+                                                <li class="last-of-type"><a href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/?vmep_vmqa_where=1bThzL%2FO6LKsm6U%3D">Short Picks</a></li>
+                                            </ul>
+                                            
+                                            <p><strong>Timeframe</strong></p>
+                                            <ul style="margin-bottom: 1em;">
+                                                <li class="first-of-type"><a href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/?vmep_vmqa_where=2a7byLHX2rHUq6U%3D">Long-Term Picks</a></li>
+                                                <li><a href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/?vmep_vmqa_where=2a7byLHX2rHUq6Q%3D">Mid-Term Picks</a></li>
+                                                <li class="last-of-type"><a href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/?vmep_vmqa_where=2a7byLHX2rHUq6F0">Short-Term Picks</a></li>
+                                            </ul>
+                                            
+                                            <p><strong>Risk</strong></p>
+                                            <ul class="last-of-type">
+                                                <li class="first-of-type"><a href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/?vmep_vmqa_where=167hzoiW">High Risk Picks</a></li>
+                                                <li><a href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/?vmep_vmqa_where=167hzoiV">Medium Risk Picks</a></li>
+                                                <li class="last-of-type"><a href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/?vmep_vmqa_where=167hzoiSqg%3D%3D">Low Risk Picks</a></li>
+                                            </ul>
+                                        </div></div>
+                                        <div class="yui3-u-1-4"><div class="content_area">
+                                            <p><strong>Market Cap</strong></p>
+                                            <ul style="margin-bottom: 1em;" class="first-of-type">
+                                                <li class="first-of-type"><a href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/?vmep_qvd_join_where=0qbgzrDZ2KfQ3rKAmZGel5V1npN7lak%3D">Large-Cap (Over $10B)</a></li>
+                                                <li><a href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/?vmep_qvd_join_where=0qbgzrDZ2KfQ3rKAmpGel5V1npN7lZmFvbKUsMnT2czZpNHEu6GqdJ%2BepHOYkZ6XlQ%3D%3D">Mid-Cap ($2B - $10B)</a></li>
+                                                <li><a href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/?vmep_qvd_join_where=0qbgzrDZ2KfQ3rKAmpael5V1npN7hbqSs47hpNrM09vEqM%2FTh5epdJ%2BepHOYkZ4%3D">Small-Cap ($250M - $2B)</a></li>
+                                                <li class="last-of-type"><a href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/?vmep_qvd_join_where=0qbgzrDZ2KfQ3rB1nZGel5V1npM%3D">Micro-Cap (Under $250M)</a></li>
+                                            </ul>
+                                            
+                                            <p><strong>Stock Price</strong></p>
+                                            <ul class="last-of-type">
+                                                <li class="first-of-type"><a href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/?vmep_qvd_join_where=0abh14eW">Under $1</a></li>
+                                                <li><a href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/?vmep_qvd_join_where=0abh14miqmSwvLhj1MLh26F6">$1 - $5</a></li>
+                                                <li class="last-of-type"><a href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/?vmep_qvd_join_where=0abh14mirg%3D%3D">Over $5</a></li>
+                                            </ul>
+                                        </div></div>
+                                        <div class="yui3-u-1-4 last-of-type"><div class="content_area">                               
+                                            <p><strong>Type</strong></p>
+                                            <ul style="margin-bottom: 1em;" class="first-of-type">
+                                                <li class="first-of-type"><a href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/?vmep_qvd_join_where=2b7eyIiMwms%3D">Indices</a></li>
+                                                <li><a href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/?vmep_qvd_join_where=2b7eyIiMyGs%3D">Options</a></li>
+                                                <li><a href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/?vmep_qvd_join_where=2b7eyIiMxms%3D">Mutual Funds</a></li>
+                                                <li><a href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/?vmep_qvd_join_where=2b7eyIiMvms%3D">ETFs</a></li>
+                                                <li class="last-of-type"><a href="/Member-Stock-Picks/s<?= $pre ?>/pick/p/mid/1/?vmep_qvd_join_where=2b7eyIiMvGs%3D">Currency</a></li>
+                                            </ul>
+                                            
+                                            <p><strong>Industry / Sector</strong></p>
+                                            <ul class="last-of-type">
+                                                <li class="first-of-type">Industry</li>
+                                                <li class="last-of-type">Sector</li>    
+                                            </ul>
+                                        </div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        */ ?>
+                        
+                        <li>
+                            <a class="yui3-menu-label" href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/"><em>Analysis</em></a>
+                            <div id="nav-menu-analysis" class="yui3-menu">
+                                <div class="yui3-menu-content" style="position: relative; left: -170px;">
+                                    <div class="yui3-g">
+                                        <div class="yui3-u-1-5 first-of-type"><div class="content_area">
+                                            <p><strong>Analysis Action</strong></p>
+                                            <ul style="margin-bottom: 1em;" class="first-of-type">
+                                                <li class="first-of-type"><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_vmqa_where=xrPPz8TY4rfOz9e30dDcpJY%3D">Upgrades</a></li>
+                                                <li><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_vmqa_where=xrPPz8TY4rfOz9e30dDcpJJ2">Downgrades</a></li>
+                                                <li class="last-of-type"><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_vmqa_where=xrPPz8TY4rfOz9e30dDcpJU%3D">No Action</a></li> 
+                                            </ul>
+                                            
+                                            <p><strong>Top Analysis</strong></p>
+                                            <ul class="last-of-type">
+                                                <li><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_vmqa_where=yLfTxL%2FO6LKtq9ik3MaW1dS8lox4jKx0j9LVvNuIqKHOs%2BLIvdvasJg%3D">Most Recent</a></li>
+                                                <li><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_vmqa_where=yLfTxL%2FO6LKtq9ik3MaW1dS8lox4jKx0j9LVvNuIqKHOs%2BLIvdvasJg%3D&vmep_order=2bTixLfE763U5eeiy9Dj1dk%3D">Most Read</a></li>
+                                                <li><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_vmqa_where=yLfTxL%2FO6LKtq9ik3MaW1dS8lox4jKx0j9LVvNuIqKHOs%2BLIvdvasJg%3D&vmep_order=2bTixLfE3LPc29mx3NTNytS63Nc%3D">Most Commented</a></li>
+                                                <li><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_vmqa_where=yLfTxL%2FO6LKtq9ik3MaW1dS8lox4jKx0j9LVvNuIqKHOs%2BLIvdvasJg%3D&vmep_order=qJSvr5C4vImX4NW30c%2FVk5Vu">Most Popular</a></li>
+                                            </ul>
+                                        </div></div>
+                                        <div class="yui3-u-1-5"><div class="content_area">
+                                            <p><strong>Recommendation</strong></p>
+                                            <ul class="first-of-type">
+                                                <li class="first-of-type"><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_vmqa_where=16rR0rjS3rLTz%2Bis18%2Brmw%3D%3D">Strong Buy</a></li>
+                                                <li><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_vmqa_where=16rR0rjS3rLTz%2Bis18%2Brmg%3D%3D">Buy</a></li>
+                                                <li><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_vmqa_where=16rR0rjS3rLTz%2Bis18%2BrmQ%3D%3D">Strong Speculative Buy</a></li>
+                                                <li class="last-of-type"><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_vmqa_where=16rR0rjS3rLTz%2Bis18%2BrmA%3D%3D">Speculative Buy</a></li>
+                                            </ul>
+                                            <ul>
+                                                <li><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_vmqa_where=16rR0rjS3rLTz%2Bis18%2Brlw%3D%3D">Neutral</a></li>
+                                            </ul>
+                                            <ul class="last-of-type">
+                                                <li class="first-of-type"><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_vmqa_where=16rR0rjS3rLTz%2Bis18%2BrlJY%3D">Speculative Sell</a></li>
+                                                <li><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_vmqa_where=16rR0rjS3rLTz%2Bis18%2BrlJc%3D">Strong Speculative Sell</a></li>
+                                                <li><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_vmqa_where=16rR0rjS3rLTz%2Bis18%2BrlJg%3D">Sell</a></li>
+                                                <li class="last-of-type"><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_vmqa_where=16rR0rjS3rLTz%2Bis18%2BrlJk%3D">Strong Sell</a></li>
+                                            </ul>
+                                        </div></div>
+                                        <div class="yui3-u-1-5 last-of-type"><div class="content_area">
+                                            <p><strong>Timeframe</strong></p>
+                                            <ul style="margin-bottom: 1em;" class="first-of-type">
+                                                <li class="first-of-type"><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_vmqa_where=2a7byLHX2rHUq6U%3D">Long-Term Analysis</a></li>
+                                                <li><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_vmqa_where=2a7byLHX2rHUq6Q%3D">Mid-Term Analysis</a></li>
+                                                <li class="last-of-type"><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_vmqa_where=2a7byLHX2rHUq6F0">Short-Term Analysis</a></li>
+                                            </ul>
+                                            
+                                            <p><strong>Risk</strong></p>
+                                            <ul class="last-of-type">
+                                                <li class="first-of-type"><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_vmqa_where=167hzoiW">High Risk Analysis</a></li>
+                                                <li><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_vmqa_where=167hzoiV">Medium Risk Analysis</a></li>
+                                                <li class="first-of-type"><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_vmqa_where=167hzoiSqg%3D%3D">Low Risk Analysis</a></li>
+                                            </ul>
+                                        </div></div>
+                                        <div class="yui3-u-1-5"><div class="content_area">
+                                            <p><strong>Market Cap</strong></p>
+                                            <ul style="margin-bottom: 1em;" class="first-of-type">
+                                                <li class="first-of-type"><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_qvd_where=0qbgzrDZ2KfQ3rKAmZGel5V1npN7lak%3D">Large-Cap (Over $10B)</a></li>
+                                                <li><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_qvd_where=0qbgzrDZ2KfQ3rKAmpGel5V1npN7lZmFvbKUsMnT2czZpNHEu6GqdJ%2BepHOYkZ6XlQ%3D%3D">Mid-Cap ($2B - $10B)</a></li>
+                                                <li><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_qvd_where=0qbgzrDZ2KfQ3rKAmpael5V1npN7hbqSs47hpNrM09vEqM%2FTh5epdJ%2BepHOYkZ4%3D">Small-Cap ($250M - $2B)</a></li>
+                                                <li class="last-of-type"><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_qvd_where=0qbgzrDZ2KfQ3rB1nZGel5V1npM%3D">Micro-Cap (Under $250M)</a></li>
+                                            </ul>
+
+                                            <p><strong>Stock Price</strong></p>
+                                            <ul class="last-of-type">
+                                                <li class="first-of-type"><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_qvd_where=0abh14eW">Under $1</a></li>
+                                                <li><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_qvd_where=0abh14miqmSwvLhj1MLh26F6">$1 - $5</a></li>
+                                                <li class="last-of-type"><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_qvd_where=0abh14mirg%3D%3D">Over $5</a></li>
+                                            </ul>
+                                        </div></div>
+                                        <div class="yui3-u-1-5 last-of-type"><div class="content_area">                               
+                                            <p><strong>Type</strong></p>
+                                            <ul style="margin-bottom: 1em;" class="first-of-type">
+                                                <li class="first-of-type"><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_qvd_where=2b7eyIiMwms%3D">Indices</a></li>
+                                                <li><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_qvd_where=2b7eyIiMyGs%3D">Options</a></li>
+                                                <li><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_qvd_where=2b7eyIiMxms%3D">Mutual Funds</a></li>
+                                                <li><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_qvd_where=2b7eyIiMvms%3D">ETFs</a></li>
+                                                <li class="last-of-type"><a href="/Member-Analysis/s<?= $pre ?>/analysis/p/mid/1/?vmep_qvd_where=2b7eyIiMvGs%3D">Currency</a></li>
+                                            </ul>
+                                            
+                                            <p><strong>Industry / Sector</strong></p>
+                                            <ul class="last-of-type">
+                                                <li class="first-of-type">Industry</li>
+                                                <li class="last-of-type">Sector</li>    
+                                            </ul>
+                                        </div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <?php /*
+                        <li class="last-of-type">
+                            <a class="yui3-menu-label" href="/Member-Message-Boards/s<?= $pre ?>/message/p/mid/1/"><em>Message Boards</em></a>
+                            <div id="nav-menu-message_boards" class="yui3-menu">
+                                <div class="yui3-menu-content">
+                                    <div class="yui3-g">
+                                        <div class="yui3-u-1-3 first-of-type"><div class="content_area">
+                                            <p><strong>Top Message Board Posts</strong></p>
+                                            <ul>
+                                                <li><a href="/Member-Message-Boards/s<?= $pre ?>/message/p/mid/1/?vmep_vmqa_where=yLfTxL%2FO6LKtq9ik3MaW1dS8lox4jKx0j9LVvNuIqKHOs%2BLIvdvasJg%3D">Most Recent</a></li>
+                                                <li><a href="/Member-Message-Boards/s<?= $pre ?>/message/p/mid/1/?vmep_vmqa_where=yLfTxL%2FO6LKtq9ik3MaW1dS8lox4jKx0j9LVvNuIqKHOs%2BLIvdvasJg%3D&vmep_order=2bTixLfE763U5eeiy9Dj1dk%3D">Most Read</a></li>
+                                                <li><a href="/Member-Message-Boards/s<?= $pre ?>/message/p/mid/1/?vmep_vmqa_where=yLfTxL%2FO6LKtq9ik3MaW1dS8lox4jKx0j9LVvNuIqKHOs%2BLIvdvasJg%3D&vmep_order=2bTixLfE66nf2t2o28DR1tqz4g%3D%3D">Most Replied</a></li>
+                                                <li><a href="/Member-Message-Boards/s<?= $pre ?>/message/p/mid/1/?vmep_vmqa_where=yLfTxL%2FO6LKtq9ik3MaW1dS8lox4jKx0j9LVvNuIqKHOs%2BLIvdvasJg%3D&vmep_order=qJSvr5C4vImX4NW30c%2FVk5Vu">Most Popular</a></li>
+                                            </ul>
+                                        </div></div>
+                                        <div class="yui3-u-1-3"><div class="content_area">
+                                            <p><strong>Market Cap</strong></p>
+                                            <ul style="margin-bottom: 1em;" class="first-of-type">
+                                                <li class="first-of-type"><a href="/Member-Message-Boards/s<?= $pre ?>/message/p/mid/1/?vmep_qvd_where=0qbgzrDZ2KfQ3rKAmZGel5V1npN7lak%3D">Large-Cap (Over $10B)</a></li>
+                                                <li><a href="/Member-Message-Boards/s<?= $pre ?>/message/p/mid/1/?vmep_qvd_where=0qbgzrDZ2KfQ3rKAmpGel5V1npN7lZmFvbKUsMnT2czZpNHEu6GqdJ%2BepHOYkZ6XlQ%3D%3D">Mid-Cap ($2B - $10B)</a></li>
+                                                <li><a href="/Member-Message-Boards/s<?= $pre ?>/message/p/mid/1/?vmep_qvd_where=0qbgzrDZ2KfQ3rKAmpael5V1npN7hbqSs47hpNrM09vEqM%2FTh5epdJ%2BepHOYkZ4%3D">Small-Cap ($250M - $2B)</a></li>
+                                                <li class="last-of-type"><a href="/Member-Message-Boards/s<?= $pre ?>/message/p/mid/1/?vmep_qvd_where=0qbgzrDZ2KfQ3rB1nZGel5V1npM%3D">Micro-Cap (Under $250M)</a></li>
+                                            </ul>
+                                            
+                                            <p><strong>Stock Price</strong></p>
+                                            <ul class="last-of-type">
+                                                <li class="first-of-type"><a href="/Member-Message-Boards/s<?= $pre ?>/message/p/mid/1/?vmep_qvd_where=0abh14eW">Under $1</a></li>
+                                                <li><a href="/Member-Message-Boards/s<?= $pre ?>/message/p/mid/1/?vmep_qvd_where=0abh14miqmSwvLhj1MLh26F6">$1 - $5</a></li>
+                                                <li class="last-of-type"><a href="/Member-Message-Boards/s<?= $pre ?>/message/p/mid/1/?vmep_qvd_where=0abh14mirg%3D%3D">Over $5</a></li>
+                                            </ul>
+                                        </div></div>
+                                        <div class="yui3-u-1-3 last-of-type"><div class="content_area">                               
+                                            <p><strong>Type</strong></p>
+                                            <ul style="margin-bottom: 1em;" class="first-of-type">
+                                                <li class="first-of-type"><a href="/Member-Message-Boards/s<?= $pre ?>/message/p/mid/1/?vmep_qvd_where=2b7eyIiMwms%3D">Indices</a></li>
+                                                <li><a href="/Member-Message-Boards/s<?= $pre ?>/message/p/mid/1/?vmep_qvd_where=2b7eyIiMyGs%3D">Options</a></li>
+                                                <li><a href="/Member-Message-Boards/s<?= $pre ?>/message/p/mid/1/?vmep_qvd_where=2b7eyIiMxms%3D">Mutual Funds</a></li>
+                                                <li><a href="/Member-Message-Boards/s<?= $pre ?>/message/p/mid/1/?vmep_qvd_where=2b7eyIiMvms%3D">ETFs</a></li>
+                                                <li class="last-of-type"><a href="/Member-Message-Boards/s<?= $pre ?>/message/p/mid/1/?vmep_qvd_where=2b7eyIiMvGs%3D">Currency</a></li>    
+                                            </ul>
+                                            
+                                            <p><strong>Industry / Sector</strong></p>
+                                            <ul class="last-of-type">
+                                                <li class="first-of-type">Industry</li>
+                                                <li class="last-of-type">Sector</li>    
+                                            </ul>
+                                        </div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        */ ?>
+                        <li class="yui3-menuitem last-of-type premium-advice">
+                            <!-- <a class="yui3-menu-label" href="/Premium-Subscription-Services/s/page/view/p/mid/1/id/23/"><em>Premium Advice</em></a> -->
+                            <a class="yui3-menu-label" href="/?vmpd_ckstr[signup_entrance]=Premium+Advice&vmpd_ckstr[click_track]=Premium_Advice-EOP&vmpd_ckstr_redirect=/pages/EOP/v1/"><em>Premium Advice</em></a>
+                            
+                            <div id="nav-menu-message_boards" class="yui3-menu">
+                                <div class="yui3-menu-content">
+                                    <div class="yui3-g">
+                                        <div class="yui3-u first-of-type"><div class="content_area">
+                                            
+                                            <p><strong>My Subscriptions</strong></p>
+                                            <ul style="margin-bottom: .5em;">
+
+
+<?php
+$subscriptions = $this->subscriptions;
+$my_subs = $this->my_subs;
+
+if (count($my_subs)) {
+	foreach ($my_subs as $key => $val) {
+	    echo '<li>';
+	    if (isset($subscriptions[$key]) && isset($subscriptions[$key]['access']) && $subscriptions[$key]['access']) {
+	        $subLink = $subscriptions[$key]['access'];
+	        $subLink = ($this->internal->member->profile->id == $val->profile_id ? $subLink : "/profile/switch/?id=".$val->profile_id."&redirect=" . urlencode($subLink));
+    		echo '<a class="yui3-menu-label" href="' . $subLink . '">' . $subscriptions[$key]['title'] . '</a>';
+    		
+    		// Begin Change Out the Mobile Links
+    		$this->inlineScript()->captureStart(); ?>
+                $( "#Mobile_Nav #mobile_navmenu a.premium_<?= $key ?>" ).attr("href", "<?= $subLink ?>");
+            <?php $this->inlineScript()->captureEnd();
+            // End Change Out the Mobile Links
+    	}
+    	else {
+    	    $subTokens = explode('-', $key);
+    		if ($subTokens[0]) {
+    		    $tempStype = 'com';
+    		    $tempId = $subTokens[0];
+    		}
+    		elseif ($subTokens[1]) {
+    		    $tempStype = 'net';
+    		    $tempId = $subTokens[1];
+    		}
+    		else {
+    		    $tempStype = 'via';
+    		    $tempId = $subTokens[2];
+    		}
+    		
+    	    $subLink = "/$tempStype/$tempId/";
+    	    $subLink = ($this->internal->member->profile->id == $val->profile_id ? $subLink : "/profile/switch/?id=".$val->profile_id."&redirect=" . urlencode($subLink));
+    	    echo "<a class=\"yui3-menu-label\" href=\"$subLink\">" . $val->title . '</a>';
+    	    
+    	}
+    	
+		if (isset($val->active) && $val->active && isset($val->identifier) && $val->identifier) {
+            echo '<div class="yui3-menu"><div class="yui3-menu-content"><ul style="margin-bottom: .5em;">';
+            echo '<li class="yui3-menuitem"><a class="yui3-menuitem-content" href="/acl/access/update_payment/?identifier=' . $val->identifier . '">Update Credit Card</a></li>';
+            echo '<li class="yui3-menuitem"><a class="yui3-menuitem-content" href="/acl/access/unsubscribe/?identifier=' . $val->identifier . '">Unsubscribe</a></li>';
+            echo '</ul></div></div>';
+    	}
+    	
+		echo '</li>';
+		unset($subscriptions[$key]);
+	}
+}
+else {
+	echo '<li>None</li>';
+}
+?>
+                            
+                                            </ul>
+                                            
+                                            <p><strong>Other Services</strong></p>
+                                            <ul>
+                                                
+<?php
+if (count($subscriptions)) {
+	foreach ($subscriptions as $sub) {
+		echo '<li><a class="yui3-menu-label" href="' . $sub['landing'] . '">' . $sub['title'] . '</a></li>';
+	}
+}
+else {
+	echo '<li>None</li>';
+}
+?>
+
+                                            </ul>
+                                    
+                                        </div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </td>
+        <td class="second">
+            <form action="/quote/" onSubmit="if (this.s.value == '' || this.s.value == 'Symbol or Company') { return false; }">
+                <input type="hidden" name="vmpd_rqsv" value="s" />
+                <input id="searchbaracss" type="text" name="s" value="Symbol or Company" class="vmfh_acss autogo" onfocus="if (this.value == 'Symbol or Company') { this.value = ''; this.style.textTransform='uppercase'; }" onblur="if (this.value == '') { this.style.textTransform='none';  this.value = 'Symbol or Company'; }" />
+                <input type="submit" value="&gt;" />
+            </form>
+        </td>
+        <td class="third"><div id="toolbar_toggle_button"></div></td>
+    </tr></table>
+</div>

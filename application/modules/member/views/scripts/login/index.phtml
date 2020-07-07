@@ -1,0 +1,95 @@
+<style>
+@media (max-width: 767px) {
+    div.mobile-clear-the-padding { padding: 0 !important; }
+}
+</style>
+
+<div class="yui3-g-r">
+    <div class="yui3-u-1-3" style="min-width: 310px; vertical-align: top;">
+        <div>
+            <?= $this->render('login/simple.phtml') ?>
+        </div>
+    </div>
+    <div class="yui3-u-2-3">
+        <div class="mobile-clear-the-padding" style="margin-left: 1em;">
+
+<?php
+	if (isset($this->internal->params->redirect) && preg_match('/\/via\/21066\//i', $this->internal->params->redirect)) {
+		echo $this->render('login/side_ads/scneo.phtml');
+	}
+?>
+
+<?php /*
+<!-- Begin Module -->
+<div class="cm decorated">
+    <div class="hd">
+        <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div>
+        </div>
+        <div class="con">
+        	<table class="table">
+                <tr>
+                    <td class="lt"></td>
+                    <td class="mn1">Already a Member?</td>
+                    <td class="sep"></td>
+                    <td class="mn2"></td>
+                    <td class="rt"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="bd">
+
+<form action="<?= $this->internal->target->pre ?>/member/login/p/vmpd_nar/1/" style="text-align: center; padding: 1em;"><input type="submit" value="Sign In" /></form>
+<p class="datetime">If you have already registered, but are having issues with the verification process, <a href="/member/register/verify/">click here</a>.</p>
+
+    </div>
+    <div class="ft">
+    	<div class="con">
+        	<table class="table">
+                <tr>
+                    <td class="lt"></td>
+                    <td class="mn1"></td>
+                    <td class="sep"></td>
+                    <td class="mn2"></td>
+                    <td class="rt"></td>
+                </tr>
+            </table>
+        </div>
+        <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div></div>
+    </div>
+    
+    <span class="icon"></span>
+</div>
+<!-- End Module -->
+*/ ?>
+        </div>
+    </div>
+</div>
+
+
+<?php
+/* Old - with sublayout none
+<div id="doc4" class="page_body_internal"> 
+    <div id="hd"></div> 
+    <div id="bd"> 
+        <div id="yui-main"> 
+            <div class="yui-b"> 
+            
+                <!-- Begin Grid --> 
+                <div class="yui-gd"><div id="c1" class="yui-u first"> 
+
+					
+<?= $this->render('login/simple.phtml') ?>
+                    
+                    
+				</div><div id="c2" class="yui-u"> 
+                    &nbsp;
+                </div></div> 
+                <!-- End Grid --> 
+ 
+            </div> 
+        </div> 
+    </div> 
+    <div id="ft"></div> 	
+</div>
+*/ ?>

@@ -1,0 +1,75 @@
+<div style="margin: 0 auto; padding: 6px 0; width: 996px; text-align: center; background: #222e64; background: -moz-linear-gradient(top, #222e64 0%, #182034 100%); background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#222e64), color-stop(100%,#182034)); background: -webkit-linear-gradient(top, #222e64 0%,#182034 100%); background: -o-linear-gradient(top, #222e64 0%,#182034 100%); background: -ms-linear-gradient(top, #222e64 0%,#182034 100%); background: linear-gradient(top, #222e64 0%,#182034 100%); border: 1px solid #182034; border-bottom: none; border-top-left-radius: 6px; border-top-right-radius: 6px; -moz-border-radius-topleft: 6px; -moz-border-radius-topright: 6px; -webkit-border-topleft-radius: 6px; -webkit-border-topright-radius: 6px; -moz-box-shadow: 0px 0px 3px #555; -webkit-box-shadow: 0px 0px 3px #555; box-shadow: 0px 0px 3px #555; color: #fff; font-weight: normal; font-size: 15px;">
+
+        Join the 200,000+ other Members who take full advantage of all the SmallCap Network has to offer: <a href="/member/login/p/signup_entrance/BB-Small-1/" rel="nofollow" onclick="return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/signup_entrance/BB-Small-1/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false });" style="color: #f6c54f;">Sign In</a> or <a href="/SignUp-ToolBar-Small/s/member/register/p/shortform/1/signup_entrance/BB-Small-1/" style="color: #f6c54f;">Join</a>
+
+</div>
+
+<?php $this->inlineScript()->captureStart() ?>
+YAHOO.util.Event.onContentReady("fixed2", function () {
+    YAHOO.util.Dom.setY('fixed2', -10000);
+    
+    // Fixed at bottom
+    function positionFixedBottom() {
+        YAHOO.util.Dom.setY('fixed2', YAHOO.util.Dom.getViewportHeight() - YAHOO.util.Dom.get('fixed2').offsetHeight + YAHOO.util.Dom.getDocumentScrollTop());
+        YAHOO.util.Dom.setStyle('fixed2', 'visibility', 'visible');
+    }
+    YAHOO.util.Event.addListener(window, 'resize', positionFixedBottom);
+    
+    function slideFixedIn() {
+        YAHOO.util.Dom.setStyle('fixed2', 'visibility', 'visible');
+        var attributes = {
+            points: { from: [0, YAHOO.util.Dom.getViewportHeight() + YAHOO.util.Dom.getDocumentScrollTop()], to: [0, YAHOO.util.Dom.getViewportHeight() - YAHOO.util.Dom.get('fixed2').offsetHeight + YAHOO.util.Dom.getDocumentScrollTop()] }
+        };
+        var anim = new YAHOO.util.Motion('fixed2', attributes, 1, YAHOO.util.Easing.easeOut);
+        anim.animate();
+    }
+    //YAHOO.util.Event.addListener(window, 'load', slideFixedIn); // IE Error
+    
+    var ua = navigator && navigator.userAgent;
+	YAHOO.util.Cookie.set("cookies_enabled", 1, { path: "/" });
+	
+    if (
+        YAHOO.util.Cookie.get("cookies_enabled") &&
+        (!YAHOO.env.ua.mobile) &&
+        (!(/(Googlebot|Mediapartners-Google|Google Web Preview|Thunderbird)/).test(ua)) &&
+        (!YAHOO.util.Cookie.get("hide_newsletter_toolbar"))
+	) {
+        //YAHOO.util.Dom.setStyle('fixed2', 'background-image', 'url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_toolbar/toolbar_bg.png)');
+        //YAHOO.util.Dom.setStyle('fixed2', 'padding-top', '8px');
+        //YAHOO.util.Dom.setStyle('fixed2', 'color', '#fff');
+        YAHOO.util.Dom.setStyle('page', 'margin-bottom', '4em');
+        slideFixedIn();
+        
+        if (YAHOO.env.ua.mobile) {
+            window.onscroll = function() {
+                document.getElementById('fixed2').style.top = (window.innerHeight + window.scrollY - YAHOO.util.Dom.get('fixed2').offsetHeight) + 'px';
+            };
+        }
+    }
+    else {
+        YAHOO.util.Dom.setStyle('fixed2', 'display', 'none');
+    }
+<?php /*
+    // Some default undos
+    //YAHOO.util.Dom.setStyle('fixed2', 'display', 'block');
+    //YAHOO.util.Dom.setStyle('fixed2', 'position', 'fixed');
+    
+    
+    // Fixed at top - Scootch page down
+    //YAHOO.util.Dom.setY('page', YAHOO.util.Dom.get('fixed2').offsetHeight);
+    
+    
+    //YAHOO.util.Dom.setY('fixed2', YAHOO.util.Dom.getViewportHeight() - YAHOO.util.Dom.get('fixed2').offsetHeight);
+*/ ?>
+});
+
+function slideFixedOut() {
+    var attributes = {
+        points: { from: [0, YAHOO.util.Dom.getViewportHeight() - YAHOO.util.Dom.get('fixed2').offsetHeight + YAHOO.util.Dom.getDocumentScrollTop()], to: [0, YAHOO.util.Dom.getViewportHeight() + YAHOO.util.Dom.getDocumentScrollTop()] }
+    };
+    var anim = new YAHOO.util.Motion('fixed2', attributes, 1, YAHOO.util.Easing.easeOut);
+    anim.animate();
+    anim.onComplete.subscribe(function() { YAHOO.util.Dom.setStyle('page', 'margin-bottom', '0em'); YAHOO.util.Dom.setStyle('fixed2', 'display', 'none'); });
+    YAHOO.util.Cookie.set("hide_newsletter_toolbar", "1", { path: "/" });
+}
+<?php $this->inlineScript()->captureEnd() ?>

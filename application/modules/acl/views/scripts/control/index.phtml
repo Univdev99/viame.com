@@ -1,0 +1,65 @@
+<h1>ACLs</h1>
+
+<p>Target: <?= $this->internal->target->type ?> - Target ID: <?= $this->internal->target->id ?></p>
+<p>Module ID: <?= (isset($this->internal->params->mod) ? $this->internal->params->mod : 0) ?> - Matrix Counter: <?= (isset($this->internal->params->mid) ? $this->internal->params->mid : 0) ?> - Item Counter: <?= (isset($this->internal->params->iid) ? $this->internal->params->iid : 0) ?></p>
+<p>Status:<br />
+<span><a href="<?= $this->internal->target->pre ?>/acl/active/target/status/off/mod/<?= (isset($this->internal->params->mod) ? $this->internal->params->mod : 0) ?>/mid/<?= (isset($this->internal->params->mid) ? $this->internal->params->mid : 0) ?>/iid/<?= (isset($this->internal->params->iid) ? $this->internal->params->iid : 0) ?>/">ACLs Off (Read/Interact Privileges)</a></span><br />
+<span><a href="<?= $this->internal->target->pre ?>/acl/active/target/status/ont/mod/<?= (isset($this->internal->params->mod) ? $this->internal->params->mod : 0) ?>/mid/<?= (isset($this->internal->params->mid) ? $this->internal->params->mid : 0) ?>/iid/<?= (isset($this->internal->params->iid) ? $this->internal->params->iid : 0) ?>/">ACLs On (Default Allow With Read/Interactive Privileges)</a></span><br />
+<span><a href="<?= $this->internal->target->pre ?>/acl/active/target/status/onf/mod/<?= (isset($this->internal->params->mod) ? $this->internal->params->mod : 0) ?>/mid/<?= (isset($this->internal->params->mid) ? $this->internal->params->mid : 0) ?>/iid/<?= (isset($this->internal->params->iid) ? $this->internal->params->iid : 0) ?>/">ACLs On (Default Deny With No Access)</a></span>
+</p>
+
+<br />
+
+<table width="100%">
+    <tr>
+        <td>Priority</td>
+        <td>Privilege</td>
+        <td>Created</td>
+        <td>Display</td>
+        <td>Registration Status</td>
+        <td>Groups</td>
+        <td>Contact Profiles</td>
+        <td>Arbitrary Profiles</td>
+        <td>DOS</td>
+        <td>Password</td>
+        <td>Member</td>
+        <td>Filter</td>
+        <td>Expiration</td>
+    </tr>
+<?php
+    foreach ($this->acls as $acl) {
+?>
+ <tr<?=(!$acl->active ? " bgcolor='#666666'" : "")?>>
+        <td><?= $acl->orderby ?></td>
+        <td><?= $acl->privilege ?></td>
+        <td>
+            <?= $acl->creation ?>
+            <br />
+            By
+            <?=($acl->cc_display ? $acl->cc_display : $acl->name) ?>
+        </td>
+        <td><?= $acl->display ?></td>
+        <td><?= $acl->w_registration_status ?></td>
+        <td><?= $acl->w_groups ?></td>
+        <td><?= $acl->w_contact_profiles ?></td>
+        <td><?= $acl->w_arb_profiles ?></td>
+        <td><?= $acl->w_dos ?></td>
+        <td><?= $acl->w_password ?></td>
+        <td>Member</td>
+        <td><?= $acl->filter ?></td>
+        <td><?= $acl->expiration ?></td>
+        
+
+        <td>
+            <a href="<?= $this->internal->target->pre ?>/acl/active/p/mod/<?= $acl->module_id ?>/mid/<?= $acl->matrix_counter ?>/iid/<?= $acl->item_counter ?>/id/<?= $acl->counter ?>/">Active</a>
+            <a href="<?= $this->internal->target->pre ?>/acl/edit/p/mod/<?= $acl->module_id ?>/mid/<?= $acl->matrix_counter ?>/iid/<?= $acl->item_counter ?>/id/<?= $acl->counter ?>/">Edit</a>
+            <a href="<?= $this->internal->target->pre ?>/acl/delete/p/mod/<?= $acl->module_id ?>/mid/<?= $acl->matrix_counter ?>/iid/<?= $acl->item_counter ?>/id/<?= $acl->counter ?>/">Delete</a>
+        </td>
+    </tr>
+<?php
+    }
+?>
+</table>
+
+
+<a href="<?= $this->internal->target->pre ?>/acl/create/p/mod/<?= (isset($this->internal->params->mod) ? $this->internal->params->mod : 0) ?>/mid/<?= (isset($this->internal->params->mid) ? $this->internal->params->mid : 0) ?>/iid/<?= (isset($this->internal->params->iid) ? $this->internal->params->iid : 0) ?>/">Create New ACL</a>

@@ -1,0 +1,1774 @@
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+google.charts.load('current', {'packages':['treemap']});
+google.charts.setOnLoadCallback(drawChart);
+function drawChart() {
+	var data = google.visualization.arrayToDataTable([
+	    ['Symbol', 'Parent', 'Volume', 'Change', 'Company Name'],
+		['Donald Trump Stocks', null, 0, 0, ''],
+		['ZZZZZZZ', 'Donald Trump Stocks', .0001, -7.02, ''],
+<?php
+    $quotes = new ViaMe_Vm_Quotes();
+    $quote_data = $quotes->fetch(['BA', 'GD', 'LMT', 'NOC', 'RTN', 'ABBV', 'AMGN', 'BIIB', 'CELG', 'GILD', 'AGN', 'LLY', 'JNJ', 'MRK', 'PFE', 'ACM', 'CAT', 'CBI', 'JEC', 'MLM', 'APA', 'CVX', 'EOG', 'XOM', 'HAL']); // Symbol, Last, Last Date, Last Time, Change, Open, High, Low, Volume
+    #Zend_Debug::Dump($quote_data);
+    foreach ($quote_data as $data) {
+        #$symbols_data[$data[0]]->quote_data = $data;
+        #$symbol_ids[] =  $symbols_data[$data[0]]->id;
+        /* ['<?= $data[0] ?>', 'Donald Trump Stocks', '<?= $data[8] ?>', '<?= $data[4] ?>'], */
+?>
+        ['<?= $data[0] ?>', 'Donald Trump Stocks', <?= ($data[8] + 1) * 1000000 ?>, <?= $data[4] ?>, 'Company Name'],
+<?php
+    }
+?>
+		
+		
+	]);
+	
+	tree = new google.visualization.TreeMap(document.getElementById('chart_div'));
+	
+	tree.draw(data, {
+		minColor: '#f00',
+		midColor: '#ddd',
+		maxColor: '#0f0',
+		highlightOnMouseOver: true,
+		headerHeight: 0,
+		showScale: false,
+        generateTooltip: showFullTooltip
+	});
+	
+	google.visualization.events.addListener(tree, 'select', function(e) {
+	    tree.goUpAndDraw();
+	    //aa = tree.getSelection()[0];
+	    // props are row and col
+	    //for (var prop in aa) {
+        //    alert(prop + ' - ' + aa[prop]);
+        //}
+	    //alert(tree.getSelection()[0]);
+	});
+
+
+	function showFullTooltip(row, size, value) {
+        return '<div style="background:#fd9; padding:10px; border-style:solid">' +
+            '<span style="font-family:Courier"><b>' + data.getValue(row, 4) + ' (' + data.getValue(row, 0) +
+            ')</b></span><br>' +
+
+            data.getColumnLabel(2) + ': ' + ((data.getValue(row, 2) / 1000000) - 1) + '<br>' +
+            data.getColumnLabel(3) + ': ' + (data.getValue(row, 3)) + '%</div>';
+    }
+}
+</script>
+<div id="chart_div" style="height: 400px;"></div>
+
+
+
+
+
+<?php return; ?>
+
+<?php
+$num_per_row = 4;
+
+if (Zend_Registry::isRegistered('cache')) {
+    $cache = Zend_Registry::get('cache');
+    #$cache->output->remove('homepage_featured_company_cards');
+}
+
+try { $db = Zend_Registry::get('db'); } catch (Exception $e) {}
+
+if (!isset($cache) || !$cache->output->start('homepage_featured_company_cards')) {
+    if ($db) {
+        try {
+            $featured = $db->fetchCol('SELECT symbol FROM quote_symbols WHERE featured ORDER BY random()');
+        } catch (Exception $e) {}
+    }
+    
+    // Currency Object
+    $currency = new ViaMe_Currency(array('currency' => 'USD', 'precision' => 4));
+    
+    $quotes = new ViaMe_Vm_Quotes();
+    $symbols_data =  $this->Quote_ConvertSymbolToId( $featured );
+    $quote_data = $quotes->fetch(array_keys($symbols_data)); // Symbol, Last, Last Date, Last Time, Change, Open, High, Low, Volume
+    $symbol_ids = array();
+    foreach ($quote_data as $data) {
+        $symbols_data[$data[0]]->quote_data = $data;
+        $symbol_ids[] =  $symbols_data[$data[0]]->id;
+    }
+    #Zend_Debug::Dump($symbol_ids);
+    
+    if ($db) {
+        try {
+            if ($tempmeta = $db->fetchALL('SELECT id, logo_url, website_url, report_url, description FROM quote_symbols WHERE id IN ('.implode(', ', $symbol_ids).')')) {
+                foreach ($tempmeta as $tm) {
+                    $meta[$tm->id] = $tm;
+                }
+            }
+        } catch (Exception $e) {}
+        
+    }
+    #Zend_Debug::Dump($meta);
+    #Zend_Debug::Dump($symbols_data);
+    
+    echo '<div id="featured_company_cards" class="yui3-g">';
+    $counter = 0;
+    $bgcolors = array('burgundy', 'green', 'purple', 'orange', 'blue', 'pink', 'turquoise');
+    foreach ($featured as $company) {
+        $last = $symbols_data[$company]->quote_data[1];
+        $change = $symbols_data[$company]->quote_data[4] + 0;
+        if ($last - $change <> 0) {
+            $pct_change = $change / ($last - $change) * 100;
+        } else { $pct_change = 0; }
+        $link = '/' . ($symbols_data[$company]->name ? $this->SEO_Urlify($symbols_data[$company]->name) . '/s/' : '' ) . 'quote/p/s/' . urlencode($symbols_data[$company]->symbol) . '/';
+        echo '<div class="yui3-u-1-'.$num_per_row.'">';
+?>
+<div class="flip-container" ontouchstart="this.classList.toggle('hover');">
+	<div class="flipper">
+		<div class="front">
+			<div class="featured_company_image">
+			    <img src="<?= $meta[$symbols_data[$company]->id]->logo_url ?>">
+			</div>
+			<div class="featured_company_info">
+			    <div class="featured_company_name"><?= $symbols_data[$company]->name ?> (<?= $company ?>)</div>
+			    <div class="featured_company_quote_info">
+			        Last: 
+			        <strong><?= $currency->toCurrency($last, array('precision' => 2)) ?></strong> 
+			        <span class="<?= ($change < 0 ? 'netdown' : ($change > 0 ? 'netup' : '')) ?>"><?= ($change > 0 ? '+' : '') ?><?= $currency->toCurrency($change, array('precision' => 4)) ?></span> 
+                    (<span class="<?= ($change < 0 ? 'netdown' : ($change > 0 ? 'netup' : '')) ?>"><?= sprintf('%+.2f%%', $pct_change) ?></span>)
+			    </div>
+			</div>
+		</div>
+		<div class="back <?= $bgcolors[$counter % count($bgcolors)]?>">
+			<div class="featured_company_description"><?= $meta[$symbols_data[$company]->id]->description ?></div>
+			<p class="featured_company_more_link"><a href="<?= $link ?>" class="fakebutton">Learn More On <?= $company ?></a></p>
+		</div>
+	</div>
+</div>
+<?php
+        echo '</div>';
+        $counter++;
+    }
+    echo '</div>';
+    
+    if (isset($cache)) { $cache->output->end(); }
+}
+?>
+
+<style type="text/css">
+    .flip-container {
+        margin: .5em;
+    }
+    .flip-container .flipper {
+        
+    }
+    .flip-container .flipper .front {
+        background: rgba(0, 0, 0, 0) linear-gradient(to bottom, #255193 0%, #10244b 100%) repeat scroll 0 0;
+        text-align: center;
+        padding: .5em;
+        color: #fff;
+    }
+    .flip-container .flipper .front .featured_company_image {
+        margin: 3px;
+        padding: 5px;
+        background-color: #fff;
+        height: 150px;
+        border-radius: 6px;
+        text-align: center;
+        
+        display: flex;
+        align-items: center;
+	  	justify-content: center;
+    }
+    .flip-container .flipper .front .featured_company_image img {
+        max-width: 100%;
+        max-height: 100px;
+        margin: 0 auto;
+        
+        flex: 0 0 auto;
+        object-fit: scale-down;
+    }
+    .flip-container .flipper .front .featured_company_info {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        box-sizing: border-box;
+        width: 100%;
+        padding: 8px;
+        text-align: left;
+    }
+    .flip-container .flipper .front .featured_company_info .featured_company_name {
+        border-bottom: 1px solid #fff;
+        padding-bottom: .5em;
+        font-size: 110%;
+        font-weight: bold;
+        min-height: 35px;
+    }
+    .flip-container .flipper .front .featured_company_info .featured_company_quote_info {
+        padding-top: .5em;
+        font-size: 92%;
+    }
+    .flip-container .flipper .back {
+        background-color: #aaa;
+        padding: .5em;
+    }
+    /*
+    ac4057 - burgundy
+    149671 - green
+    695f9b - purple
+    e7654e - orange
+    6b80dd - blue
+    c35381 - pink
+    00a3b9 - turquoise
+    */
+    .flip-container .flipper .back.burgundy { background-color: #ac4057; }
+	.flip-container .flipper .back.green { background-color: #149671; }
+    .flip-container .flipper .back.purple { background-color: #695f9b; }
+    .flip-container .flipper .back.orange { background-color: #e7654e; }
+    .flip-container .flipper .back.blue { background-color: #6b80dd; }
+    .flip-container .flipper .back.pink { background-color: #c35381; }
+    .flip-container .flipper .back.turquoise { background-color: #00a3b9; }
+        
+    .flip-container .flipper .back .featured_company_description {
+        position: relative;
+        margin: 3px;
+        padding: 5px;
+        background-color: #fff;
+        height: 180px;
+        overflow: hidden;
+        font-size: 10px;
+        border-radius: 6px;
+    }
+    .flip-container .flipper .back .featured_company_description::after {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        content: "";
+        height: 65px;
+        
+        background: rgba(0, 0, 0, 0) url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAjMAAACICAYAAAASwGpdAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpCN0Q2RURGOTM1RDExMUUzQkQzMEM3NjIwRkQwOEE5NCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpCN0Q2RURGQTM1RDExMUUzQkQzMEM3NjIwRkQwOEE5NCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkI3RDZFREY3MzVEMTExRTNCRDMwQzc2MjBGRDA4QTk0IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkI3RDZFREY4MzVEMTExRTNCRDMwQzc2MjBGRDA4QTk0Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+BIkh4QAAA2VJREFUeNrs3UnHV3Ech+H+9UgekYiIiIdoES2iRYto0aJFLzbiIZFIGjTP8zzP83xq0apdq59b18V5A5/V7XsOZzZN09IlAABRs98xM2cGAKAcM8vNAACUY2aFGQCAcszMmwEAKMfMSjMAAOWYWWUGAKAcM6vNAACUY2aNGQCAcsysNQMAUI6ZdWYAAMoxs94MAEA5ZjaYAQAox8yCGQCAcsxsNAMAUI6ZTWYAAMoxs9kMAEA5ZraYAQAox8xWMwAA5ZjZZgYAoBwz280AAJRjZocZAIByzOw0AwBQjpldZgAAyjGz2wwAQDlm9pgBAKia+/MAAGRjZpkZAIByzLjMAABiBgBAzAAAiBkAQMwAAIgZAAAxAwAgZgAAMQMAIGYAAMQMAMBfMePfTABAOmZcZgAAMQMAIGYAAMQMAPC/xYwPgAGAdMy4zAAA6ZhxmQEA0jHjMgMApGPGZQYAEDMAAKNixmsmACAdMy4zAEDWbJqmvWYAAMoxs88MAEA5ZhbNAACUY2a/GQCAcswcMAMAUI6Zg2YAAMoxc8gMAEA5Zg6bAQAox8wRMwAA5Zg5agYAoBwzx8wAAJRj5rgZAIByzJwwAwBQjpmTZgAAyjFzygwAQDlmTpsBACjHzBkzAADlmDlrBgCgHDPnzAAAlGPmvBkAgHLMXDADAFCOmYtmAADKMXPJDABAOWYumwEAKMfMFTMAAGIGAGBQzFw1AwBQjplrZgAAyjFz3QwAQDlmbpgBACjHzE0zAABiBgBgUMzcMgMAUI6Z22YAAMoxc8cMAICYAQAYFDN3zQAAlGPmnhkAADEDADAoZu6bAQAox8wDMwAAYgYAYFDMPDQDAFCOmUdmAADEDADAoJh5bAYAQMwAAAyKmSdmAADKMfPUDACAmAEAGBQzz8wAAIgZAIBBMfPcDACAmAEAGBQzL8wAAIgZAIBBMfPSDACAmAEAEDMAAP8eM6/MAACIGQCAQTHz2gwAgJgBABgUM2/MAACUY+atGQAAMQMAMChm3pkBACjHzHszAADlmPlgBgCgHDMfzQAAiBkAgEEx88kMAEA5Zj6bAQAQMwAAg2LmixkAgHLMfDUDACBmAAAGxcw3MwAAYgYAYFDMfDcDAFCOmR9mAADEDADAoJj5aQYAQMwAAAzwS4ABADt6l9o7YVgDAAAAAElFTkSuQmCC") repeat scroll 0 0;
+    }
+    .flip-container .flipper .back .featured_company_more_link {
+        display: block;
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        box-sizing: border-box;
+        text-align: center;
+        margin-bottom: 16px;
+    }
+    .flip-container .flipper .back .featured_company_more_link a {
+        background: rgba(0, 0, 0, 0) linear-gradient(to bottom, #ffd800 0%, #ffd800 25%, #f09e00 100%) repeat scroll 0 0;
+        border: 1px solid #cbac00;
+        border-radius: 3px;
+        box-shadow: 0 1px rgba(255, 255, 255, 0.75) inset;
+        color: #fff;
+        font-size: 96%;
+        padding: 3px 6px;
+        text-shadow: 1px 1px 1px #777;
+    }
+    /* entire container, keeps perspective */
+    .flip-container {
+		-webkit-perspective: 1000;
+        -moz-perspective: 1000;
+        -ms-perspective: 1000;
+        perspective: 1000;
+
+        -moz-transform: perspective(1000px);
+		-moz-transform-style: preserve-3d; 
+        -ms-transform: perspective(1000px);
+        -ms-transform-style: preserve-3d; 
+    }
+    
+    .flip-container .flipper, .flip-container .flipper .front, .flip-container .flipper, .back {
+        /*
+        width: 320px;
+        height: 480px;
+        */
+        box-sizing: border-box;
+        position: absolute;
+        top: 0;
+        left: 0;
+        
+        width: 100%;
+        height: 250px;
+    }
+    
+    /* flip the pane when hovered */
+    /*
+    .flip-container:hover .flipper, .flip-container.hover .flipper {
+        transform: rotateY(180deg);
+        
+        -webkit-transform: rotateY(180deg);
+        -moz-transform: rotateY(180deg);
+        -ms-transform: rotateY(180deg);
+        -ms-filter: "FlipH";
+        filter: FlipH;
+    }
+    */
+    
+    .flip-container:hover .flipper .front, .flip-container.hover .flipper .front {
+        -webkit-transform: rotateY(180deg);
+        -moz-transform: rotateY(180deg);
+        -o-transform: rotateY(180deg);
+        -ms-transform: rotateY(180deg);
+        transform: rotateY(180deg);
+    }
+    
+    .flip-container:hover .flipper .back, .flip-container.hover .flipper .back {
+        -webkit-transform: rotateY(0deg);
+        -moz-transform: rotateY(0deg);
+        -o-transform: rotateY(0deg);
+        -ms-transform: rotateY(0deg);
+        transform: rotateY(0deg);
+    }
+    
+    /* flip speed goes here */
+    .flip-container .flipper {
+        transition: 0.6s;
+        transform-style: preserve-3d;
+    
+        position: relative;
+        
+        -webkit-transition: 0.6s;
+        -webkit-transform-style: preserve-3d;
+        -moz-transition: 0.6s;
+        -moz-transform: perspective(1000px);
+        -moz-transform-style: preserve-3d;
+        -ms-transition: 0.6s;
+        -ms-transform-style: preserve-3d;
+    }
+    
+    /* hide back of pane during swap */
+    .flip-container .flipper .front, .flip-container .flipper .back {
+        backface-visibility: hidden;
+        
+        -webkit-backface-visibility: hidden;
+        -moz-backface-visibility: hidden;
+        -ms-backface-visibility: hidden;
+
+        -webkit-transition: 0.6s;
+        -webkit-transform-style: preserve-3d;
+        -webkit-transform: rotateY(0deg);
+
+        -moz-transition: 0.6s;
+        -moz-transform-style: preserve-3d;
+        -moz-transform: rotateY(0deg);
+
+        -o-transition: 0.6s;
+        -o-transform-style: preserve-3d;
+        -o-transform: rotateY(0deg);
+
+        -ms-transition: 0.6s;
+        -ms-transform-style: preserve-3d;
+        -ms-transform: rotateY(0deg);
+
+        transition: 0.6s;
+        transform-style: preserve-3d;
+        transform: rotateY(0deg);
+    }
+    
+    /* front pane, placed above back */
+    .flip-container .flipper .front {
+        z-index: 2;
+        transform: rotateY(0deg);
+        
+        -webkit-transform: rotateY(0deg);
+        -moz-transform: rotateY(0deg);
+        -o-transform: rotateY(0deg);
+		-ms-transform: rotateY(0deg);
+    }
+    
+    /* back, initially hidden pane */
+    .flip-container .flipper .back {
+        transform: rotateY(180deg);
+        
+		-webkit-transform: rotateY(-180deg);
+		-moz-transform: rotateY(-180deg);
+		-o-transform: rotateY(-180deg);
+		-ms-transform: rotateY(-180deg);
+            
+    }
+    
+    
+    @media (max-width: 767px) {
+        #featured_company_cards > div {
+            width: 50%;
+        }
+        #featured_company_cards .flip-container .flipper .front .featured_company_image {
+            height: 120px;
+        }
+        #featured_company_cards .flip-container .flipper .front .featured_company_info .featured_company_quote_info {
+            font-size: 80%;
+        }
+    }
+</style>
+
+<?php return; ?>
+
+
+
+<?php $this->headScript()->captureStart(); ?>
+
+window.dataLayer = window.dataLayer || [];
+dataLayer.push({
+    'adwordsConversion_id': '',
+    'adwordsConversion_label': '',
+    'adwordsConversion_value': '0',
+    
+    'ecommerce': {
+        'purchase': {
+            'actionField': {
+                'id': 'TEST',
+                'affiliation': 'Affiliate',
+                'revenue': '1',
+                'tax': '0',
+                'shipping': '0'
+                <?php if (isset($this->promo) && isset($this->promo->code) && $this->promo->code) { ?>
+                , 'coupon': '<?= $this->promo->code ?>'
+                <?php } ?>
+            },
+            'products': [
+                {
+                    'name': 'Test Product',
+                    'id': 'Test SKU',
+                    'price': '1',
+                    'quantity': 1
+                }
+            ]
+        }
+    }
+});
+
+<?php $this->headScript()->captureEnd(); ?>
+
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/54b80245eebdcbe3571d44e5/default';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+Tawk_API.onLoad = function(){
+    if (Tawk_API.getStatus() != 'online') {
+        Tawk_API.hideWidget()
+    }
+};
+</script>
+<!--End of Tawk.to Script-->
+<a href="javascript:Tawk_API.toggle();">Toggle</a>
+<a href="javascript:Tawk_API.maximize();">Maxmize</a>
+<a href="javascript:Tawk_API.minimize();">Minimize</a>
+<a href="javascript:Tawk_API.showWidget();">Show</a>
+<a href="javascript:Tawk_API.hideWidget();">Hide</a>
+<a href="javascript:Tawk_API.toggleVisibility();">Toggle Visibility</a>
+
+<a href="javascript:void(null);" onclick="dataLayer.push({'event': 'testEvent'});">Test</a>
+<a href="javascript:void(null);" onclick="dataLayer.push({'event': 'aaa', 'adwordsConversion_id': '1071423029', 'adwordsConversion_label': 'vibBCIv2rwQQtbzy_gM', 'adwordsConversion_value': '0'});">Test 2</a>
+
+<?php return; ?>
+
+
+<?php
+$positions = array(
+    array(
+        'symbol' => 'ITB', // Symbol
+        'name' => 'iShares Dow Jones US Home Construction', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-11-20', // Pick Date
+        'pick_price' => 22.70, // Pick Price
+        'timeframe' => 'Short to Mid-Term', // Time Frame
+        'buy_up_to' => 'Now But Not Below $19.00', // Buy Up To
+        'stop_loss' => '19.00', // Stop Loss
+        'target' => '30.00', // Target
+        'close_date' => '2013-12-11', // Close Date
+        'close_price' => 22.42, // Close Price
+        'overview' => "<p><a href=\"/Adding-ITB-Again-Moving-Up-SSLs-In-ALU-And-PETS/s/via/21066/article/view/p/mid/1/id/224/\">November 20, 2013</a> - Housing has retraced almost 3/8 of its long-term bullish trend and now appears to technically be in a position to resume its move higher.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'BEAT', // Symbol
+        'name' => 'BioTelemetry, Inc.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-06-12', // Pick Date
+        'pick_price' => 4.80, // Pick Price
+        'timeframe' => 'Long-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 10.42, // Stop Loss
+        'target' => 12.44, // Target
+        'close_date' => '2013-12-04', // Close Date
+        'close_price' => 9.79, // Close Price
+        'overview' => "<p><a href=\"/ADEP-Testing-SSL-Moving-Up-SSL-In-BEAT/s/via/21066/article/view/p/mid/1/id/225/\">November 21, 2013</a> - Adjusted stop loss from $7.75 to $10.42.</p><p><a href=\"/BEAT-Up-Over-100-Moving-Up-SSL-Adding-EUFN/s/via/21066/article/view/p/mid/1/id/174/\">September 12, 2013</a> - Adjusted stop loss from $4.80 to $7.75.</p><p><a href=\"/Must-Read-SSLs-Moved-Adding-ANR/s/via/21066/article/view/p/mid/1/id/127/\">July 8, 2013</a> - Adjusted stop loss from $3.20 to $4.80.</p><p><a href=\"/Adding-BEAT-Still-Waiting-for-1615-on-the-S-P/s/via/21066/article/view/p/mid/1/id/109/\">June 12, 2013</a> - Recent announcement with UnitedHealthCare offers significant growth prospects for the Company's focus on mobile and remote cardio monitoring technology.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'ADEP', // Symbol
+        'name' => 'Adept Technology, Inc.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-09-19', // Pick Date
+        'pick_price' => 5.94, // Pick Price
+        'timeframe' => 'Long-Term', // Time Frame
+        'buy_up_to' => 'Now And/Or On Weakness', // Buy Up To
+        'stop_loss' => 9.53, // Stop Loss
+        'target' => 12.50, // Target
+        'close_date' => '2013-12-02', // Close Date
+        'close_price' => 12.50, // Close Price
+        'overview' => "<p><a href=\"/Moving-Target-and-SSL-Up-in-ADEP-Is-it-Time-for-Twitter/s/via/21066/article/view/p/mid/1/id/228/\">November 26, 2013</a> - Adjusted stop loss from $9.00 to $9.53.  Adjusted target from $11.21 to $12.50.</p><p><a href=\"/Removing-CSCO-Locking-in-Gains-on-ATRC-WAG-and-Moving-SSL-Up-on-ADEP/s/via/21066/article/view/p/mid/1/id/220/\">November 11, 2013</a> - Adjusted stop loss from $7.50 to $9.00.</p><p><a href=\"/Moving-Up-SSLs-On-PXLW-ADEP-Earnings-Reports-Indexes-Hit-The-Breaks/s/via/21066/article/view/p/mid/1/id/216/\">November 8, 2013</a> - Adjusted stop loss from $5.94 to $7.50.</p><p><a href=\"/Moving-Up-SSLs-in-ADEP-WAG-QCOM-ATRC-At-the-S-Ps-Pivot-Point/s/via/21066/article/view/p/mid/1/id/195/\">October 11, 2013</a> - Adjusted stop loss from $4.00 to $5.94.</p><p><a href=\"/Adding-ADEP-Removed-SDS-The-Fed-Sets-Sail/s/via/21066/article/view/p/mid/1/id/179/\">September 19, 2013</a> - Robotics is, and should be, an improving sector, as companies aim to reduce overhead and improve efficiencies by way of machine to machine (M2M) automation.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'WAG', // Symbol
+        'name' => 'Walgreen Co.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-09-05', // Pick Date
+        'pick_price' => 50.25, // Pick Price
+        'timeframe' => 'Long-Term', // Time Frame
+        'buy_up_to' => 'Now And/Or On Weakness', // Buy Up To
+        'stop_loss' => 50.25, // Stop Loss
+        'target' => 60.00, // Target
+        'close_date' => '2013-11-14', // Close Date
+        'close_price' => 60.50, // Close Price
+        'overview' => "<p><a href=\"/Moving-Up-SSLs-in-ADEP-WAG-QCOM-ATRC-At-the-S-Ps-Pivot-Point/s/via/21066/article/view/p/mid/1/id/195/\">October 11, 2013</a> - Adjusted stop loss from $42.82 to $50.25.</p><p><a href=\"/Investing-in-the-Boomer-Adding-WAG-and-RAD/s/via/21066/article/view/p/mid/1/id/169/\">September 5, 2013</a> - As the Boomer generation is now starting to come of age, pharma in general is a space with tremendous forward growth potential. WAG is best of breed.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'CSCO', // Symbol
+        'name' => 'Cisco Systems, Inc.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-08-14', // Pick Date
+        'pick_price' => 26.12, // Pick Price
+        'timeframe' => 'Long-Term', // Time Frame
+        'buy_up_to' => 'Now And/Or On Weakness', // Buy Up To
+        'stop_loss' => 22.09, // Stop Loss
+        'target' => 36.37, // Target
+        'close_date' => '2013-11-14', // Close Date
+        'close_price' => 21.25, // Close Price
+        'overview' => "<p><a href=\"/Cutting-BIOS-Moving-Up-SSLs-in-ALU-AMD-and-CSCO/s/via/21066/article/view/p/mid/1/id/206/\">October 28, 2013</a> - Adjusted stop loss from $19.38 to $22.09.</p><p><a href=\"/Earnings-Alert-Adding-CSCO-Into-Earnings/s/via/21066/article/view/p/mid/1/id/154/\">August 14, 2013</a> - CSCO sits at the core of the cloud computing and next generation networking landscape, which offers tremendous promise. Company is currently undervalued.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'ATRC', // Symbol
+        'name' => 'AtriCure, Inc.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-02-11', // Pick Date
+        'pick_price' => 8.07, // Pick Price
+        'timeframe' => 'Long-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 10.45, // Stop Loss
+        'target' => 14.89, // Target
+        'close_date' => '2013-11-14', // Close Date
+        'close_price' => 14.97, // Close Price
+        'overview' => "<p><a href=\"/Moving-Up-SSLs-in-ADEP-WAG-QCOM-ATRC-At-the-S-Ps-Pivot-Point/s/via/21066/article/view/p/mid/1/id/195/\">October 11, 2013</a> - Adjusted stop loss from $8.30 to $10.45.</p><p><a href=\"/TZA-Update-Moving-SSLs-Up-in-SAI-LF-and-ATRC/s/via/21066/article/view/p/mid/1/id/141/\">July 29, 2013</a> - Adjusted stop loss from $8.07 to $8.30.</p><p><a href=\"/Quick-Updates-Around-On-Current-Open-Ideas/s/via/21066/article/view/p/mid/1/id/87/\">May 10, 2013</a> - Adjusted stop loss from $6.80 to $8.07.</p><p><a href=\"/Two-New-Ideas-Just-What-the-Doctor-Ordered/s/via/21066/article/view/p/mid/1/id/25/\">February 11, 2013</a> - Initially opened position.  Continues to chip away at key resistance level and its most recent run comes on the heels of a logical 5/8 pullback.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'BIOS', // Symbol
+        'name' => 'BioScrip, Inc.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-10-04', // Pick Date
+        'pick_price' => 8.47, // Pick Price
+        'timeframe' => 'Mid to Long-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => '7.75', // Stop Loss
+        'target' => '14', // Target
+        'close_date' => '2013-10-28', // Close Date
+        'close_price' => 7.75, // Close Price
+        'overview' => "<p><a href=\"/PXLW-Goes-Parabolic-Adding-BIOS-Must-Read-First/s/via/21066/article/view/p/mid/1/id/190/\">October 4, 2013</a> - Fundamentally, the Company is on the verge of turning a profit and is potentially undervalued in the projected high growth in-home health care space.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'LDOS', // Symbol
+        'name' => 'Leidos Holdings', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-09-30', // Pick Date
+        'pick_price' => 43.85, // Pick Price
+        'timeframe' => 'Long-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 'N/A', // Stop Loss
+        'target' => 'N/A', // Target
+        'close_date' => '2013-10-09', // Close Date
+        'close_price' => 45.37, // Close Price
+        'overview' => "<p><a href=\"/SAI-Spin-Off-Goes-Effective-WAG-On-Deck/s/via/21066/article/view/p/mid/1/id/186/\">September 30, 2013</a> - New parent Company after SAIC, Inc. spun off the new SAI into SAIC and left the original SAIC, Inc. as Leidos, trading under the new ticker symbol LDOS.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'EUFN', // Symbol
+        'name' => 'iShares MSCI Europe Financials Index', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-09-12', // Pick Date
+        'pick_price' => 22.65, // Pick Price
+        'timeframe' => 'Mid to Long-Term', // Time Frame
+        'buy_up_to' => 'Now And/Or On Weakness', // Buy Up To
+        'stop_loss' => 20.25, // Stop Loss
+        'target' => 25.31, // Target
+        'close_date' => '2013-10-03', // Close Date
+        'close_price' => 23.13, // Close Price
+        'overview' => "<p><a href=\"/BEAT-Up-Over-100-Moving-Up-SSL-Adding-EUFN/s/via/21066/article/view/p/mid/1/id/174/\">September 12, 2013</a> - Europe's financials have slightly lagged that of U.S. financial performance and offers, what we believe, better near-term price appreciation. Technical breakout.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'IEO', // Symbol
+        'name' => 'iShares Dow Jones US Oil & Gas Ex Index', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-06-18', // Pick Date
+        'pick_price' => 75.57, // Pick Price
+        'timeframe' => 'Long-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 70.00, // Stop Loss
+        'target' => 90.00, // Target
+        'close_date' => '2013-10-03', // Close Date
+        'close_price' => 78.64, // Close Price
+        'overview' => "<p><a href=\"/Options-Expiration-and-Index-Analysis-Moving-Up-SSL-On-IEO/s/via/21066/article/view/p/mid/1/id/131/\">July 15, 2013</a> - Adjusted stop loss from $50.00 to $70.00.</p><p><a href=\"/Closed-Out-SDS-Adding-IEO-On-the-Basis-of-Future-Energy-Independence/s/via/21066/article/view/p/mid/1/id/113/\">June 18, 2013</a> - With recent discovery of U.S. oil shales, advancement in fracking technology and energy export opportunities, IEO stands to benefit from U.S. energy independence.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'SAI', // Symbol
+        'name' => 'SAIC, Inc.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-06-25', // Pick Date
+        'pick_price' => 13.00, // Pick Price
+        'timeframe' => 'Long-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 13.50, // Stop Loss
+        'target' => 17.58, // Target
+        'close_date' => '2013-09-30', // Close Date
+        'close_price' => 16.03, // Close Price
+        'overview' => "<p><a href=\"/TZA-Update-Moving-SSLs-Up-in-SAI-LF-and-ATRC/s/via/21066/article/view/p/mid/1/id/141/\">July 29, 2013</a> - Adjusted stop loss from $13.00 to $13.50.</p><p><a href=\"/Must-Read-SSLs-Moved-Adding-ANR/s/via/21066/article/view/p/mid/1/id/127/\">July 8, 2013</a> - Adjusted stop loss from $12.00 to $13.00.</p><p><a href=\"/Re-Adding-SAI-and-APOL-Cutting-ZNGA/s/via/21066/article/view/p/mid/1/id/118/\">June 25, 2013</a> - Stock stands to benefit from gov. contract work addressing cyber security issues recently surfacing from China and abroad. Stock confirmed long-term reversal.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'SDS', // Symbol
+        'name' => 'ProShares UltraShort S&P500', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-09-11', // Pick Date
+        'pick_price' => 36.56, // Pick Price
+        'timeframe' => 'Short to Mid-Term', // Time Frame
+        'buy_up_to' => 'Now But Not Below $35.50', // Buy Up To
+        'stop_loss' => 35.50, // Stop Loss
+        'target' => 41.00, // Target
+        'close_date' => '2013-09-18', // Close Date
+        'close_price' => 35.50, // Close Price
+        'overview' => "<p><a href=\"/Re-Adding-SDS-Microsoft-May-Offer-More-Value-Than-Apple/s/via/21066/article/view/p/mid/1/id/173/\">September 11, 2013</a> - A fade against the recent rally, which if the indexes resume downward trend, should offer nice short-term gains. Also a protective position against open ideas.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'RAD', // Symbol
+        'name' => 'Rite Aid Corp.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-09-05', // Pick Date
+        'pick_price' => 3.51, // Pick Price
+        'timeframe' => 'Long-Term', // Time Frame
+        'buy_up_to' => 'Now And/Or On Weakness', // Buy Up To
+        'stop_loss' => 2.30, // Stop Loss
+        'target' => 6.30, // Target
+        'close_date' => '2013-09-18', // Close Date
+        'close_price' => 3.75, // Close Price
+        'overview' => "<p><a href=\"/Investing-in-the-Boomer-Adding-WAG-and-RAD/s/via/21066/article/view/p/mid/1/id/169/\">September 5, 2013</a> - As the Boomer generation is now starting to come of age, pharma in general is a space with tremendous forward growth potential. RAD may become takeout target.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'SDS', // Symbol
+        'name' => 'ProShares UltraShort S&P500', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-08-14', // Pick Date
+        'pick_price' => 36.42, // Pick Price
+        'timeframe' => 'Short-Term', // Time Frame
+        'buy_up_to' => 'Now But Not Below $35.70', // Buy Up To
+        'stop_loss' => 36.42, // Stop Loss
+        'target' => 38.46, // Target
+        'close_date' => '2013-09-06', // Close Date
+        'close_price' => 37.90, // Close Price
+        'overview' => "<p><a href=\"/An-Important-Week-Gold-Oil-and-the-Dollar/s/via/21066/article/view/p/mid/1/id/157/\">August 19, 2013</a> - Adjusted stop loss from $35.70 to $36.42.</p><p><a href=\"/Adding-SDS-On-Technical-Confirmation-Europe-and-China-Seeing-Strength/s/via/21066/article/view/p/mid/1/id/153/\">August 14, 2013</a> - 1,711 on the S&P 500 Index was a key resistance and profit taking level. With recent head and shoulders top confirmed, risk/reward offers good upside and hedge.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'LF', // Symbol
+        'name' => 'LeapFrog Enterprises, Inc.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-05-17', // Pick Date
+        'pick_price' => 9.07, // Pick Price
+        'timeframe' => 'Mid to Long-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 9.07, // Stop Loss
+        'target' => 13.82, // Target
+        'close_date' => '2013-09-04', // Close Date
+        'close_price' => 8.92, // Close Price
+        'overview' => "<p><a href=\"/Exiting-ITB-Adjusting-SSL-on-LF-Gold-Oil-and-the-Indexes/s/via/21066/article/view/p/mid/1/id/164/\">August 28, 2013</a> - Adjusted stop loss from $9.75 to $9.07.</p><p><a href=\"/TZA-Update-Moving-SSLs-Up-in-SAI-LF-and-ATRC/s/via/21066/article/view/p/mid/1/id/141/\">July 29, 2013</a> - Adjusted stop loss from $9.07 to $9.75.</p><p><a href=\"/Locking-in-Gains-in-TQQQ-Moving-Up-Stops-in-LF-and-APOL/s/via/21066/article/view/p/mid/1/id/108/\">June 11, 2013</a> - Adjusted stop loss from $8.60 to $9.07.</p><p><a href=\"/Adding-LF-TROV-Is-Bi-Polar-Goldman-Plays-Games-With-AMD/s/via/21066/article/view/p/mid/1/id/92/\">May 17, 2013</a> - Company offers good growth potential in digital learning space for children of all ages. Good balance sheet and appears undervalued at current levels.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'NOK', // Symbol
+        'name' => 'Nokia Corp.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-05-08', // Pick Date
+        'pick_price' => 3.56, // Pick Price
+        'timeframe' => 'Mid to Long-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 3.56, // Stop Loss
+        'target' => 5.49, // Target
+        'close_date' => '2013-09-09', // Close Date
+        'close_price' => 5.49, // Close Price
+        'overview' => "<p><a href=\"/Must-Read-SSLs-Moved-Adding-ANR/s/via/21066/article/view/p/mid/1/id/127/\">July 8, 2013</a> - Adjusted stop loss from $2.40 to $3.56.</p><p><a href=\"/Adding-NOK-and-CECO-Short-Term-Top-on-the-S-P-Now/s/via/21066/article/view/p/mid/1/id/85/\">May 8, 2013</a> - Company's starting to gain fundamental traction through launch of new mobile devices with Window's new mobile OS. Stock's long-term chart offering upside.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'ITB', // Symbol
+        'name' => 'iShares Dow Jones US Home Construction', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-08-21', // Pick Date
+        'pick_price' => 21.33, // Pick Price
+        'timeframe' => 'Mid to Long-Term', // Time Frame
+        'buy_up_to' => 'Now But Not Below $20.50', // Buy Up To
+        'stop_loss' => 20.50, // Stop Loss
+        'target' => 24.85, // Target
+        'close_date' => '2013-08-28', // Close Date
+        'close_price' => 20.50, // Close Price
+        'overview' => "<p><a href=\"/Housing-Really-Yes-Really-Major-Indexes-Trying-to-Hang-On/s/via/21066/article/view/p/mid/1/id/159/\">August 21, 2013</a> - Housing has retraced almost 3/8 of its long-term bullish trend and now appears to technically be in a position to resume its move higher.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'TZA', // Symbol
+        'name' => 'Direxion Daily Small Cap Bear 3X Shares', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-07-26', // Pick Date
+        'pick_price' => 25.68, // Pick Price
+        'timeframe' => 'Short to Mid-Term', // Time Frame
+        'buy_up_to' => 'Now But Not Below $24.50', // Buy Up To
+        'stop_loss' => 24.50, // Stop Loss
+        'target' => 28.70, // Target
+        'close_date' => '2013-08-01', // Close Date
+        'close_price' => 24.50, // Close Price
+        'overview' => "<p><a href=\"/Russell-2000-Suggesting-Reversal-Entering-TZA-Oil-Continues-to-Cooperate/s/via/21066/article/view/p/mid/1/id/140/\">July 26, 2013</a> - Short-term reversal signal on the Russell 2000 will be confirmed assuming the Russell 2000 close below 1052 today suggesting further weakness ahead.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'SCO', // Symbol
+        'name' => 'UltraShort DJ-UBS Crude Oil ProShares', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-07-19', // Pick Date
+        'pick_price' => 28.75, // Pick Price
+        'timeframe' => 'Short to Mid-Term', // Time Frame
+        'buy_up_to' => 'Now But Not Below $26.00', // Buy Up To
+        'stop_loss' => 28.75, // Stop Loss
+        'target' => 48.00, // Target
+        'close_date' => '2013-08-01', // Close Date
+        'close_price' => 28.75, // Close Price
+        'overview' => "<p><a href=\"/TZA-Update-Moving-SSLs-Up-in-SAI-LF-and-ATRC/s/via/21066/article/view/p/mid/1/id/141/\">July 29, 2013</a> - Adjusted stop loss from $26.00 to $28.75.</p><p><a href=\"/Adding-AMD-and-SCO-NOK-Update/s/via/21066/article/view/p/mid/1/id/135/\">July 19, 2013</a> - The price of light sweet crude hit a key technical profit taking level of $108 per barrel offering short-term traders a potentially excellent shorting opportunity.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'UGLD', // Symbol
+        'name' => 'VelocityShares 3x Long Gold ETN', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-06-27', // Pick Date
+        'pick_price' => 14.72, // Pick Price
+        'timeframe' => 'Short to Mid-Term', // Time Frame
+        'buy_up_to' => 'Now But Not Below $12.00', // Buy Up To
+        'stop_loss' => 18.00, // Stop Loss
+        'target' => 28.00, // Target
+        'close_date' => '2013-07-25', // Close Date
+        'close_price' => 18.00, // Close Price
+        'overview' => "<p><a href=\"/SCO-UGLD-AMD-and-SAI-Updates-Indexes-Continue-Grinding/s/via/21066/article/view/p/mid/1/id/136/\">July 2, 2013</a> - Adjusted stop loss from $14.72 to $18.00.</p><p><a href=\"/Bernanke-Couldnt-Have-Been-More-Clear-Moving-Up-SSL-On-UGLD/s/via/21066/article/view/p/mid/1/id/129/\">July 11, 2013</a> - Adjusted stop loss from $12.00 to $14.72.</p><p><a href=\"/Time-to-Take-a-Very-Logical-Swing-Adding-SDS-and-UGLD/s/via/21066/article/view/p/mid/1/id/120/\">June 27, 2013</a> - Gold has achieved a very logical expansion level and is ripe for at least a dead cat bounce. Should rates rise and/or dollar falls again, gold should benefit.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'CECO', // Symbol
+        'name' => 'Career Education Corp.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-05-08', // Pick Date
+        'pick_price' => 2.40, // Pick Price
+        'timeframe' => 'Mid to Long-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 2.40, // Stop Loss
+        'target' => 5.99, // Target
+        'close_date' => '2013-07-25', // Close Date
+        'close_price' => 3.70, // Close Price
+        'overview' => "<p><a href=\"/Managing-Open-Ideas-Here-Comes-Summer-Must-Read/s/via/21066/article/view/p/mid/1/id/93/\">May 20, 2013</a> - Adjusted stop loss from $1.80 to $2.40.</p><p><a href=\"/Adding-NOK-and-CECO-Short-Term-Top-on-the-S-P-Now/s/via/21066/article/view/p/mid/1/id/85/\">May 8, 2013</a> - Stands to benefit from growth of online education through mobile computing. Stock recently confirmed key reversal signal on its daily chart.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'MDCO', // Symbol
+        'name' => 'Medicines Co.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-01-22', // Pick Date
+        'pick_price' => 30.10, // Pick Price
+        'timeframe' => 'Long-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 30.10, // Stop Loss
+        'target' => 38, // Target
+        'close_date' => '2013-07-25', // Close Date
+        'close_price' => 30.10, // Close Price
+        'overview' => "<p><a href=\"/FLEX-on-Deck-Managing-Trades-AMD-Making-Moves/s/via/21066/article/view/p/mid/1/id/79/\">April 30, 2013</a> - Adjusted stop loss from $22.00 to $30.10.</p><p>The Company has a number of promising drugs candidates in the areas of anti-clotting and staph infection. Stock appears to be under strong consolidation.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'ANR', // Symbol
+        'name' => 'Alpha Natural Resources, Inc.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-07-09', // Pick Date
+        'pick_price' => 5.44, // Pick Price
+        'timeframe' => 'Short-Term', // Time Frame
+        'buy_up_to' => 'Now But Not Below $5.00', // Buy Up To
+        'stop_loss' => 5.44, // Stop Loss
+        'target' => 8.00, // Target
+        'close_date' => '2013-07-16', // Close Date
+        'close_price' => 5.44, // Close Price
+        'overview' => "<p><a href=\"/Moving-SSL-on-ANR-Up-Put-TSRX-On-Your-Radar/s/via/21066/article/view/p/mid/1/id/130/\">July 12, 2013</a> - Adjusted stop loss from $5.00 to $5.44.</p></p><p><a href=\"/Must-Read-SSLs-Moved-Adding-ANR/s/via/21066/article/view/p/mid/1/id/127/\">July 8, 2013</a> - Coal in general, is overly bearish on a short-term basis and offers a good contrarian play based on the short-term reversal signal confirmed in shares of ANR.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'SDS', // Symbol
+        'name' => 'ProShares UltraShort S&P500', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-06-27', // Pick Date
+        'pick_price' => 40.15, // Pick Price
+        'timeframe' => 'Short-Term', // Time Frame
+        'buy_up_to' => 'Now But Not Below $38.50', // Buy Up To
+        'stop_loss' => 37.00, // Stop Loss
+        'target' => 45.00, // Target
+        'close_date' => '2013-07-15', // Close Date
+        'close_price' => 37.00, // Close Price
+        'overview' => "<p><a href=\"/Must-Read-SSLs-Moved-Adding-ANR/s/via/21066/article/view/p/mid/1/id/127/\">July 8, 2013</a> - Adjusted stop loss from $38.50 to $37.00.</p><p><a href=\"/Time-to-Take-a-Very-Logical-Swing-Adding-SDS-and-UGLD/s/via/21066/article/view/p/mid/1/id/120/\">June 27, 2013</a> - Assuming markets are in for deeper pullback, SDS offers a good hedge against bullish poisitions in anticipation of further weakness on the S&P 500.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'APOL', // Symbol
+        'name' => 'Apollo Group, Inc.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-06-25', // Pick Date
+        'pick_price' => 19.50, // Pick Price
+        'timeframe' => 'Long-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 18.50, // Stop Loss
+        'target' => 30.00, // Target
+        'close_date' => '2013-06-26', // Close Date
+        'close_price' => 18.50, // Close Price
+        'overview' => "<p><a href=\"/Re-Adding-SAI-and-APOL-Cutting-ZNGA/s/via/21066/article/view/p/mid/1/id/118/\">June 25, 2013</a> - We continue to believe online education has good forward growth prospects. With recent interest in the sector rising, the Company offers value from current levels.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'ZNGA', // Symbol
+        'name' => 'Zynga, Inc.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-02-08', // Pick Date
+        'pick_price' => 3.35, // Pick Price
+        'timeframe' => 'Long-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 2.60, // Stop Loss
+        'target' => 5.07, // Target
+        'close_date' => '2013-06-24', // Close Date
+        'close_price' => 2.60, // Close Price
+        'overview' => "<p><a href=\"/MRVL-Flirts-with-Entry-Price-Breaking-Down-ZNGA/s/via/21066/article/view/p/mid/1/id/103/\">June 4, 2013</a> - Adjusted stop loss from $2.25 to $2.60.</p><p><a href=\"/Markets-Confirm-Sprint-Walks-Re-Adding-ZNGA/s/via/21066/article/view/p/mid/1/id/24/\">February 6, 2013</a> - Initially opened position.  Stock confirmed double repo on weekly chart week ending 1/4/2013. Company entering online gaming/gambling space.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'TROV', // Symbol
+        'name' => 'TrovaGene, Inc.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-04-10', // Pick Date
+        'pick_price' => 6.12, // Pick Price
+        'timeframe' => 'Long-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 6.12, // Stop Loss
+        'target' => 11, // Target
+        'close_date' => '2013-06-24', // Close Date
+        'close_price' => 6.12, // Close Price
+        'overview' => "<p><a href=\"/Managing-Open-Ideas-Here-Comes-Summer-Must-Read/s/via/21066/article/view/p/mid/1/id/93/\">May 20, 2013</a> - Adjusted stop loss from $5.68 to $6.12.</p><p><a href=\"/Quick-Updates-Around-On-Current-Open-Ideas/s/via/21066/article/view/p/mid/1/id/87/\">May 10, 2013</a> - Adjusted stop loss from $4.00 to $5.68.</p><p><a href=\"Indexes-Break-Out-Adding-Two-New-Ideas-T-TROV/s/via/21066/article/view/p/mid/1/id/65/\">April 10, 2013</a> - Monthly chart offers good risk/reward entry. Company's growth implications are tremendous with recent commercial launch of urine based test for HPV.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'APOL', // Symbol
+        'name' => 'Apollo Group, Inc.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-05-15', // Pick Date
+        'pick_price' => 20.51, // Pick Price
+        'timeframe' => 'Mid to Long-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 20.51, // Stop Loss
+        'target' => 31.90, // Target
+        'close_date' => '2013-06-18', // Close Date
+        'close_price' => 20.51, // Close Price
+        'overview' => "<p><a href=\"/Locking-in-Gains-in-TQQQ-Moving-Up-Stops-in-LF-and-APOL/s/via/21066/article/view/p/mid/1/id/108/\">June 11, 2013</a> - Adjusted stop loss from $15.50 to $20.51.</p><p><a href=\"/Adding-APOL-Economic-Data-Continues-to-Suggest-Strength/s/via/21066/article/view/p/mid/1/id/90/\">May 15, 2013</a> - Recent breakout suggests stock has finally bottomed. With recent interest in online education sector rising, the Company offers value from current levels.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'SDS', // Symbol
+        'name' => 'ProShares UltraShort S&P500', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-06-12', // Pick Date
+        'pick_price' => 40.52, // Pick Price
+        'timeframe' => 'Short-Term', // Time Frame
+        'buy_up_to' => 'Now But Not Below $40.52', // Buy Up To
+        'stop_loss' => 39.02, // Stop Loss
+        'target' => 42.42, // Target
+        'close_date' => '2013-06-18', // Close Date
+        'close_price' => 39.00, // Close Price
+        'overview' => "<p><a href=\"/Adding-BEAT-Still-Waiting-for-1615-on-the-S-P/s/via/21066/article/view/p/mid/1/id/109/\">June 12, 2013</a> - A hedge against further downside across all of the major indexes in the days or weeks ahead.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'TQQQ', // Symbol
+        'name' => 'ProShares UltraPro QQQ', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-06-06', // Pick Date
+        'pick_price' => 67.12, // Pick Price
+        'timeframe' => 'Short to Mid-Term', // Time Frame
+        'buy_up_to' => 'Now But Not Above $67.12', // Buy Up To
+        'stop_loss' => 67.12, // Stop Loss
+        'target' => 75, // Target
+        'close_date' => '2013-06-11', // Close Date
+        'close_price' => 72.16, // Close Price
+        'overview' => "<p><a href=\"/Approaching-Potential-Support-on-the-S-P/s/via/21066/article/view/p/mid/1/id/105/\">June 6, 2013</a> - Major indexes confirmed key short-term reversal signal suggesting possibility of short-term trend reversal.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'SDS', // Symbol
+        'name' => 'ProShares UltraShort S&P500', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-05-30', // Pick Date
+        'pick_price' => 38.75, // Pick Price
+        'timeframe' => 'Short to Mid-Term', // Time Frame
+        'buy_up_to' => 'Now But Not Below $37.50', // Buy Up To
+        'stop_loss' => 38.75, // Stop Loss
+        'target' => 40.54, // Target
+        'close_date' => '2013-06-06', // Close Date
+        'close_price' => 41.59, // Close Price
+        'overview' => "<p><a href=\"/Approaching-Potential-Support-on-the-S-P/s/via/21066/article/view/p/mid/1/id/105/\">June 6, 2013</a> - Adjusted stop loss from $37.25 to $38.75.</p><p><a href=\"/Adding-SDS-and-Shares-of-Facebook-FB/s/via/21066/article/view/p/mid/1/id/100/\">May 30, 2013</a> - A hedge against a potential market downturn. Major indexes confirmed key short-term reversal signal suggesting possibility of short-term trend reversal.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'FB', // Symbol
+        'name' => 'Facebook, Inc.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-05-30', // Pick Date
+        'pick_price' => 24, // Pick Price
+        'timeframe' => 'Mid to Long-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 23.00, // Stop Loss
+        'target' => 33.00, // Target
+        'close_date' => '2013-06-05', // Close Date
+        'close_price' => 23.00, // Close Price
+        'overview' => "<p><a href=\"/Adding-SDS-and-Shares-of-Facebook-FB/s/via/21066/article/view/p/mid/1/id/100/\">May 30, 2013</a> - Stock hit a key long-term retracement level, which should serve as support for the stock to move much higher from current levels.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'MRVL', // Symbol
+        'name' => 'Marvell Technology Group Ltd.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-05-06', // Pick Date
+        'pick_price' => 10.82, // Pick Price
+        'timeframe' => 'Mid to Long-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 10.82, // Stop Loss
+        'target' => 13.09, // Target
+        'close_date' => '2013-06-04', // Close Date
+        'close_price' => 10.81, // Close Price
+        'overview' => "<p><a href=\"/Managing-Open-Ideas-Here-Comes-Summer-Must-Read/s/via/21066/article/view/p/mid/1/id/93/\">May 20, 2013</a> - Adjusted stop loss from $10.04 to $10.82.</p><p><a href=\"/New-Alert-Adding-MRVL-TROV-Pops-AMDs-Run-Continues/s/via/21066/article/view/p/mid/1/id/83/\">May 6, 2013</a> - Company has good fundamentals, acceptable forward P/E, over a billion in cash and no debt. Technically appealing chart at current levels. Nice upside potential.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'T', // Symbol
+        'name' => 'AT&T, Inc.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-04-10', // Pick Date
+        'pick_price' => 38.08, // Pick Price
+        'timeframe' => 'Long-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 36.83, // Stop Loss
+        'target' => 46.5, // Target
+        'close_date' => '2013-05-16', // Close Date
+        'close_price' => 37.48, // Close Price
+        'overview' => "<p><a href=\"/FLEX-on-Deck-Managing-Trades-AMD-Making-Moves/s/via/21066/article/view/p/mid/1/id/79/\">April 30, 2013</a> - Adjusted stop loss from $36.00 to $36.83.</p><p><a href=\"/What-Gold-Could-Be-Telling-Us-Moving-Up-Stops-in-T-and-SAI/s/via/21066/article/view/p/mid/1/id/69/\">April 16, 2013</a> - Adjusted stop loss from $32.00 to $36.00.</p><p><a href=\"/Indexes-Break-Out-Adding-Two-New-Ideas-T-TROV/s/via/21066/article/view/p/mid/1/id/65/\">April 10, 2013</a> - Company should conintue to benefit from mobile growth since they are generating as much recurring consumer revenue as anyone in the world.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'DBA', // Symbol
+        'name' => 'PowerShares DB Agriculture', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-04-26', // Pick Date
+        'pick_price' => 25.77, // Pick Price
+        'timeframe' => 'Short to Mid-Term', // Time Frame
+        'buy_up_to' => 'Now But Not Below $25.30', // Buy Up To
+        'stop_loss' => 25.77, // Stop Loss
+        'target' => 27.53, // Target
+        'close_date' => '2013-05-15', // Close Date
+        'close_price' => 25.77, // Close Price
+        'overview' => "<p><a href=\"/Quick-Updates-Around-On-Current-Open-Ideas/s/via/21066/article/view/p/mid/1/id/87/\">May 10, 2013</a> - Adjusted stop loss from $25.65 to $25.77.</p><p><a href=\"/FLEX-on-Deck-Managing-Trades-AMD-Making-Moves/s/via/21066/article/view/p/mid/1/id/79/\">April 30, 2013</a> - Adjusted stop loss from $25.30 to $25.65.</p><p><a href=\"/Adding-TZA-and-DBA-on-a-Tight-Leash/s/via/21066/article/view/p/mid/1/id/77/\">April 26, 2013</a> - Increase of money supply in the system shouldn't have commodites priced this low. Technically, stock looks very appealing from risk/rward perspective.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'AMD', // Symbol
+        'name' => 'Advanced Micro Devices, Inc.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-04-09', // Pick Date
+        'pick_price' => 2.5, // Pick Price
+        'timeframe' => 'Long-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 1.8, // Stop Loss
+        'target' => 4.3, // Target
+        'close_date' => '2013-05-14', // Close Date
+        'close_price' => 4.33, // Close Price
+        'overview' => "<p><a href=\"/Adding-AMD-Indexes-Approaching-Highs-Again/s/via/21066/article/view/p/mid/1/id/64/\">April 9, 2013</a> - Stock offers good speculative entry levels in anticipation of Company's new focus to move into mobile and gaming while becoming less reliable on desktop PCs.</p>", // Overview
+    ),
+	array(
+        'symbol' => 'FLEX', // Symbol
+        'name' => 'Flex International Ltd.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-03-05', // Pick Date
+        'pick_price' => 6.78, // Pick Price
+        'timeframe' => 'Long-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 6.78, // Stop Loss
+        'target' => 8.48, // Target
+        'close_date' => '2013-05-03', // Close Date
+        'close_price' => 6.78, // Close Price
+        'overview' => "<p><a href=\"/FLEX-on-Deck-Managing-Trades-AMD-Making-Moves/s/via/21066/article/view/p/mid/1/id/79/\">April 30, 2013</a> - Adjusted stop loss from $6.20 to $6.78.</p><p><a href=\"/Todays-a-Must-Read-Edition-Buy-Flex-International-FLEX/s/via/21066/article/view/p/mid/1/id/40/\">March 5, 2013</a> - Company has solid fundamentals trading at a discount to market, is heavily institutionally owned and its charts are telling us the stock has finally woken up.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'TZA', // Symbol
+        'name' => 'Direxion Daily Small Cap Bear 3X Shares', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-04-26', // Pick Date
+        'pick_price' => 37.84, // Pick Price
+        'timeframe' => 'Short to Mid-Term', // Time Frame
+        'buy_up_to' => 'Now But Not Below $36.40', // Buy Up To
+        'stop_loss' => 36.40, // Stop Loss
+        'target' => 40.62, // Target
+        'close_date' => '2013-04-30', // Close Date
+        'close_price' => 36.40, // Close Price
+        'overview' => "<p><a href=\"/Adding-TZA-and-DBA-on-a-Tight-Leash/s/via/21066/article/view/p/mid/1/id/77/\">April 26, 2013</a> - Stock has tested it's recent low of roughly $36.50 on literally five different occasions recently and has held up every time. A hedge against a market downturn.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'SAI', // Symbol
+        'name' => 'SAIC, Inc.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-03-20', // Pick Date
+        'pick_price' => 12.74, // Pick Price
+        'timeframe' => 'Short-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 13.69, // Stop Loss
+        'target' => 14.86, // Target
+        'close_date' => '2013-04-25', // Close Date
+        'close_price' => 14.86, // Close Price
+        'overview' => "<p><a href=\"/What-Gold-Could-Be-Telling-Us-Moving-Up-Stops-in-T-and-SAI/s/via/21066/article/view/p/mid/1/id/69/\">April 16, 2013</a> - Adjusted stop loss from $10.66 to $13.69.</p><p><a href=\"/New-Open-Idea-SAIC-Inc-SAI/s/via/21066/article/view/p/mid/1/id/51/\">March 20, 2013</a> - Stock stands to benefit from government contract work addressing cyber security issues recently surfacing from China and abroad. Stock confirmed long-term reversal.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'QCOM', // Symbol
+        'name' => 'Qualcomm, Inc.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-01-08', // Pick Date
+        'pick_price' => 63.91, // Pick Price
+        'timeframe' => 'Long-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 63.91, // Stop Loss
+        'target' => 100, // Target
+        'close_date' => '2013-04-18', // Close Date
+        'close_price' => 63.91, // Close Price
+        'overview' => "<p>Continues to stay under the large cap radar while returning to their dominating footprint in the mobility space. Technically ready to break out.</p><p><a href=\"/NVTL-Runs-Updates-to-Open-List/s/via/21066/article/view/p/mid/1/id/22/\">February 6, 2013</a> - Adjusted stop loss from $56.00 to $63.91.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'WFC', // Symbol
+        'name' => 'Wells Fargo & Company', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-01-10', // Pick Date
+        'pick_price' => 34.95, // Pick Price
+        'timeframe' => 'Short to Long-Term', // Time Frame
+        'buy_up_to' => 'Now', // Buy Up To
+        'stop_loss' => 31, // Stop Loss
+        'target' => 44, // Target
+        'close_date' => '2013-04-12', // Close Date
+        'close_price' => 37.12, // Close Price
+        'overview' => "<p>Good long-term investing idea with short-term upside. Head and shoulders chart developing. Fundamentally best of breed in banking.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'CALL', // Symbol
+        'name' => 'VocalTec Communications Ltd.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-04-02', // Pick Date
+        'pick_price' => 14.62, // Pick Price
+        'timeframe' => 'Short and Long-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 15.8, // Stop Loss
+        'target' => 17.33, // Target
+        'close_date' => '2013-04-03', // Close Date
+        'close_price' => 15.80, // Close Price
+        'overview' => "<p><a href=\"/Adding-CALL-Closing-Out-TZA-and-UGLD-for-Now/s/via/21066/article/view/p/mid/1/id/59/\">April 2, 2013</a> - Company is trading at just over seven times earnings, has very little debt and appears to be in fundamentally great shape. CALL's recent downtrend has reversed.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'TZA', // Symbol
+        'name' => 'Direxion Daily Small Cap Bear 3X', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-03-22', // Pick Date
+        'pick_price' => 37.48, // Pick Price
+        'timeframe' => 'Short to Mid-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 36.6, // Stop Loss
+        'target' => 60, // Target
+        'close_date' => '2013-04-02', // Close Date
+        'close_price' => 38.06, // Close Price
+        'overview' => "<p>April 2, 2013 - Adjusted for 1:4 reverse split.</p><p><a href=\"/Indexes-Confirmed-Reversal-Adding-TZA-to-Open-Ideas-But-READ-FIRST/s/via/21066/article/view/p/mid/1/id/53/\">March 22, 2013</a> - Hedge against market reversal. Major indexes confirmed at least short-term reversal. If stocks turn lower, small caps should lead. TZA is a bearish ETF.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'UGLD', // Symbol
+        'name' => 'VelocityShares 3x Long Gold ETN', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-03-15', // Pick Date
+        'pick_price' => 35.53, // Pick Price
+        'timeframe' => 'Short-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 33.34, // Stop Loss
+        'target' => 40.78, // Target
+        'close_date' => '2013-04-02', // Close Date
+        'close_price' => 34.39, // Close Price
+        'overview' => "<p><a href=\"/Buy-AAPL-and-Gold-for-Short-Term-Profits/s/via/21066/article/view/p/mid/1/id/48/\">March 15, 2013</a> - Gold confirmed a signifcant key reversal signal and has traded down to a complete 5/8 retracement of its complete selloff, which began in 2011.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'AAPL', // Symbol
+        'name' => 'Apple, Inc.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-03-15', // Pick Date
+        'pick_price' => 440, // Pick Price
+        'timeframe' => 'Short-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 440, // Stop Loss
+        'target' => 528, // Target
+        'close_date' => '2013-04-01', // Close Date
+        'close_price' => 440, // Close Price
+        'overview' => "<p><a href=\"/Quarter-Ending-Window-Dressing-In-Full-Force-Updates-Around/s/via/21066/article/view/p/mid/1/id/57/\">March 28, 2013</a> - Moving up the suggested stop loss to $440 or the price you purchased at.</p><p><a href=\"/Buy-AAPL-and-Gold-for-Short-Term-Profits/s/via/21066/article/view/p/mid/1/id/48/\">March 15, 2013</a> - Stock has become overly bearish and recently confirmed a short-term reversal signal after hitting our previously published target of $420. Still a great Company.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'AT', // Symbol
+        'name' => 'Atlantic Power Corporation', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-03-07', // Pick Date
+        'pick_price' => 5.68, // Pick Price
+        'timeframe' => 'Long-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 4.75, // Stop Loss
+        'target' => 7.11, // Target
+        'close_date' => '2013-03-26', // Close Date
+        'close_price' => 4.7, // Close Price
+        'overview' => "<p><a href=\"/New-Idea-Atlantic-Power-AT-Read-First-Before-Considering/s/via/21066/article/view/p/mid/1/id/42/\">March 7, 2013</a> - Pure contrarian play based on Company's recent fourth quarter debacle. Stock was cut in half and now offers potential value and buyout implications.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'URA', // Symbol
+        'name' => 'Global X Uranium ETF', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-02-14', // Pick Date
+        'pick_price' => 6.96, // Pick Price
+        'timeframe' => 'Long-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 6.00, // Stop Loss
+        'target' => 8.28, // Target
+        'close_date' => '2013-03-26', // Close Date
+        'close_price' => 6.47, // Close Price
+        'overview' => "<p><a href=\"/Superman-Would-Not-Be-Happy-About-This-New-Idea/s/via/21066/article/view/p/mid/1/id/28/\">February 14, 2013</a> - Renewed global interest in Asia for uranium. Weekly chart setting up with nice risk/reward entry and a nice hedge against obvious market winners lately.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'NVTL', // Symbol
+        'name' => 'Novatel Wireless, Inc.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-01-22', // Pick Date
+        'pick_price' => 1.54, // Pick Price
+        'timeframe' => 'Short-Term', // Time Frame
+        'buy_up_to' => 'Now', // Buy Up To
+        'stop_loss' => 1.70, // Stop Loss
+        'target' => 2.33, // Target
+        'close_date' => '2013-03-08', // Close Date
+        'close_price' => 2.13, // Close Price
+        'overview' => "<p>Stock appears to have technically woken up and offers upside off its recent pullback following a big volume day on good price action.</p><p><a href=\"/NVTL-Runs-Updates-to-Open-List/s/via/21066/article/view/p/mid/1/id/22/\">February 6, 2013</a> - Adjusted stop loss from $1.35 to $1.70 and target from $2.02 to $2.33.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'GOOG', // Symbol
+        'name' => 'Google, Inc.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-01-08', // Pick Date
+        'pick_price' => 733, // Pick Price
+        'timeframe' => 'Long-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 733, // Stop Loss
+        'target' => 865, // Target
+        'close_date' => '2013-03-08', // Close Date
+        'close_price' => 830.59, // Close Price
+        'overview' => "<p>Don't let share price fool you. Stock is extremely undervalued still. Stock split would be no surprise. Technically ready to break out.</p><p><a href=\"/NVTL-Runs-Updates-to-Open-List/s/via/21066/article/view/p/mid/1/id/22/\">February 6, 2013</a> - Adjusted stop loss from $600.00 to $733.00.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'ASTX', // Symbol
+        'name' => 'Astex Pharmaceuticals, Inc.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-02-11', // Pick Date
+        'pick_price' => 3.33, // Pick Price
+        'timeframe' => 'Long-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 2.9, // Stop Loss
+        'target' => 5.09, // Target
+        'close_date' => '2013-02-26', // Close Date
+        'close_price' => 3.13, // Close Price
+        'overview' => "<p><a href=\"/Two-New-Ideas-Just-What-the-Doctor-Ordered/s/via/21066/article/view/p/mid/1/id/25/\">February 11, 2013</a> - Initially opened position.  Stock thrusting above 3X3 DMA on weekly chart and has found its way back above the 25X5 DMA, a key technical move suggesting higher levels.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'AMD', // Symbol
+        'name' => 'Advanced Micro Devices, Inc.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-01-03', // Pick Date
+        'pick_price' => 2.49, // Pick Price
+        'timeframe' => 'Mid to Long-Term', // Time Frame
+        'buy_up_to' => 'On Weakness', // Buy Up To
+        'stop_loss' => 2.49, // Stop Loss
+        'target' => 4.25, // Target
+        'close_date' => '2013-02-26', // Close Date
+        'close_price' => 2.47, // Close Price
+        'overview' => "<p>Possible takeover candidate. Has excellent technology. However, pure technical play with a short-term bullish trend developing.</p><p><a href=\"/NVTL-Runs-Updates-to-Open-List/s/via/21066/article/view/p/mid/1/id/22/\">February 6, 2013</a> - Adjusted stop loss from $2.20 to $2.49.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'S', // Symbol
+        'name' => 'Sprint Nextel Corp.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2012-12-17', // Pick Date
+        'pick_price' => 5.44, // Pick Price
+        'timeframe' => 'Mid to Long-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 5.44, // Stop Loss
+        'target' => 6.94, // Target
+        'close_date' => '2013-02-26', // Close Date
+        'close_price' => 5.73, // Close Price
+        'overview' => "<p>Tea cup and handle pattern has developed after our first big run. Stock technically appears ready to breakout to new long-term highs once again.</p><p><a href=\"/NVTL-Runs-Updates-to-Open-List/s/via/21066/article/view/p/mid/1/id/22/\">February 6, 2013</a> - Adjusted stop loss from $3.95 to $5.44.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'ACHN', // Symbol
+		'name' => 'Achillion Pharmaceuticals, Inc.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-01-08', // Pick Date
+        'pick_price' => 9, // Pick Price
+        'timeframe' => 'Short to Mid-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 7.5, // Stop Loss
+        'target' => 19, // Target
+		'close_date' => '2013-02-21', // Close Date
+        'close_price' => 9, // Close Price
+        'overview' => "<p>Good drug candidates nearing approval status. Monthly chart suggests volatile breakout on the horizon.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'ORLY', // Symbol
+        'name' => "O'Reilly Automotive, Inc.", // Company Name
+        'position' => -1, // Long or Short
+        'pick_date' => '2013-01-07', // Pick Date
+        'pick_price' => 91.51, // Pick Price
+        'timeframe' => 'Short to Mid-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Strength', // Buy Up To
+        'stop_loss' => 98, // Stop Loss
+        'target' => 54, // Target
+        'close_date' => '2013-02-07', // Close Date
+        'close_price' => 101.67, // Close Price
+        'overview' => "<p>Shorting in sentiment to auto retailer space. Monthly chart long in the tooth. Stock hasn't been able to retrace recent selloff to the upside yet.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'AMZN', // Symbol
+        'name' => 'Amazon.com, Inc.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2012-12-27', // Pick Date
+        'pick_price' => 248, // Pick Price
+        'timeframe' => 'Long-Term', // Time Frame
+        'buy_up_to' => 'On Weakness', // Buy Up To
+        'stop_loss' => 248, // Stop Loss
+        'target' => 378, // Target
+        'close_date' => '2013-02-07', // Close Date
+        'close_price' => 259.62, // Close Price
+        'overview' => "<p>Dominant U.S. e-tailer with enough growing demand abroad and best of breed cloud services to support higher valuation. Stock recently broke out.</p><p><a href=\"/NVTL-Runs-Updates-to-Open-List/s/via/21066/article/view/p/mid/1/id/22/\">February 6, 2013</a> - Adjusted stop loss from $235.00 to $248.00.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'EGHT', // Symbol
+        'name' => '8x8, Inc.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2012-12-12', // Pick Date
+        'pick_price' => 6.59, // Pick Price
+        'timeframe' => 'Mid to Long-Term', // Time Frame
+        'buy_up_to' => 'On Weakness', // Buy Up To
+        'stop_loss' => 6.73, // Stop Loss
+        'target' => 14.00, // Target
+        'close_date' => '2013-01-25', // Close Date
+        'close_price' => 7.08, // Close Price
+        'overview' => "<p>Good fundamentals. Growing developer and marketer of telecommunications services for VOIP and cloud. Stock continues bullish trend up the charts.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'CRAY', // Symbol
+        'name' => 'Cray, Inc.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2012-07-19', // Pick Date
+        'pick_price' => 12.44, // Pick Price
+        'timeframe' => 'Mid to Long-Term', // Time Frame
+        'buy_up_to' => 'On Weakness', // Buy Up To
+        'stop_loss' => 13, // Stop Loss
+        'target' => 22.00, // Target
+        'close_date' => '2013-01-25', // Close Date
+        'close_price' => 18.45, // Close Price
+        'overview' => "<p>Supercomputer maker should be insolated from economy. Solid fundamentals with excellent growth potential. Stock continues to climb charts.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'ZNGA', // Symbol
+        'name' => 'Zynga, Inc.', // Company Name
+        'position' => 1, // Long or Short
+        'pick_date' => '2013-01-08', // Pick Date
+        'pick_price' => 2.49, // Pick Price
+        'timeframe' => 'Short to Mid-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Weakness', // Buy Up To
+        'stop_loss' => 2.25, // Stop Loss
+        'target' => 4, // Target
+        'close_date' => '2013-01-22', // Close Date
+        'close_price' => 2.42, // Close Price
+        'overview' => "<p>Stock confirmed double repo confirmation on weekly chart week ending 1/4/2013. Suspect fundamentals with plenty of cash, however.</p>", // Overview
+    ),
+    array(
+        'symbol' => 'AZO', // Symbol
+        'name' => 'AutoZone, Inc.', // Company Name
+        'position' => -1, // Long or Short
+        'pick_date' => '2012-12-31', // Pick Date
+        'pick_price' => 354, // Pick Price
+        'timeframe' => 'Short to Mid-Term', // Time Frame
+        'buy_up_to' => 'Now and/or On Strength', // Buy Up To
+        'stop_loss' => 392, // Stop Loss
+        'target' => 236, // Target
+        'close_date' => '2013-01-22', // Close Date
+        'close_price' => 353.37, // Close Price
+        'overview' => "<p>Company can't sustain growth in recent years, waning fundamentals. Monthly chart confirmed pwerful double repo reversal month ending 12/12.</p>", // Overview
+    ),
+);
+
+// Date Object
+$date = new Zend_Date();
+if (isset($this->internal->member)) { $date->setTimezone($this->internal->member->timezone); }
+else { $date->setTimezone($this->internal->config->timezone); }
+// Currency Object
+$currency = new ViaMe_Currency(array('currency' => 'USD', 'precision' => 4));
+
+// Quote Data
+$symbols = array();
+$quotes = new ViaMe_Vm_Quotes();
+foreach ($positions as $company) { $symbols[] = $company['symbol']; }
+$symbols_data =  $this->Quote_ConvertSymbolToId( $symbols );
+$quote_data = $quotes->fetch(array_keys($symbols_data), 'sl1ba'); // 0-Symbol, 1-Last, 2-Bid, 3-Ask
+foreach ($quote_data as $data) { $symbols_data[$data[0]]->quote_data = $data; }
+foreach ($positions as $key => $val) { $positions[$key]['data'] = $symbols_data[$positions[$key]['symbol']]; }
+#Zend_Debug::Dump($symbols_data);
+#Zend_Debug::Dump($positions);
+
+function sortByDate($a, $b) {
+    return (strtotime($a['pick_date']) - strtotime($b['pick_date']));
+}
+
+usort($positions, 'sortByDate');
+#$positions = array_reverse($positions);
+?>
+
+<style type="text/css">
+<!--
+table.closed_portfolio {
+    border-collapse:collapse;
+    border: 1px dotted #CCCCCC;
+    width: 100%;
+    margin-bottom: 1em;
+}
+table.closed_portfolio td {
+    border: 1px dotted #CCCCCC;
+    padding: 8px;
+    vertical-align: middle;
+    text-align: center;
+}
+table.closed_portfolio .labels {
+    background: none repeat scroll 0 0 #ECECEC;
+    text-align: center;
+}
+table.closed_portfolio .labels td {
+    border: medium none;
+    color: #333333;
+    font: 10px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    text-transform: uppercase;
+    vertical-align: bottom;
+    text-align: center;
+}
+table.closed_portfolio .portfolio_pick {
+    color: #339933;
+    font-size: 18px;
+    font-weight: bold;
+}
+table.closed_portfolio td p {
+    margin: 1em 0 0 0;
+}
+table.closed_portfolio td p:first-child {
+    margin: 0;
+}
+-->
+</style>
+
+<div style="padding: 0; border: none;">
+	
+	<p>Closed out positions are displayed for the convenience of Members who may still want to reference initial target or stop loss prices.</p>
+	
+    <table cellspacing="0" cellpadding="0" class="closed_portfolio">
+        <tbody>
+            <tr class="labels">
+            	<td>Closed Date</td>
+            	<td>Company</td>
+            	<td>Picked Date</td>
+                <td>Picked Price</td>
+                <td>Timeframe</td>
+                <td>Stop Loss</td>
+                <td>Target</td>
+                <td>Close Price</td>
+                <td>Gain</td>
+                <td>Current Price</td>
+                <td>LT Gain</td>
+                <td>Difference</td>
+            </tr>
+            
+<?php
+$total_pct = 0;
+$total_pct_lt = 0;
+$total_pct_diff = 0;
+
+$not_include_regexp = '/^short/i';
+foreach ($positions as $company) {
+    if (preg_match($not_include_regexp, $company['timeframe'])) { continue; }
+?>
+    
+
+            <tr>
+            	<td><?php $date->set($company['close_date'], 'yyyy-MM-dd'); echo $date->toString(Zend_Date::DATE_SHORT); ?></td>
+                <td style="text-align: left;"><?= $company['name'] ?> (<?= $this->Quote_SymbolDisplay(array('symbol' => $company['symbol'], 'name' => $company['name'], 'internal' => $this->internal)) ?>)<?= ($company['position'] == -1 ? ' - Short' : '') ?></td>
+                <td><?php $date->set($company['pick_date'], 'yyyy-MM-dd'); echo $date->toString(Zend_Date::DATE_SHORT); ?></td>
+                <td><?= $currency->toCurrency($company['pick_price'], array('precision' => 2)) ?></td>
+                <td><?= $company['timeframe'] ?></td>
+                <td><?= (isset($company['stop_loss']) && $company['stop_loss'] ? (is_numeric($company['stop_loss']) ? $currency->toCurrency($company['stop_loss'], array('precision' => 2)) : $company['stop_loss']) : 'N/A') ?></td>
+                <td><?= (isset($company['target']) && $company['target'] ? (is_numeric($company['target']) ? $currency->toCurrency($company['target'], array('precision' => 2)) : $company['target']) : 'N/A') ?></td>
+                <td><?= (isset($company['close_price']) && $company['close_price'] ? (is_numeric($company['close_price']) ? $currency->toCurrency($company['close_price'], array('precision' => 2)) : $company['close_price']) : 'N/A') ?></td>
+                <td nowrap="nowrap"><span class="<?= (isset($company['close_price']) && $company['close_price'] && is_numeric($company['close_price']) ? (($company['close_price'] - $company['pick_price']) * $company['position'] > 0 ? 'netup' : (($company['close_price'] - $company['pick_price']) * $company['position'] < 0 ? 'netdown' : '')) : '') ?>"><?= (isset($company['close_price']) && $company['close_price'] && is_numeric($company['close_price']) ? $currency->toCurrency(($company['close_price'] - $company['pick_price']), array('precision' => 2)) : 'N/A') ?> (<?= (isset($company['close_price']) && $company['close_price'] && is_numeric($company['close_price']) ? sprintf("%+.2f%%", (($company['close_price'] - $company['pick_price']) * $company['position'] / $company['pick_price'] * 100)) : 'N/A') ?>)</span></td>
+                <td><?= ((!preg_match('/^Short-Term$/i', $company['timeframe']) && isset($company['data']->quote_data[1]) && $company['data']->quote_data[1] && is_numeric($company['data']->quote_data[1]) && $company['data']->quote_data[1] > 0) ? $currency->toCurrency($company['data']->quote_data[1], array('precision' => 2)) : 'N/A') ?></td>
+                <td nowrap="nowrap"><span class="<?= (!preg_match($not_include_regexp, $company['timeframe']) && isset($company['data']->quote_data[1]) && $company['data']->quote_data[1] && is_numeric($company['data']->quote_data[1]) && $company['data']->quote_data[1] > 0 ? (($company['data']->quote_data[1] - $company['pick_price']) * $company['position'] > 0 ? 'netup' : (($company['data']->quote_data[1] - $company['pick_price']) * $company['position'] < 0 ? 'netdown' : '')) : '') ?>"><?= (!preg_match($not_include_regexp, $company['timeframe']) && isset($company['data']->quote_data[1]) && $company['data']->quote_data[1] && is_numeric($company['data']->quote_data[1]) && $company['data']->quote_data[1] > 0 ? $currency->toCurrency(($company['data']->quote_data[1] - $company['pick_price']) * $company['position'], array('precision' => 2)) : 'N/A') ?> (<?= (!preg_match($not_include_regexp, $company['timeframe']) && isset($company['data']->quote_data[1]) && $company['data']->quote_data[1] && is_numeric($company['data']->quote_data[1]) && $company['data']->quote_data[1] > 0 ? sprintf("%+.2f%%", (($company['data']->quote_data[1] - $company['pick_price']) * $company['position'] / $company['pick_price'] * 100)) : 'N/A') ?>)</span></td>
+                <td nowrap="nowrap"><span class="<?= (!preg_match($not_include_regexp, $company['timeframe']) && isset($company['close_price']) && $company['close_price'] && is_numeric($company['close_price']) && isset($company['data']->quote_data[1]) && $company['data']->quote_data[1] && is_numeric($company['data']->quote_data[1]) && $company['data']->quote_data[1] > 0 ? (($company['data']->quote_data[1] - $company['close_price']) * $company['position'] > 0 ? 'netup' : (($company['data']->quote_data[1] - $company['close_price']) * $company['position'] < 0 ? 'netdown' : '')) : '') ?>"><?= (!preg_match($not_include_regexp, $company['timeframe']) && isset($company['data']->quote_data[1]) && $company['data']->quote_data[1] && is_numeric($company['data']->quote_data[1]) && $company['data']->quote_data[1] > 0 ? $currency->toCurrency(($company['data']->quote_data[1] - $company['close_price']) * $company['position'], array('precision' => 2)) : 'N/A') ?> (<?= (!preg_match($not_include_regexp, $company['timeframe']) && isset($company['data']->quote_data[1]) && $company['data']->quote_data[1] && is_numeric($company['data']->quote_data[1]) && $company['data']->quote_data[1] > 0 ? sprintf("%+.2f%%", (($company['data']->quote_data[1] - $company['close_price']) * $company['position'] / $company['pick_price'] * 100)) : 'N/A') ?>)</span></td>
+            </tr>
+<?php
+/*
+$change = ($company['data']->quote_data[1] - $company['pick_price']) * $company['position'];
+$pct_change = $change / $company['pick_price'] * 100;
+echo '<span';
+if ($change > 0) { echo ' class="netup"'; }
+elseif ($change < 0) { echo ' class="netdown"'; }
+echo '>';
+echo $currency->toCurrency($change, array('precision' => 2));
+echo sprintf(" (%+.2f%%)", $pct_change);
+echo '</span>';
+*/
+?>
+
+<?php
+    $total_pct += (isset($company['close_price']) && $company['close_price'] && is_numeric($company['close_price']) ? (($company['close_price'] - $company['pick_price']) * $company['position'] / $company['pick_price'] * 100) : 0);
+    $total_pct_lt += (!preg_match($not_include_regexp, $company['timeframe']) && isset($company['data']->quote_data[1]) && $company['data']->quote_data[1] && is_numeric($company['data']->quote_data[1]) && $company['data']->quote_data[1] > 0 ? (($company['data']->quote_data[1] - $company['pick_price']) * $company['position'] / $company['pick_price'] * 100) : 0);
+    $total_pct_diff += (!preg_match($not_include_regexp, $company['timeframe']) && isset($company['data']->quote_data[1]) && $company['data']->quote_data[1] && is_numeric($company['data']->quote_data[1]) && $company['data']->quote_data[1] > 0 ? (($company['data']->quote_data[1] - $company['close_price']) * $company['position'] / $company['pick_price'] * 100) : 0);
+}
+?>
+
+        </tbody>
+    </table>
+    <p><strong>Total Return : <?= sprintf("%.2f%%", $total_pct) ?></strong></p>
+    <p><strong>LT Return : <?= sprintf("%.2f%%", $total_pct_lt) ?></strong></p>
+    <p><strong>Difference Return : <?= sprintf("%.2f%%", $total_pct_diff) ?></strong></p>
+</div>
+
+
+
+
+<?php return; ?>
+
+<div id="quote_other_info_tabs"> 
+    <ul class="yui-nav"> 
+        <li class="selected"><a href="#tab1"><em>News</em></a></li>
+        <li><a href="#tab2"><em>Blogs</em></a></li>
+        <li><a href="#tab3"><em>Message Boards</em></a></li>
+        <li><a href="#tab4"><em>Twitter</em></a></li>
+    </ul>             
+    <div class="yui-content"> 
+        <div id="tab1"><p style="margin: 3em 0; text-align: center; font-weight: bold;">No News Sources.  Submit New Ones By <a href="/Contact-Us/s/page/view/p/mid/1/title/Contact+Us/">Clicking Here</a>.</p></div>
+        <div id="tab2"><p style="margin: 3em 0; text-align: center; font-weight: bold;">No Blog Sources.  Submit New Ones By <a href="/Contact-Us/s/page/view/p/mid/1/title/Contact+Us/">Clicking Here</a>.</p></div>
+        <div id="tab3"><p style="margin: 3em 0; text-align: center; font-weight: bold;">No Message Board Sources.  Submit New Ones By <a href="/Contact-Us/s/page/view/p/mid/1/title/Contact+Us/">Clicking Here</a>.</p></div>
+        <div id="tab4"><p style="margin: 3em 0; text-align: center; font-weight: bold;">No Twitter Sources.  Submit New Ones By <a href="/Contact-Us/s/page/view/p/mid/1/title/Contact+Us/">Clicking Here</a>.</p></div>
+    </div> 
+</div>
+
+<?php $this->inlineScript()->captureStart(); ?>
+YAHOO.util.Event.onDOMReady(function() {
+    var quoteTabView = new YAHOO.widget.TabView('quote_other_info_tabs');
+});
+<?php $this->inlineScript()->captureEnd(); ?>
+
+
+
+
+<!-- SCN-Com-Fixed_Column-160x600 -->
+<div id='div-gpt-ad-1335892349635-0' style='width:160px; height:600px;'>
+<script type='text/javascript'>
+googletag.cmd.push(function() {
+    googletag.defineUnit('/1063461/SCN-Com-Fixed_Column-160x600', [160, 600], 'div-gpt-ad-1335892349635-0').addService(googletag.pubads());
+    googletag.display('div-gpt-ad-1335892349635-0');
+});
+</script>
+</div>
+
+<!-- SCN-Com-Fixed_Column-180x150 -->
+<div id='div-gpt-ad-1335892349635-1' style='width:180px; height:150px;'>
+<script type='text/javascript'>
+googletag.cmd.push(function() {
+    googletag.defineUnit('/1063461/SCN-Com-Fixed_Column-180x150', [180, 150], 'div-gpt-ad-1335892349635-1').addService(googletag.pubads());
+    googletag.display('div-gpt-ad-1335892349635-1');
+});
+</script>
+</div>
+
+<!-- SCN-Com-Home-336x280 -->
+<div id='div-gpt-ad-1335892349635-2' style='width:336px; height:280px;'>
+<script type='text/javascript'>
+googletag.cmd.push(function() {
+    googletag.defineUnit('/1063461/SCN-Com-Home-336x280', [336, 280], 'div-gpt-ad-1335892349635-2').addService(googletag.pubads());
+    googletag.display('div-gpt-ad-1335892349635-2');
+});
+</script>
+</div>
+
+<!-- SCN-Com-Home2-336x280 -->
+<div id='div-gpt-ad-1335892349635-3' style='width:336px; height:280px;'>
+<script type='text/javascript'>
+googletag.cmd.push(function() {
+    googletag.defineUnit('/1063461/SCN-Com-Home2-336x280', [336, 280], 'div-gpt-ad-1335892349635-3').addService(googletag.pubads());
+    googletag.display('div-gpt-ad-1335892349635-3');
+});
+</script>
+</div>
+
+<!-- SCN-Site-Header-728x90 -->
+<div id='div-gpt-ad-1335892349635-4' style='width:728px; height:90px;'>
+<script type='text/javascript'>
+googletag.cmd.push(function() {
+    googletag.defineUnit('/1063461/SCN-Site-Header-728x90', [728, 90], 'div-gpt-ad-1335892349635-4').addService(googletag.pubads());
+    googletag.display('div-gpt-ad-1335892349635-4');
+});
+</script>
+</div>
+
+<!-- VM-Platform-Article_View_Default-160x600 -->
+<div id='div-gpt-ad-1335892349635-5' style='width:160px; height:600px;'>
+<script type='text/javascript'>
+googletag.cmd.push(function() {
+    googletag.defineUnit('/1063461/VM-Platform-Article_View_Default-160x600', [160, 600], 'div-gpt-ad-1335892349635-5').addService(googletag.pubads());
+    googletag.display('div-gpt-ad-1335892349635-5');
+});
+</script>
+</div>
+
+<!-- VM-Platform-Article_View_Default-300x250 -->
+<div id='div-gpt-ad-1335892349635-6' style='width:300px; height:250px;'>
+<script type='text/javascript'>
+googletag.cmd.push(function() {
+    googletag.defineSlot('/1063461/VM-Platform-Article_View_Default-300x250', [300, 250], 'div-gpt-ad-1335892349635-6').addService(googletag.pubads());
+    googletag.display('div-gpt-ad-1335892349635-6');
+});
+</script>
+</div>
+
+
+
+<script type="text/javascript"><!--
+google_ad_client = "pub-3297144036592508";
+/* 336x280 */
+google_ad_slot = "3537649314";
+google_ad_width = 336;
+google_ad_height = 280;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+
+
+<?php return; ?>
+
+
+<?php
+    $this->headLink()->appendStylesheet($this->internal->vars->static_host . '/js/vm/yui/accordionview/assets/skins/sam/accordionview.css');
+    $this->headScript()->appendFile($this->internal->vars->static_host . '/js/vm/yui/accordionview/accordionview-min.js');
+    $this->inlineScript()->captureStart()
+?>    
+YAHOO.util.Event.onContentReady("options_accordion", function () {
+    var accordion_oa = new YAHOO.widget.AccordionView('options_accordion', {
+        expandItem: 0,
+        collapsible: true,
+        expandable: true,
+        hoverActivated: false,
+        
+        animate: true,
+        animationSpeed: '0.3',
+        effect: YAHOO.util.Easing.easeBothStrong
+    });
+    
+    for (var i in accordion_oa.getPanels()) {
+        accordion_oa.openPanel(i);
+    //    accordion_oa.closePanel(i);
+    }
+});
+<?php $this->inlineScript()->captureEnd() ?>
+
+<?= $this->FormHelper(array('internal' => $this->internal)) ?>
+
+
+<?php /*
+<script>
+contact_preload_data = [
+    {"p_id":"1507","p_name":"Al Stuart","type":"V","c_id":"2","c_name":"smallcapnetwork","c_hostname":"www.smallcapnetwork.com","vc_creation":null,"vc_display":null,"vc_description":null,"vc_message":null,"vc_auto_reciprocate":null,"vc_status":null,"vc_active":null},
+    
+    {"p_id":"2553","p_name":"Art Chompaisal","type":"V","c_id":"2","c_name":"smallcapnetwork","c_hostname":"www.smallcapnetwork.com","vc_creation":null,"vc_display":null,"vc_description":null,"vc_message":null,"vc_auto_reciprocate":null,"vc_status":null,"vc_active":null},
+    
+    {"p_id":"15","p_name":"Art Kang","type":"V","c_id":"2","c_name":"smallcapnetwork","c_hostname":"www.smallcapnetwork.com","vc_creation":null,"vc_display":null,"vc_description":null,"vc_message":null,"vc_auto_reciprocate":null,"vc_status":null,"vc_active":null},
+    
+    {"p_id":"848","p_name":"Arthur E Framke","type":"V","c_id":"2","c_name":"smallcapnetwork","c_hostname":"www.smallcapnetwork.com","vc_creation":null,"vc_display":null,"vc_description":null,"vc_message":null,"vc_auto_reciprocate":null,"vc_status":null,"vc_active":null},
+    
+    {"p_id":"777","p_name":"Arthur Hautau","type":"V","c_id":"2","c_name":"smallcapnetwork","c_hostname":"www.smallcapnetwork.com","vc_creation":null,"vc_display":null,"vc_description":null,"vc_message":null,"vc_auto_reciprocate":null,"vc_status":null,"vc_active":null},
+    
+    {"p_id":"2","p_name":"Arthur M. Kang","type":"V","c_id":"3","c_name":"dev","c_hostname":null,"vc_creation":null,"vc_display":null,"vc_description":null,"vc_message":null,"vc_auto_reciprocate":null,"vc_status":null,"vc_active":null},
+    
+    {"p_id":"1865","p_name":"Bob Stewart","type":"V","c_id":"2","c_name":"smallcapnetwork","c_hostname":"www.smallcapnetwork.com","vc_creation":null,"vc_display":null,"vc_description":null,"vc_message":null,"vc_auto_reciprocate":null,"vc_status":null,"vc_active":null},
+    
+    {"p_id":"173","p_name":"Catherine Martin Wear","type":"V","c_id":"2","c_name":"smallcapnetwork","c_hostname":"www.smallcapnetwork.com","vc_creation":null,"vc_display":null,"vc_description":null,"vc_message":null,"vc_auto_reciprocate":null,"vc_status":null,"vc_active":null}
+];
+</script>
+*/ ?>
+
+<form action="http://www.yahoo.com" class="form" method="get" enctype="application/x-www-form-urlencoded" id="contact_form"><dl class="zend_form">
+<dt id="hidden-label">&nbsp;</dt><dd id="hidden-element"><fieldset id="fieldset-hidden"><dl>
+<dt id="vmpd_nar-label">&nbsp;</dt>
+<dd id="vmpd_nar-element">
+<input type="hidden" id="vmpd_nar" value="1" name="vmpd_nar"></dd>
+<dt id="redirect-label">&nbsp;</dt>
+<dd id="redirect-element">
+<input type="hidden" id="redirect" value="http://dev.viame.com/contact/" name="redirect"></dd>
+<dt id="contact_profile_id-label">&nbsp;</dt>
+<dd id="contact_profile_id-element">
+<input type="hidden" id="contact_profile_id" class="vmfh_acvc_hidden" value="" name="contact_profile_id"></dd></dl></fieldset></dd>
+<table style="width: 100%;">
+    <tbody><tr>
+        <td style="vertical-align: top;">
+
+<dt id="main-label">&nbsp;</dt><dd id="main-element"><fieldset id="fieldset-main"><dl>
+<dt id="contact-label"><label class="required" for="contact">Contact</label></dt>
+<dd id="contact-element">
+
+
+
+<input type="text" class="vmfh_acvc multiple unique nocontacts" value="" id="contact" name="contact" autocomplete="off">
+
+
+<p class="description">Contact name (type partial name and select from drop-down)</p><div class="contact_ac_container yui-ac-container" id="yui-gen13" style="left: 53px; top: 297px;"><div class="yui-ac-content" style="width: 339px; height: 0px; display: none;"><div class="yui-ac-hd" style="display: none;"></div><div class="yui-ac-bd"><ul><li style=""><div class="odd">Al Stuart</div></li><li style=""><div class="even"><em>Art</em> Chompaisal</div></li><li style=""><div class="odd"><em>Art</em> Kang</div></li><li style=""><div class="even"><em>Art</em>hur E  Framke</div></li><li style=""><div class="odd"><em>Art</em>hur Hautau</div></li><li style=""><div class="even"><em>Art</em>hur M. Kang</div></li><li style=""><div class="odd">Bob Stewart</div></li><li style=""><div class="even">Catherine Martin Wear</div></li><li style=""><div class="odd">ChartPoppers Newsletter</div></li><li style=""><div class="even">David <em>Art</em>hur Hume</div></li></ul></div><div class="yui-ac-ft" style="display: block;"><div>Results for "art"</div><div>Displaying top 10 results.</div></div></div></div></dd>
+<dt id="message-label"><label class="optional" for="message">Request Message</label></dt>
+<dd id="message-element">
+<textarea cols="80" rows="24" id="message" name="message"></textarea>
+<p class="description">Message to display to contact (255 Chars Max - Optional)</p></dd></dl></fieldset></dd><dt id="buttons-label">&nbsp;</dt><dd id="buttons-element"><fieldset id="fieldset-buttons"><dl>
+<dt id="submit-label">&nbsp;</dt><dd id="submit-element">
+<input type="submit" value="Create Contact" id="submitter" name="submitter"></dd>
+<dt id="cancel-label">&nbsp;</dt><dd id="cancel-element">
+<input type="submit" value="Cancel" id="cancel" name="cancel"></dd></dl></fieldset></dd>
+        </td>
+        <td style="width: 400px; min-width: 400px; vertical-align: top;"><div style="margin-left: 1em;">
+
+<!-- Begin Options -->
+<div class="cm decorated options">
+    <div class="hd">
+        <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div>
+        </div>
+        <div class="con">
+        	<table class="table">
+
+                <tbody><tr>
+
+                    <td class="lt"></td>
+                    <td class="mn1">Options</td>
+                    <td class="sep"></td>
+                    <td class="mn2"></td>
+                    <td class="rt"></td>
+                </tr>
+            </tbody></table>
+
+        </div>
+
+    </div>
+    <div class="bd">
+
+
+<!-- Begin Accordion -->
+        <ul id="options_accordion" class="yui-accordionview" style="width: auto;"><li class="yui-accordion-panel"><a id="options_accordion-1-label" href="#toggle" tabindex="0" class="yui-accordion-toggle active">Custom Display<span class="indicator"></span></a><div class="yui-accordion-content">
+                
+                <dt id="options_meta-label">&nbsp;</dt><dd id="options_meta-element"><fieldset id="fieldset-options_meta"><dl>
+<dt id="display-label"><label class="optional" for="display">Displayed Name</label></dt>
+<dd id="display-element">
+<input type="text" value="" id="display" name="display">
+<p class="description">Displayed Name</p></dd>
+<dt id="description-label"><label class="optional" for="description">Description</label></dt>
+<dd id="description-element">
+<input type="text" value="" id="description" name="description">
+<p class="description">Description</p></dd></dl></fieldset></dd>                
+            </div></li><li class="yui-accordion-panel"><a id="options_accordion-2-label" href="#toggle" tabindex="0" class="yui-accordion-toggle active">Auto-Reciprocate<span class="indicator"></span></a><div class="yui-accordion-content" style="height: auto;">
+                
+                <dt id="options_reciprocate-label">&nbsp;</dt><dd id="options_reciprocate-element"><fieldset id="fieldset-options_reciprocate"><dl>
+<dt id="auto_reciprocate-label"><label class="optional" for="auto_reciprocate">Auto-Reciprocate</label></dt>
+<dd id="auto_reciprocate-element">
+<input type="hidden" value="0" name="auto_reciprocate"><input type="checkbox" checked="checked" value="1" id="auto_reciprocate" name="auto_reciprocate">
+<p class="description">Auto-Reciprocate</p></dd></dl></fieldset></dd>                
+            </div></li></ul>
+<!-- End Accordion -->
+
+
+    </div>
+    <div class="ft">
+        <div class="dec">
+            <div class="lt"></div><div class="mn"></div><div class="rt"></div>
+        </div>
+    </div>
+</div>
+<!-- End Options -->
+
+        </div></td>
+    </tr>
+</tbody></table>
+</dl></form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<?php /*
+<?php
+$this->headScript()->appendFile($this->internal->vars->static_host . '/js/shadowbox/shadowbox.js');
+$this->headLink()->appendStylesheet($this->internal->vars->static_host . '/js/shadowbox/shadowbox.css');
+$this->inlineScript()->appendScript("YAHOO.util.Event.onDOMReady(function() { Shadowbox.init(); });");
+?>
+
+<a href="http://www.yahoo.com" rel="shadowbox">Yahoo!</a> - 
+<a href="https://static.viame.com/public_files/011910-technical2/2010/01/19/6f9a4ef0d54fd5f1137275ed834cccdc/011910-cga.gif" rel="shadowbox">Image</a> -
+<a href="/page/view/p/mid/1/title/Terms+of+Use/?layout=plain" onclick="return YAHOO.viame.shadowbox.shadowto('/page/view/p/mid/1/title/Terms+of+Use/?layout=plain');">Terms of Use</a>
+
+
+
+<?php $this->inlineScript()->captureStart() ?>
+YAHOO.util.Event.onDOMReady(function() {
+    YAHOO.namespace("viame.signin");
+    YAHOO.viame.signin.init = (function(locurl) {
+        popup = YAHOO.viame.signin.signin_popup;
+        if (!popup) {
+            YAHOO.viame.signin.signin_popup = new YAHOO.widget.Panel("signin_popup", { width: "360px", fixedcenter: true, close: true, draggable: false, modal: true, visible: false });
+            YAHOO.viame.signin.signin_popup.setHeader("&nbsp;");
+            
+            var callback = {
+                success : function(o) {
+                    YAHOO.viame.signin.signin_popup.setBody(o.responseText);
+                    YAHOO.viame.signin.signin_popup.render(document.body);
+                    YAHOO.viame.signin.signin_popup.show();
+                },
+                failure : function(o) {
+                    document.location.href = locurl;
+                    return true;
+                }
+            };
+            var conn = YAHOO.util.Connect.asyncRequest("GET", "/member/login/p/no_layout/1/simple_content/1/", callback);
+        }
+        else {
+            popup.show();
+        }
+        
+        return false;
+    });
+});
+<?php $this->inlineScript()->captureEnd() ?>
+
+return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false });">
+
+<a href="/member/login/" onclick="return YAHOO.viame.signin.init('/member/login/');">Sign In</a>
+*/ ?>

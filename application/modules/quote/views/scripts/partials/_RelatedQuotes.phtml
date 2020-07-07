@@ -1,0 +1,545 @@
+<?php
+/*
+ * Related Quotes Partial
+ *
+ */
+
+if (count($this->quote_data) && !isset($this->placeholder('related_quotes')->symbols)) {
+    // Save for display in any layouts - modal popups
+    $temp_symbols_array = array();
+    foreach ($this->quote_data as $data) {
+        $temp_symbols_array[] = $data->internal_symbol;
+    }
+    $this->placeholder('related_quotes')->symbols = $temp_symbols_array;
+}
+?>
+<div class="related_quotes">
+<?php if (!isset($this->which_part) || $this->which_part == '1') { ?>
+    <div class="stockhq">
+        <h4>StockHQ</h4>
+        <ul class="straight decorated">
+    
+<?php
+$currency = new ViaMe_Currency('USD');
+foreach ($this->quote_data as $data) {
+    $close = ($data->previous_close ? $data->previous_close : $data->open);
+    $change = $data->last - $close;
+    if ($close > 0) { $perc = $change / $close * 100; }
+    else { $perc = 0; }
+?><li><h3><span class="symbol"><?php $this->id = $data->id; $this->name = $data->name; $this->symbol = $data->internal_symbol; if (isset($data->active)) { $this->active = $data->active; } echo $this->render('partials/_SymbolDisplay.phtml'); ?></span></h3><span class="price"><?= $currency->toCurrency($data->last) ?></span><span<?= ($change > 0 ? ' class="netup"' : ($change < 0 ? ' class="netdown"' : '')) ?>><span class="change"><?= ($change > 0 ? '+' : '') ?><?= $currency->toCurrency($change) ?></span><span class="change_perc"><?= ($change > 0 ? '+' : '') ?><?= Zend_Locale_Format::toNumber($perc, array('locale' => $this->internal->locale, 'precision' => 2)) ?>%</span></span></li><?php } ?>
+
+        </ul>
+    </div>
+<?php } ?>
+
+<?php if (!isset($this->which_part) || $this->which_part == '2') { ?>
+    <div class="community_blurb">
+        <p><strong><u><span class="netup">Agree</span> or <span class="netdown">Disagree</span>?</u></strong> Got something to say about
+<?php
+$counter = 0;
+foreach ($this->quote_data as $data) {
+    if ($counter) {
+        if ($counter + 1 == count($this->quote_data)) {
+            echo ' or ';
+        }
+        else {
+            echo ', ';
+        }
+    }
+    $this->id = $data->id;
+    $this->name = $data->name;
+    $this->symbol = $data->internal_symbol;
+    if (isset($data->active)) { $this->active = $data->active; }
+    echo $this->render('partials/_SymbolDisplay.phtml');
+    
+    $counter++;
+}
+?>?  Publish and share your information, opinions, and ratings with other like-minded investors.</p>
+    </div>
+<?php } ?>
+
+<?php if (!isset($this->which_part) || $this->which_part == '3') { ?>
+
+<?php /*
+<?php if (isset($this->int_location) && $this->int_location == 'TOP' && (rand(0, 1))) { ?>
+    <div class="stockhqsignup" style="border: 1px solid #dadee5; background-color: #eee; margin-bottom: 1em; padding: 1em;">
+    	<p><strong><font size="+2">This Clean Tech Stock is Quietly Taking Over...</font></strong></p>
+        <table width="100%" border="0" style="font-size: 14px;">
+            <tr>
+                <td colspan="2" style="padding: 3px;"><p><strong><font size="+1">The SmallCap Network has identified an undervalued M&A play in the alternative energy space that is rapidly becoming a major player in clean tech.</font></strong></p></td>
+                <td rowspan="4" align="center" valign="middle" style="padding: 3px;"><a href="https://static.viame.com/public_files/Blue-Earth-Research-Report/2011/11/21/f40b60b6673b575a3862701b064aca64/BBLU+Report.pdf"><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/ahro_ad/ahro_ad-ch.gif" alt="" width="149" height="191" /></a></td>
+            </tr>
+            <tr>
+                <td style="padding: 3px;">Date:</td>
+                <td style="padding: 3px;">
+<?php
+    $date = new Zend_Date('2011-11-17');
+    if (isset($this->internal->member)) {
+        $date->setTimezone($this->internal->member->timezone);
+        echo $date->toString(Zend_Date::DATE_LONG);
+    }
+    else {
+        $date->setTimezone($this->internal->config->timezone);
+        echo $date->toString(Zend_Date::DATE_LONG);
+    }
+?>
+                </td>
+                </tr>
+            <tr>
+                <td style="padding: 3px;">Price:</td>
+                <td style="padding: 3px;"><strong><font color="#008800">Free</font></strong></td>
+                </tr>
+            <tr>
+                <td valign="top" style="padding: 3px;">Example Preview:</td>
+                <td valign="top" style="padding: 3px;"><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/ahro_ad/ss1.png" alt="" width="80" height="103" hspace="3" /><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/ahro_ad/ss2.png" alt="" width="80" height="103" hspace="3" /><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/ahro_ad/ss3.png" alt="" width="80" height="103" hspace="3" /></td>
+            </tr>
+        </table>
+    </div>
+<?php } else { ?>
+<?php */ ?>
+<?php
+$counter = 0;
+#Zend_Debug::Dump($this->featured);
+$stock_string = $stock_string2 = null;
+$data_do = ((isset($this->featured) && $this->featured) ? $this->featured : $this->quote_data);
+foreach ($data_do as $data) {
+    if ($counter) {
+        if ($counter + 1 == count($data_do)) {
+            $stock_string .= ' or ';
+            $stock_string2 .= ' and ';
+        }
+        else {
+            $stock_string .= ', ';
+            $stock_string2 .= ', ';
+        }
+    }
+    #$this->id = $data->id;
+    #$this->name = $data->name;
+    #$this->symbol = $data->internal_symbol;
+    #if (isset($data->active)) { $this->active = $data->active; }
+    #echo $this->render('partials/_SymbolDisplay.phtml');
+    
+    if (isset($this->featured) && $this->featured) {
+        $this->id = $data->id;
+        $this->name = $data->name;
+        $this->symbol = $data->internal_symbol;
+        if (isset($data->active)) { $this->active = $data->active; }
+        $ss = $this->render('partials/_SymbolDisplay.phtml');
+        
+        if ($data->report_url) {
+            $stock_string .= '<a href="'.$data->report_url.'" title="Research Report on '.$data->name.'">' . $data->internal_symbol . '</a>';
+        }
+        else {
+            $stock_string .= $data->internal_symbol;
+        }
+        $stock_string2 .= $ss;
+    }
+    else {
+        $stock_string .= $data->internal_symbol;
+        $stock_string2 .= $data->internal_symbol;
+    }
+    
+    $counter++;
+}
+
+if (!$stock_string) { $stock_string = 'any stock'; }
+
+// Set the strings
+if (isset($this->featured) && $this->featured) {
+    $dstring1 = "Visit the ".$this->internal->community->display." Stock HQ for our Featured Stock(s) $stock_string2.";
+    $dstring2 = "Download a free research report on $stock_string.";
+}
+else {
+    $dstring1 = "Do NOT buy or sell $stock_string until you have read everything.";
+    $dstring2 = $this->internal->community->display . " provides comprehensive research, opinions, and ratings on $stock_string2.";
+}
+?>
+
+
+<?php if (!isset($this->placeholder('related_quotes')->rendered3) || !($this->placeholder('related_quotes')->rendered3)) { ?>
+<div id="RQ-SUFCH-Dialog" style="display: none; border: none; text-align: left;">
+    <div class="hd">Sign Up Free!</div>
+    <div class="bd">
+        <form id="rqsufch_member_form" enctype="application/x-www-form-urlencoded" class="form regula-validation shortform" method="post" action="/member/register/p/supershortform/noverify/">
+            <input type="hidden" name="vmpd_npr" value="1" />
+            <input type="hidden" name="vmpd_nsslr" value="1" />
+            <input id="signup_entrance2" type="hidden" name="signup_entrance" value="RQ-SUFCH-2S" />
+            <input type="text" style="display: none;" />
+            <table width="100%">
+                <tr>
+                    <td nobr="nobr" width="1%" style="padding: 5px; white-space:nowrap; font-weight: bold;">Email Address:</td>
+                    <td style="padding: 5px 5px 5px 0;">
+                        <input type="text" name="email" id="email2" value="" maxlength="256" class="regula-validation" data-constraints="@Email(label=&quot;email address&quot;, message=&quot;The {label} was not formatted properly.&quot;, groups=[rqsufchmodal_registration_form])" style="height: 22px; width: 97%; padding: .4em; border: 1px solid #cfcfcf;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 5px;">&nbsp;</td>
+                    <td style="padding-right: 5px;">
+                        <input type="hidden" name="tos" value="1" /><input type="checkbox" name="tos" id="tos2" value="1" checked="checked" class="regula-validation" data-constraints="@Required(message=&quot;You must agree to the Terms of Use.&quot;, groups=[rqsufchmodal_registration_form])" />&nbsp;&nbsp;&nbsp;I Agree to the <!-- <a href="/page/view/p/mid/1/title/Terms+of+Use/" rel="nofollow" style="color: #fff;" target="_blank">Terms of Use</a> -->
+                        	<a title="Terms of Service" onclick="return YAHOO.viame.shadowbox.shadowto('/page/view/p/mid/1/title/Terms+of+Use/?vmpd_rqsv=no_layout,vmpd_nsslr,vmcd_ncr&amp;no_layout=1&amp;vmpd_nsslr=1&amp;vmcd_ncr=1', {width: '600px', height: '500px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false});" rel="nofollow" target="_blank" href="/page/view/p/mid/1/title/Terms+of+Use/">Terms of Service</a>
+                    </td>
+                </tr>
+            </table>
+            <div style="margin-top: 1em; text-align: right;"><a href="javascript:void(null);" rel="nofollow" onclick="YAHOO.viame.rqsufchmodal.signup_popup_handleSubmit();"><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/submit_button.png" /></a></div>
+        </form>
+    </div>
+</div>
+
+<div id="RQ-SUFCH-Dialog_success" style="display: none; border: none; text-align: left;">
+    <div class="bd" style="padding: 0; border: 3px solid #000; background-color: #fff; border-radius: 10px; -moz-border-radius: 10px; -webkit-border-radius: 10px;">
+        <a href="javascript:void(null);" rel="nofollow" onclick="YAHOO.viame.rqsufchmodal.signup_popup_success_handleCancel();" style="color: #f00; display: block; position: absolute; top: 10px; right: 10px;"><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/close.png" alt="Close" /></a>
+        <div style="padding: 1em; margin-bottom: 1em; background: #f0efef url(<?= $this->internal->vars->static_host ?>/css/theme/default/assets/stockhq/header_bg.png) center center repeat-x; border-top-left-radius: 10px; -moz-border-radius-topleft: 10px; -webkit-border-topleft-radius: 10px; border-top-right-radius: 10px; -moz-border-radius-topright: 10px; -webkit-border-topright-radius: 10px;"><span style="color: #193764; font-size: 30px;">Check Your Email</span></div>
+        <div style="padding: 0 1em 1em 1em; font-size: 120%; line-height: 140%;">
+            <div><strong>To complete your registration, <span style="color: #193764;">you must verify your email address</span>. Don't worry, it's quick and easy!</strong></div>
+            <div style="margin: 12px 0 5px 15px; font-size: 14px; font-weight: normal; padding-left: 29px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/check.png) top left no-repeat;">Go to your inbox now.</div>
+            <div style="margin: 5px 0 5px 15px; font-size: 14px; font-weight: normal; padding-left: 29px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/check.png) top left no-repeat;">Find the verification email from SmallCap Network (<strong>you might need to check your spam folder</strong>).</div>
+            <div style="margin: 5px 0 5px 15px; font-size: 14px; font-weight: normal; padding-left: 29px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/check.png) top left no-repeat;"><strong>Click on the verification link</strong> provided in the email.</div>
+            <div style="margin: 5px 0 12px 15px; font-size: 14px; font-weight: normal; padding-left: 29px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/check.png) top left no-repeat;">Start reaping the benefits of your free <strong>SCN Membership</strong>!</div>
+            
+            <div style="font-size: 14px; line-height: 120%; margin-bottom: 1em;">Once you verify your email address, you will have immediate login access to the SmallCap Network Community and will automatically be added to our priority list of Members who receive our Newsletter before anyone else.</div>
+
+            <div style="font-size: 14px; line-height: 120%;">Also, <strong>make sure to add our email address to your contact list</strong> to ensure delivery of our Newsletter straight to your inbox.</div>
+        </div>
+    </div>
+</div>
+
+<?php $this->inlineScript()->captureStart() ?>
+YAHOO.util.Event.onDOMReady(function () {
+	YAHOO.namespace("viame.rqsufchmodal");
+	
+	// Define various event handlers for Dialog
+	YAHOO.viame.rqsufchmodal.signup_popup_handleSubmit = (function() {
+	    if ( YAHOO.viame.vivin_regula.validate(YAHOO.util.Dom.get('rqsufch_member_form'), { groups: [regula.Group.rqsufchmodal_registration_form] }) ) {
+	        
+	        // Check Email Before Submitting
+	        validEmail = true;
+		    
+            $.ajax({
+                url: "/member/ajax/checkemail/",
+                cache: false,
+                async: false,
+                data: { no_cache: 1, email:  $('#rqsufch_member_form #email2').val() },
+                success: function(data) {
+                    if (data == 'true') {
+                        YAHOO.viame.rqsufchmodal.emailErrorDialog = new YAHOO.widget.SimpleDialog("emailerrorsimpledialog", {
+                            width: "300px",
+                            fixedcenter: true,
+                            visible: true,
+                            draggable: false,
+                            close: true,
+                            modal: true,
+                            text: '<p style="text-align: left;">That email address is already registered. Please <a href="/member/login/p/signup_entrance/FT-NU-Modal-Get/">sign-in</a> or try a different email address.</p>',
+                            icon: YAHOO.widget.SimpleDialog.ICON_WARN,
+                            constraintoviewport: true,
+                            buttons: [ { text: "OK", handler: function() { this.destroy(); }, isDefault:true } ]
+                        } );
+                    	YAHOO.viame.rqsufchmodal.emailErrorDialog.setHeader("Duplicate Email Address");
+                    	YAHOO.viame.rqsufchmodal.emailErrorDialog.render(document.body);
+
+                        validEmail = false;
+                    }
+                }
+            });
+            
+            $.ajax({
+                url: "/member/ajax/checkemail_verify/",
+                cache: false,
+                async: false,
+                data: { no_cache: 1, email:  $('#rqsufch_member_form #email2').val() },
+                success: function(data) {
+                    if (data == 'false') {
+                        YAHOO.viame.rqsufchmodal.emailErrorDialog = new YAHOO.widget.SimpleDialog("emailerrorsimpledialog", {
+                            width: "300px",
+                            fixedcenter: true,
+                            visible: true,
+                            draggable: false,
+                            close: true,
+                            modal: true,
+                            text: '<p style="text-align: left;">That email address appears to be invalid. Please try again or select a different email address.</p>',
+                            icon: YAHOO.widget.SimpleDialog.ICON_WARN,
+                            constraintoviewport: true,
+                            buttons: [ { text: "OK", handler: function() { this.destroy(); }, isDefault:true } ]
+                        } );
+                    	YAHOO.viame.rqsufchmodal.emailErrorDialog.setHeader("Invalid Email Address");
+                    	YAHOO.viame.rqsufchmodal.emailErrorDialog.render(document.body);
+                        
+                        //$('#rqsufch_member_form #email2').val('');
+                        
+                        validEmail = false;
+                    }
+                }
+            });
+            
+	        if ( validEmail && YAHOO.viame.dubsub.check(YAHOO.util.Dom.get('rqsufch_member_form')) ) {
+    			YAHOO.viame.rqsufchmodal.signup_popup.hide();
+    	        YAHOO.viame.rqsufchmodal.signup_popup.submit();
+    	        
+    	        YAHOO.util.Cookie.set("modal_signed_up", 1, { path: "/" });
+    	        
+    	        YAHOO.viame.rqsufchmodal.signup_popup_success_handleCancel = (function() {
+    	            YAHOO.viame.rqsufchmodal.signup_popup_success.cancel();
+    	            slideFixedOut();
+    	        });
+    	        
+    	        YAHOO.util.Dom.setStyle('RQ-SUFCH-Dialog_success', 'display', 'block');
+    	        YAHOO.viame.rqsufchmodal.signup_popup_success = new YAHOO.widget.Dialog("RQ-SUFCH-Dialog_success", {
+        			width : "40em",
+        			fixedcenter : true,
+        			draggable: false, 
+                    zindex: 10,
+                    modal: true,
+        			close: false,
+        			underlay: 'none',
+        			visible : false,
+        			constraintoviewport : true,
+        			effect: { effect: YAHOO.widget.ContainerEffect.FADE, duration: 0.5 }
+        		} );
+        		YAHOO.viame.rqsufchmodal.signup_popup_success.render();
+    	        YAHOO.viame.rqsufchmodal.signup_popup_success.show();
+    	    }
+	    }
+	});
+	
+	YAHOO.viame.rqsufchmodal.signup_popup_handleSuccess = (function(o) { YAHOO.viame.rqsufchmodal.signup_popup.destroy(); });
+	YAHOO.viame.rqsufchmodal.signup_popup_handleFailure = (function(o) { });
+	
+	YAHOO.util.Dom.setStyle('RQ-SUFCH-Dialog', 'display', 'block');
+
+	// Instantiate the Dialog
+	YAHOO.viame.rqsufchmodal.signup_popup = new YAHOO.widget.Dialog("RQ-SUFCH-Dialog", {
+		width : "30em",
+		fixedcenter : true,
+		draggable: false, 
+        zindex: 10,
+        modal: true,
+		close: true,
+		underlay: 'none',
+		visible : false,
+		constraintoviewport : true,
+		effect: { effect: YAHOO.widget.ContainerEffect.FADE, duration: 0.5 }
+	} );
+	
+	// Wire up the success and failure handlers
+	YAHOO.viame.rqsufchmodal.signup_popup.callback = { success: YAHOO.viame.rqsufchmodal.signup_popup_handleSuccess, failure: YAHOO.viame.rqsufchmodal.signup_popup_handleFailure };
+	
+	// Render the Dialog
+	YAHOO.viame.rqsufchmodal.signup_popup.render();
+});
+<?php $this->inlineScript()->captureEnd() ?>
+<?php
+}
+$this->placeholder('related_quotes')->rendered3 = true;
+?>
+
+    <div class="stockhqsignup" style="border: 1px solid #dadee5; background-color: #eee; margin-bottom: 1em; padding: 1em;">
+    	<p><strong><font size="+2"><?= $dstring1 ?></font></strong></p>
+        <table width="100%" border="0" style="font-size: 14px;">
+            <?php /* <tr>
+                <td colspan="2" style="padding: 3px;"><p><strong><font size="+1"><?= $dstring2 ?></font></strong></p></td>
+                <td rowspan="4" align="center" valign="middle" style="padding: 3px;"><a href="/Sign-Up-Free/s/member/register/p/shortform/1/signup_entrance/RQ-SUFCH-<?= (isset($this->int_location) && $this->int_location ? $this->int_location : 'TOP') ?>/"><img src="<?= $this->internal->vars->static_host ?>/css/theme/default/assets/stocks/suf-ch.gif" alt="" width="149" height="172" /></a></td>
+            </tr> */ ?>
+            <tr>
+                <td colspan="2" style="padding: 3px;"><p><strong><font size="+1"><?= $dstring2 ?></font></strong></p></td>
+                <td rowspan="4" align="center" valign="middle" style="padding: 3px;"><a href="/Sign-Up-Free/s/member/register/p/shortform/1/signup_entrance/RQ-SUFCH-<?= (isset($this->int_location) && $this->int_location ? $this->int_location : 'TOP') ?>/" class="RQ-SUFCH-button" onclick="$('#rqsufch_member_form #signup_entrance2').val('RQ-SUFCH-<?= (isset($this->int_location) && $this->int_location ? $this->int_location : 'TOP') ?>-2S'); YAHOO.viame.rqsufchmodal.signup_popup.show(); return false;"><img src="<?= $this->internal->vars->static_host ?>/css/theme/default/assets/stocks/suf-ch.gif" alt="" width="149" height="172" /></a></td>
+            </tr>
+            <tr>
+                <td style="padding: 3px;">Date:</td>
+                <td style="padding: 3px;">
+<?php
+    $date = new Zend_Date();
+    if (isset($this->internal->member)) {
+        $date->setTimezone($this->internal->member->timezone);
+        echo $date->toString(Zend_Date::DATE_LONG);
+    }
+    else {
+        $date->setTimezone($this->internal->config->timezone);
+        echo $date->toString(Zend_Date::DATE_LONG);
+    }
+?>
+                </td>
+                </tr>
+            <tr>
+                <td style="padding: 3px;">Price:</td>
+                <td style="padding: 3px;"><strong><font color="#008800">Free</font></strong></td>
+                </tr>
+            <tr>
+                <td valign="top" style="padding: 3px;">Example Preview:</td>
+                <td valign="top" style="padding: 3px;"><img src="<?= $this->internal->vars->static_host ?>/css/theme/default/assets/stocks/ss1.png" alt="" width="100" height="76" hspace="3" /><img src="<?= $this->internal->vars->static_host ?>/css/theme/default/assets/stocks/ss2.png" alt="" width="100" height="76" hspace="3" /><img src="<?= $this->internal->vars->static_host ?>/css/theme/default/assets/stocks/ss3.png" alt="" width="100" height="76" hspace="3" /></td>
+            </tr>
+        </table>
+    </div>
+
+<?php /* ?>
+    <div class="stockhqsignup" style="background-color: #0f244e; background: -moz-linear-gradient(top, #1a3866 0%, #0f244e 50%); background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #1a3866), color-stop(50%, #0f244e)); background: -o-linear-gradient(top, #1a3866 0%, #0f244e 50%); color: #fff; margin-bottom: 1em; padding: .5em;">
+    	<div style="margin-bottom: 6px;">
+    	  <div style="float: right; margin-left: 1em; text-align: center;">
+    	    <a href="/Sign-Up-Free/s/member/register/p/shortform/1/signup_entrance/RQ-SUFCH-<?= (isset($this->int_location) && $this->int_location ? $this->int_location : 'TOP') ?>/"><img src="<?= $this->internal->vars->static_host ?>/css/theme/default/assets/stocks/suf-ch-ss.gif" alt="" width="100" height="135" /></a><br />
+    	    Date: 
+<?php
+    $date = new Zend_Date();
+    if (isset($this->internal->member)) {
+        $date->setTimezone($this->internal->member->timezone);
+        echo $date->toString(Zend_Date::DATE_SHORT);
+    }
+    else {
+        $date->setTimezone($this->internal->config->timezone);
+        echo $date->toString(Zend_Date::DATE_SHORT);
+    }
+?>
+    	    <br />
+    	    <strong>Price</strong>: <strong>Free</strong>
+    	  </div>
+          <span style="font-size: 22px; font-weight: bold;"><?= $dstring1 ?></span></div>
+    	<p style="margin-bottom: 6px; font-size: 18px; font-weight: bold;"><?= $dstring2 ?></p>
+        <div style="margin: 2em 0 .5em 0; text-align: center;">
+            <span>
+                <a href="/Sign-Up-Free/s/member/register/p/shortform/1/signup_entrance/RQ-SUFCH-<?= (isset($this->int_location) && $this->int_location ? $this->int_location : 'TOP') ?>/" style="padding: .5em 2em; font-size: 16px; font-weight: bold; text-decoration: none; color: #152e58; border-color: #eab14f; border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; background: #fac73d; background: -moz-linear-gradient(top,  #fff0a5 0%, #ee960c 100%); background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fff0a5), color-stop(100%, #ee960c)); background: -webkit-linear-gradient(top, #fff0a5 0%, #ee960c 100%); background: -o-linear-gradient(top, #fff0a5 0%, #ee960c 100%); background: -ms-linear-gradient(top, #fff0a5 0%, #ee960c 100%); background: linear-gradient(top,  #fff0a5 0%,#ee960c 100%);">Sign Up FREE... Click Here!</a>
+            </span>
+        </div>
+        <div style="clear: both;"></div>
+    </div>
+<?php */ ?>
+
+<?php // End Randomizer } ?>
+<?php } ?>
+
+
+
+
+<?php if (isset($this->which_part) && $this->which_part == '4') { ?>
+
+<?php /*
+<?php if (isset($this->int_location) && $this->int_location == 'TOP' && (rand(0, 1))) { ?>
+    <div class="stockhqsignup" style="border: 1px solid #dadee5; background-color: #eee; margin-bottom: 1em; padding: 1em;">
+    	<p><strong><font size="+2">This Clean Tech Stock is Quietly Taking Over...</font></strong></p>
+        <table width="100%" border="0" style="font-size: 14px;">
+            <tr>
+                <td colspan="2" style="padding: 3px;"><p><strong><font size="+1">The SmallCap Network has identified an undervalued M&A play in the alternative energy space that is rapidly becoming a major player in clean tech.</font></strong></p></td>
+                <td rowspan="4" align="center" valign="middle" style="padding: 3px;"><a href="https://static.viame.com/public_files/Blue-Earth-Research-Report/2011/11/21/f40b60b6673b575a3862701b064aca64/BBLU+Report.pdf"><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/ahro_ad/ahro_ad-ch.gif" alt="" width="149" height="191" /></a></td>
+            </tr>
+            <tr>
+                <td style="padding: 3px;">Date:</td>
+                <td style="padding: 3px;">
+<?php
+    $date = new Zend_Date('2011-11-17');
+    if (isset($this->internal->member)) {
+        $date->setTimezone($this->internal->member->timezone);
+        echo $date->toString(Zend_Date::DATE_LONG);
+    }
+    else {
+        $date->setTimezone($this->internal->config->timezone);
+        echo $date->toString(Zend_Date::DATE_LONG);
+    }
+?>
+                </td>
+                </tr>
+            <tr>
+                <td style="padding: 3px;">Price:</td>
+                <td style="padding: 3px;"><strong><font color="#008800">Free</font></strong></td>
+                </tr>
+            <tr>
+                <td valign="top" style="padding: 3px;">Example Preview:</td>
+                <td valign="top" style="padding: 3px;"><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/ahro_ad/ss1.png" alt="" width="80" height="103" hspace="3" /><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/ahro_ad/ss2.png" alt="" width="80" height="103" hspace="3" /><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/ahro_ad/ss3.png" alt="" width="80" height="103" hspace="3" /></td>
+            </tr>
+        </table>
+    </div>
+<?php } else { ?>
+<?php */ ?>
+<?php
+$counter = 0;
+#Zend_Debug::Dump($this->featured);
+$stock_string = $stock_string2 = null;
+$data_do = ((isset($this->featured) && $this->featured) ? $this->featured : $this->quote_data);
+foreach ($data_do as $data) {
+    if ($counter) {
+        if ($counter + 1 == count($data_do)) {
+            $stock_string .= ' or ';
+            $stock_string2 .= ' and ';
+        }
+        else {
+            $stock_string .= ', ';
+            $stock_string2 .= ', ';
+        }
+    }
+    #$this->id = $data->id;
+    #$this->name = $data->name;
+    #$this->symbol = $data->internal_symbol;
+    #if (isset($data->active)) { $this->active = $data->active; }
+    #echo $this->render('partials/_SymbolDisplay.phtml');
+    
+    if (isset($this->featured) && $this->featured) {
+        $this->id = $data->id;
+        $this->name = $data->name;
+        $this->symbol = $data->internal_symbol;
+        if (isset($data->active)) { $this->active = $data->active; }
+        $ss = $this->render('partials/_SymbolDisplay.phtml');
+        
+        if ($data->report_url) {
+            $stock_string .= '<a href="'.$data->report_url.'" title="Research Report on '.$data->name.'">' . $data->internal_symbol . '</a>';
+        }
+        else {
+            $stock_string .= $data->internal_symbol;
+        }
+        $stock_string2 .= $ss;
+    }
+    else {
+        $stock_string .= $data->internal_symbol;
+        $stock_string2 .= $data->internal_symbol;
+    }
+    
+    $counter++;
+}
+
+if (!$stock_string) { $stock_string = 'any stock'; }
+
+// Set the strings
+if (isset($this->featured) && $this->featured) {
+    $dstring1 = "Visit the ".$this->internal->community->display." Stock HQ for our Featured Stock(s) $stock_string2.";
+    $dstring2 = "Download a free research report on $stock_string.";
+}
+else {
+    $dstring1 = "Do NOT buy or sell $stock_string until you have read everything.";
+    $dstring2 = $this->internal->community->display . " provides comprehensive research, opinions, and ratings on $stock_string2.";
+}
+?>
+    <div class="stockhqsignup" style="border: 1px solid #dadee5; background-color: #eee; margin-bottom: 1em; padding: 1em;">
+        <img src="<?= $this->internal->vars->static_host ?>/css/theme/default/assets/stocks/ss1.png" alt="" width="100" height="76" hspace="3" align="right"/>
+    	<p style="font-size: 120%; font-weight: bold;"><?= $dstring1 ?></p>
+    	<p style="font-weight: bold;"><?= $dstring2 ?></p>
+    	
+        <table width="100%" border="0">
+            <tr>
+                <td style="padding: 2px;">Date:</td>
+                <td style="padding: 2px;">
+<?php
+    $date = new Zend_Date();
+    if (isset($this->internal->member)) {
+        $date->setTimezone($this->internal->member->timezone);
+        echo $date->toString(Zend_Date::DATE_LONG);
+    }
+    else {
+        $date->setTimezone($this->internal->config->timezone);
+        echo $date->toString(Zend_Date::DATE_LONG);
+    }
+?>
+                </td>
+                </tr>
+            <tr>
+                <td style="padding: 2px;">Price:</td>
+                <td style="padding: 2px;"><strong><font color="#008800">Free</font></strong></td>
+                </tr>
+        </table>
+        
+        
+        <form action="/Sign-Up-Free/s/member/register/p/shortform/1/signup_entrance/RQ-SUFCH-<?= (isset($this->int_location) && $this->int_location ? $this->int_location : 'SIDE') ?>/" style="text-align: right;">
+            <input type="submit" value="Sign Up FREE" style="color: #152e58; border-color: #eab14f; border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; background: #fff0a5; background: -moz-linear-gradient(top,  #fff0a5 0%, #ee960c 100%); background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fff0a5), color-stop(100%, #ee960c)); background: -webkit-linear-gradient(top, #fff0a5 0%, #ee960c 100%); background: -o-linear-gradient(top, #fff0a5 0%, #ee960c 100%); background: -ms-linear-gradient(top, #fff0a5 0%, #ee960c 100%); background: linear-gradient(top,  #fff0a5 0%,#ee960c 100%);" />
+        </form>
+        
+    </div>
+<?php // End Randomizer } ?>
+<?php } ?>
+
+
+</div>
+
+    

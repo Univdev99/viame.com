@@ -1,0 +1,67 @@
+<div class="interstitial_ad_wrapper">
+	<div class="header">
+		<div class="continue">
+			<p><a class="continue" href="javascript:goBack();" >Continue to Site &raquo;</a></p>
+			<p><span class="time_remaining">Site will load in <span id="countdown">30</span> second(s)</span></p>
+		</div>
+		
+		<div class="clear"></div>
+	</div>
+    
+	<div class="ad_wrapper">
+		<p class="advertisement">ADVERTISEMENT (EXAMPLE)</p>
+        <div class="interstitial_ad">
+
+<div style="text-align: center;">
+<a href="https://www.personalcapital.com/landing/benefits/0008?utm_source=NDM&utm_medium=CPM&utm_campaign=smallCap_Interstitial&utm_content=038_BetterDecisionsL_640x480-revised" target="_blank"><img src="https://static.viame.com/images/038_BetterDecisionsL_640x480-revised.jpg" /></a>
+</div>
+
+
+        </div>
+	</div>
+</div>
+
+
+
+<?php $this->inlineScript()->captureStart() ?>
+var timer = 30000;
+var count = timer / 1000;
+var dest = '<?= isset($this->internal->params->dest) && $this->internal->params->dest ? $this->internal->params->dest : ''?>';
+
+var backtriggered = false;
+//setTimeout('goBack()', timer);
+function goBack() {
+    if (!backtriggered) {
+        backtriggered = true;
+        if (dest) {
+            location.href = dest;
+        }
+        else if (YAHOO.util.Cookie.get('interstitial_dest')) {
+            location.href = YAHOO.util.Cookie.get('interstitial_dest');
+        }
+        else if (document.referrer) {
+            location.href = document.referrer;
+        }
+        else if (location.hostname) {
+            location.href = 'http://' + location.hostname;
+        }
+        else if (history.length > 1) {
+            history.back();
+        }
+        else {
+            location.href = 'http://<?= $this->internal->vars->host ?>';
+        }
+    }
+}
+
+var counter = setInterval("countdown()", 1000);
+function countdown() {
+	count = count - 1;
+	if (count <= 0)	{
+		clearInterval(counter);
+		//counter ended, do something here
+		return;
+	}
+	document.getElementById("countdown").innerHTML=count;
+}
+<?php $this->inlineScript()->captureEnd() ?>

@@ -1,0 +1,196 @@
+<div id="exitPopupDiv" style="display: none; width: 880px; height: 382px; border: none; text-align: left;">
+    <div class="bd" style="padding: 2em; border: 3px solid #000; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/background.png) top center no-repeat; border-radius: 10px; -moz-border-radius: 10px; -webkit-border-radius: 10px;">
+        <a href="javascript:void(null);" rel="nofollow" onclick="YAHOO.viame.exitpopup.popup.cancel();" style="color: #f00; display: block; position: absolute; top: 10px; right: 10px;"><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/close.png" alt="Close" /></a>
+        <table width="100%"><tr>
+        	<td width="50%" valign="top" style="padding-right: 2em; font-weight: bold;">
+            	<div style="color: #193764; font-size: 30px;">SIGN-UP NOW...FREE!</div>
+
+                <div style="font-size: 21px; line-height: 24px; padding-bottom: 16px; margin-bottom: 16px; border-bottom: 1px dotted #a5afbe;">Find Out What Traders In the Know Are Saying About 
+                <?php
+                    if (isset($this->placeholder('related_quotes')->symbols)) {
+                        $symbols = $this->placeholder('related_quotes')->symbols;
+                        if (count($symbols) < 3) {
+                            echo implode(' and ', $symbols);
+                        }
+                        else {
+                            $holder = array_pop($symbols);
+                            echo implode(', ', $symbols) . ', and ' . $holder;
+                        }
+                    }
+                    else {
+                        echo " Stocks You Own";
+                    }
+                ?>
+                </div>
+                
+                <div style="color: #193764; font-size: 18px;">GET FREE ACCESS TO:</div>
+                
+                <div style="margin: 7px 0; font-size: 14px; font-weight: normal; padding-left: 29px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/check.png) top left no-repeat;">Small Cap Stocks Before They Breakout!</div>
+                <div style="margin: 7px 0; font-size: 14px; font-weight: normal; padding-left: 29px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/check.png) top left no-repeat;">Small Cap Stock Traders Who Consistently Kill It For Huge Gains!</div>
+                <div style="margin: 7px 0; font-size: 14px; font-weight: normal; padding-left: 29px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/check.png) top left no-repeat; padding-bottom: 16px; margin-bottom: 16px; border-bottom: 1px dotted #a5afbe;">SCN's Hot Trading Alert Newsletter and Much More!</div>
+                
+                <div style="color: #193764; font-size: 20px;">It's ALL FREE to<br />SmallCap Network Members</div>
+            </td>
+            <td width="50%" valign="top" style="padding-left: 2em;">
+                <img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/header.png" alt="Register Now" style="margin-bottom: 2em;" />
+                <form id="member_form" enctype="application/x-www-form-urlencoded" class="form regula-validation shortform" data-constraints="@PasswordsMatch(field1=&quot;password&quot;, field2=&quot;password_confirm&quot;, message=&quot;Your passwords do not match.&quot;, groups=[member_form])" method="post" action="/ExitPopup/s/member/register/p/shortform/1/">
+                <input type="hidden" name="vmpd_npr" value="1" />
+                <input type="hidden" name="signup_entrance" value="Popup-Exit" />
+                <table width="100%">
+                	<tr>
+                    	<td style="color: #fff; font-weight: bold;">Desired Username:</td>
+                        <td style="padding: 6px 0;">
+                        	<input type="text" name="username" id="username" value="" maxlength="98" class="regula-validation" data-constraints="@Required(label=&quot;username&quot;, message=&quot;The {label} field cannot be empty.&quot;, groups=[member_form])" style="height: 22px; width: 97%; padding: .4em; border: 1px solid #cfcfcf;" />
+                        </td>
+                    </tr>
+                    <tr>
+                    	<td style="color: #fff; font-weight: bold;">Email Address:</td>
+                        <td style="padding: 6px 0;">
+                        	<input type="text" name="email" id="email" value="" maxlength="256" class="regula-validation" data-constraints="@Email(label=&quot;email address&quot;, message=&quot;The {label} was not formatted properly.&quot;, groups=[member_form, login_form])" style="height: 22px; width: 97%; padding: .4em; border: 1px solid #cfcfcf;" />
+                        </td>
+                    </tr>
+                    <tr>
+                    	<td style="color: #fff; font-weight: bold;">Password:</td>
+                        <td style="padding: 6px 0;">
+                        	<input type="password" name="password" id="password" value="" maxlength="64" class="regula-validation" data-constraints="@Required(label=&quot;password&quot;, message=&quot;The {label} field cannot be empty.&quot;, groups=[member_form, login_form])" style="height: 22px; width: 97%; padding: .4em; border: 1px solid #cfcfcf;" />
+                        </td>
+                    </tr>
+                    <tr>
+                    	<td style="color: #fff; font-weight: bold;">Retype Password:</td>
+                        <td style="padding: 6px 0;">
+                        	<input type="password" name="password_confirm" id="password_confirm" value="" maxlength="64" class="regula-validation" data-constraints="@Required(label=&quot;password confirm&quot;, message=&quot;The {label} field cannot be empty.&quot;, groups=[member_form])" style="height: 22px; width: 97%; padding: .4em; border: 1px solid #cfcfcf;" />
+                        </td>
+                    </tr>
+                    <tr>
+                    	<td>&nbsp;</td>
+                        <td style="padding: 6px 0; color: #fff; height: 42px;">
+                        	<input type="hidden" name="tos" value="0" /><input type="checkbox" name="tos" id="tos" value="1" class="regula-validation" data-constraints="@Required(message=&quot;You must agree to the Terms of Use.&quot;, groups=[member_form])" />&nbsp;&nbsp;&nbsp;I Agree to the <a href="/page/view/p/mid/1/title/Terms+of+Use/" rel="nofollow" style="color: #fff;" target="_blank">Terms of Use</a>
+                        </td>
+                    </tr>
+                    <tr>
+                    	<td>&nbsp;</td>
+                        <td style="padding: 6px 0;">
+                        	<input type="image" src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/submit_button.png" alt="Submit" />
+                        </td>
+                    </tr>
+                </table>
+                </form>
+            </td>
+        </tr></table>
+    </div>
+</div>
+
+
+<?php $this->inlineScript()->captureStart(); ?>
+YAHOO.namespace("viame.exitpopup");
+
+YAHOO.viame.exitpopup.exitUrl = 'https://www.smallcapnetwork.com/ExitPopup/s/member/register/p/shortform/1/signup_entrance/Popup-Exit/';
+
+YAHOO.viame.exitpopup.exitMessage = "***************************************\n\n W A I T   B E F O R E   Y O U   G O !\n\n CLICK THE *STAY ON THIS PAGE* BUTTON RIGHT NOW.\n\nThe SmallCap Network is the premiere online community for small cap stock investors and traders. Please stay on this page and fill out the form to become a member today.\n\n***************************************";
+
+YAHOO.viame.exitpopup.displayPopup = true;
+YAHOO.viame.exitpopup.setup = false;
+YAHOO.viame.exitpopup.divId = 'exitPopupDiv';
+
+// Setup
+YAHOO.viame.exitpopup.setup = function() {
+    if (YAHOO.viame.exitpopup.displayPopup) {
+        // Each form and link should be deactivated
+        YAHOO.util.Event.on(YAHOO.util.Selector.query('a'), 'click', function(e) { YAHOO.viame.exitpopup.displayPopup = false; });
+        YAHOO.util.Event.on(YAHOO.util.Selector.query('input:[type=submit]'), 'click', function(e) { YAHOO.viame.exitpopup.displayPopup = false; });
+        YAHOO.util.Event.on(YAHOO.util.Selector.query('form'), 'submit', function(e) { YAHOO.viame.exitpopup.displayPopup = false; });
+        
+        if (YAHOO.viame.exitpopup.displayPopup && YAHOO.viame.exitpopup.setup) {
+            // Setup Popup
+            if (YAHOO.util.Dom.get(YAHOO.viame.exitpopup.divId) || YAHOO.viame.exitpopup.exitUrl) {
+                if (YAHOO.util.Dom.get(YAHOO.viame.exitpopup.divId)) {
+                    YAHOO.util.Dom.setStyle(YAHOO.util.Dom.get(YAHOO.viame.exitpopup.divId), 'display', 'block');
+                    YAHOO.viame.exitpopup.popup = new YAHOO.widget.Dialog(YAHOO.viame.exitpopup.divId, {
+                        fixedcenter : true,
+            			draggable: false,
+    					visible: false,
+    					modal: true,
+    					close: false,
+    					postmethod: 'form',
+    					hideaftersubmit: false,
+    					width: YAHOO.util.Dom.get(YAHOO.viame.exitpopup.divId).offsetWidth,
+    					height: YAHOO.util.Dom.get(YAHOO.viame.exitpopup.divId).offsetHeight,
+    					zIndex: 99999,
+    					// effect: { effect: YAHOO.widget.ContainerEffect.FADE, duration: 2 }
+    			    } );
+    	            YAHOO.viame.exitpopup.popup.render();
+                }
+                else {
+                    document.body.style.overflow = 'hidden';
+                    
+                    YAHOO.viame.exitpopup.popup = new YAHOO.widget.Overlay(YAHOO.viame.exitpopup.divId, {
+                        xy: [0,0],
+    					visible: false,
+    					width: "100%",
+    					height: "100%",
+    					zIndex: 99999,
+    					// effect: { effect: YAHOO.widget.ContainerEffect.FADE, duration: 2 }
+    			    } );
+    			    YAHOO.viame.exitpopup.popup.setBody('<iframe id="' + YAHOO.viame.exitpopup.divId + '-iframe" src="' + YAHOO.viame.exitpopup.exitUrl + '" width="100%" height="100%" onload="YAHOO.viame.exitpopup.setBaseTargetFunc(this);" align="middle" frameborder="0" style="background-color: #fff;"></iframe>');
+    	            YAHOO.viame.exitpopup.popup.render(document.body);
+    	            
+    	            YAHOO.viame.exitpopup.setBaseTargetFunc = function(targetIFrame) {
+    	                if (targetIFrame) {
+            	            var iFrameDoc = (
+            	                targetIFrame.contentDocument ?
+            	                    targetIFrame.contentDocument :
+            	                    (
+            	                        targetIFrame.contentWindow.document ?
+            	                            targetIFrame.contentWindow.document :
+            	                            targetIFrame.document
+            	                    )
+            	            );
+                            //if (iFrameDoc.document) { iFrameDoc = iFrameDoc.document; }
+                            
+            	            if (iFrameDoc) {
+                	            var setbase = document.createElement("base");
+                                setbase.setAttribute("target", "_parent");
+                                var setBaseTarget;
+                                
+                                if (iFrameDoc.head) { setBaseTarget = iFrameDoc.head; }
+                                else if (iFrameDoc.getElementsByTagName('head')[0]) { setBaseTarget = iFrameDoc.getElementsByTagName('head')[0]; }
+                                else if (iFrameDoc.body) { setBaseTarget = iFrameDoc.body; }
+                                else if (iFrameDoc.getElementsByTagName('body')[0]) { setBaseTarget = iFrameDoc.getElementsByTagName('body')[0]; }
+                                
+                                if (setBaseTarget) {
+                                    setBaseTarget.appendChild(setbase);
+                                }
+                            }
+                        }
+    	            };
+                }
+            }
+        }
+        
+        window.onbeforeunload = YAHOO.viame.exitpopup.displayExitPopup;
+        
+        YAHOO.viame.exitpopup.setup = true;
+    }
+}
+
+// Display the Exit Popup
+YAHOO.viame.exitpopup.displayExitPopup = function(e) {
+    if (YAHOO.viame.exitpopup.displayPopup && YAHOO.viame.exitpopup.setup) {
+        // Display Popup
+        YAHOO.viame.exitpopup.popup.show();
+        
+        // Only popup once
+        YAHOO.viame.exitpopup.displayPopup = false;
+        
+        YAHOO.util.Cookie.set("exitModal_displayed", 1, { path: "/" });
+        
+        // Display Message
+        e.returnValue = YAHOO.viame.exitpopup.exitMessage;
+        return YAHOO.viame.exitpopup.exitMessage;
+    }
+}
+
+if (!YAHOO.util.Cookie.get("exitModal_displayed")) {    
+	YAHOO.util.Event.onDOMReady(YAHOO.viame.exitpopup.setup);
+}
+<?php $this->inlineScript()->captureEnd(); ?>

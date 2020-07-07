@@ -1,0 +1,48 @@
+<?php
+if (isset($this->feed) && $this->feed) {
+    echo '<div class="feed">';
+    if (isset($this->params['dp_display_feed_info']) && $this->params['dp_display_feed_info']) {
+        // Display Feed Information
+?>
+    <div class="channel">
+        <div class="title"><?php if ($this->feed->getLink()) { ?><a href="<?= $this->escape($this->feed->getLink()) ?>"><?php } ?><?= $this->feed->getTitle() ?><?php if ($this->feed->getLink()) { ?></a><?php } ?></div>
+        <div class="summary"><?= $this->feed->getDescription() ?></div>
+    </div>
+<?php
+    }
+    
+    $counter = 0;
+    foreach ($this->feed as $entry) {
+        if (isset($this->params['dp_max_entries']) && $this->params['dp_max_entries'] && $counter >= $this->params['dp_max_entries']) { break; }
+?>
+    <div class="entry <?= (($counter + 1) % 2) ? 'odd' : 'even' ?><?= (($counter + 1) == 1) ? ' firstitem' : ((($counter + 1) == ((isset($this->params['dp_max_entries']) && $this->params['dp_max_entries'] < count($this->feed)) ? $this->params['dp_max_entries'] : count($this->feed))) ? ' lastitem' : '') ?>">
+        <div class="title"><a rel="nofollow" target="_blank" href="<?= $entry->getLink() ?>"><?= $entry->getTitle() ?></a></div>
+<?php
+        if ($entry->getDateModified()) {
+            $date = $entry->getDateModified();
+            
+            echo '<div class="datetime">';
+            
+            if (isset($this->internal->member)) {
+                $date->setTimezone($this->internal->member->timezone);
+                echo $date->toString(Zend_Date::DATE_MEDIUM) . ' <span class="time">' . $date->toString(Zend_Date::TIME_SHORT) . '</span>';
+            }
+            else {
+                $date->setTimezone($this->internal->config->timezone);
+                echo $date->toString(Zend_Date::DATE_MEDIUM) . ' <span class="time">' . $date->toString(Zend_Date::TIME_SHORT . ' z') . '</span>';
+            }
+            
+            echo '</div>';
+        }
+?>
+<?php if (!isset($this->params['dp_hide_summary']) || !$this->params['dp_hide_summary']) { ?>
+        <div class="summary"><?= ($entry->getDescription() ? $entry->getDescription() : $this->SEO_Quip($entry->getContent())) ?></div>
+<?php } ?>
+    </div>
+<?php
+        $counter++;
+    }
+    
+    echo '</div>';
+}
+?>

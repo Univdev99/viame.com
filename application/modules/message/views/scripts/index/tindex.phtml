@@ -1,0 +1,141 @@
+<?php $module = 'message'; ?>
+
+<!-- Begin Module -->
+<div class="cm decorated padded m_<?= $module ?> m-<?= $this->internal->target->currentModule->module_id ?>-<?= $this->internal->target->currentModule->counter ?>">
+    <div class="hd">
+        <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div>
+        </div>
+        <div class="con">
+        	<table class="table">
+                <tr>
+                    <td class="lt"></td>
+
+                    <td class="mn1"><?= $this->escape(isset($this->internal->target->currentModule->display) && $this->internal->target->currentModule->display ? $this->internal->target->currentModule->display : $this->internal->target->currentModule->m_display) ?></td>
+                    <td class="sep"></td>
+                    <td class="mn2"></td>
+                    <td class="rt"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="bd">
+
+    
+<div style="margin: 0 0 1em 0;">
+<?php if (!$this->masked && isset($this->internal->member) && (is_null($this->internal->target->acl->privilege) || ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT))) { ?>
+<div class="administer" style="float: right; margin: 0; clear: none;"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/create/p/mid/<?= $this->internal->params->mid ?>/">Start A New Topic</a></div>
+<?php } ?>
+
+<?php
+    $module_link =  '/' . $this->SEO_Urlify($this->internal->target->currentModule->display ? $this->internal->target->currentModule->display : $this->internal->target->currentModule->m_display) . '/s' . $this->internal->target->pre . '/' . $module . '/p/mid/' . $this->internal->target->currentModule->counter . '/';
+?>
+List in Topics | <a href="<?= $module_link ?>">List as Individual Messages</a>
+</div>
+
+
+<table class="display">
+    <tr>
+        <th scope="col">Topic</th>
+        <th scope="col" style="text-align: center;">Rating</th>
+        <th scope="col" style="text-align: center;">Replies</th>
+        <th scope="col" style="text-align: center;">Views</th>
+        <th scope="col">Latest Post</th>
+    </tr>
+
+<?php
+$counter = 0;
+
+foreach ($this->paginator as $object) {
+    $counter++;
+    if ($this->internal->target->acl->owner ||
+        $object->allowed === null ||
+        $object->show_on_fail ||
+        ($object->allowed && ($object->privilege >= ViaMe_Controller_Action::ACL_READ)) ||
+        ($this->internal->target->acl->recursive && ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_READ))) {
+            
+        // Create the link
+        /*
+        $link = '/' . $this->SEO_Urlify($object->title) . '/s';
+        if ($this->masked) {
+            $link .= $this->internal->target->pre . '/message/view/p/mid/' . $this->masked . '/id/' . $object->counter . '/';
+        }
+        else {
+            if ($object->com_id && ((isset($this->internal->params->com_id) && $this->internal->params->com_id) || $object->com_id != $this->internal->community->id)) { $link .= '/com/' . $object->com_id; }
+            elseif ($object->net_id) { $link .= '/net/' . $object->net_id; }
+            elseif ($object->via_id) { $link .= '/via/' . $object->via_id; }
+            
+            $link .= '/message/view/p/mid/' . $object->matrix_counter . '/id/' . $object->counter . '/';
+        }
+        */
+        $link = $this->ContentLink(array('object' => $object, 'view' => $this));
+?>
+
+    <tr class="<?= $module ?> <?= ($counter % 2) ? 'odd' : 'even' ?><?= ($counter == 1) ? ' firstitem' : (($counter == count($this->objects)) ? ' lastitem' : '') ?><?= ($object->active == false ? ' draftitem' : '') ?><?= ($object->published_display_activated == false ? ' futureitem' : '') ?><?= ($object->published_display_expired == true ? ' expireditem' : '') ?>">
+        <td class="message_title">
+            <a href="<?= $link ?>"><?= $this->escape($object->title) ?></a>
+            <br />
+            <span class="author">By <?= $this->ProfileDisplay(array('profile' => $object, 'internal' => $this->internal)) ?></span>
+            <span class="datetime">[<?php
+                $date = new Zend_Date();
+                $date->set($object->published_display_date, Zend_Date::ISO_8601);
+                
+                if ((time() - $date->get(Zend_Date::TIMESTAMP)) < 3600) {
+                    echo sprintf("%d minute(s) ago", ((time() - $date->get(Zend_Date::TIMESTAMP)) / 60));
+                }
+                else {
+                    if (isset($this->internal->member)) {
+                        $date->setTimezone($this->internal->member->timezone);
+                        echo $date->toString(Zend_Date::DATE_SHORT . ' ' . Zend_Date::TIME_SHORT);
+                    }
+                    else {
+                        $date->setTimezone($this->internal->config->timezone);
+                        echo $date->toString(Zend_Date::DATE_SHORT . ' ' . Zend_Date::TIME_SHORT . ' z');
+                    }
+                }
+                ?>]</span>
+<?php
+    // Moderation
+    if ((!$object->status) && ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_MODERATE)) {
+?>
+            <div class="moderate">
+                <a href="<?= $this->internal->target->pre ?>/message/moderate/p/mid/<?= $object->matrix_counter ?>/id/<?= $object->counter ?>/status/approve/">Approve</a>
+                -
+                <a href="<?= $this->internal->target->pre ?>/message/moderate/p/mid/<?= $object->matrix_counter ?>/id/<?= $object->counter ?>/status/reject/">Reject</a>
+            </div>
+<?php
+    }
+?>
+            </td>
+        <td class="message_interact calign"><div class="interact"><div class="rating"><span class="count rc<?= floor($object->rating * 2) ?>"><?= ($object->rating ? $object->rating : 'N/A') ?></span></div></div></td>
+        <td class="message_replies calign"><?= Zend_Locale_Format::toNumber($object->total_replies_count + 0) ?></td>
+        <td class="message_views calign"><?= Zend_Locale_Format::toNumber($object->total_views_count + 0) ?></td>
+        <td class="message_updated"><?= $object->updated ?></td>
+    </tr>
+
+
+
+
+<?php
+    }
+}
+?>
+
+</table>
+
+
+
+<?php echo $this->paginationControl($this->paginator, 'Sliding', array('partials/_Paginator.phtml', 'system'), array('internal' => $this->internal)); ?>
+
+
+    </div>
+    
+    <div class="ft">
+        <div class="dec">
+            <div class="lt"></div><div class="mn"></div><div class="rt"></div>
+
+        </div>
+    </div>
+    <span class="icon"></span>
+</div>
+<!-- End Module -->

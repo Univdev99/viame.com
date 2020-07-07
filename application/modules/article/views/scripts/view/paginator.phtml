@@ -1,0 +1,58 @@
+<!--
+See http://developer.yahoo.com/ypatterns/pattern.php?pattern=searchpagination
+-->
+
+<?php if ($this->pageCount) { ?>
+    <!-- Titled Links -->
+    <?php if ((isset($this->previous) && isset($this->prev_title) && $this->prev_title) || (isset($this->next) && isset($this->next_title) && $this->next_title)) { ?>
+        <div style="min-height: 1em; margin-bottom: 1em;">
+        <?php if (isset($this->previous) && isset($this->prev_title) && $this->prev_title) { ?>
+          <a href="<?= $this->escape('?page=' . $this->previous) ?>">&laquo; <?= $this->prev_title ?></a>
+        <?php } if (isset($this->next) && isset($this->next_title) && $this->next_title) { ?>
+          <div style="float: right;"><a href="<?= $this->escape('?page=' . $this->next) ?>"><?= $this->next_title ?> &raquo;</a></div>
+        <?php } ?>
+        </div>
+    <?php } ?>
+    
+    <div class="paginator">
+        
+        <!-- First page link -->
+        <?php if (isset($this->previous)) { ?>
+          <a href="<?= $this->escape('?page=' . $this->first) ?>">First</a>
+        <?php } else { ?>
+          <span class="disabled">First</span>
+        <?php } ?>
+        
+        <!-- Previous page link -->
+        <?php if (isset($this->previous)) { ?>
+          <a href="<?= $this->escape('?page=' . $this->previous) ?>">&laquo; Previous</a>
+        <?php } else { ?>
+          <span class="disabled">&laquo; Previous</span>
+        <?php } ?>
+        
+        <!-- Numbered page links -->
+        <?php foreach ($this->pagesInRange as $page) {
+            if ($page != $this->current) { ?>
+          <a href="<?= $this->escape('?page=' . $page) ?>"><?= $page ?></a>
+        <?php } else { ?>
+          <?= $page ?>
+        <?php
+            }
+        } ?>
+        
+        <!-- Next page link -->
+        <?php if (isset($this->next)) { ?>
+          <a href="<?= $this->escape('?page=' . $this->next) ?>">Next &raquo;</a>
+        <?php } else { ?>
+          <span class="disabled">Next &raquo;</span>
+        <?php } ?>
+        
+        <!-- Last page link -->
+        <?php if (isset($this->next)) { ?>
+          <a href="<?= $this->escape('?page=' . $this->last) ?>">Last</a>
+        <?php } else { ?>
+          <span class="disabled">Last</span>
+        <?php } ?>
+        
+    </div>
+<?php } ?>

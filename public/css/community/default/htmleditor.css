@@ -1,0 +1,12 @@
+/* Switched to Yahoo CDN with Rollup */
+
+@import url(yahoo.css);
+
+body {
+   text-align: left;
+   padding: .5em;
+}
+
+body#tinymce.mceContentBody, body#tinymce.mceContentBody td, body#tinymce.mceContentBody pre {
+    font-size: 13px;
+}

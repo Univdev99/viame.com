@@ -1,0 +1,60 @@
+<h1>Manage Your Profiles</h1>
+
+<table width="100%" class="decorated">
+    <tr>
+        <th>Profile</th>
+        <th>Community</th>
+        <th>Default</th>
+        <th>Active</th>
+        <th>Delete</th>
+    </tr>
+<?php
+$counter = 0;
+foreach ($this->profiles as $profile) {
+    $profile = (array) $profile;
+?>
+    <tr<?php
+
+$style = array();
+
+if ($profile['base']) { $style[] = 'border: 2px solid #000; font-size: 110%; font-weight: bold;'; }
+if (!$profile['active']) {
+    $style[] = 'background-color: #ccc;';
+}
+elseif ($profile['default_profile']) {
+    $style[] = 'background-color: #cec;';
+}
+
+if (count($style)) {
+    echo ' style="' . implode(' ', $style) . '"';
+}
+    ?>>
+        <td>
+            <?=
+                ($profile['active'] ?
+                    $profile['name'] . ' - <a href="' . $this->internal->target->pre . '/profile/edit/p/id/'.$profile['id'].'/">Edit</a>' :
+                    $profile['name'])
+            ?>
+        </td>
+        <td><?=$profile['community']?></td>
+        <td width="10%" style="text-align: center;">
+            <?=
+                ($profile['default_profile'] ?
+                    '<span class="check_link">Default</span>' :
+                    ($profile['active'] ? '<a href="' . $this->internal->target->pre . '/profile/default/p/id/'.$profile['id'].'/" class="check_link inactive toggle">Make Default</a>' : '-----'))
+            ?>
+        </td>
+<?php if ($profile['base']) { ?>
+        <td width="10%" colspan="2" style="text-align: center; font-size: smaller;">Base profile cannot be deactivated or deleted.</td>
+<?php } else { ?>
+        <td width="10%" style="text-align: center;"><a href="<?= $this->internal->target->pre ?>/profile/active/p/id/<?= $profile['id'] ?>/" class="check_link toggle<?= ($profile['active'] ? '' : ' inactive') ?>" title="Toggle Active Status"><?= $profile['active'] ? 'Active' : 'Inactive' ?></a></td>
+        <td width="10%" style="text-align: center;"><a href="<?= $this->internal->target->pre ?>/profile/delete/p/id/<?= $profile['id'] ?>/" class="delete_link inactive toggle" onclick="return (confirm('Are you sure you want to delete the profile <?= $profile['name'] ?>?'));" title="Delete Profile">Delete</a></td>
+<?php } ?>
+    </tr>
+<?php
+    $counter++;
+}
+?>
+</table>
+
+<?= $this->form ?>

@@ -1,0 +1,235 @@
+<?php
+    $id = 'vmodulemenu';
+    
+    $this->headScript()->appendFile($this->internal->vars->static_host . '/js/vm/yui/menu_anim.js');
+    
+    $this->inlineScript()->captureStart()
+?>    
+YAHOO.util.Event.onContentReady("<?= $id ?>", function () {
+    var o<?= $id ?> = new YAHOO.widget.Menu("<?= $id ?>", {
+            position: "static",
+            hidedelay: 750,
+            lazyload: true,
+            effect: { 
+                effect: YAHOO.widget.ContainerEffect.FADE,
+                duration: 0.25
+            }});
+    o<?= $id ?>.render();
+    o<?= $id ?>.show();           
+});
+<?php $this->inlineScript()->captureEnd() ?>
+
+<?php $this->headStyle()->captureStart() ?>
+#<?= $id ?> { position: static; }
+#<?= $id ?> .yuimenuitemlabel { zoom: 1; }
+#<?= $id ?> .yuimenu .yuimenuitemlabel { _zoom: normal; }
+<?php $this->headStyle()->captureEnd() ?>
+
+
+
+<div id="<?= $id ?>" class="yuimenu <?= ((!(isset($this->params['dp_hide_title']) && $this->params['dp_hide_title'])) ? ' titled' : '') ?>">
+    <div class="hd">
+        <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div></div>
+<?php if (!(isset($this->params['dp_hide_title']) && $this->params['dp_hide_title'])) { ?>
+        <div class="con">
+        	<table class="table">
+                <tr>
+                    <td class="lt"></td>
+                    <td class="mn1">
+
+<?php if ($this->i->target->type == 'VIA') { ?>
+<?= $this->ProfileDisplay(array('profile' => $this->i->target->space, 'internal' => $this->internal)) ?>
+<?php } else { ?>
+<a href="/<?= $this->SEO_Urlify(isset($this->i->target->space->display) ? $this->i->target->space->display : $this->i->target->space->name) ?>/s/<?= strtolower($this->i->target->type) ?>/<?= $this->i->target->id ?>/">
+    <?= (isset($this->i->target->space->display) ? $this->i->target->space->display : $this->i->target->space->name) ?>
+</a>
+<?php } ?>   
+                    </td>
+                    <td class="sep"></td>
+                    <td class="mn2"></td>
+                    <td class="rt"></td>
+                </tr>
+            </table>
+        </div>
+<?php } ?>
+    </div>
+    <div class="bd">
+<?php if (!(isset($this->params['dp_hide_image']) && $this->params['dp_hide_image'])) { ?>
+        <div class="image_area">
+            <div class="headshot<?= !(isset($this->i->target->space->picture_url) && $this->i->target->space->picture_url) ? ' ' . $this->i->target->type . '_default' : '' ?>">
+                <a href="/<?= $this->SEO_Urlify(isset($this->i->target->space->display) ? $this->i->target->space->display : $this->i->target->space->name) ?>/s/<?= strtolower($this->i->target->type) ?>/<?= $this->i->target->id ?>/" class="headshot_link">
+<?php   if (isset($this->i->target->space->picture_url) && $this->i->target->space->picture_url) { ?>
+                    <img src="<?= (preg_match('#http://#i', $this->i->target->space->picture_url) ? '' : $this->internal->config->upload->picture_server . '/') ?><?= $this->escape($this->i->target->space->picture_url) ?>" width="128" />
+<?php   } ?>
+                </a>
+            </div>
+<?php   if ($this->i->target->acl->owner) { ?>
+            <div><a href="/<?= strtolower($this->i->target->type) ?>/<?= $this->i->target->id ?>/system/update-picture/" style="font-family: Verdana, Arial, Helvetica, Clean, Sans-serif; font-size: 9px; color: #999; line-height: normal;">Update Picture</a></div>
+<?php   } ?>
+        </div>
+<?php } ?>
+        <ul class="first-of-type">
+            <li class="yuimenuitem first-of-type"><a href="/<?= $this->SEO_Urlify(isset($this->i->target->space->display) ? $this->i->target->space->display : $this->i->target->space->name) ?>/s<?= $this->i->target->pre ?>/" class="yuimenuitemlabel">Home</a>
+<?php if (!(isset($this->PTYPE) && $this->PTYPE) && ($this->i->target->acl->privilege >= ViaMe_Controller_Action::ACL_OWNER)) { ?>
+                <div class="yuimenu"><div class="bd"><ul>
+                    <li class="yuimenuitem"><a href="/<?= $this->SEO_Urlify(isset($this->i->target->space->display) ? $this->i->target->space->display : $this->i->target->space->name) ?>/s<?= $this->i->target->pre ?>/module/add/" class="yuimenuitemlabel"><em><b>+ Add A New Module</b></em></a></li>
+                    <li class="yuimenuitem"><a href="/<?= $this->SEO_Urlify(isset($this->i->target->space->display) ? $this->i->target->space->display : $this->i->target->space->name) ?>/s<?= $this->i->target->pre ?>/widget/add/" class="yuimenuitemlabel"><em><b>+ Add A New Widget</b></em></a></li>
+                </ul></div></div>
+<?php } ?>
+            </li>
+<?php
+if (isset($this->new_module_set)) {
+    // Load up which modules have sublinks
+    $modules_with_subs = array();
+    foreach ($this->new_module_set as $module) {
+        if ($this->i->target->acl->owner ||
+          $module->allowed === null ||
+          $module->show_on_fail ||
+          ($module->allowed && ($module->privilege > 0)) ||
+          ($this->i->target->acl->recursive && ($this->i->target->acl->privilege > 0))) {
+            if (isset($module->display_stack) && $module->display_stack != 'none' && (!($module->display_stack === null))) {
+                $modules_with_subs[$module->display_stack] = true;
+            }
+        }
+    }
+    
+    if  (isset($this->params) && isset($this->params['dp_menu_type']) && $this->params['dp_menu_type'] == 'Individual') {
+        _VdisplayLinks($this->new_module_set, null, $this->i, $modules_with_subs, false, $this);
+    }
+    else {
+        // Module Type View
+        $categories = Array();
+        foreach ($this->new_module_set as $module) {
+            if ($this->i->target->acl->owner ||
+              $module->allowed === null ||
+              $module->show_on_fail ||
+              ($module->allowed && ($module->privilege > 0)) ||
+              ($this->i->target->acl->recursive && ($this->i->target->acl->privilege > 0))) {
+                if ($module->display_stack == 'none') { continue; }
+                if (!isset($categories[$module->m_display])) {
+                    $categories[$module->m_display] = Array();
+                    $categories[$module->m_display]['modules'] = Array();
+                    $categories[$module->m_display]['name'] = $module->m_name;
+                    $categories[$module->m_display]['total_count'] = 0;
+                }
+                
+                $categories[$module->m_display]['total_count'] += $module->total_item_count;
+                $categories[$module->m_display]['modules'][] = $module;
+            }
+        }
+        
+        ksort($categories);
+        
+        foreach ($categories as $key => $category) {
+            echo '<li class="yuimenuitem">';
+            if ((count($category['modules']) > 1) || (isset($this->PTYPE) && $this->PTYPE)) {
+                if (isset($this->PTYPE) && $this->PTYPE) {
+                    echo '<a href="' . ('/' . $this->SEO_Urlify($key ? $key : $category['name']) . '/s') . $this->i->target->pre . '/' . $category['name'] . '/p/profile/1/" class="yuimenuitemlabel">';
+                }
+                else {
+                    echo '<a href="' . ('/' . $this->SEO_Urlify($key ? $key : $category['name']) . '/s') . $this->i->target->pre . '/' . $category['name'] . '/p/nomid/1/" class="yuimenuitemlabel">';
+                }
+                $temp_disp = $key ? $key : $category['name'];
+                $temp_disp .= (substr($temp_disp, -1) == 's' ? '' : 's');
+                echo $this->escape($temp_disp);
+                if  (!isset($this->params) || !isset($this->params['dp_hide_totals']) || !$this->params['dp_hide_totals']) {
+                    echo '<span class="total"> (' . Zend_Locale_Format::toNumber($category['total_count'], array('locale' => $this->i->locale)) . ')</span>';
+                }
+                echo '</a>';
+                if (!(isset($this->PTYPE) && $this->PTYPE)) {
+                     _VdisplayLinks($category['modules'], null, $this->i, $modules_with_subs, true, $this);
+                }
+            }
+            else {
+                // Only one of type
+                #echo '<a href="' . ('/' . $this->SEO_Urlify($key ? $key : $category['name']) . '/s') . $this->i->target->pre . '/' . $category['name'] . '/p/nomid/1/" class="yuimenuitemlabel">';
+                echo '<a href="' . ('/' . $this->SEO_Urlify($category['modules'][0]->display ? $category['modules'][0]->display : ($key ? $key : $cateogory['name'])) . '/s') . $this->i->target->pre . '/' . $category['name'] . '/p/mid/' . $category['modules'][0]->counter . '/" class="yuimenuitemlabel">';
+                
+                $temp_disp = $key ? $key : $category['name'];
+                $temp_disp .= (substr($temp_disp, -1) == 's' ? '' : 's');
+                echo $this->escape($temp_disp);
+
+                if  (!isset($this->params) || !isset($this->params['dp_hide_totals']) || !$this->params['dp_hide_totals']) {
+                    echo '<span class="total"> (' . Zend_Locale_Format::toNumber($category['total_count'], array('locale' => $this->i->locale)) . ')</span>';
+                }
+                echo '</a>';
+            }
+            echo '</li>';
+        }
+    }
+    
+}
+
+function _VdisplayLinks($modules, $stack, $internal, $modules_with_subs, $display_new_list = true, $parent) {
+    $new_list_displayed = false;
+    
+    if (isset($modules)) {
+        foreach ($modules as $module) {
+            if ($module->display_stack == $stack) {
+                if ($internal->target->acl->owner ||
+                    $module->allowed === null ||
+                    $module->show_on_fail ||
+                    ($module->allowed && ($module->privilege > 0)) ||
+                    ($internal->target->acl->recursive && ($internal->target->acl->privilege > 0))) {
+                    
+                    if ($display_new_list && !$new_list_displayed) {
+                        echo '<div class="yuimenu"><div class="bd"><ul>';
+                        $new_list_displayed = true;
+                    }
+                    
+                    echo '<li class="yuimenuitem">';
+                    echo '<a href="' . ('/' . $parent->SEO_Urlify($module->display ? $module->display : ($module->m_display ? $module->m_display : $module->name)) . '/s') . $internal->target->pre . '/' . $module->m_name . '/p/mid/' . $module->counter . '/" class="yuimenuitemlabel">' . $parent->escape($module->display ? $module->display : $module->m_display);
+                    if  ((!isset($parent->params) || !isset($parent->params['dp_hide_totals']) || !$parent->params['dp_hide_totals']) && !$module->community_mask && !$module->network_mask && !$module->profile_mask) {
+                        echo '<span class="total"> (' . Zend_Locale_Format::toNumber($module->total_item_count, array('locale' => $internal->locale)) . ')</span>';
+                    }
+                    echo '</a>';
+                    $display_stack = $module->module_id . '-' . $module->counter;
+                    if (isset($modules_with_subs[$display_stack]) && $modules_with_subs[$display_stack]) {
+                        _VdisplayLinks($modules, $display_stack, $internal, $modules_with_subs, true, $parent);
+                    }
+                    echo '</li>';
+                }
+            }
+        }
+        
+        if ($new_list_displayed) {
+            echo '</ul></div></div>';
+        }
+    }
+}
+?>
+            
+        </ul>
+
+<?php if (!(isset($this->params['dp_hide_links']) && $this->params['dp_hide_links'])) { ?>
+        <div class="more_links">
+<?php   if ($this->i->target->type == 'VIA') {
+
+            if (isset($this->internal->member) && ($db = Zend_Registry::get('db'))) {
+                $contact_and_follow = $db->fetchRow(
+                    "SELECT vc.active AS contact, pfm.active AS following FROM profile_profiles p LEFT JOIN contact_contacts vc ON p.id=vc.contact_profile_id AND vc.profile_id=? AND vc.status='t' AND vc.active='t' LEFT JOIN profile_follow_matrix pfm ON p.id=pfm.follow_profile_id AND pfm.profile_id=? AND pfm.status='t' AND pfm.active='t' WHERE p.id=?",
+                    array($this->internal->member->profile->id, $this->internal->member->profile->id, $this->i->target->id)
+                );
+            }
+?>
+            <a href="/mail/write/p/cid/<?= $this->i->target->id ?>/" title="Send Message" rel="nofollow" class="send_message"><span class="icon"></span>Send Message</a>
+
+
+<?php if (!isset($contact_and_follow->contact) || !$contact_and_follow->contact) { ?>
+            <a href="/contact/create/p/id/<?= $this->i->target->id ?>/" title="Add to Contacts" rel="nofollow" class="add_contact"><span class="icon"></span>Add to Contacts</a>
+<?php } ?>
+
+<?php if (!isset($contact_and_follow->following) || !$contact_and_follow->following) { ?>
+            <a href="/profile/follow/p/id/<?= $this->i->target->id ?>/" title="Follow" rel="nofollow" class="follow"><span class="icon"></span>Follow</a>
+<?php } else { ?>
+            <a href="/profile/follow/p/unfollow/1/id/<?= $this->i->target->id ?>/" title="UnFollow" rel="nofollow" class="follow following"><span class="icon"></span>UnFollow</a>
+<?php } ?>
+
+
+<?php   } ?>
+        </div>
+<?php } ?>
+
+    </div>
+    <div class="ft"><div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div></div></div>
+</div>        

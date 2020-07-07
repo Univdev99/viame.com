@@ -1,0 +1,22 @@
+<h1><?= $this->title ?>!</h1>
+
+<dl><dd>
+    <p><?= $this->message ?></p>
+
+    <?= $this->exceptions ? $this->htmlList($this->exceptions) : '' ?>
+</dd></dl>
+
+<dl><dd>
+    If you think this is a server error, please contact the 
+    <a href="mailto:<?= $this->admin_email ?>"><?= $this->admin_name ?></a>.
+</dd></dl>
+
+<h2>Error <?= $this->error_code ?></h2>
+
+<dl><dd><address>
+  <a href="/"><?= $this->internal->vars->host ?></a>
+  <br />
+  <small><?= date('r') ?></small>
+  <br />
+  <small>ViaMe/Levelogic, Inc.</small>
+</address></dd></dl>

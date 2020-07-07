@@ -1,0 +1,39 @@
+<!--
+See http://developer.yahoo.com/ypatterns/pattern.php?pattern=searchpagination
+-->
+
+<?php if ($this->pageCount) { ?>
+    <div class="paginator">
+    
+        <strong><?php echo $this->firstItemNumber; ?></strong> - <strong><?php echo $this->lastItemNumber; ?></strong> of <strong><?php echo $this->totalItemCount; ?></strong>
+        
+        <!-- First page link -->
+        <?php if (isset($this->previous)) { ?>
+          <a href="?climit=<?= $this->itemCountPerPage ?>&cpage=<?= $this->first ?>">First</a>
+        <?php } else { ?>
+          <span class="disabled">First</span>
+        <?php } ?>
+        
+        <!-- Previous page link -->
+        <?php if (isset($this->previous)) { ?>
+          <a href="?climit=<?= $this->itemCountPerPage ?>&cpage=<?= $this->previous ?>">&laquo; Previous</a>
+        <?php } else { ?>
+          <span class="disabled">&laquo; Previous</span>
+        <?php } ?>
+        
+        <!-- Next page link -->
+        <?php if (isset($this->next)) { ?>
+          <a href="?climit=<?= $this->itemCountPerPage ?>&cpage=<?= $this->next ?>">Next &raquo;</a>
+        <?php } else { ?>
+          <span class="disabled">Next &raquo;</span>
+        <?php } ?>
+        
+        <!-- Last page link -->
+        <?php if (isset($this->next)) { ?>
+          <a href="?climit=<?= $this->itemCountPerPage ?>&cpage=<?= $this->last ?>">Last</a>
+        <?php } else { ?>
+          <span class="disabled">Last</span>
+        <?php } ?>
+    
+    </div>
+<?php } ?>

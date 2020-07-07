@@ -1,0 +1,81 @@
+<?php
+$verification_link = 'http://' . $this->internal->vars->host . ($this->internal->target->type == 'COM' && isset($this->internal->target->pre) ? $this->internal->target->pre : '') . '/member/register/verify/vmpd_bpip/1/vmpd_nar/1/id/' . $this->id . '/?key=' . $this->key;
+
+if (isset($this->no_email_add) && $this->no_email_add) {
+    $verification_link .= '&no_email_add=1';
+}
+if (isset($this->internal->params->autogo) && $this->internal->params->autogo) {
+    $verification_link .= '&autogo=1';
+}
+
+if (isset($this->internal->params->s_redirect) && $this->internal->params->s_redirect) {
+    // SUCCESS redirect link
+    $verification_link .= '&redirect=' . $this->internal->params->s_redirect;
+}
+elseif (isset($this->internal->params->redirect) && $this->internal->params->redirect) {
+    // Alternate redirect link
+    $verification_link .= '&redirect=' . $this->internal->params->redirect;
+}
+?>
+
+<p>Thank you for becoming a <strong>Member</strong> of the <strong><?= $this->internal->community->display ?> Community</strong>.</p>
+
+<p>But first, you need to <strong>confirm this is a valid email address</strong> by clicking this link:</p>
+
+<p style="text-align: center;"><strong><a href="<?= $verification_link ?>">Click here to verify your email address<br />and complete the signup process.</a></strong><p>
+
+<p>If the link above does not work, copy and paste the following URL into your browser's address bar:</p>
+<blockquote><kbd><?= $verification_link ?></kbd></blockquote>
+
+<p>If you have any problems registering or confirming this registration, please contact us at <a href="mailto:<?= ($this->internal->community->email ? $this->internal->community->email : $this->internal->config->admin->email) ?>"><?= ($this->internal->community->email ? $this->internal->community->email : $this->internal->config->admin->email) ?></a>.</p>
+
+<p>Sincerely,</p>
+
+<p><strong><?= $this->internal->community->display ?></strong></p>
+
+
+<?php /*
+<p>Thank you for signing up at <?= $this->internal->community->display ?>.</p>
+
+<p><strong>Please click this <a href="<?= $verification_link ?>">verification link</a> to activate your account.</strong><p>
+
+<p>If the above verification link does not work, copy and paste the following URL into your browser and enter the following values into the form.
+
+<blockquote>
+	<p>http://<?= $this->internal->vars->host ?>/member/register/verify/</p>
+    <p>
+        <strong>Email Address:</strong> <?= $this->email ?>
+        <br />
+        <strong>Verification Key:</strong> <?= $this->key ?>
+    </p>
+</blockquote>
+
+<p>If you have any problems registering or confirming this registration, please contact us at <a href="mailto:<?= ($this->internal->community->email ? $this->internal->community->email : $this->internal->config->admin->email) ?>"><?= ($this->internal->community->email ? $this->internal->community->email : $this->internal->config->admin->email) ?></a>.</p>
+*/ ?>
+
+
+<?php /*
+<blockquote>
+    <?= $this->translate('Name') ?> : <?=$this->name?><br />
+    <?= $this->translate('Email') ?> : <?=$this->email?><br />
+    <?= $this->translate('ID') ?> : <?=$this->id?><br />
+    <?= $this->translate('Validation Key') ?> : <?=$this->key?>
+</blockquote>
+<BR><BR>
+Go Here<BR>
+http://<?= $this->internal->vars->host ?>/member/register/verify/id/<?=$this->id?>/key/<?=$this->key?>/
+<BR><BR>
+Or Go Here<BR>
+http://<?= $this->internal->vars->host ?>/member/register/verify/?id=<?=$this->id?>&key=<?=$this->key?>
+<BR><BR>
+Or Go To<BR>
+http://<?= $this->internal->vars->host ?>/member/register/verify/
+<BR>
+And Enter<BR>
+Your Email Address: <?=$this->email?><BR>
+and<BR>
+Your Validation Key:<?=$this->key?>
+<BR><BR><BR>
+Quick Verify<BR>
+http://<?= $this->internal->vars->host ?>/member/register/verify/vmpd_bpip/1/id/<?=$this->id?>/key/<?=$this->key?>/
+*/ ?>

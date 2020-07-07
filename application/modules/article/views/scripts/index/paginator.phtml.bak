@@ -1,0 +1,54 @@
+<!--
+See http://developer.yahoo.com/ypatterns/pattern.php?pattern=searchpagination
+-->
+
+<?php
+$qs = '?';
+if (isset($this->internal->vars->query_string) && $this->internal->vars->query_string) {
+    $qs .= $this->internal->vars->query_string . '&';
+}
+?>
+
+<?php if ($this->pageCount) { ?>
+    <div class="paginator">
+        
+        <!-- First page link -->
+        <?php if (isset($this->previous)) { ?>
+          <a href="<?= $this->escape($qs . 'limit=' . $this->itemCountPerPage . '&page=' . $this->first) ?>">First</a>
+        <?php } else { ?>
+          <span class="disabled">First</span>
+        <?php } ?>
+        
+        <!-- Previous page link -->
+        <?php if (isset($this->previous)) { ?>
+          <a href="<?= $this->escape($qs . 'limit=' . $this->itemCountPerPage . '&page=' . $this->previous) ?>">&laquo; Previous</a>
+        <?php } else { ?>
+          <span class="disabled">&laquo; Previous</span>
+        <?php } ?>
+        
+        <!-- Numbered page links -->
+        <?php foreach ($this->pagesInRange as $page) {
+            if ($page != $this->current) { ?>
+          <a href="<?= $this->escape($qs . 'limit=' . $this->itemCountPerPage . '&page=' . $page) ?>"><?= $page ?></a>
+        <?php } else { ?>
+          <?= $page ?>
+        <?php
+            }
+        } ?>
+        
+        <!-- Next page link -->
+        <?php if (isset($this->next)) { ?>
+          <a href="<?= $this->escape($qs . 'limit=' . $this->itemCountPerPage . '&page=' . $this->next) ?>">Next &raquo;</a>
+        <?php } else { ?>
+          <span class="disabled">Next &raquo;</span>
+        <?php } ?>
+        
+        <!-- Last page link -->
+        <?php if (isset($this->next)) { ?>
+          <a href="<?= $this->escape($qs . 'limit=' . $this->itemCountPerPage . '&page=' . $this->last) ?>">Last</a>
+        <?php } else { ?>
+          <span class="disabled">Last</span>
+        <?php } ?>
+        
+    </div>
+<?php } ?>

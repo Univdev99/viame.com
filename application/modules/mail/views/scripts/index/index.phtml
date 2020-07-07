@@ -1,0 +1,117 @@
+<h1>Mail</h1>
+
+
+
+<div>
+    <?= $this->render('sidebar.phtml') ?>
+    <div style="margin-left: 176px;">
+
+
+
+<form method="post" action="<?= $this->internal->target->pre ?>/mail/multi/">
+<input type="hidden" name="function" id="hidden_function" value="" />
+<input type="hidden" name="fid2" value="<?= $this->folder ?>" />
+
+<table width="100%" class="decorated">
+    <tr>
+        <th width="1%"><input type="checkbox" onclick="toggleCheckboxes(this, 'mid');"></th>
+        <th scope="col">Sender</th>
+        <th scope="col">Subject</th>
+        <th scope="col">Date</th>
+        <th scope="col">Priority</th>
+    </tr>
+<?php
+    foreach ($this->mails as $mail) {
+    $date = new Zend_Date();
+    $date->set($mail->creation, Zend_Date::ISO_8601);
+    if (isset($this->internal->member)) {
+        $date->setTimezone($this->internal->member->timezone);
+    }
+    else {
+        $date->setTimezone($this->internal->config->timezone);
+    }
+?>
+    <tr<?php if ((!$this->folder) && $mail->i_status_to_me && (!isset($mail->i_status_read) || !$mail->i_status_read)) { echo ' class="bold"'; } ?>>
+        <td><input type="checkbox" name="mid[]" value="<?= $mail->profile_id . '-' . $mail->counter ?>" /></td>
+        <td><?= $this->ProfileDisplay(array('profile' => $this->profiles[$mail->profile_id], 'internal' => $this->internal)) ?></td>
+        <td><a href="<?= $this->internal->target->pre ?>/mail/read/p/<?= ($this->folder ? 'fid/' . $this->folder . '/' : '') ?>pid/<?= $mail->profile_id ?>/id/<?= $mail->counter ?>/"><?= $mail->subject ?></a></td>
+        <td class="ralign"><?= $date->toString(Zend_Date::DATETIME_SHORT); ?></td>
+        <td class="calign"><?php  
+            switch ($mail->priority) {
+                case 2:
+                    echo 'Highest';
+                    break;
+                case 1:
+                    echo 'High';
+                    break;
+                case -1:
+                    echo 'Low';
+                    break;
+                case -2:
+                    echo 'Lowest';
+                    break;
+                default:
+                    echo 'Normal';
+                    break;
+            };
+        ?></td>
+    </tr>
+<?php
+    }
+?>
+</table>
+
+<input type="submit" value="Delete" onclick="YAHOO.util.Dom.get('hidden_function').value='delete';" />
+<?php if ($this->folder == 'R') { ?>
+<input type="submit" value="Undelete" onclick="YAHOO.util.Dom.get('hidden_function').value='undelete';" />
+<?php } ?>
+
+
+<?php if (!$this->folder) { ?>
+<input type="submit" value="Mark As Read" onclick="YAHOO.util.Dom.get('hidden_function').value='read';" />
+<input type="submit" value="Mark As Unread" onclick="YAHOO.util.Dom.get('hidden_function').value='unread';" />
+<?php } ?>
+
+
+<?php if (!$this->folder) { ?>
+<select name="fid">
+    <option value="">-- Select a Folder --</option>
+<?php
+    foreach ($this->folders as $folder) {
+?>
+    <option value="<?= $folder->counter ?>"<?= ((isset($this->internal->params->fid) && $this->internal->params->fid && $this->internal->params->fid == $folder->counter) ? ' disabled="disabled"' : '') ?>><?= (str_repeat(' -- ', substr_count($folder->sort_order, '-'))) . $folder->name ?></option>
+<?php
+    }
+?>
+</select>
+<input type="submit" value="Move" onclick="YAHOO.util.Dom.get('hidden_function').value='move';" />
+<input type="submit" value="Copy" onclick="YAHOO.util.Dom.get('hidden_function').value='copy';" />
+<?php } ?>
+</form>
+
+
+
+    </div>
+    <div style="clear: both;"></div>
+</div>
+
+
+
+<?php $this->inlineScript()->captureStart() ?>    
+
+function toggleCheckboxes(which, target) {
+    if (which) {
+        if (!target && YAHOO.util.Dom.getAttribute(which, 'name')) {
+            target = YAHOO.util.Dom.getAttribute(which, 'name');
+        }
+        
+        if (target) {
+            var nodes = YAHOO.util.Selector.query('input[name^=' + target + ']', YAHOO.util.Dom.getAncestorByTagName(which, 'form'));
+            for (var i = 0; i < nodes.length; i++) {
+                nodes[i].checked = which.checked;
+            }
+        }
+    }
+}
+
+<?php $this->inlineScript()->captureEnd() ?>

@@ -1,0 +1,33 @@
+<div class="multistep_header">
+    <table><tr>
+        <td align="left" class="header">
+            Setup
+        </td>
+        <td align="right" class="steps">
+            <table class="ind_steps"><tr>
+                <td>
+                    <div class="step firstitem"><span class="stepnumber">1</span>Enter Info</div>
+                </td>
+                <td>
+                    <div class="step"><span class="stepnumber">2</span>Check Email</div>
+                </td>
+                <td>
+                    <div class="step"><span class="stepnumber">3</span>Confirmation</div>
+                </td>
+                <td>
+                    <div class="step lastitem selected"><span class="stepnumber">4</span>Account Setup</div>
+                </td>
+            </tr></table>
+        </td>
+    </tr></table>
+</div>
+
+<?php
+echo $this->CM(array(
+    'class' => 'cm decorated padded',
+    'hd' => 'Account Setup',
+    'hd2' => 'Complete setting up your account',
+    'bd' => '<p>In order to have complete site wide access and <strong>take full advantage of all the ' . $this->internal->community->display . ' Community has to offer</strong>, please <strong>complete the setup process below by choosing a username and password</strong>.</p>'
+        . $this->render('form.phtml')
+));
+?>

@@ -1,0 +1,15 @@
+#!/bin/sh
+
+psql -c 'DELETE FROM log_logs' viame
+
+pg_dump -Fc -f data viame
+
+psql -f reset.sql
+pg_dump -Fc -f schema viame
+
+dropdb viame
+pg_restore -C -e -s -d arthur schema
+
+pg_restore -a -e --disable-triggers -d viame data
+
+rm data schema

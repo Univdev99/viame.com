@@ -1,0 +1,25 @@
+<?php
+$body = '';
+if (isset($this->success) && count($this->success)) {
+    $counter = 0;
+    foreach ($this->success as $file) {
+        $counter++;
+        $body .= "<p><strong>File # $counter";
+        if (isset($file['filename']) && $file['filename']) {
+            $body .= ' (' . $file['filename'] . ')';
+        }
+        $body .= '</strong>';
+        if (isset($file['location']) && $file['location']) {
+            $body .= '<br /><a href="' . $file['location'] . '">' . $file['location'] . '</a>';
+        }
+        $body .= '</p>';
+    }
+}
+
+echo $this->CM(array(
+    'class' => 'cm decorated plain successmessage',
+    'hd' => 'File Upload',
+    'hd2' => 'Upload success',
+    'bd' => '<p class="success">Your file(s) have been successfully uploaded.</p>' . $body . '<p><a href="/' . $this->SEO_Urlify(isset($this->internal->target->currentModule->display) && $this->internal->target->currentModule->display ? $this->internal->target->currentModule->display : $this->internal->target->currentModule->m_display) . '/s' . $this->internal->target->pre . '/file/p/mid/' . $this->internal->target->currentModule->counter . '/"><br /><br />Continue &raquo;</a></p>'
+));
+?>

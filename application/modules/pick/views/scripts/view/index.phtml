@@ -1,0 +1,379 @@
+<?php $module = 'pick'; ?>
+<?php $currency = new ViaMe_Currency(array('currency' => 'USD', 'precision' => 4)); ?>
+
+<div class="cm decorated padded m_<?= $module ?> m-<?= $this->internal->target->currentModule->module_id ?>-<?= $this->internal->target->currentModule->counter ?> id_<?= $this->object->counter ?>">
+<div class="hd">
+    <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div>
+    </div>
+    <div class="con">
+    	<table class="table">
+            <tr>
+                <td class="lt"></td>
+
+                <td class="mn1"><a href="<?= '/' . $this->SEO_Urlify($this->internal->target->currentModule->display ? $this->internal->target->currentModule->display : $this->internal->target->currentModule->m_display) . '/s' . (isset($this->internal->target->pre) ? $this->internal->target->pre : '') . '/' . $this->internal->target->currentModule->m_name . '/p/mid/' . $this->internal->params->mid . '/' ?>"><?= $this->escape(isset($this->internal->target->currentModule->display) && $this->internal->target->currentModule->display ? $this->internal->target->currentModule->display : $this->internal->target->currentModule->m_display) ?></a></td>
+                <td class="sep"></td>
+                <td class="mn2">
+<?php if (!$this->object->close_datestamp && !$this->masked && ($this->internal->target->acl->owner || ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_EDIT))) { ?>
+                    <div class="administer">        
+                        <a href="<?= $this->internal->target->pre ?>/<?= $module ?>/edit/p/mid/<?= $this->object->matrix_counter ?>/id/<?= $this->object->counter ?>/" class="edit">Edit Pick</a>
+                        <a href="<?= $this->internal->target->pre ?>/<?= $module ?>/close/p/mid/<?= $this->object->matrix_counter ?>/id/<?= $this->object->counter ?>/" class="delete">Close Pick</a>
+                    </div>
+<?php } ?>
+                </td>
+                <td class="rt"></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="bd">
+
+
+    <div class="title"><h1><?= $this->escape($this->object->title) ?></h1></div>
+    <?= isset($this->object->heading) && $this->object->heading ? '<div class="heading"><h2>'. $this->escape($this->object->heading) .'</h2></div>' : '' ?>
+
+    <div class="part1">
+        <div class="author">Picked By <?= $this->ProfileDisplay(array('profile' => $this->object, 'internal' => $this->internal)) ?></div>
+        
+        <div class="datetime">Picked: 
+        <?php
+            $date = new Zend_Date();
+            $date->set($this->object->creation, Zend_Date::ISO_8601);
+            if (isset($this->internal->member)) {
+                $date->setTimezone($this->internal->member->timezone);
+            }
+            else {
+                $date->setTimezone($this->internal->config->timezone);
+            }
+            echo $date->toString(Zend_Date::DATETIME_LONG);
+        ?>
+        </div>
+        
+        <div class="relay">
+            <?= $this->partial('partials/_AddThis.phtml', 'system', array('internal' => $this->internal)); ?>
+            
+            <?= $this->PrintEmailLink(array('link' => '', 'internal' => $this->internal)) ?>
+        </div>
+    </div>
+    
+    <?php if ($this->internal->target->currentModule->interactive && ($this->masked ? $this->object->x_interactive : true)) { ?>
+        <div class="interact">
+            <div class="comments"><span class="begin_comment_count">&nbsp;</span><a href="#comments_list" class="comment_count"><?= $this->object->total_comments_count ?></a><span class="end_comment_count">&nbsp;</span> <a href="#comments_list">Comment(s)</a>
+            <?php if (($this->internal->target->acl->allowed === null || $this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT) && $this->object->allow_comments) { ?>
+            - <a href="#post_a_comment">Post a Comment</a>
+            <?php } ?>
+            </div>
+            <div class="rating">Rating <span class="count rc<?= floor($this->object->rating * 2) ?>"><?= ($this->object->rating ? $this->object->rating : '') ?></span></div>
+        </div>
+    <?php } ?>
+    
+    
+    <div class="part2">
+
+        <h1><?= $this->symbol->name ?> (<?= $this->symbol->exchdisp ?>: <?= $this->Quote_SymbolDisplay(array('id' => $this->symbol->id, 'symbol' => $this->symbol->internal_symbol, 'name' => $this->symbol->name, 'active' => (isset($this->symbol->active) ? $this->symbol->active : null), 'internal' => $this->internal)) ?>) - <?= $this->object->close_datestamp ? 'Closed' : 'Open' ?></h1>
+        
+        <table width="100%" class="params">
+            <thead>
+                <tr>
+                    <th scope="col" width="20%">Symbol</th>
+                    <th scope="col" width="20%">Position</th>
+                    <th scope="col" width="20%">Allocation</th>
+                    <th scope="col" width="20%">Picked</th>
+                    <th colspan="2" scope="col" width="20%"><?= ($this->object->close_datestamp ? 'Closed' : 'Current') ?> Price</th>
+                </tr>
+            </thead>
+            <tr>
+                <td class="calign"><?= $this->Quote_SymbolDisplay(array('id' => $this->symbol->id, 'symbol' => $this->symbol->internal_symbol, 'name' => $this->symbol->name, 'active' => (isset($this->symbol->active) ? $this->symbol->active : null), 'internal' => $this->internal)) ?></td>
+                <td class="calign"><?= $this->object->position == 1 ? 'Long' : 'Short' ?></td>
+                <td class="calign"><?= Zend_Locale_Format::toNumber($this->object->allocation, array('locale' => $this->internal->locale)) ?>%</td>
+                <td class="calign"><?php
+    $picked = $this->object->open_price ? $this->object->open_price : $this->object->open_temp_price;
+    $current = '';
+    if ($this->object->close_datestamp) {
+        $current = $this->object->close_price ? $this->object->close_price : $this->object->close_temp_price;
+    }
+    else {
+        $current = $this->quote_data->last;
+    }
+    
+    echo $currency->toCurrency($picked); ?></td>
+                <td width="10%" class="calign<?= ((($current - $picked) * $this->object->position > 0) ? ' netup' : ((($current - $picked) * $this->object->position < 0) ? ' netdown' : '')) ?>">
+        <?= $currency->toCurrency($current) ?>
+                </td>
+                <td width="10%" class="calign<?= ((($current - $picked) * $this->object->position > 0) ? ' netup' : ((($current - $picked) * $this->object->position < 0) ? ' netdown' : '')) ?>"><?= Zend_Locale_Format::toNumber((($current - $picked) / $picked * $this->object->position * 100), array('locale' => $this->internal->locale, 'precision' => 2)) ?>%</td>
+            </tr>
+        </table>
+        
+        <hr size="1" noshade="noshade" />
+        <div id="div-gpt-ad-1391042277145-0" class="advertisement" style="text-align: center;">
+<script type='text/javascript'>
+googletag.pubads().display('/1063461/VM-Platform-Pick_View_Default-468x60', [468, 60], 'div-gpt-ad-1391042277145-0');
+</script>
+        </div>
+        <hr size="1" noshade="noshade" />
+        
+        <table width="100%" class="display data">
+            <tr>
+                <th scope="row" width="30%">Opened</th>
+                <td width="70%">
+<?php
+    $date = new Zend_Date();
+    $date->set($this->object->open_datestamp, Zend_Date::ISO_8601);
+    if (isset($this->internal->member)) {
+        $date->setTimezone($this->internal->member->timezone);
+    }
+    else {
+        $date->setTimezone($this->internal->config->timezone);
+    }
+    echo $date->toString(Zend_Date::DATETIME_LONG);
+?>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">Closed</th>
+                <td>
+<?php
+    if ($this->object->close_datestamp) {
+        $date = new Zend_Date();
+        $date->set($this->object->close_datestamp, Zend_Date::ISO_8601);
+        if (isset($this->internal->member)) {
+            $date->setTimezone($this->internal->member->timezone);
+        }
+        else {
+            $date->setTimezone($this->internal->config->timezone);
+        }
+        echo $date->toString(Zend_Date::DATETIME_LONG);
+    }
+    else {
+        echo '-';
+    }
+?>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">Risk</th>
+                <td>
+<?php
+    if ($this->object->risk === 1) {
+        echo 'High';
+    }
+    elseif ($this->object->risk === 0) {
+        echo 'Medium';
+    }
+    elseif ($this->object->risk === -1) {
+        echo 'Low';
+    }
+    else {
+        echo '-';
+    }
+?>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">Target Date</th>
+                <td>
+<?php
+    if ($this->object->target_date) {
+        $date = new Zend_Date();
+        $date->set($this->object->target_date, Zend_Date::ISO_8601);
+        if (isset($this->internal->member)) {
+            $date->setTimezone($this->internal->member->timezone);
+        }
+        else {
+            $date->setTimezone($this->internal->config->timezone);
+        }
+        echo $date->toString('FFFF');
+    }
+    else {
+        echo '-';
+    }
+?>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">Target Price</th>
+                <td>
+<?php
+    if ($this->object->target_price) {
+        echo $currency->toCurrency($this->object->target_price);
+    }
+    else {
+        echo '-';
+    }
+?>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">Timeframe</th>
+                <td>
+<?php
+    if ($this->object->timeframe === 1) {
+        echo 'Long-Term';
+    }
+    elseif ($this->object->timeframe === 0) {
+        echo 'Mid-Term';
+    }
+    elseif ($this->object->timeframe === -1) {
+        echo 'Short-Term';
+    }
+    else {
+        echo '-';
+    }
+?>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">Suggested Stop Loss</th>
+                <td>
+<?php
+    if ($this->object->suggested_stop_loss) {
+        echo $currency->toCurrency($this->object->suggested_stop_loss);
+    }
+    else {
+        echo '-';
+    }
+?>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">Trailing Stop Loss</th>
+                <td>
+<?php
+    if ($this->object->trailing_stop_loss && $this->object->trailing_stop_loss_type == 0) {
+        echo $currency->toCurrency($this->object->trailing_stop_loss);
+        if ($this->object->live_stop_loss && $this->object->trailing_stop_loss_activation > 0) {
+            echo ' : Active @ ' . $currency->toCurrency($this->object->trailing_stop_loss_activation);
+        }
+    }
+    elseif ($this->object->trailing_stop_loss && $this->object->trailing_stop_loss_type == 1) {
+        echo sprintf("%d%%", $this->object->trailing_stop_loss);
+        if ($this->object->live_stop_loss && $this->object->trailing_stop_loss_activation > 0) {
+            echo ' : Active @ ' . $currency->toCurrency($this->object->trailing_stop_loss_activation);
+        }
+    }
+    else {
+        echo '-';
+    }
+?>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">Holding</th>
+                <td>
+<?php
+    if ($this->object->holding === 1) {
+        echo 'Long Position';
+    }
+    elseif ($this->object->holding === 0) {
+        echo 'No Position';
+    }
+    elseif ($this->object->holding === -1) {
+        echo 'Short Position';
+    }
+    else {
+        echo '-';
+    }
+?>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">Disclosure</th>
+                <td><?= ($this->object->disclosure ? '<div class="lalign">' . $this->escape($this->object->disclosure) . '</div>' : '-') ?></td>
+            </tr>
+        </table>
+
+        <div class="content"><?= $this->object->content ?></div>
+    
+    </div>
+    
+    <?= $this->partial('partials/_SocialBookmarks.phtml', 'system', array('internal' => $this->internal)); ?>
+    
+    <?php if ($this->internal->community->meta_stocks && isset($this->symbol) && !is_null($this->symbol)) { echo $this->RelatedQuotes(array('symbols' => '{'.$this->symbol->id.'}', 'internal' => $this->internal, 'which_part' => '2')); } ?>
+    
+    <div class="part3" style="margin-bottom: 3em;">
+    <?php if ($this->internal->target->currentModule->interactive && ($this->masked ? $this->object->x_interactive : true)) { ?>
+        <div class="interact">
+            <div class="comments"><span class="begin_comment_count">&nbsp;</span><a href="#comments_list" class="comment_count"><?= $this->object->total_comments_count ?></a><span class="end_comment_count">&nbsp;</span> <a href="#comments_list">Comment(s)</a>
+            <?php if (($this->internal->target->acl->allowed === null || $this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT) && $this->object->allow_comments) { ?>
+            - <a href="#post_a_comment">Post a Comment</a>
+            <?php } ?>
+            </div>
+            
+            <?php if (($this->internal->target->acl->allowed === null || $this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT) &&
+                $this->object->allow_ratings) { ?>
+            <div class="rateit">Rate It : 
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/1/" rel="nofollow" title="1 Star - Awful">1</a>
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/2/" rel="nofollow" title="2 Stars - Poor">2</a>
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/3/" rel="nofollow" title="3 Stars - Average">3</a>
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/4/" rel="nofollow" title="4 Stars - Good">4</a>
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/5/" rel="nofollow" title="5 Stars - Excellent">5</a>
+                </span></span></span></span></span>
+            </div>
+            <?php } ?>
+            
+        </div>
+    <?php } ?>
+    </div>
+    
+    <div style="clear: both; padding-bottom: 4em;" class="pager">
+        <?php if (isset($this->prev_object)) { ?>
+        <div class="previous" style="display: inline; float: left; margin-bottom: 1em;">
+    <?php
+    $link = '/' . $this->SEO_Urlify($this->prev_object->title) . '/s';
+    if ($this->masked) {
+        $link .= $this->internal->target->pre . "/$module/view/p/mid/" . $this->masked . '/id/' . $this->prev_object->counter . '/';
+    }
+    else {
+        if ($this->prev_object->com_id && ((isset($this->internal->params->com_id) && $this->internal->params->com_id) || $this->prev_object->com_id != $this->internal->community->id)) { $link .= '/com/' . $this->prev_object->com_id; }
+        elseif ($this->prev_object->net_id) { $link .= '/net/' . $this->prev_object->net_id; }
+        elseif ($this->prev_object->via_id) { $link .= '/via/' . $this->prev_object->via_id; }
+        
+        $link .= "/$module/view/p/mid/" . $this->prev_object->matrix_counter . '/id/' . $this->prev_object->counter . '/';
+    }
+    ?>
+            <a href="<?= $link ?>" title="<?= $this->escape($this->prev_object->title) ?>" >&laquo; Previous</a>
+        </div>
+        <?php } ?>
+        
+        <?php if (isset($this->next_object)) { ?>
+        <div class="next" style="display: inline; float: right; margin-bottom: 1em;">
+    <?php
+    $link = '/' . $this->SEO_Urlify($this->next_object->title) . '/s';
+    if ($this->masked) {
+        $link .= $this->internal->target->pre . "/$module/view/p/mid/" . $this->masked . '/id/' . $this->next_object->counter . '/';
+    }
+    else {
+        if ($this->next_object->com_id && ((isset($this->internal->params->com_id) && $this->internal->params->com_id) || $this->next_object->com_id != $this->internal->community->id)) { $link .= '/com/' . $this->next_object->com_id; }
+        elseif ($this->next_object->net_id) { $link .= '/net/' . $this->next_object->net_id; }
+        elseif ($this->next_object->via_id) { $link .= '/via/' . $this->next_object->via_id; }
+        
+        $link .= "/$module/view/p/mid/" . $this->next_object->matrix_counter . '/id/' . $this->next_object->counter . '/';
+    }
+    ?>
+            <a href="<?= $link ?>" title="<?= $this->escape($this->next_object->title) ?>" >Next &raquo;</a>
+        </div>
+        <?php } ?>
+    </div>
+    
+    <div style="clear: both;"></div>
+    
+    <?php if ($this->internal->target->currentModule->interactive && ($this->masked ? $this->object->x_interactive : true)) { ?>
+    <div class="comments">
+    <?php
+        echo $this->action('list', 'comments', 'system', (array) $this->internal->params);
+    ?>
+    </div>
+    <?php } ?>
+
+
+</div>
+<div class="ft">
+    <div class="dec">
+        <div class="lt"></div><div class="mn"></div><div class="rt"></div>
+
+    </div>
+</div>
+<span class="icon"></span>
+</div>
+
+
+<?php #$this->TextAds(); ?>

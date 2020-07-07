@@ -1,0 +1,47 @@
+<?php
+if (isset($this->objects) && $this->objects) {
+    foreach ($this->objects as $comment) {
+        // Create the link
+        $link = 'http://' . $this->internal->vars->host;
+        if ($this->masked) {
+            $link .= $this->internal->target->pre . '/' . $this->internal->module_modules[$comment->module_id]->name . '/view/p/mid/' . $this->masked . '/id/' . $comment->item_counter . '/';
+        }
+        else {
+            if ($comment->com_id && ((isset($this->internal->params->com_id) && $this->internal->params->com_id) || $comment->com_id != $this->internal->community->id)) { $link .= '/com/' . $comment->com_id; }
+            elseif ($comment->net_id) { $link .= '/net/' . $comment->net_id; }
+            elseif ($comment->via_id) { $link .= '/via/' . $comment->via_id; }
+            
+            $link .= '/' . $this->internal->module_modules[$comment->module_id]->name . '/view/p/mid/' . $comment->matrix_counter . '/id/' . $comment->item_counter . '/';
+        }
+?>
+<div class="comment">
+    <div class="title"><a href="<?= $link ?>#comments_list"><?= $this->escape($comment->title) ?></a></div>
+    <div class="interact">
+    <?= $comment->total_comments_count ?> Replies - Average Rating : <?= ($comment->rating ? $comment->rating : 'N/A') ?>
+    </div>
+    <div class="datetime">
+<?php
+        $date = new Zend_Date();
+        $date->set($comment->creation, Zend_Date::ISO_8601);
+        if (isset($this->internal->member)) {
+            $date->setTimezone($this->internal->member->timezone);
+        }
+        echo $date->toString('EEEE  MMMM d, YYY h:mm a z');
+?>
+    </div>
+    <div class="author">By <?= $this->ProfileDisplay(array('profile' => $comment, 'internal' => $this->internal)) ?></div>
+    <div class="summary">
+    <?php
+        $tempContent = $comment->content;
+        
+        $tempContent = preg_replace("/<a /", '<a rel="nofollow" ', $tempContent);
+
+        echo $tempContent;
+    
+    ?>
+    </div>
+</div>
+<?php
+    }
+}
+?>

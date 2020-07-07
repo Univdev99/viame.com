@@ -1,0 +1,111 @@
+<?php
+    $this->headLink()->prependStylesheet($this->internal->vars->static_host . '/css/namespaced-bootstrap/bootstrap.css', 'screen');
+    $this->headLink()->prependStylesheet($this->internal->vars->static_host . '/css/namespaced-bootstrap/bootstrap-theme.css', 'screen');
+?>
+
+<div class="wrapper bootstrap">
+
+    <div class="container-fluid" style=" margin-top: 15px; margin-bottom: 15px; border: 12px solid #444; background-color: #fff;">
+            
+            <div class="row" style="border-bottom: 3px solid #303030;">
+                <h1 style="margin: 0; padding: 15px;"><strong>Free Trump Sectors and Stocks Report</strong></h1>
+            </div>
+
+
+            
+            <div class="row" style="padding-top: 20px; background-color: #e6f2f8;">
+                <div class="col-md-7">
+                    <p style="font-size: 28px;">With <strong>Donald J. Trump</strong> the new President Elect, opportunities are surfacing in stocks like we haven't seen in over a decade. Our team of unbiased and independent research analysts reveal <strong>5 sectors and 25 stocks</strong> that stand to make investors a <strong>fortune</strong> over the next several years.</p>
+                </div>
+                <div class="col-md-5">
+                    <div class="panel panel-primary" id="section-sign-up-form">
+                        <div class="panel-heading"><h3 class="panel-title">Get Trump Sectors & Stocks Report Free</h3></div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xs-6 col-xs-offset-3">
+                                    <img src="/trump-report/maga.png" class="img-responsive center-block" />
+                                </div>
+                            </div>
+                            
+                            <form id="mainForm" role="form" method="POST" action="">
+                                <input type="hidden" name="referrer" value="{{ old('referrer', request('referrer')) }}" />
+                                
+                                <div id="errorMessage" class="alert alert-danger" role="alert" style="display: none;">
+                                    <p>Your submission was not accepted.  Please try your request again.</p>
+                                </div>
+                                
+                                <div class="form-group{{ $errors->has('first_name') ? ' has-error' : '' }}">
+                                    <label for="first_name" class="control-label">First Name</label>
+        
+                                    <div>
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
+                                            <input id="first_name" type="text" class="form-control" name="first_name" value="{{ old('first_name') }}" required>
+                                        </div>
+                                        
+                                        @if ($errors->has('first_name'))
+                                            <span class="help-block">
+                                                <strong>{{ $errors->first('first_name') }}</strong>
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group{{ $errors->has('last_name') ? ' has-error' : '' }}">
+                                    <label for="last_name" class="control-label">Last Name</label>
+        
+                                    <div>
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
+                                            <input id="last_name" type="text" class="form-control" name="last_name" value="{{ old('last_name') }}" required>
+                                        </div>
+                                        
+                                        @if ($errors->has('last_name'))
+                                            <span class="help-block">
+                                                <strong>{{ $errors->first('last_name') }}</strong>
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group{{ $errors->has('phone') ? ' has-error' : '' }}">
+                                    <label for="phone" class="control-label">Phone Number</label>
+        
+                                    <div>
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-phone" aria-hidden="true"></i></span>
+                                            <input id="phone" type="text" class="form-control" name="phone" placeholder="(555) 555-5555" value="{{ old('phone') }}" data-mask="(000) 000-0000" required>
+                                        </div>
+                                        <div style="font-size: 12px;" class="text-danger">
+                                            Please be available at this number, as we will be sending you a text or voice confirmation code.
+                                        </div>
+                                        
+                                        @if ($errors->has('phone'))
+                                            <span class="help-block">
+                                                <strong>{{ $errors->first('phone') }}</strong>
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <div class="text-center">
+                                        <button id="submitButton" type="submit" class="btn btn-primary">
+                                            Get Your FREE Report Now!
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    </div>
+    
+</div>
+
+
+
+
+<?= $this->FormHelper(array('internal' => $this->internal)) ?>

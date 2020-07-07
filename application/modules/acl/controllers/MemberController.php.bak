@@ -1,0 +1,103 @@
+<?php
+/**
+ * ViaMe Application
+ *
+ * Levelogic, Inc. (http://www.levelogic.com)
+ */
+
+class Acl_MemberController extends ViaMe_Controller_Action
+{   
+    // PreDispatch Overrides
+    //protected $_routeThruDefault = true;
+    protected $_memberDefined = true;
+    //protected $_moduleInMatrix = true;
+    //protected $_modObjectCheck = true;
+    //protected $_minPrivilege = self::ACL_ADMIN;
+    //protected $_defaultAllow = true;
+    //protected $_mustBeOwner = false;
+    
+    
+    public function indexAction()
+    {
+        // Load the Form
+        $form_config = array(
+            'attribs' => array(
+                'name' => 'acl_member_form',
+                'id' => 'acl_member_form',
+                'class' => 'form'
+            ),
+            'elements' => array(
+                'auto_renew' => array('Checkbox', array(
+                    'label' => 'Auto Renew',
+                    'description' => 'Recurring billing',
+                    'order' => 5
+                )),
+                // Hidden Fields
+                'type' => array('Hidden', array('required' => true)),
+                'id' => array('Hidden', array('required' => true)),
+                'mod' => array('Hidden', array('required' => true)),
+                'mid' => array('Hidden', array('required' => true)),
+                'iid' => array('Hidden', array('required' => true)),
+                'counter' => array('Hidden', array('required' => true))
+            )
+        );
+        $form = new Zend_Form();
+        $form->addPrefixPath('ViaMe_Form', 'ViaMe/Form/');
+        $form->setOptions($form_config);
+        
+        $form->setMethod('post');
+        $form->setAction('/acl/member/confirmed/');
+        
+        $form->addElement('Submit', 'submit', array('label' => 'Submit', 'ignore' => true, 'order' => 999));
+        $form->addElement('Submit', 'cancel', array('label' => 'Cancel', 'order' => 1000));
+        
+        // Redirects
+        $form->addElement('Hidden', 'vmpd_nar', array('value' => 1));
+        $form->addElement('Hidden', 'redirect', array('value' => $this->_getParam('redirect'))); 
+        
+        $form->populate($this->_getAllParams());
+        
+        $this->view->form = $form;
+    }
+    
+    public function confirmedAction()
+    {
+        // Confirmed
+        /*
+            Charge money
+            Log Charge Transaction
+            Send Email Receipt
+            Create Member Account
+        */
+        
+        if ($this->getRequest()->isPost() && !($this->_getParam('cancel') == 'Cancel')) {
+            switch($this->_getParam('type')) {
+                case 'VIA':
+                    $which = 'via_id';
+                    break;
+                case 'NET':
+                    $which = 'net_id';
+                    break;
+                default:
+                    $which = 'com_id';
+                    break;
+            }
+            
+            
+            $query = "INSERT INTO acl_members ($which, module_id, matrix_counter, item_counter, acl_counter, expiration, auto_renew, profile_id) SELECT $which, module_id, matrix_counter, item_counter, counter, date(date 'now' + (text(w_member_quantity) || ' ' || w_member_interval)::interval), ?, ? FROM acl_acls WHERE $which=? AND module_id=? AND matrix_counter=? AND item_counter=? and counter=?";
+            
+            $this->db->query($query, array($this->_getParam('auto_renew'), $this->member->profile->id, $this->_getParam('id'), $this->_getParam('mod'), $this->_getParam('mid'), $this->_getParam('iid'), $this->_getParam('counter')));
+            
+            $query = "INSERT INTO log_trans ($which, module_id, matrix_counter, item_counter, amount, message, ip_address, profile_id) SELECT $which, module_id, matrix_counter, item_counter, w_member_amount, ?, ?, ? FROM acl_acls WHERE $which=? AND module_id=? AND matrix_counter=? AND item_counter=? and counter=?";
+            
+            $message = null;
+            $this->db->query($query, array($message, $_SERVER['REMOTE_ADDR'], $this->member->profile->id, $this->_getParam('id'), $this->_getParam('mod'), $this->_getParam('mid'), $this->_getParam('iid'), $this->_getParam('counter')));
+            
+            
+            $this->view->redirect = $this->_getParam('redirect');
+        }
+        else {
+            $this->_autoredirect('/');
+        }
+    }
+}

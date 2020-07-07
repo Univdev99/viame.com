@@ -1,0 +1,68 @@
+<div class="sidebar" style="float: left; width: 160px; margin-right: 1em;">
+
+    <form action="<?= $this->internal->target->pre ?>/mail/write/" style="margin-bottom: 1em;"><input type="submit" value="Compose Mail" /></form>
+    
+    <ul class="boxes">
+		<li class="first-of-type inbox"><a href="<?= $this->internal->target->pre ?>/mail/"<?= (!$this->folder ? ' class="bold"' : '') ?>>Inbox<span class="icon"></span></a></li>
+		<li class="draft"><a href="<?= $this->internal->target->pre ?>/mail/p/fid/D/"<?= ($this->folder == 'D' ? ' class="bold"' : '') ?>>Drafts<span class="icon"></span></a></li>
+		<li class="template"><a href="<?= $this->internal->target->pre ?>/mail/p/fid/T/"<?= ($this->folder == 'T' ? ' class="bold"' : '') ?>>Templates<span class="icon"></span></a></li>
+		<li class="sent"><a href="<?= $this->internal->target->pre ?>/mail/p/fid/S/"<?= ($this->folder == 'S' ? ' class="bold"' : '') ?>>Sent<span class="icon"></span></a></li>
+		<li class="last-of-type trash"><a href="<?= $this->internal->target->pre ?>/mail/p/fid/R/"<?= ($this->folder == 'R' ? ' class="bold"' : '') ?>>Trash<span class="icon"></span></a></li>
+	</ul>
+    
+    <hr size="1" noshade="noshade" />
+    
+    <ul class="folders first-of-type">
+<?php
+// Display Folders
+if (Zend_Registry::isRegistered('db')) {
+    $db = Zend_Registry::get('db');
+    
+    // Load up the existing folders
+    $temp_sorted_folders = $temp_folders = $temp_sorted_keys = array();
+    foreach ($db->fetchAll("SELECT *, array_to_string(array_reverse((SELECT array_accum(a) FROM recursive_find('mail_folder_folders', 'parent_id', 'counter', counter, 't') AS a)), '-') AS sort_order FROM mail_folder_folders WHERE profile_id=? ORDER BY sort_order, name", array($this->internal->target->id)) as $folder) {
+        $temp_folders[$folder->sort_order] = $folder;
+    }
+    
+    if (count($temp_folders)) {
+        $temp_sorted_keys = array_keys( $temp_folders );
+        natsort( $temp_sorted_keys );
+        
+        // Display
+        $level = $counter = 0;
+        foreach ($temp_sorted_keys as $key) {
+            $temp_sorted_folders[$temp_folders[$key]->counter] = $temp_folders[$key];
+            $folder = $temp_folders[$key];
+            
+            if (substr_count($folder->sort_order, '-') > $level) {
+                for ( ; $level < substr_count($folder->sort_order, '-'); $level++) {
+                    echo '<ul>';
+                }
+            } elseif (substr_count($folder->sort_order, '-') < $level) {
+                for ( ; $level > substr_count($folder->sort_order, '-'); $level--) {
+                    echo '</ul>';
+                }
+            }
+            
+            echo '<li';
+            
+            if (isset($this->internal->params->fid) && ($this->internal->params->fid == $folder->counter)) {
+                echo ' class="bold"';
+            }
+            echo '><a href="' . $this->internal->target->pre . '/mail/p/fid/' . $folder->counter . '/">' . $folder->name . '</a><span class="icon"></span></li>';
+            $counter++;
+        }
+        
+        $this->folders = $temp_sorted_folders;
+        for ( ; $level >= 0; $level--) {
+            echo '</ul>';
+        }
+    }
+}    
+?>
+    </ul>
+    
+    <div><a href="<?= $this->internal->target->pre ?>/mail/folder/create/">Create A New Folder</a></div>
+    <div><a href="<?= $this->internal->target->pre ?>/mail/folder/">Folder Management</a></div>
+        
+</div>

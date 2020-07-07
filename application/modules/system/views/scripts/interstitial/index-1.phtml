@@ -1,0 +1,78 @@
+<div class="interstitial_ad_wrapper">
+	<div class="header">
+		<div class="continue">
+			<p><a class="continue" href="javascript:goBack();" >Continue to Site &raquo;</a></p>
+			<p><span class="time_remaining">Site will load in <span id="countdown">30</span> second(s)</span></p>
+		</div>
+		
+		<div class="clear"></div>
+	</div>
+    
+	<div class="ad_wrapper">
+		<p class="advertisement">ADVERTISEMENT</p>
+        <div class="interstitial_ad">
+        <!-- Begin Interstitial Ad -->
+
+<div style="text-align: center;"><center>
+<table border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF">
+  <tr>
+    <td align="center" style="padding: 0 1em; font-family: Arial, Helvtica; font-size: 26px; font-weight: bold;"><a href="https://www.smallcapnetwork.com/FONU2-Inc-FONU-A-Future-Movie-Studio-Empire/s/via/10/article/view/p/mid/3/id/555/"><img src="//static.viame.com/css/company_logos/fonu2.png" /></a><p>FONU2, Inc. (FONU) - A Future Movie Studio Empire?<br />A Pure Penny Play With Enormous Potential!</p></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://www.smallcapnetwork.com/FONU2-Inc-FONU-A-Future-Movie-Studio-Empire/s/via/10/article/view/p/mid/3/id/555/"><img src="http://i0.wp.com/fonu2.moonriverstudiosinc.com/wp-content/uploads/2015/06/moonriverlogofull-web.png?w=600" /></a></td>
+  </tr>
+  <tr>
+    <td align="center" style="padding: 2em 0;"><a href="https://www.smallcapnetwork.com/FONU2-Inc-FONU-A-Future-Movie-Studio-Empire/s/via/10/article/view/p/mid/3/id/555/" class="fakebutton big red">Click Here to Learn More...</a></td>
+  </tr>
+</table>
+</center></div>
+
+        <!-- End Interstitial Ad -->
+        </div>
+	</div>
+</div>
+
+
+
+<?php $this->inlineScript()->captureStart() ?>
+var timer = 18000;
+var count = timer / 1000;
+var dest = '<?= isset($this->internal->params->dest) && $this->internal->params->dest ? $this->internal->params->dest : ''?>';
+
+var backtriggered = <?= isset($this->internal->params->nogo) && $this->internal->params->nogo ? 'true' : 'false'?>;
+setTimeout('goBack()', timer);
+function goBack() {
+    if (!backtriggered) {
+        backtriggered = true;
+        if (dest) {
+            location.href = dest;
+        }
+        else if (YAHOO.util.Cookie.get('interstitial_dest')) {
+            location.href = YAHOO.util.Cookie.get('interstitial_dest');
+        }
+        else if (document.referrer) {
+            location.href = document.referrer;
+        }
+        else if (location.hostname) {
+            location.href = 'http://' + location.hostname;
+        }
+        else if (history.length > 1) {
+            history.back();
+        }
+        else {
+            location.href = 'http://<?= $this->internal->vars->host ?>';
+        }
+    }
+}
+
+var counter = setInterval("countdown()", 1000);
+function countdown() {
+	count = count - 1;
+	if (count <= 0)	{
+		clearInterval(counter);
+		//counter ended, do something here
+		return;
+	}
+	document.getElementById("countdown").innerHTML=count;
+}
+<?php $this->inlineScript()->captureEnd() ?>

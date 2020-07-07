@@ -1,0 +1,234 @@
+<div id="menubar" class="nonmember yuimenubar yuimenubarnav">
+    <div class="bd">
+        
+        <ul class="first-of-type">
+            <li class="yuimenubaritem logo first-of-type"><a class="yuimenubaritemlabel" href="/"><span class="icon"></span><?= $this->internal->community->display ?></a></li>
+            
+            <li class="yuimenubaritem home"><a class="yuimenubaritemlabel" href="/" rel="nofollow"><span class="icon"></span>Home</a></li>
+            
+            <li class="yuimenubaritem"><a class="yuimenubaritemlabel" href="/Register/s/member/register/p/shortform/1/signup_entrance/TB-SCN-Contributor/" rel="nofollow"><span class="icon"></span>Become A SmallCap Network Contributor</a></li>
+            
+            <?php /* <li class="yuimenubaritem explorer"><a class="yuimenubaritemlabel" href="/Explore/s/member/register/p/shortform/1/signup_entrance/TB-Explore/" rel="nofollow"><span class="icon"></span>Explore</a></li> */ ?>
+            
+            <?php /*
+            <li class="yuimenubaritem contacts">
+                <a class="yuimenubaritemlabel" href="/Contacts/s/member/register/p/shortform/1/signup_entrance/TB-Contact/" rel="nofollow"><span class="icon"></span>Contacts</a>
+                
+                <div class="yuimenu">
+                    <div class="bd">                    
+                        <ul class="first-of-type">
+
+                            <li class="yuimenuitem first-of-type"><a class="yuimenuitemlabel" href="/Contact+Search/s/member/register/p/shortform/1/signup_entrance/TB-Contact/" rel="nofollow"><span class="icon"></span>Search For A Contact</a></li>                    </ul>
+                    </div>
+                </div>
+            </li>
+
+            <li class="yuimenubaritem inbox">
+                <a class="yuimenubaritemlabel inbox" href="/Inbox/s/member/register/p/shortform/1/signup_entrance/TB-Inbox/" rel="nofollow"><span class="icon"></span>Mail</a>
+
+                
+                <div class="yuimenu">
+                    <div class="bd">                    
+                        <ul class="first-of-type">
+                            <li class="yuimenuitem first-of-type"><a class="yuimenuitemlabel" href="/Compose+New+Message/s/member/register/p/shortform/1/signup_entrance/TB-Inbox/" rel="nofollow"><span class="icon"></span>Compose New Message</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </li>
+            
+            <li class="yuimenubaritem publish">
+                <a class="yuimenubaritemlabel" href="/Publish/s/member/register/p/shortform/1/signup_entrance/TB-Publish/" rel="nofollow"><span class="icon"></span>Publish</a>
+                
+                <div class="yuimenu">
+                    <div class="bd">                    
+                        <ul class="first-of-type">
+<?php
+    $counter = 0;
+    $titles = array(
+        'analysis' => 'Create A New Stock Analysis',
+        'article' => 'Publish A New Article',
+        'blog' => 'Create A New Blog Post',
+        'file' => 'Upload A New File',
+        'info' => 'Create A New Information Entry',
+        'message' => 'Create A New Message Board Post',
+        'page' => 'Create A New Page',
+        'pick' => 'Create A New Stock Pick',
+        'portfolio' => 'Create A New Stock Portfolio'
+    );
+    foreach (explode(',', preg_replace('/^\{(.*)\}$/', '${1}', $this->internal->community->default_modules)) as $key) {
+        echo '<li class="yuimenuitem mod_' . $key . (!$counter ? ' first-of-type' : '') . '"><a class="yuimenuitemlabel" href="/Publish+' . ucfirst($key) . '/s/member/register/p/shortform/1/signup_entrance/TB-Publish/" rel="nofollow"><span class="icon"></span>' . $this->translate($titles[$key]) . '</a></li>';
+        
+        // Redirect them to what they wanted to do after successful registration and verification?  Nah-not for now...Use s_redirect.
+        #echo '<li class="yuimenuitem mod_' . $key . (!$counter ? ' first-of-type' : '') . '"><a class="yuimenuitemlabel" href="/Publish+' . ucfirst($key) . '/s/member/register/p/shortform/1/signup_entrance/TB-Publish/?s_redirect=' . urlencode('/module/setup/publish/module/' . $key . '/') . '" rel="nofollow"><span class="icon"></span>' . $this->translate($titles[$key]) . '</a></li>';
+        $counter++;
+    }
+?>
+                        </ul>
+                    </div>
+                </div>
+            </li>
+            
+            <li class="yuimenubaritem viame last-of-type"><a class="yuimenubaritemlabel" href="/ViaMe/s/member/register/p/shortform/1/signup_entrance/TB-ViaMe/" rel="nofollow"><span class="icon"></span>Visitor</a></li>
+            */ ?>
+            
+        </ul>
+                 
+    </div>
+</div>
+
+
+<div id="menubar2" class="nonmember yuimenubar yuimenubarnav">
+    <div class="bd">
+
+        <ul class="first-of-type">
+
+            <li class="yuimenubaritem login first-of-type">
+                <a class="yuimenubaritemlabel" href="/member/login/p/signup_entrance/TB-Login/" rel="nofollow" onclick="return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/signup_entrance/TB-Login/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false });"><span class="icon"></span>Login</a>
+<?php /*                
+                <div class="yuimenu">
+                    <div class="bd">
+                        
+                        <ul class="first-of-type">
+
+                            <li class="yuimenuitem sign_in_with first-of-type">
+                                <span class="yuimenuitemlabel"><span class="icon"></span>Sign-In With...</span>
+                                <div class="yuimenu">
+                                    <div class="bd">
+                                        <ul class="first-of-type">
+                                            <li class="yuimenuitem google first-of-type"><a class="yuimenuitemlabel" href="/member/openid/login/provider/google/" rel="nofollow"><span class="icon"></span>Google</a></li>
+                                            <li class="yuimenuitem yahoo"><a class="yuimenuitemlabel" href="/member/openid/login/provider/yahoo/" rel="nofollow"><span class="icon"></span>Yahoo!</a></li>
+                                            <li class="yuimenuitem aol"><a class="yuimenuitemlabel" href="/member/openid/login/provider/aol/" rel="nofollow"><span class="icon"></span>AOL</a></li>
+                                            <li class="yuimenuitem myspace last-of-type"><a class="yuimenuitemlabel" href="/member/openid/login/provider/myspace/" rel="nofollow"><span class="icon"></span>MySpace</a></li>
+                                        </ul>
+                                        
+                                        <ul class="last-of-type">
+                                            <li class="yuimenuitem openid first-of-type last-of-type"><a class="yuimenuitemlabel" href="javascript:void(null);" rel="nofollow" onclick="return YAHOO.viame.shadowbox.shadowto('/member/openid/login/no_layout/1/simple_content/1/', { width: '500px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false });"><span class="icon"></span>OpenID</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+                            
+                        </ul>
+                        
+                        <ul class="last-of-type">
+
+                            <li class="yuimenuitem first-of-type last-of-type"><a class="yuimenuitemlabel" href="/member/reset/" rel="nofollow"><span class="icon"></span>Forgot Password</a></li>
+                        </ul>
+
+                    </div>
+                </div>
+*/ ?>
+            </li>
+            
+            <li class="yuimenubaritem register last-of-type">
+                <a class="yuimenubaritemlabel" href="/Register/s/member/register/p/shortform/1/signup_entrance/TB-Register/" rel="nofollow"><span class="icon"></span>Register</a>
+<?php /*
+                <div class="yuimenu">
+                    <div class="bd">
+
+                        <ul class="first-of-type last-of-type">
+                            <li class="yuimenuitem first-of-type"><a class="yuimenuitemlabel" href="/member/register/verify/" rel="nofollow"><span class="icon"></span>Re-Send Verification E-Mail</a></li>
+                        </ul>
+
+                    </div>
+                </div>
+*/ ?>
+            </li>
+
+        </ul>
+                 
+    </div>
+</div>
+
+
+
+<?php /*
+<div id="menubar" class="yuimenubar yuimenubarnav">
+    <div class="bd">
+
+        <ul class="first-of-type">
+        
+            <li class="yuimenubaritem first-of-type">
+                
+                <form id="menubar_member_form" method="post" action="/member/login/" class="yuimenubaritemlabel"><div>
+                    <label for="email" class="required">E-Mail:</label> <input type="text" name="email" id="email" value="" />
+                    <label for="password" class="required">Password:</label> <input type="password" name="password" id="password" value="" />
+                    <input type="submit" name="submit" id="submit" value="Sign In" />
+                </div></form>
+                
+            </li>
+            
+            <li class="yuimenubaritem"><a class="yuimenubaritemlabel" href="/member/login/p/signup_entrance/TB-Login/" rel="nofollow"><strong>Sign In</strong></a></li>
+
+            <li class="yuimenubaritem">
+                <a class="yuimenubaritemlabel" href="#" rel="nofollow">More Sign In Options</a>
+                
+                <div id="openid" class="yuimenu">
+                    <div class="bd">                    
+                        <ul class="first-of-type">
+                            <li class="yuimenuitem first-of-type"><a class="yuimenuitemlabel" href="#" rel="nofollow">Sign In With OpenID</a></li>
+                        </ul>
+                        <ul>
+                            <li class="yuimenuitem first-of-type"><a class="yuimenuitemlabel" href="#" rel="nofollow"Sign In With Yahoo!</a></li>
+                            <li class="yuimenuitem"><a class="yuimenuitemlabel" href="#" rel="nofollow">Sign In With Google</a></li>
+                            <li class="yuimenuitem"><a class="yuimenuitemlabel" href="#" rel="nofollow">Sign In With AOL</a></li>
+                            <li class="yuimenuitem"><a class="yuimenuitemlabel" href="#" rel="nofollow">Sign In With ClickPass</a></li>
+                        </ul>
+                    </div>
+                </div>                               
+            </li>
+
+            <li class="yuimenubaritem">
+                <a class="yuimenubaritemlabel" href="/member/register/p/shortform/1/" rel="nofollow">Can't Sign In?</a>
+                
+                <div id="member" class="yuimenu">
+                    <div class="bd">                    
+                        <ul class="first-of-type">
+                            <li class="yuimenuitem first-of-type"><a class="yuimenuitemlabel" href="/member/register/p/shortform/1/" rel="nofollow">Create New Account</a></li>
+                        </ul>
+                        <ul>
+                            <li class="yuimenuitem first-of-type"><a class="yuimenuitemlabel" href="/member/reset/" rel="nofollow">Forgot My Password</a></li>
+                            <li class="yuimenuitem"><a class="yuimenuitemlabel" href="/member/register/verify/" rel="nofollow">Re-Send Verification E-Mail</a></li>
+                        </ul>
+                    </div>
+                </div>
+                               
+            </li>
+            
+        </ul>
+                 
+    </div>
+</div>
+
+
+<div id="menubar2" class="yuimenubar yuimenubarnav">
+    <div class="bd">
+
+        <ul class="first-of-type">
+            <li class="yuimenubaritem first-of-type last-of-type"><a class="yuimenubaritemlabel" href="/member/register/p/shortform/1/" rel="nofollow"><strong>Join</strong></a></li>
+
+            <li class="yuimenubaritem">
+                <a class="yuimenubaritemlabel" href="javascript:void(null);">Help</a>
+
+                <div id="help" class="yuimenu">
+                    <div class="bd">                                        
+                        <ul class="first-of-type">
+                            <li class="yuimenuitem first-of-type"><a class="yuimenuitemlabel" href="#">Index</a></li>
+                            <li class="yuimenuitem"><a class="yuimenuitemlabel" href="#">Using Help</a></li>
+                            <li class="yuimenuitem"><a class="yuimenuitemlabel" href="#">Quick Start Guide</a></li>
+                        </ul>
+                        <ul>
+                            <li class="yuimenuitem first-of-type"><a class="yuimenuitemlabel" href="#">Contact Us</a></li>
+                            <li class="yuimenuitem"><a class="yuimenuitemlabel" href="#">About Us</a></li>
+                        </ul>                 
+                    </div>
+
+                </div>                                        
+            
+            </li>
+        </ul>
+                 
+    </div>
+</div>
+
+*/ ?>

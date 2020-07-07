@@ -1,0 +1,113 @@
+<?php
+$module = 'pick';
+
+/*
+if (!$this->masked && ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_WRITE)) {
+?>
+<p class="administer"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/create/p/mid/<?= $this->widget->counter ?>/">Create New Pick</a></p>
+<?php
+}
+*/
+
+if (isset($this->objects) && $this->objects) {
+    $counter = 0;
+    $currency = new ViaMe_Currency('USD');
+    
+    foreach ($this->objects as $object) {
+        $counter++;
+        if ($this->internal->target->acl->owner ||
+            $object->allowed === null ||
+            $object->show_on_fail ||
+            ($object->allowed && ($object->privilege >= ViaMe_Controller_Action::ACL_READ)) ||
+            ($this->internal->target->acl->recursive && ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_READ))) {
+            
+            // Create the link
+            /*
+            $link = 'http://' . $this->internal->vars->host . '/' . $this->SEO_Urlify($object->title) . '/s';
+            if ($this->masked) {
+                $link .= $this->internal->target->pre . "/$module/view/p/mid/" . $this->masked . '/id/' . $object->counter . '/';
+            }
+            else {
+                if ($object->com_id && ((isset($this->internal->params->com_id) && $this->internal->params->com_id) || $object->com_id != $this->internal->community->id)) { $link .= '/com/' . $object->com_id; }
+                elseif ($object->net_id) { $link .= '/net/' . $object->net_id; }
+                elseif ($object->via_id) { $link .= '/via/' . $object->via_id; }
+                
+                $link .= "/$module/view/p/mid/" . $object->matrix_counter . '/id/' . $object->counter . '/';
+            }
+            */
+            $link = $this->ContentLink(array('object' => $object, 'view' => $this));
+?>
+
+<div class="<?= $module ?> <?= ($counter % 2) ? 'odd' : 'even' ?><?= (isset($this->widget->widget_hide_summary) && $this->widget->widget_hide_summary) ? ' hide_summary' : '' ?><?= ($counter == 1) ? ' firstitem' : (($counter == count($this->objects)) ? ' lastitem' : '') ?>">
+    <div class="title"><a href="<?= $link ?>"><?= $this->escape($object->title) ?></a></div>
+    <div class="author">Picked By <?= $this->ProfileDisplay(array('profile' => $object, 'internal' => $this->internal)) ?></div>
+    <div class="datetime">
+<?php
+                $date = new Zend_Date();
+                $date->set($object->creation, Zend_Date::ISO_8601);
+                if (isset($this->internal->member)) {
+                    $date->setTimezone($this->internal->member->timezone);
+                    echo $date->toString(Zend_Date::DATE_MEDIUM) . ' <span class="time">' . $date->toString(Zend_Date::TIME_SHORT) . '</span>';
+                }
+                else {
+                    $date->setTimezone($this->internal->config->timezone);
+                    echo $date->toString(Zend_Date::DATE_MEDIUM) . ' <span class="time">' . $date->toString(Zend_Date::TIME_SHORT . ' z') . '</span>';
+                }
+                
+                $open = $object->open_price ? $object->open_price : $object->open_temp_price;
+                $last = $object->close_price ? $object->close_price : (isset($this->quote_data[$object->symbol_id]) && is_numeric($this->quote_data[$object->symbol_id]->last) ? $this->quote_data[$object->symbol_id]->last : $object->close_temp_price);
+                $change = ($last - $open) * $object->position;
+                $perc = $change / $open * 100;
+?>
+    </div>
+
+
+
+    
+<table class="display">
+    <thead>
+        <tr>
+            <th scope="col" class="firstitem">Pick</th>
+            <th scope="col">Allocation</th>
+            <th scope="col">Price</th>
+            <th scope="col">Last</th>
+            <th scope="col" class="lastitem" colspan="2">Change</th>
+        </tr>
+    </thead>
+    <tr>
+        <td class="odd firstitem" style=""><?= $this->Quote_SymbolDisplay(array('id' => $object->symbol_id, 'symbol' => $this->symbols_data[$object->symbol_id]->internal_symbol, 'name' => $this->symbols_data[$object->symbol_id]->name, 'active' => (isset($this->symbols_data[$object->symbol_id]->active) ? $this->symbols_data[$object->symbol_id]->active : null), 'internal' => $this->internal)) ?> (<?= $object->position == 1 ? 'L' : 'S' ?>)</td>
+        <td class="even df"><?= Zend_Locale_Format::toNumber($object->allocation, array('locale' => $this->internal->locale)) ?>%</td>
+        <td class="odd df"><?= $currency->toCurrency($open) ?></td>
+        <td class="even df"><?= $currency->toCurrency($last) ?></td>
+        
+        <td class="<?= ($change > 0 ? 'netup' : ($change < 0 ? 'netdown' : '')) ?>"><?= $currency->toCurrency($change) ?></td>
+        <td class="odd lastitem<?= ($change > 0 ? ' netup' : ($change < 0 ? ' netdown' : '')) ?>">&nbsp;<?= Zend_Locale_Format::toNumber($perc, array('locale' => $this->internal->locale, 'precision' => 2)) ?>%</td>
+        
+    </tr>
+</table>
+
+<?php if (!(isset($this->widget->widget_hide_summary) && $this->widget->widget_hide_summary)) { ?>
+    
+<?php if (isset($object->summary) && $object->summary) { ?>
+    <div class="summary"><?= ($object->summary ? $this->escape($object->summary) : $this->SEO_Quip($object->content, 256)) ?></div>
+<?php } ?>
+
+<?php if (isset($object->more_link) && $object->more_link && strtolower(trim($object->more_link)) != 'more') { ?>
+    <div class="more_link"><a href="<?= $link ?>">&raquo; <?= $this->escape($object->more_link ? $object->more_link : 'More') ?></a></div>
+<?php } ?>
+<?php if ($this->widget->interactive && ($this->masked ? $object->x_interactive : true)) { ?>
+    <div class="interact">
+         <div class="comments"><span class="begin_comment_count">&nbsp;</span><a href="<?=$link?>#comments_list" class="comment_count"><?= $object->total_comments_count ?></a><span class="end_comment_count">&nbsp;</span> <a href="<?=$link?>#comments_list">Comment(s)</a></div>
+        <div class="rating">Rating <span class="count rc<?= floor($object->rating * 2) ?>"><?= ($object->rating ? $object->rating : 'N/A') ?></span></div>
+    </div>
+<?php } ?>
+
+<?php } ?>
+
+</div>
+
+<?php
+        }
+    }
+}
+?>

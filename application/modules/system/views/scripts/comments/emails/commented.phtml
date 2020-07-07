@@ -1,0 +1,28 @@
+<?php
+    $this->module = $this->subModule->m_name;
+    
+    $link = $this->ContentLink(array('object' => $this->subModule->_modObject, 'view' => $this));
+?>
+
+
+<p><?= $this->ProfileDisplay(array('profile' => $this->profile, 'internal' => $this->internal)) ?> has commented on your <?= $this->subModule->m_name ?>, &quot;<a href="<?= $link ?>"><?= $this->escape($this->subModule->_modObject->title) ?></a>&quot;.</p>
+
+<blockquote>
+    <p><strong><?= $this->escape($this->internal->params->title) ?></strong></p>
+    <p><?= $this->SEO_Quip($this->internal->params->content) ?></p>
+</blockquote>
+
+
+<?php if (isset($this->comment_counter) && $this->comment_counter) { ?>
+
+<p class="administer" style="padding-top: 1em;">This comment has not yet been approved : <a href="http://<?= $this->internal->vars->host ?><?= $this->internal->target->pre ?>/<?= $this->subModule->m_name ?>/comments/moderate/mid/<?= $this->internal->params->mid ?>/id/<?= $this->internal->params->id ?>/cid/<?= $this->comment_counter ?>/status/approve/">Approve</a> - <a href="http://<?= $this->internal->vars->host ?><?= $this->internal->target->pre ?>/<?= $this->subModule->m_name ?>/comments/moderate/mid/<?= $this->internal->params->mid ?>/id/<?= $this->internal->params->id ?>/cid/<?= $this->comment_counter ?>/status/reject/">Reject</a></p>
+            
+<?php } ?>
+
+
+<p>To see the full comment thread, follow the link below:</p>
+<p><a href="<?= $link ?>#comments_list"><?= $link ?>#comments_list</a></p>
+
+<p>Thanks,</p>
+
+<p><?= $this->internal->community->display ?></p>

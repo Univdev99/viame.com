@@ -1,0 +1,36 @@
+<h1>Manage Profile Alerts (<span class="netdown">BETA</span>)</h1>
+
+<table width="100%" class="decorated">
+    <tr>
+        <th>Alert Type</th>
+        <th>ID</th>
+        <th width="10%">Active</th>
+        <th width="10%">Delete</th>
+    </tr>
+<?php
+    foreach ($this->alerts as $alert) {
+        $alert = (array) $alert;
+?>
+    <tr<?=(!$alert['active'] ? " bgcolor='#666666'" : "")?>>
+        <td><?= $this->alertTypes[$alert['type']]['name'] ?></td>
+        <td><?=$alert['identifier']?></td>
+        
+        
+        <td style="text-align: center;">
+<?php if ($alert['confirmed']) { ?>            
+            <a href="<?= $this->internal->target->pre ?>/profile/alert/active/type/<?=$alert['type']?>/id/<?=$alert['counter']?>/" class="check_link toggle<?= ($alert['active'] ? '' : ' inactive') ?>" title="Toggle Active Status"><?= $alert['active'] ? 'Active' : 'Inactive' ?></a>
+<?php } else { ?>
+            <a href="<?= $this->internal->target->pre ?>/profile/alert/confirm/type/<?=$alert['type']?>/id/<?=$alert['counter']?>/?vmpd_nar=1" class="fakebutton blue" title="Confirm This Alert Type">Confirm</a>
+<?php } ?>
+        </td>
+        <td style="text-align: center;"><a href="<?= $this->internal->target->pre ?>/profile/alert/delete/type/<?=$alert['type']?>/id/<?=$alert['counter']?>/" class="delete_link inactive toggle" onclick="return (confirm('Are you sure you want to delete this alert?'));" title="Delete Alert">Delete</a></td>
+    </tr>
+<?php
+    }
+?>
+</table>
+
+<form action="<?= $this->internal->target->pre ?>/profile/alert/add/">
+    <input type="hidden" name="vmpd_nar" value="1" />
+    <input type="submit" value="Add A New Alert Type" name="create" />
+</form>

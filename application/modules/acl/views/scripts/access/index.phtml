@@ -1,0 +1,520 @@
+<?php
+// IE <= 8 Fixes
+$this->headScript()->appendFile('https://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE9.js', 'text/javascript', array('conditional' => 'lt IE 9')
+);
+$this->headStyle()->appendStyle('#page_body.acl_module #member_form #access_selection input[type="radio"] { display: block !important; } #page_body.acl_module #member_form #access_selection input[type="radio"]:checked + label { background: url(/css/theme/default/assets/modules/acl/checkboxes/checked.png) center center no-repeat; }', array('conditional' => 'lt IE 9'));
+?>
+<?= $this->openForm ?><dl class="zend_form">
+<?= $this->form->getDisplayGroup('hidden') ?>
+
+<h1 style="margin: 0 0 6px 0; font-size: 220%;"><?= $this->title ?></h1>
+
+<?php
+if (!isset($this->internal->member)) {
+	$redirect_url = '/' . strtolower($this->pps['stype']) . '/' . $this->pps['sid'] . '/';
+	if ($this->pps['mod'] && $this->pps['mid']) {
+		$redirect_url .= $this->internal->module_modules[$this->pps['mod']]->name . '/';
+		if ($this->pps['iid']) {
+			$redirect_url .= 'view/';
+		}
+		$redirect_url .= 'p/mid/' . $this->pps['mid'] . '/';
+		if ($this->pps['iid']) {
+			$redirect_url .= 'id/' . $this->pps['iid'] . '/';
+		}
+	}
+?>
+<div class="already_subscribed-login" style="text-align: right; font-size: 11px; margin-bottom: .5em;">
+Already subscribed? <a href="/member/login/p/signup_entrance/ACL-SignUp/<?= (isset($this->pps['redirect']) && $this->pps['redirect'] ? '?redirect=' . urlencode($this->pps['redirect']) : '?redirect=' . $redirect_url) ?>" onclick="return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/signup_entrance/ACL-SignUp/<?= (isset($this->pps['redirect']) && $this->pps['redirect'] ? '?redirect=' . urlencode($this->pps['redirect']) : '?redirect=' . $redirect_url) ?>', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false });" rel="nofollow">Login Here</a>
+</div>
+<?php } ?>
+
+<div id="access_selection" style="margin-bottom: 1em; background-color: #ffb; border: 1px solid #881; margin-bottom: 2em; padding: 2em 3em 1.5em 3em;"><table>
+<?php
+# type, id, mod, mid, iid, id
+$currency = new ViaMe_Currency('USD');
+$counter = 0;
+foreach ($this->access as $access) {
+    
+    if ($access->w_password) {
+        #echo '<p>';
+        #echo 'Password : ' . $access->description;
+        #echo "<br />$access->module_id / $access->matrix_counter / $access->item_counter";
+        #echo "<br/><a href=\"/acl/password/p/stype/" . $this->pps['stype'] . "/id/" . $this->pps['sid'] . "/mod/$access->module_id/mid/$access->matrix_counter/iid/$access->item_counter/counter/$access->counter/\">Select</a>";
+        #echo '</p>';
+    }
+    
+    if ($access->w_member_amount && $access->w_member_quantity && $access->w_member_interval) {
+        $selectionVal = $this->pps['stype'] . '-' . $this->pps['sid'] . '-' . $access->module_id . '-' . $access->matrix_counter . '-' . $access->item_counter . '-' . $access->counter;
+        
+        echo '<tr><td valign="top" style="padding-right: 1em;"><input type="radio" name="access_selection" ';
+        if (!$counter) { echo "data-constraints='@Checked(label=\"subscription\", message=\"Please select a {label} type.\", groups=[member_form])' "; }
+        echo 'value="';
+        echo $selectionVal;
+        echo '"';
+        echo " id=\"access_select-$selectionVal\"";
+        if (isset($this->pps['access_selection']) && $this->pps['access_selection'] == $selectionVal) { echo ' checked="checked"'; }
+        #elseif (count($this->access) == 1 && $counter == 0) { echo ' checked="checked"'; }
+        elseif ($counter == 0) { echo ' checked="checked"'; }
+        echo " /><label for=\"access_select-$selectionVal\"></label></td><td valign=\"top\">";
+        
+        
+        echo '<div style="margin: 6px 0 1em 0;"><div class="title">';
+        echo '<span style="font-size: 150%; font-weight: bold;">';
+        echo (isset($access->display) && $access->display ? $access->display : $access->title);
+        echo '</span>';
+        echo '<span style="font-weight: bold;">';
+        echo ' : ';
+        
+        // Trial Period
+        /*
+        if (
+            (isset($this->promo) && $this->promo && $this->promo->com_id == $access->com_id && $this->promo->net_id == $access->net_id && $this->promo->via_id == $access->via_id && (!$promo->module_id || $promo->module_id == $access->module_id) && (!$promo->matrix_counter || $promo->matrix_counter == $access->matrix_counter) && (!$promo->item_counter || $promo->item_counter == $access->item_counter) && (!$promo->acl_counter || $promo->acl_counter == $access->counter) && ((isset($this->pps['access_selection']) && $this->pps['access_selection'] == $selectionVal) || $counter == 0))
+            ||
+            ($access->w_member_trial_quantity && $access->w_member_trial_interval && ($access->w_member_trial_amount <> $access->w_member_amount))
+            ) {
+        */
+        if (
+            (isset($this->promo) && $this->promo && $this->promo->com_id == $access->com_id && $this->promo->net_id == $access->net_id && $this->promo->via_id == $access->via_id && (!$promo->module_id || $promo->module_id == $access->module_id) && (!$promo->matrix_counter || $promo->matrix_counter == $access->matrix_counter) && (!$promo->item_counter || $promo->item_counter == $access->item_counter) && (!$promo->acl_counter || $promo->acl_counter == $access->counter) && (isset($this->pps['access_selection']) && $this->pps['access_selection'] == $selectionVal))
+            ||
+            ($access->w_member_trial_quantity && $access->w_member_trial_interval && ($access->w_member_trial_amount <> $access->w_member_amount))
+            ) {
+            echo '<br /><span style="color: #0a0; font-size: 120%;">';
+            if (isset($access->w_member_start) && $access->w_member_start && strtotime($access->w_member_start) > strtotime(date('Y-m-d'))) {
+                echo 'Pre-Signup ';
+            }
+            if ($access->w_member_trial_amount) {
+                echo 'Special of ' . $currency->toCurrency($access->w_member_trial_amount);
+            }
+            else {
+                echo 'FREE';
+            }
+            echo ' For The First ';
+            if ($access->w_member_trial_quantity > 1) {
+                echo $access->w_member_trial_quantity . ' ' . $access->w_member_trial_interval . 's';
+            }
+            else {
+                echo $access->w_member_trial_interval;
+            }
+            echo '</span>';
+            echo ' - ';
+        }
+        
+        echo $currency->toCurrency($access->w_member_amount);
+        if ($access->w_member_auto_renew) {
+            echo ' / ' . ($access->w_member_quantity > 1 ? $access->w_member_quantity . ' ' : '') . $access->w_member_interval . ($access->w_member_quantity > 1 ? 's' : '');
+        }
+        else {
+            echo ' for ' . $access->w_member_quantity . ' ' . $access->w_member_interval . ($access->w_member_quantity > 1 ? 's' : '');
+        }
+        if ($access->w_member_trial_quantity && $access->w_member_trial_interval && ($access->w_member_trial_amount <> $access->w_member_amount)) {
+            echo ' Thereafter';
+        }
+        echo '</span>';
+        
+        
+        if ($access->description) {
+            echo '</div><div><div style="margin: .25em 0; font-size: 120%;">' . $access->description . ' <a href="javascript:void(null);" style="font-size: 11px;" onclick="$(this).fadeOut(\'slow\'); $(\'#as_terms-'.$selectionVal.'\').fadeIn(\'slow\');">Show Terms</a></div>';
+        }
+        else {
+            echo ' <a href="javascript:void(null);" style="font-size: 11px;" onclick="$(this).fadeOut(\'slow\'); $(\'#as_terms-'.$selectionVal.'\').fadeIn(\'slow\');">Show Terms</a></div><div>';
+        }
+        
+        #echo '<div">';
+        #if ($access->description) {
+        #    echo '<div style="margin: .25em 0; font-size: 120%;">' . $access->description . ' <a href="javascript:void(null);" style="font-size: 11px;" onclick="$(this).fade#Out(\'slow\'); $(\'#as_terms-'.$selectionVal.'\').fadeIn(\'slow\');">Show Terms</a></div>';
+        #}
+        
+        echo "<p class=\"description\" id=\"as_terms-$selectionVal\" style=\"display: none;\">";
+        echo 'Terms: ';
+        if ($access->w_member_initial_amount && $access->w_member_initial_amount) {
+            echo 'There will be an initial charge of ' . $currency->toCurrency($access->w_member_initial_amount) . '. ';
+        }
+        if (isset($access->w_member_start) && $access->w_member_start && strtotime($access->w_member_start) > strtotime(date('Y-m-d'))) {
+            echo 'The following terms will commence on ';
+            
+            $date = new Zend_Date();
+            $date->set($access->w_member_start, Zend_Date::ISO_8601);
+            if (isset($this->internal->member)) {
+                $date->setTimezone($this->internal->member->timezone);
+                echo $date->toString(Zend_Date::DATE_MEDIUM);
+            }
+            else {
+                $date->setTimezone($this->internal->config->timezone);
+                echo $date->toString(Zend_Date::DATE_MEDIUM);
+            }
+        
+            echo '. ';
+        }
+        
+        if ($access->w_member_trial_quantity && $access->w_member_trial_interval && ($access->w_member_trial_amount <> $access->w_member_amount)) {
+            echo 'This product has a special trial period of ' . $access->w_member_trial_quantity . ' ' . strtolower($access->w_member_trial_interval) . ($access->w_member_trial_quantity > 1 ? 's' : '') . '. The cost for the special trial period is ' . $currency->toCurrency($access->w_member_trial_amount) . '.  After the initial trial period ends, you will';
+        }
+        else {
+            echo 'This product does not have a trial period. You will';
+        }
+        echo ' be billed ' . $currency->toCurrency($access->w_member_amount) . ' for ' . $access->w_member_quantity . ' ' . strtolower($access->w_member_interval) . ($access->w_member_quantity > 1 ? 's' : '') . ' access.';
+        if ($access->w_member_auto_renew) {
+            echo ' The billing for this product is recurring and you will automatically be re-billed ' . $currency->toCurrency($access->w_member_amount) . ' every ' . ($access->w_member_quantity > 1 ? $access->w_member_quantity : '') . ' ' . strtolower($access->w_member_interval) . ($access->w_member_quantity > 1 ? 's' : '') . ' thereafter unless you choose to cancel.';
+        }
+        else {
+            echo ' The billing for this product is non-recurring and you will not be charged again.';
+        }
+        echo '</p>';
+        echo '</div>';
+        #echo 'Member : ' . $access->description;
+        #echo "<br />$access->module_id / $access->matrix_counter / $access->item_counter";
+        #echo sprintf('<br />$%.2f for %u %s(s).', $access->w_member_amount, $access->w_member_quantity, $access->w_member_interval);
+        #echo "<br/><a href=\"/acl/member/p/stype/" . $this->pps['stype'] . "/id/" . $this->pps['id'] . "/mod/$access->module_id/mid/$access->matrix_counter/iid/$access->item_counter/counter/$access->counter/\">Select</a>";
+        echo '</div><div style="clear: both;"></div></td></tr>';
+        
+        $counter++;
+    }
+    
+}
+?>
+</table></div>
+
+<?php
+if ($this->formErrors) {
+    print '<ul class="errors" style="margin-bottom: 1em;">';
+    foreach ($this->formErrors as $message) {
+        print "<li>$message</li>\n";
+    }
+    print '</ul>';
+}
+?>
+
+<div class="yui3-g">
+    <div class="yui3-u-1-2 col1"><div class="content" style="padding-right: .5em;">
+    <!-- Start First Column -->
+    
+<?php if (false && !isset($this->internal->member) && !($_SERVER['REQUEST_METHOD'] == 'POST' || (isset($_POST) && count($_POST)))) { ?>
+        <div id="member_information">
+            <dt id="member-label">&nbsp;</dt>
+            <dd id="member-element">
+                <fieldset id="fieldset-member">
+                    <legend>Member Information</legend>
+                    <p style="text-align: center; margin: 0 0 2em 0; padding: 1em 0 0 0;"><input type="button" class="big green" id="continue_account_creation" value="Create New Account " /></p>
+                    <p style="text-align: center; margin: 1em 0 1em 0; font-size: 18px; font-weight: bold;"> - OR - </p>
+                    <p style="text-align: center; margin: 2.5em 0 0 0;"><a href="/member/login/p/signup_entrance/ACL-SignUp/<?= (isset($this->pps['redirect']) && $this->pps['redirect'] ? '?redirect=' . urlencode($this->pps['redirect']) : '') ?>" class="fakebutton big" onclick="return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/signup_entrance/ACL-SignUp/<?= (isset($this->pps['redirect']) && $this->pps['redirect'] ? '?redirect=' . urlencode($this->pps['redirect']) : '') ?>', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false });" rel="nofollow">Already A Member - Sign In</a></p>
+                </fieldset>
+            </dd>    
+        </div>
+        
+        <div id="personal_information" style="display: none;">
+            <?= $this->form->getDisplayGroup('personal') ?>
+            
+            <?php /*
+            <p style="text-align: right;"><a href="/member/login/p/signup_entrance/ACL-SignUp/<?= (isset($this->pps['redirect']) && $this->pps['redirect'] ? '?redirect=' . urlencode($this->pps['redirect']) : '') ?>" onclick="return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/signup_entrance/ACL-SignUp/<?= (isset($this->pps['redirect']) && $this->pps['redirect'] ? '?redirect=' . urlencode($this->pps['redirect']) : '') ?>', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false });" rel="nofollow" style="font-size: 90%;">I'm Already A Member of <?= $this->internal->community->display ?></a></p>
+            */ ?>
+            
+        </div>
+<?php } else { ?>
+    <?= $this->form->getDisplayGroup('personal') ?>
+    <?= $this->form->getDisplayGroup('terms') ?>
+<?php } ?>
+    
+    <!-- End First Column -->
+    </div></div>
+    <div class="yui3-u-1-2 col2"><div class="content" id="payment_method" style="padding-left: .5em;">
+    <!-- Start Second Column -->
+        
+        <?php /*
+        <div id="payment_information"<?= (!(isset($this->internal->params->paypal) && $this->internal->params->paypal) ? ' style="display: none;"' : '') ?>>
+            <dt id="payment-label">&nbsp;</dt>
+            <dd id="payment-element">
+                <fieldset id="fieldset-payment">
+                    <legend>Payment Information</legend>
+                    <p style="text-align: center; margin: 0 0 2em 0; padding: 4em 0 0 0;"><input type="button" class="big green" id="continue_checking_out" value="Continue Checking Out" /></p>
+                    <p style="text-align: center; margin: 1em 0 1em 0; font-size: 18px; font-weight: bold;"> - OR - </p>
+                    <p style="text-align: center; margin: 2em 0 0 0;"><input type="image" name="paypal" id="paypal" src="<?= $this->internal->vars->static_host ?>/css/theme/default/assets/check_out_with_paypal.gif" /></p>
+                </fieldset>
+            </dd>    
+        </div>
+        */ ?>
+        
+        <div id="billing_information"<?php /* = (!(isset($this->internal->params->paypal) && $this->internal->params->paypal) && ($_SERVER['REQUEST_METHOD'] == 'POST' || (isset($_POST) && count($_POST))) ? '' : ' style="display: none;"') */ ?>>
+            <?= $this->form->getDisplayGroup('billing') ?>
+            
+            <?php /*
+            <p style="text-align: right;"><a id="redisplay_payment_method" href="javascript:void(null);" style="font-size: 90%;">I'd Like to Checkout Using PayPal</a></p>
+            */ ?>
+            
+        </div>
+        
+        <div id="credit_card_information">
+            <?= $this->form->getDisplayGroup('credit_card') ?>
+            <?= $this->form->getDisplayGroup('promo') ?>
+        </div>
+    <!-- End Second Column -->
+    </div></div>
+</div>
+
+<?= $this->form->getDisplayGroup('buttons') ?>
+
+</dl></form>
+
+<img src="<?= $this->internal->vars->static_host ?>/css/theme/default/assets/interstitial_loading.gif" style="display: none;" />
+
+<?php $this->inlineScript()->captureStart(); ?>
+YUI().use('node', 'anim', 'node-event-simulate', function (Y) {
+    Y.on("domready", function() {
+        
+        YAHOO.namespace("viame.access");
+        
+        YAHOO.viame.access.unbindBillingFlag = false;
+        YAHOO.viame.access.unbindCredentialFlag = false;
+        
+        function unbindBilling() {
+            var tEl = Y.all('#billing_information [data-constraints]');
+            for (var i in tEl._nodes) {
+                try {
+                    regula.unbind({elementId: tEl._nodes[i].id});
+                } catch(err) { }
+            }
+            
+            YAHOO.viame.access.unbindBillingFlag = true;
+        }
+
+<?php if (!(isset($this->internal->params->paypal) && $this->internal->params->paypal) && ($_SERVER['REQUEST_METHOD'] == 'POST' || (isset($_POST) && count($_POST)))) { ?>
+        Y.one('#buttons-element').setStyle('visibility', 'visible');
+<?php } else { ?>
+        //unbindBilling();
+<?php } ?>
+        
+        function unbindCredential() {
+            var tEl = Y.all('#username,#password,#password_confirm');
+            for (var i in tEl._nodes) {
+                try {
+                    regula.unbind({elementId: tEl._nodes[i].id});
+                } catch(err) { }
+            }
+            
+            YAHOO.viame.access.unbindCredentialFlag = true;
+        }
+
+        if (Y.one('#continue_checking_out')) {
+            Y.one('#continue_checking_out').on('click', function(e) {
+                var anim = new Y.Anim({
+                    node: '#payment_information',
+                    duration: .75,
+                    to: { opacity: 0 }
+                });
+                anim.on('end', function() {
+                    Y.one('#payment_information').setStyle('display', 'none');
+                    Y.one('#billing_information').setStyle('opacity', 0).setStyle('display', 'block');
+                    new Y.Anim({
+                        node: '#billing_information',
+                        duration: .75,
+                        to: { opacity: 1 }
+                    }).run();
+                    regula.bind();
+                    YAHOO.viame.access.unbindBillingFlag = false;
+                    if (YAHOO.viame.access.unbindCredentialFlag) {
+                        unbindCredential();
+                    }
+                });
+                anim.run();
+                
+                Y.one('#buttons-element').setStyle('opacity', 0).setStyle('visibility', 'visible');
+                new Y.Anim({
+                    node: '#buttons-element',
+                    duration: 1.5,
+                    to: { opacity: 1 }
+                }).run();
+            });
+        }
+        
+        if (Y.one('#redisplay_payment_method')) {
+            Y.one('#redisplay_payment_method').on('click', function(e) {
+                var anim = new Y.Anim({
+                    node: '#billing_information',
+                    duration: .75,
+                    to: { opacity: 0 }
+                });
+                anim.on('end', function() {
+                    Y.one('#billing_information').setStyle('display', 'none');
+                    Y.one('#payment_information').setStyle('opacity', 0).setStyle('display', 'block');
+                    new Y.Anim({
+                        node: '#payment_information',
+                        duration: .75,
+                        to: { opacity: 1 }
+                    }).run();
+                    unbindBilling();
+                });
+                anim.run();
+                
+                var anim2 = new Y.Anim({
+                    node: '#buttons-element',
+                    duration: 1.5,
+                    to: { opacity: 0 }
+                });
+                anim2.on('end', function() {
+                    Y.one('#buttons-element').setStyle('visibility', 'hidden');
+                });
+                anim2.run();
+            });
+        }
+        
+        if (Y.one('#continue_account_creation')) {
+            Y.one('#continue_account_creation').on('click', function(e) {
+                var anim = new Y.Anim({
+                    node: '#member_information',
+                    duration: .75,
+                    to: { opacity: 0 }
+                });
+                anim.on('end', function() {
+                    Y.one('#member_information').setStyle('display', 'none');
+                    Y.one('#personal_information').setStyle('opacity', 0).setStyle('display', 'block');
+                    new Y.Anim({
+                        node: '#personal_information',
+                        duration: .75,
+                        to: { opacity: 1 }
+                    }).run();
+                    
+                    if (Y.one('#payment_information')) {
+                        Y.one('#payment_information').setStyle('opacity', 0).setStyle('display', 'block');
+                        new Y.Anim({
+                            node: '#payment_information',
+                            duration: 1.5,
+                            to: { opacity: 1 }
+                        }).run()
+                    }
+                });
+                anim.run();
+            });
+        }
+        
+        if (Y.one('#email')) {
+            YAHOO.viame.access.closeEmailFoundDialog = (function() {
+                this.hide();
+                
+                if (!($('#emailAddressFoundEl').length)) {
+                    $("#email").after('<div id="emailAddressFoundEl" class="netup" style="display: none;">Your Email Address Was Found</div>');
+                }
+                
+                $('#username-label,#username-element,#password-label,#password-element,#password_confirm-label,#password_confirm-element').fadeOut(
+                    'slow',
+                    (function() { $("#emailAddressFoundEl").fadeIn('slow'); })
+                );
+                
+                $('#username,#password,#password_confirm').val('');
+                
+                unbindCredential();
+            });
+            YAHOO.viame.access.enableCredentialFields = (function() {
+                if ($('#emailAddressFoundEl').length) {
+                    $('#emailAddressFoundEl').fadeOut(
+                        'slow',
+                        (function() { $('#username-label,#username-element,#password-label,#password-element,#password_confirm-label,#password_confirm-element').fadeIn('slow'); })
+                    );
+                    
+                    regula.bind();
+                    if (YAHOO.viame.access.unbindBillingFlag) {
+                        unbindBilling();
+                    }
+                }
+            });
+            
+            
+            YAHOO.viame.access.emailFoundDialog = new YAHOO.widget.SimpleDialog("simpledialog1", 
+				 { width: "300px",
+				   fixedcenter: true,
+				   visible: false,
+				   draggable: false,
+				   close: true,
+				   modal: true,
+				   text: '<div style="text-align: left; padding-left: 30px;"><p>We have found your email address in the <?= $this->internal->community->display ?> registered member accounts.  After completing payment, please use your existing credentials to sign in.</p><p>If you have any access problems after subscribing, please contact our customer service department.  Thank you.</p></div>',
+				   icon: YAHOO.widget.SimpleDialog.ICON_WARN,
+				   constraintoviewport: true,
+				   buttons: [ { text: "OK", handler: YAHOO.viame.access.closeEmailFoundDialog, isDefault: true } ]
+			} );
+        	YAHOO.viame.access.emailFoundDialog.setHeader('<div style="text-align: left;">Your Email Address Was Found</div>');
+        	YAHOO.viame.access.emailFoundDialog.render(document.body);
+            
+        	
+            Y.one('#email').on('change', function(e) {
+                if ($('#email').val()) {
+                    $.ajax({
+                        url: "/member/ajax/checkemail/",
+                        cache: false,
+                        data: { no_cache: 1, email:  $('#email').val() },
+                        success: function(data) {
+                            if (data == 'true') {
+                                // Duplicate Email - Make sure other fields are hidden and not checked
+                                //YAHOO.viame.access.emailFoundDialog.show();
+                                
+                                if (!($('#emailAddressFoundEl').length)) {
+                                    $("#email").after('<div id="emailAddressFoundEl" class="netup" style="display: none;">Your Email Address Was Found</div>');
+                                }
+                                
+                                $('#username-label,#username-element,#password-label,#password-element,#password_confirm-label,#password_confirm-element').fadeOut(
+                                    'slow',
+                                    (function() { $("#emailAddressFoundEl").fadeIn('slow'); })
+                                );
+                                
+                                $('#username,#password,#password_confirm').val('');
+                                
+                                unbindCredential();
+                            }
+                            else {
+                                // No duplicate Email - Make sure other fields are visible and checked
+                                YAHOO.viame.access.enableCredentialFields();
+                            }
+                        }
+                    });
+                }
+                else {
+                    // No Value For Email - Make sure other fields are visible and checked
+                    YAHOO.viame.access.enableCredentialFields();
+                }
+            });
+        }
+
+<?php if (isset($this->internal->params->exmemnli) && $this->internal->params->exmemnli) { ?>
+        //Y.one('#email').simulate('change');
+        
+        unbindCredential();
+        // Sync with above
+        if (!($('#emailAddressFoundEl').length)) {
+            $("#email").after('<div id="emailAddressFoundEl" class="netup" style="display: none;">Your Email Address Was Found</div>');
+        }
+        
+        $('#username-label,#username-element,#password-label,#password-element,#password_confirm-label,#password_confirm-element').fadeOut(
+            'slow',
+            (function() { $("#emailAddressFoundEl").fadeIn('slow'); })
+        );
+        
+        $('#username,#password,#password_confirm').val('');
+<?php } ?>
+
+        YAHOO.viame.access.checkAccessForm = (function(whichForm) {
+            if (YAHOO.viame.vivin_regula.validate(whichForm, { groups: [regula.Group.member_form] }) && YAHOO.viame.dubsub.check(whichForm)) {
+                YAHOO.viame.access.processingModal = new YAHOO.widget.Panel("processingModal",  
+                    { width: "240px", 
+                      fixedcenter: true, 
+                      close: false, 
+                      draggable: false, 
+                      zindex: 15,
+                      modal: true,
+                      visible: true
+                    } 
+                );
+    
+                YAHOO.viame.access.processingModal.setHeader("Processing... Please wait...");
+                YAHOO.viame.access.processingModal.setBody('<img src="<?= $this->internal->vars->static_host ?>/css/theme/default/assets/interstitial_loading.gif" />');
+                if (YAHOO.viame.access.processingModal.render(document.body)) {
+                    return true;
+                }
+                else {
+                    return true;
+                }
+            }
+            else {
+                return false;
+            }
+        });
+        
+    });
+});
+<?php $this->inlineScript()->captureEnd(); ?>

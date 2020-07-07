@@ -1,0 +1,76 @@
+<?php
+if (isset($this->member)) {
+    $title = 'Account Status';
+    $this->placeholder('temp')->captureStart();
+?>
+
+<strong><?= $this->translate('Hello') ?>, <?= $this->member->first_name ?>!</strong>
+<p><strong>Current Profile:</strong><br /><a href="/via/<?= $this->internal->member->profile->id ?>/"><?= $this->member->profile->name ?></a></p>
+
+<ul>
+    <li>
+        <a href="/via/<?= $this->internal->member->profile->id ?>/mail/">Mail<?php if ($this->member->profile->total_new_mail_count) { echo ' (' . $this->member->profile->total_new_mail_count . ')'; } ?></a>
+        <br />
+        - <a href="/via/<?= $this->internal->member->profile->id ?>/mail/folder/">Mail Folders</a>
+    </li>
+    <li>
+        <a href="/via/<?= $this->internal->member->profile->id ?>/contact/">Contacts</a>
+        <br />
+        - <a href="/via/<?= $this->internal->member->profile->id ?>/contact/group/">Contact Groups</a>
+    </li>
+    <li><a href="/via/<?= $this->internal->member->profile->id ?>/network/">Networks</a><br /><br /></li>
+    
+    <li><a href="/via/<?= $this->internal->member->profile->id ?>/acl/">ACL</a></li>
+    <li><a href="/via/<?= $this->internal->member->profile->id ?>/module/">Modules</a></li>
+    <li><a href="/via/<?= $this->internal->member->profile->id ?>/widget/">Widgets</a></li>
+    <li><a href="/via/<?= $this->internal->member->profile->id ?>/log/">Logs</a></li>
+</ul>
+
+
+<p>Switch Profile:<br />
+<?php
+foreach ($this->member->profiles as $profile) {
+    print "<a href=\"/profile/switch/p/id/$profile->id/\">$profile->name</a><br />\n";
+}
+?>
+</p>
+
+<p><a href="/profile/">Manage Profiles</a></p>
+
+<p><a href="/member/logout/">Log Out</a></p>
+
+<p><?= $this->internal->target->acl->owner ?> : <?= $this->internal->target->acl->allowed ?> : <?= $this->internal->target->acl->privilege ?> : <?= $this->internal->target->acl->filter ?></p>
+
+<?php
+    $this->placeholder('temp')->captureEnd();
+} else {
+    $title = 'Sign In';
+    $this->headStyle()->captureStart();
+?>
+#member_form div {
+    margin-bottom: 10px;
+}
+#member_form .zend_form {
+    margin: 0px;
+}
+#member_form .zend_form dd {
+    margin: 0px;
+}
+<?php
+    $this->headStyle()->captureEnd();
+    
+    $this->placeholder('temp')->captureStart();
+?>
+
+<?= $this->form ?>
+<p style="font-size: x-small;"><a href="/member/reset/">Forgot your Password?</a></p>
+<p style="font-size: x-small;"><a href="/member/register/">Don't have a ViaMe login?</a><br />Signing up is easy.</p>
+<p style="text-align: right;"><a href="/member/register/"><strong>Sign Up</strong></a></p>
+
+<?php
+    $this->placeholder('temp')->captureEnd();
+}
+
+    print $this->CM(array('id' => 'member_status_cm', 'static_host' => $this->internal->vars->static_host, 'class' => 'cm', 'hd' => $title, 'bd' => $this->placeholder('temp')));
+    $this->placeholder('temp')->set(null);
+?>

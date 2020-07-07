@@ -1,0 +1,709 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<script type="text/javascript">
+//<![CDATA[
+    if (window.location.protocol == "http:") {
+        window.location = "https:" + window.location.href.substr(5);
+    }
+//]]>
+</script>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Small Cap Network Elite Opportunity</title>
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|PT+Serif:700,400,700italic,400italic' rel='stylesheet' type='text/css' />
+<link rel="shortcut icon" type="image/x-icon" href="inc/img/favicon.ico" />
+<link href="inc/css/reset.css" rel="stylesheet" type="text/css" />
+
+<link href="https://static.viame.com/css/community/default/stylesheet.css?v=20130129" media="screen" rel="stylesheet" type="text/css" />
+<link href="https://static.viame.com/css/theme/default/stylesheet.css?v=20130129" media="screen" rel="stylesheet" type="text/css" title="Default" />
+<link href="https://static.viame.com/css/community/smallcapnetwork/stylesheet.css?v=20130129" media="screen" rel="stylesheet" type="text/css" />
+<link href="https://static.viame.com/css/community/default/print.css?v=20130129" media="print" rel="stylesheet" type="text/css" />
+<link href="https://static.viame.com/css/community/smallcapnetwork/assets/favicon.ico" rel="icon" />
+<link href="https://static.viame.com/css/community/smallcapnetwork/assets/favicon.ico" rel="shortcut icon" />
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript" src="https://static.viame.com/js/yui/yui3/build/yui/yui-min.js"></script>
+<script type="text/javascript" src="https://static.viame.com/js/yui/yui_combo_local.js"></script>
+<!--[if lt IE 9]> <script type="text/javascript" src="https://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE9.js"></script><![endif]-->
+<script type="text/javascript" src="https://static.viame.com/js/vm/vm.js"></script>
+<script type="text/javascript" src="https://static.viame.com/js/vm/yui/viame_form_helper.js"></script>
+<script type="text/javascript" src="https://static.viame.com/js/vivin/regula.js"></script>
+
+<link href="inc/css/style.css" rel="stylesheet" type="text/css" />
+<style>
+body { text-align: left; }
+body #page #page_body { text-align: center; }
+
+.section p { margin-bottom: 0; }
+.section h1, .section h2, .section h3 { margin: 0; }
+#billwrap h1 {
+    margin: 0;
+}
+#navwrapper ul.nav {
+    top: 15px;
+}
+
+#page #page_body p {
+    line-height: normal;
+    font-family: arial, helvetica, clean, sans-serif;
+    font-weight: normal;
+    padding: 0;
+    width: auto;
+}
+#page #page_body td {
+    vertical-align: top;
+}
+
+#doc4, .yui3-u-1-2 { display: block; width: auto; }
+#page_body .page_body_internal { border: none; }
+#page_body .page_body_internal #bd { margin: 0; }
+#content_area form { width: 700px; margin: 0 auto; }
+#content_area form dl.zend_form dd,
+  #content_area form dl.zend_form dd > fieldset { margin: 0; }
+#content_area form dl.zend_form fieldset legend {
+	display: block;
+	width: 100%;
+	background-color: #ccc;
+	-moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+	padding: .5em;
+	margin: 0 0 1em 0;
+}
+#member_form dl.zend_form fieldset dt {
+	margin-left: 2em;
+}
+
+#content_area form dl.zend_form > h1,
+  #content_area form dl.zend_form #access_selection,
+  #content_area form dl.zend_form #personal-label,
+  #content_area form dl.zend_form #tos-label,
+  #content_area form dl.zend_form #tos-element,
+  #content_area form dl.zend_form #billing_agreement-label,
+  #content_area form dl.zend_form #billing_agreement-element,
+  #content_area form dl.zend_form #billing-label,
+  #content_area form dl.zend_form #credit_card-label {
+    display: none;
+}
+
+#content_area form dl.zend_form .col2,
+  #content_area form dl.zend_form .col2 #credit_card_information,
+  #content_area form dl.zend_form #buttons-element {
+    display: none;
+}
+</style>
+<script type="text/javascript">
+//<![CDATA[
+    $(function() {
+        //$('#fieldset-billing > legend').html('Address');
+        $('#content_area form dl.zend_form').append('<input id="dynamic_button" type="button" class="big green" style="float: right; margin: 1em 0 2.8em 0;" value="Continue">');
+        //YAHOO.viame.vivin_regula.validate($('#member_form'), { groups: [regula.Group.member_form] });
+        $('#dynamic_button').click(function() {
+            //alert('I was clicked!');
+            validateOptions = [{id:'first_name'}, {id:'last_name'}, {id:'email'}, {id:'username'}, {id:'password'}, {id:'password_confirm'}];
+            if ($('#notmemessage-element').css('display') == 'block') {
+                validateOptions = [{id:'first_name'}, {id:'last_name'}];
+            }
+            else if ($('#emailAddressFoundEl').css('display') == 'block') {
+                validateOptions = [{id:'first_name'}, {id:'last_name'}, {id:'email'}];
+            }
+            
+            if (YAHOO.viame.vivin_regula.validate({ nodeName: 'FORM' }, { elements: validateOptions })) {
+                $('#content_area form dl.zend_form .col1').slideUp();
+                $('#content_area form dl.zend_form .col2').slideDown();
+                $('#dynamic_button').attr('value', 'Sign-Up For 2 Week Free Trial');
+                
+                // Third
+                $('#dynamic_button').click(function() {
+                    //alert('I was clicked!');
+                    validateOptions = [{id:'address1'}, {id:'city'}, {id:'state'}, {id:'postal_code'}, {id:'country'}, {id:'phone'}];
+                    
+                    if (YAHOO.viame.vivin_regula.validate({ nodeName: 'FORM' }, { elements: validateOptions })) {
+                        $('#content_area form dl.zend_form .col2 #billing_information').slideUp();
+                        $('#content_area form dl.zend_form .col2 #credit_card_information').slideDown();
+                        $('#dynamic_button').remove();
+                        $('#content_area form dl.zend_form #buttons-element').show();
+                    }
+                } );
+                
+            }
+        } );
+        
+        
+    } );
+//]]>
+</script>
+</head>
+
+<body class="yui-skin-sam yui3-skin-sam">
+<div id="wrapper">
+  <div id="header">
+  	<div style="width: 990px; margin: 0 auto; padding: 4px 0; text-align: right; font-family: Arial, Helvetica, Sans-Serif; font-size: 11px;">Already subscribed? <a rel="nofollow" href="/via/21066/?vmpd_paid=1">Member's Only Area</a></div>
+    <div id="headerwrapper">
+    	<img src="inc/img/logo_SCN.png" width="237" height="53" alt="SmallCap Network Logo" id="logoSCN" />
+    	<a href="#section7" class="sup"><img src="inc/img/btn_signup_ftwt.jpg" width="242" height="68" alt="Sign Up Now" class="signupbtn" style="padding-bottom: 23px;" /></a>
+    	<img src="inc/img/logo_EO.png" width="294" height="77" alt="Elite Opportunity Logo" id="logoEO"/>
+      <div id="navwrapper">
+        <ul class="nav">
+          <li><a href="#wrapper" class="active who" >who we are</a></li>
+          <li><a href="#section2" class="performance" >performance</a></li>
+          <li><a href="#section3" class="testimonials" >testimonials</a></li>
+          <li><a href="#section4" class="philosophy">philosophy</a></li>
+          <li><a href="#section5" class="membership">member benefits</a></li>
+          <li><a href="#section6" class="opportunity">opportunity</a></li>
+          <li><a href="#section7" class="sup">signup</a></li>
+        </ul>
+      </div>
+      <!-- end navwrapper --> 
+    </div>
+    <!-- end headerwrapper --></div>
+  <div id="billboard">
+    <div id="billwrap"><img src="inc/img/billEO.png" alt="Elite Opportunity Logo" width="239" height="242" class="alignright" />
+      <h1 style="font-size: 38px; line-height: 45px;">Why Is <strong>SmallCap Network Elite Opportunity</strong> the Best Stock Advisory Service Online Today? We Have the <strong>Results to Back It Up</strong> and <strong>We Can Prove It!</strong></h1>
+      <br class="clear" />
+    </div>
+  </div>
+  <!-- end billboard -->
+  <div class="white">
+    <div class="section narrow">
+      <div class="graphic">
+        <a href="javascript:gotoSection('section7');"><img src="inc/img/free_2_week_trial.jpg" alt="Free Two Week Trial" width="332" height="234" style="margin-bottom: 2em; padding-left: 75px;" /></a><br /><a href="javascript:gotoSection('section2');"><img src="inc/img/profits2.png" alt="2013 Pick Performance Return of Over 1,732%" width="437" height="316" /></a>
+      </div>
+      <h5 style="margin-bottom: 1em;">Dear Fellow Investor,</h5>
+      <p>We here at <strong>SmallCap Elite Opportunity (SCN EO)</strong> understand your needs and desires to <em>maximize your capital</em> and <em>get the absolute most out of the stock market</em>, <strong>so I'm not going to beat around the bush</strong>. We've scoured the Web and have looked at countless other premium subscription based stock advisory services and <strong>we haven't found ANYBODY ANYWHERE with a better track record for 2013 than us</strong>!</p>
+      <p>We've given our Members <strong>blockbuster winner after winner</strong>, month after month for a <strong>total pick performance return of over 1,732% for 2013</strong>. Is this by chance? Absolutely not. <em>We delivered very similar results in 2012 and the overall markets didn't even perform very well that year.</em></p>
+      <p>While most paid subscription newsletters spend more time touting their few modest successes, their one big win, or are too busy instilling fear, doom and gloom, our dedicated team of analysts here at <strong>SCN EO</strong> are committed to the markets and <strong>devoted to uncovering stocks</strong> that will yield the type of returns only the savviest of investors will ever experience.</p>
+    </div>
+    <!-- end content --> 
+  </div>
+  
+  <div class="gray" id="section2">
+    <div class="section">
+      <h2>Performance:<strong>Don't believe us? We can prove it.</strong></h2>
+      <p>First, the table shown below is our <strong>complete list of every single stock we suggested to our Members throughout 2013</strong>, which we believed were good mid to long-term investing ideas.</p>
+      <p>As you can see, <strong>the returns are nothing short of stellar</strong>. And, all you had to do was buy each one and hold it. It wasn't even necessary for you to flip in and out of any of these stocks to amass the type of gains you see here. <em>And, not one of these stocks were an overly speculative penny stock play.</em> <strong>These are real companies with real business models and real fundamentals.</strong></p>
+      <p>Second, by taking advantage of our limited time <strong>two week-free trial</strong> offer right now, you will have immediate access to our exclusive password protected Member area. There, you will find every single archived daily newsletter edition to check our analysis at any point throughout the year. <strong>You can back test any or all of it. We are fully transparent with respect to our performance.</strong> We've got nothing to hide, EVER.</p>
+      <p>Within our password protected Member section, you will also find every single individual stock we've suggested, when we suggested it, SSL's and target prices, as well as all of our current open ideas with the same information. Like I said, we are as transparent or in most cases more transparent than any other stock advisory service out there.</p>
+<style type="text/css">
+<!--
+.netup {color: #05AB19}
+.netdown {color: #EA2A16}
+table.closed_portfolio {
+	font: 13px/1.231 arial,helvetica,clean,sans-serif;
+    border-collapse:collapse;
+    border: 1px dotted #CCCCCC;
+    width: 100%;
+}
+table.closed_portfolio td {
+    border: 1px dotted #CCCCCC;
+    background-color: #fff;
+    padding: 8px;
+    vertical-align: middle;
+    text-align: center;
+}
+table.closed_portfolio .labels td {
+    background: none repeat scroll 0 0 #ECECEC;
+    text-align: center;
+}
+table.closed_portfolio .labels td {
+    border: medium none;
+    color: #333333;
+    font: 10px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    text-transform: uppercase;
+    vertical-align: bottom;
+    text-align: center;
+}
+table.closed_portfolio .portfolio_pick {
+    color: #339933;
+    font-size: 18px;
+    font-weight: bold;
+}
+table.closed_portfolio td p {
+    margin: 1em 0 0 0;
+}
+table.closed_portfolio td p:first-child {
+    margin: 0;
+}
+-->
+</style>
+<div style="text-align: center;">
+<div style="display: inline-block; width: 80%;">
+<h2 align="center"><strong>2013 Closed Picks</strong></h1>
+<table cellspacing="0" cellpadding="0" class="closed_portfolio">
+  <tbody>
+    <tr class="labels">
+      <td>Picked Date</td>
+      <td>Company</td>
+      <td>Picked Price</td>
+      <td>Current Price</td>
+      <td>LT Gain</td>
+    </tr>
+    <tr>
+      <td>7/19/12</td>
+      <td style="text-align: left;">Cray, Inc. (<a href="http://internal.smallcapnetwork.com/Cray-Inc/s/quote/p/s/CRAY/" class="quote_symbol" title="Cray, Inc.">CRAY</a>)</td>
+      <td>$12.44</td>
+      <td>$27.46</td>
+      <td nowrap="nowrap"><span class="netup">$15.02 (+120.74%)</span></td>
+    </tr>
+    <tr>
+      <td>12/12/12</td>
+      <td style="text-align: left;">8x8, Inc. (<a href="http://internal.smallcapnetwork.com/8x8-Inc/s/quote/p/s/EGHT/" class="quote_symbol" title="8x8, Inc.">EGHT</a>)</td>
+      <td>$6.59</td>
+      <td>$10.15</td>
+      <td nowrap="nowrap"><span class="netup">$3.56 (+54.02%)</span></td>
+    </tr>
+    <tr>
+      <td>12/17/12</td>
+      <td style="text-align: left;">Sprint Nextel Corp. (<a href="http://internal.smallcapnetwork.com/Sprint-Nextel-Corp/s/quote/p/s/S/" class="quote_symbol" title="Sprint Nextel Corp.">S</a>)</td>
+      <td>$5.44</td>
+      <td>$10.75</td>
+      <td nowrap="nowrap"><span class="netup">$5.31 (+97.61%)</span></td>
+    </tr>
+    <tr>
+      <td>12/27/12</td>
+      <td style="text-align: left;">Amazon.com, Inc. (<a href="http://internal.smallcapnetwork.com/Amazon-com-Inc/s/quote/p/s/AMZN/" class="quote_symbol" title="Amazon.com, Inc.">AMZN</a>)</td>
+      <td>$248.00</td>
+      <td>$398.79</td>
+      <td nowrap="nowrap"><span class="netup">$150.79 (+60.80%)</span></td>
+    </tr>
+    <tr>
+      <td>1/3/13</td>
+      <td style="text-align: left;">Advanced Micro Devices, Inc. (<a href="http://internal.smallcapnetwork.com/Advanced-Micro-Devices-Inc/s/quote/p/s/AMD/" class="quote_symbol" title="Advanced Micro Devices, Inc.">AMD</a>)</td>
+      <td>$2.49</td>
+      <td>$3.87</td>
+      <td nowrap="nowrap"><span class="netup">$1.38 (+55.42%)</span></td>
+    </tr>
+    <tr>
+      <td>1/8/13</td>
+      <td style="text-align: left;">Google, Inc. (<a href="http://internal.smallcapnetwork.com/Google-Inc/s/quote/p/s/GOOG/" class="quote_symbol" title="Google, Inc.">GOOG</a>)</td>
+      <td>$733.00</td>
+      <td>$1,120.71</td>
+      <td nowrap="nowrap"><span class="netup">$387.71 (+52.89%)</span></td>
+    </tr>
+    <tr>
+      <td>1/8/13</td>
+      <td style="text-align: left;">Qualcomm, Inc. (<a href="http://internal.smallcapnetwork.com/Qualcomm-Inc/s/quote/p/s/QCOM/" class="quote_symbol" title="Qualcomm, Inc.">QCOM</a>)</td>
+      <td>$63.91</td>
+      <td>$74.25</td>
+      <td nowrap="nowrap"><span class="netup">$10.34 (+16.18%)</span></td>
+    </tr>
+    <tr>
+      <td>1/22/13</td>
+      <td style="text-align: left;">Medicines Co. (<a href="http://internal.smallcapnetwork.com/Medicines-Co/s/quote/p/s/MDCO/" class="quote_symbol" title="Medicines Co.">MDCO</a>)</td>
+      <td>$30.10</td>
+      <td>$38.62</td>
+      <td nowrap="nowrap"><span class="netup">$8.52 (+28.31%)</span></td>
+    </tr>
+    <tr>
+      <td>2/8/13</td>
+      <td style="text-align: left;">Zynga, Inc. (<a href="http://internal.smallcapnetwork.com/Zynga-Inc/s/quote/p/s/ZNGA/" class="quote_symbol" title="Zynga, Inc.">ZNGA</a>)</td>
+      <td>$3.35</td>
+      <td>$3.80</td>
+      <td nowrap="nowrap"><span class="netup">$0.45 (+13.43%)</span></td>
+    </tr>
+    <tr>
+      <td>2/11/13</td>
+      <td style="text-align: left;">Astex Pharmaceuticals, Inc. (<a href="http://internal.smallcapnetwork.com/Astex-Pharmaceuticals-Inc/s/quote/p/s/ASTX/" class="quote_symbol" title="Astex Pharmaceuticals, Inc.">ASTX</a>)</td>
+      <td>$3.33</td>
+      <td>$8.50</td>
+      <td nowrap="nowrap"><span class="netup">$5.17 (+155.11%)</span></td>
+    </tr>
+    <tr>
+      <td>2/11/13</td>
+      <td style="text-align: left;">AtriCure, Inc. (<a href="http://internal.smallcapnetwork.com/AtriCure-Inc/s/quote/p/s/ATRC/" class="quote_symbol" title="AtriCure, Inc.">ATRC</a>)</td>
+      <td>$8.07</td>
+      <td>$18.68</td>
+      <td nowrap="nowrap"><span class="netup">$10.61 (+131.47%)</span></td>
+    </tr>
+    <tr>
+      <td>2/14/13</td>
+      <td style="text-align: left;">Global X Uranium ETF (<a href="http://internal.smallcapnetwork.com/Global-X-Uranium-ETF/s/quote/p/s/URA/" class="quote_symbol" title="Global X Uranium ETF">URA</a>)</td>
+      <td>$6.96</td>
+      <td>$15.27</td>
+      <td nowrap="nowrap"><span class="netup">$8.31 (+119.40%)</span></td>
+    </tr>
+    <tr>
+      <td>3/5/13</td>
+      <td style="text-align: left;">Flex International Ltd. (<a href="http://internal.smallcapnetwork.com/Flex-International-Ltd/s/quote/p/s/FLEX/" class="quote_symbol" title="Flex International Ltd.">FLEX</a>)</td>
+      <td>$6.78</td>
+      <td>$7.77</td>
+      <td nowrap="nowrap"><span class="netup">$0.99 (+14.60%)</span></td>
+    </tr>
+    <tr>
+      <td>3/7/13</td>
+      <td style="text-align: left;">Atlantic Power Corporation (<a href="http://internal.smallcapnetwork.com/Atlantic-Power-Corporation/s/quote/p/s/AT/" class="quote_symbol" title="Atlantic Power Corporation">AT</a>)</td>
+      <td>$5.68</td>
+      <td>$3.48</td>
+      <td nowrap="nowrap"><span class="netdown">-$2.20 (-38.73%)</span></td>
+    </tr>
+    <tr>
+      <td>4/9/13</td>
+      <td style="text-align: left;">Advanced Micro Devices, Inc. (<a href="http://internal.smallcapnetwork.com/Advanced-Micro-Devices-Inc/s/quote/p/s/AMD/" class="quote_symbol" title="Advanced Micro Devices, Inc.">AMD</a>)</td>
+      <td>$2.50</td>
+      <td>$3.87</td>
+      <td nowrap="nowrap"><span class="netup">$1.37 (+54.80%)</span></td>
+    </tr>
+    <tr>
+      <td>4/10/13</td>
+      <td style="text-align: left;">AT&amp;T, Inc. (<a href="http://internal.smallcapnetwork.com/AT-T-Inc/s/quote/p/s/T/" class="quote_symbol" title="AT&amp;T, Inc.">T</a>)</td>
+      <td>$38.08</td>
+      <td>$35.16</td>
+      <td nowrap="nowrap"><span class="netdown">-$2.92 (-7.67%)</span></td>
+    </tr>
+    <tr>
+      <td>4/10/13</td>
+      <td style="text-align: left;">TrovaGene, Inc. (<a href="http://internal.smallcapnetwork.com/TrovaGene-Inc/s/quote/p/s/TROV/" class="quote_symbol" title="TrovaGene, Inc.">TROV</a>)</td>
+      <td>$6.12</td>
+      <td>$5.74</td>
+      <td nowrap="nowrap"><span class="netdown">-$0.38 (-6.21%)</span></td>
+    </tr>
+    <tr>
+      <td>5/6/13</td>
+      <td style="text-align: left;">Marvell Technology Group Ltd. (<a href="http://internal.smallcapnetwork.com/Marvell-Technology-Group-Ltd/s/quote/p/s/MRVL/" class="quote_symbol" title="Marvell Technology Group Ltd.">MRVL</a>)</td>
+      <td>$10.82</td>
+      <td>$14.38</td>
+      <td nowrap="nowrap"><span class="netup">$3.56 (+32.90%)</span></td>
+    </tr>
+    <tr>
+      <td>5/8/13</td>
+      <td style="text-align: left;">Nokia Corp. (<a href="http://internal.smallcapnetwork.com/Nokia-Corp/s/quote/p/s/NOK/" class="quote_symbol" title="Nokia Corp.">NOK</a>)</td>
+      <td>$3.56</td>
+      <td>$8.11</td>
+      <td nowrap="nowrap"><span class="netup">$4.55 (+127.81%)</span></td>
+    </tr>
+    <tr>
+      <td>5/8/13</td>
+      <td style="text-align: left;">Career Education Corp. (<a href="http://internal.smallcapnetwork.com/Career-Education-Corp/s/quote/p/s/CECO/" class="quote_symbol" title="Career Education Corp.">CECO</a>)</td>
+      <td>$2.40</td>
+      <td>$5.70</td>
+      <td nowrap="nowrap"><span class="netup">$3.30 (+137.50%)</span></td>
+    </tr>
+    <tr>
+      <td>5/15/13</td>
+      <td style="text-align: left;">Apollo Group, Inc. (<a href="http://internal.smallcapnetwork.com/Apollo-Group-Inc/s/quote/p/s/APOL/" class="quote_symbol" title="Apollo Group, Inc.">APOL</a>)</td>
+      <td>$20.51</td>
+      <td>$27.32</td>
+      <td nowrap="nowrap"><span class="netup">$6.81 (+33.20%)</span></td>
+    </tr>
+    <tr>
+      <td>5/17/13</td>
+      <td style="text-align: left;">LeapFrog Enterprises, Inc. (<a href="http://internal.smallcapnetwork.com/LeapFrog-Enterprises-Inc/s/quote/p/s/LF/" class="quote_symbol" title="LeapFrog Enterprises, Inc.">LF</a>)</td>
+      <td>$9.07</td>
+      <td>$7.94</td>
+      <td nowrap="nowrap"><span class="netdown">-$1.13 (-12.46%)</span></td>
+    </tr>
+    <tr>
+      <td>5/30/13</td>
+      <td style="text-align: left;">Facebook, Inc. (<a href="http://internal.smallcapnetwork.com/Facebook-Inc/s/quote/p/s/FB/" class="quote_symbol" title="Facebook, Inc.">FB</a>)</td>
+      <td>$24.00</td>
+      <td>$54.65</td>
+      <td nowrap="nowrap"><span class="netup">$30.65 (+127.70%)</span></td>
+    </tr>
+    <tr>
+      <td>6/12/13</td>
+      <td style="text-align: left;">BioTelemetry, Inc. (<a href="http://internal.smallcapnetwork.com/BioTelemetry-Inc/s/quote/p/s/BEAT/" class="quote_symbol" title="BioTelemetry, Inc.">BEAT</a>)</td>
+      <td>$4.80</td>
+      <td>$7.94</td>
+      <td nowrap="nowrap"><span class="netup">$3.14 (+65.42%)</span></td>
+    </tr>
+    <tr>
+      <td>6/18/13</td>
+      <td style="text-align: left;">iShares Dow Jones US Oil &amp; Gas Ex Index (<a href="http://internal.smallcapnetwork.com/iShares-Dow-Jones-US-Oil-Gas-Ex-Index/s/quote/p/s/IEO/" class="quote_symbol" title="iShares Dow Jones US Oil &amp; Gas Ex Index">IEO</a>)</td>
+      <td>$75.57</td>
+      <td>$82.32</td>
+      <td nowrap="nowrap"><span class="netup">$6.75 (+8.93%)</span></td>
+    </tr>
+    <!--
+    <tr>
+      <td>6/25/13</td>
+      <td style="text-align: left;">SAIC, Inc. (<a href="http://internal.smallcapnetwork.com/SAIC-Inc/s/quote/p/s/SAI/" class="quote_symbol" title="SAIC, Inc.">SAI</a>)</td>
+      <td>$13.00</td>
+      <td>N/A</td>
+      <td nowrap="nowrap">N/A (N/A)</td>
+    </tr>
+    -->
+    <tr>
+      <td>6/25/13</td>
+      <td style="text-align: left;">Apollo Group, Inc. (<a href="http://internal.smallcapnetwork.com/Apollo-Group-Inc/s/quote/p/s/APOL/" class="quote_symbol" title="Apollo Group, Inc.">APOL</a>)</td>
+      <td>$19.50</td>
+      <td>$27.32</td>
+      <td nowrap="nowrap"><span class="netup">$7.82 (+40.10%)</span></td>
+    </tr>
+    <tr>
+      <td>8/14/13</td>
+      <td style="text-align: left;">Cisco Systems, Inc. (<a href="http://internal.smallcapnetwork.com/Cisco-Systems-Inc/s/quote/p/s/CSCO/" class="quote_symbol" title="Cisco Systems, Inc.">CSCO</a>)</td>
+      <td>$26.12</td>
+      <td>$22.43</td>
+      <td nowrap="nowrap"><span class="netdown">-$3.69 (-14.13%)</span></td>
+    </tr>
+    <tr>
+      <td>8/21/13</td>
+      <td style="text-align: left;">iShares Dow Jones US Home Construction (<a href="http://internal.smallcapnetwork.com/iShares-Dow-Jones-US-Home-Construction/s/quote/p/s/ITB/" class="quote_symbol" title="iShares Dow Jones US Home Construction">ITB</a>)</td>
+      <td>$21.33</td>
+      <td>$24.82</td>
+      <td nowrap="nowrap"><span class="netup">$3.49 (+16.36%)</span></td>
+    </tr>
+    <tr>
+      <td>9/5/13</td>
+      <td style="text-align: left;">Walgreen Co. (<a href="http://internal.smallcapnetwork.com/Walgreen-Co/s/quote/p/s/WAG/" class="quote_symbol" title="Walgreen Co.">WAG</a>)</td>
+      <td>$50.25</td>
+      <td>$57.44</td>
+      <td nowrap="nowrap"><span class="netup">$7.19 (+14.31%)</span></td>
+    </tr>
+    <tr>
+      <td>9/5/13</td>
+      <td style="text-align: left;">Rite Aid Corp. (<a href="http://internal.smallcapnetwork.com/Rite-Aid-Corp/s/quote/p/s/RAD/" class="quote_symbol" title="Rite Aid Corp.">RAD</a>)</td>
+      <td>$3.51</td>
+      <td>$5.06</td>
+      <td nowrap="nowrap"><span class="netup">$1.55 (+44.16%)</span></td>
+    </tr>
+    <tr>
+      <td>9/12/13</td>
+      <td style="text-align: left;">iShares MSCI Europe Financials Index (<a href="http://internal.smallcapnetwork.com/iShares-MSCI-Europe-Financials-Index/s/quote/p/s/EUFN/" class="quote_symbol" title="iShares MSCI Europe Financials Index">EUFN</a>)</td>
+      <td>$22.65</td>
+      <td>$25.12</td>
+      <td nowrap="nowrap"><span class="netup">$2.47 (+10.91%)</span></td>
+    </tr>
+    <tr>
+      <td>9/19/13</td>
+      <td style="text-align: left;">Adept Technology, Inc. (<a href="http://internal.smallcapnetwork.com/Adept-Technology-Inc/s/quote/p/s/ADEP/" class="quote_symbol" title="Adept Technology, Inc.">ADEP</a>)</td>
+      <td>$5.94</td>
+      <td>$16.89</td>
+      <td nowrap="nowrap"><span class="netup">$10.95 (+184.34%)</span></td>
+    </tr>
+    <tr>
+      <td>9/30/13</td>
+      <td style="text-align: left;">Leidos Holdings (<a href="http://internal.smallcapnetwork.com/Leidos-Holdings/s/quote/p/s/LDOS/" class="quote_symbol" title="Leidos Holdings">LDOS</a>)</td>
+      <td>$43.85</td>
+      <td>$46.49</td>
+      <td nowrap="nowrap"><span class="netup">$2.64 (+6.02%)</span></td>
+    </tr>
+    <tr>
+      <td>10/4/13</td>
+      <td style="text-align: left;">BioScrip, Inc. (<a href="http://internal.smallcapnetwork.com/BioScrip-Inc/s/quote/p/s/BIOS/" class="quote_symbol" title="BioScrip, Inc.">BIOS</a>)</td>
+      <td>$8.47</td>
+      <td>$7.40</td>
+      <td nowrap="nowrap"><span class="netdown">-$1.07 (-12.63%)</span></td>
+    </tr>
+  </tbody>
+</table>
+<div style="text-align: left; font-size: 12px;">* All current prices are closed prices as of 12/31/2013.</div>
+<div class="netup" style="margin: .5em 0; font-size: 50px; text-align: center;"><strong>2013 Return : 1732.62%</strong></div>
+</div>
+</div>
+    </div>
+    <!-- end section --> 
+  </div>
+  <!-- end blue -->
+  <div class="white" id="section3">
+    <div class="section">
+      <h2>Testimonials:<strong>Still Skeptical? Read What Our Members Are Saying About Us.</strong></h2>
+        
+        <div class="testim odd">
+            <p class="q">Just for your information, I have been charting for 40 years; have given seminars; wrote a newsletter for 17 years, specializing in exploration stocks; was a broker and even had a radio Stock Talk Show.<br /><br /><strong>I like your letter. It is actually very good.</strong></p>
+            <p class="author">- Henry</p>
+        </div>
+        
+        <div class="testim even">
+            <p class="q">Thanks again. <strong>We're up about $50K this last quarter using your Elite recommendations.</strong></p>
+            <p class="author">- Frank</p>
+        </div>
+        
+        <div class="testim odd">
+            <p class="q">I took out put options on XRT following your advice and it has been my best short term return in the last year as a subscriber. <strong>I initially made 60%</strong> on the day or two after the newsletter called the top and then <strong>I re-entered a few days later for 180% profit</strong> on the Feb 22 $80 puts.</p>
+            <p class="author">- Josiah</p>
+        </div>
+        
+        <div class="testim even">
+            <p class="q">Thanks for your daily recaps and advice. <strong>I had been looking for a newsletter like this for a very long time.</strong> Your tips are really very helpful.</p>
+            <p class="author">- Kaushik</p>
+        </div>
+        
+        <div class="testim odd">
+            <p class="q">Thank you, SmallCap Guys! I have seen too few realistic reports on the economy's future, the market future, the country's future.<br /><br /><strong>Keep up the great work, your reports are refreshingly honest, and your "vision" far exceeds nearly everyone else!</strong></p>
+            <p class="author">- Jim</p>
+        </div>
+        
+        <div class="testim even">
+            <p class="q">Thanks for your commentary. They are really helpful and I have been able to make some excellent trades based on your T/A. Another thanks to you on your great calls lately. <strong>Keep up the great work.</strong></p>
+            <p class="author">- Kevin</p>
+        </div>
+        
+        <div class="testim odd">
+            <p class="q">Awesome contrarian call. I was able to buy 2000 shares at $2.15. After hours news and price looking great. I guess it's time to become a dues paying member.
+            Thanks for all your hard work.</p>
+            <p class="author">- Larry</p>
+        </div>
+        
+        <div class="testim even">
+            <p class="q">Just wanted to say thanks; I added 50% to my QCOM position prior to earnings yesterday.  <strong>Now subscribing to your newsletter has cost me nothing!</strong></p>
+            <p class="author">- Ken</p>
+        </div>
+        
+        <div class="testim odd">
+            <p class="q"><strong>Your news letter is most excellent.</strong></p>
+            <p class="author">- Milt</p>
+        </div>
+        
+        <div class="testim even">
+            <p class="q"><strong>I have never come across a newsletter as good as yours.</strong> Your insights into the major indexes have proved invaluable. Sometimes I don't share your optimism around specific companies, such as leap frog, but my god you do know your major indexes. I have taken Australian ETFs around the S&P as you have suggested for a <strong>95% success rate</strong>.</p>
+            <p class="author">- Stephen</p>
+        </div>
+        
+        <div class="testim odd">
+            <p class="q">I've been a subscriber for a few months and <strong>love the newsletter and its results</strong>... Thanks for all your great work this year. It's been great to learn from your analysis as much as it's been profitable to follow your equity advice. I just looked at my portfolio last night and realized <strong>my gains in a small (~$3k range) position in ADEP over a couple weeks already paid for my SCNEO subscription for a year</strong>! Can't beat that!</p>
+            <p class="author">- Josiah</p>
+        </div>
+        
+        <div class="testim even">
+            <p class="q">Don't know how often you receive kudos for all your hard work, but....with your guidance, I bought BEAT @$5.34 and still hold it all.</p>
+            <p class="author">- Ken</p>
+        </div>
+        
+        <div class="testim odd">
+            <p class="q"><strong>I sit here benefiting from your advice and trade suggestions</strong> and often think of writing in to express my approval of your service but never have until today. I very much look forward to your daily communication and applaud you and your team for it. Oops got to go, your latest email is about to hit the inbox and <strong>I don't want to miss it</strong>!</p>
+            <p class="author">- Richard</p>
+        </div>
+        
+        <div class="testim even">
+            <p class="q">Your newsletter today was <strong>classically great in all regards</strong>. Great advise that I will be sharing with my children.</p>
+            <p class="author">- Howard</p>
+        </div>
+        
+        <div class="testim odd">
+            <p class="q">Most of what you share is "sage" advice as I have been at this for almost 3 decades and you offer plain, down to earth, advice. I am very glad to be one of your "members" as at age 68, <strong>I can still learn from your advice</strong>.</p>
+            <p class="author">- John</p>
+        </div>
+        
+        <div class="testim even">
+            <p class="q">I would like to personally thank you for your <strong>terrific customer service re the newsletter</strong>, I really appreciate reading it on a daily basis.</p>
+            <p class="author">- Terry</p>
+        </div>
+        
+        <div class="testim odd">
+            <p class="q">Well done John and the SCN team for 2013, <strong>I for one will be renewing my membership</strong>. By the way, <strong>I think your newsletter is the best one globally</strong>, and I subscribe to a number of newsletters, and John, yours is the best.</p>
+            <p class="author">- Steve</p>
+        </div>
+        
+        
+    </div>
+    <!-- end section --> 
+  </div>
+  <!-- end blue -->
+  
+  <!-- end white -->
+  <div class="gray" id="section4">
+    <div class="section">
+      <h2>Our Philosophy:<strong>Experience, Dedication and Diligence</strong></h2>
+      
+      <p>We live and breathe the markets every day. We monitor the markets' every move. We're constantly scouring the various industry sectors with a fine tooth comb in an effort to identify the best and most profitable opportunities, before the rest of Wall Street has even caught on.</p>
+      <p>We don't discriminate. There's money to be made in every market environment. Long, short, options, small caps, large caps, micro caps, you name it… If you spend enough time searching out and analyzing the markets with an objective and unbiased behavior, you can solidify a financial future.  The type of financial future that has made many investors multi-millionaires over the course of time.</p>
+      <h3>However, it's no easy task.<br />
+        <strong>It takes countless hours of research, experience and<br />
+        an unwavering dedication to due diligence.</strong></h3>
+      
+      <p>Many investors are often left scratching their heads wondering why their value stock continues to go south. Just as important as it is to invest in good solid companies, it's equally as important to understand and know what the broader markets are doing, in addition to knowing when exactly is the right time to buy or sell a specific idea. When an investor knows and understands where the broader markets are headed and why, only then do they have a distinct advantage over the rest of the investing population.</p>
+      <p>Fundamental or technical analysis, which is better? Depending on whom you talk to, veterans of each camp will tell you either technical analysis or fundamental analysis is the only way to go. This is another investing facade. The truth is charts are equally as important as fundamentals and vice versa. In order to maximize investing returns, <strong>it's equally as important to know when to invest in a particular idea, <em style="font-weight: bold;">as it is to know which idea to invest in</em>.</strong></p>
+    </div>
+    <!-- end section --> 
+  </div>
+  <!-- end gray -->
+  <div class="blue" id="section5">
+    <div class="section">
+      <h2>This is our philosophy, and this is what you can<br />
+        start receiving as soon as today by becoming a<br />
+        <strong>SmallCap Network Elite Opportunity Member...</strong></h2>
+      <ul>
+        <li>Accurate and informative daily technical analysis of the broader market indexes</li>
+        <li>Spot on specific entries and exits into select stocks with the potential to deliver life-changing returns.</li>
+        <li>Long and short index options strategies to maximize short-term trading profits.</li>
+        <li>Daily market commentary and up-to-date analysis of economic data and how it will impact the markets on a go-forward basis.</li>
+        <li>Industry and technology analysis to help uncover the next hottest sectors of the market in an effort to exploit early opportunities and above average returns.</li>
+        <li>Technical analysis of individual stocks poised for strong reversals.</li>
+        <li>Value hunting select stocks for long-term portfolio returns.</li>
+        <li>Password protected access to our exclusive Member section, providing you with 24/7 access to all of our current open ideas with entry dates and prices, targets, stops, notes and quotes. You will also have complete access to all previous open and closed positions, as well as access to every single daily newsletter edition we've ever published.</li>
+      </ul>
+    </div>
+    <!-- end section --> 
+  </div>
+  <!-- end blue -->
+  <div class="white" id="section6">
+    <div class="section">
+      <h2>Your Opportunity:<br />
+        <strong>An Integral Part of Your Investing Arsenal</strong></h2>
+
+      <p><strong>As you can see, we're serious about delivering you an opportunity to improve your financial future.</strong> You only have so much time in the day. We're making ourselves available to you in a dedicated fashion that makes us an integral part of your investing arsenal.</p>
+      <p>We're here to help you create a better financial future for yourself and your family. We're not going to let anyone decide for us or pay us to suggest an opportunity. By becoming a SmallCap Network Elite Opportunity Member, you will have a dedicated and highly experienced team of individuals working on your behalf every day to keep you up-to-date and well informed on the stock market and its winning ways.</p>
+      <p>Is there really much to think about? For just $99 per month or less, depending on which subscription package you choose, you will now have the necessary arsenal at your fingertips to exploit the markets for maximum returns.  You can't even play a single round of golf in many cities anymore for less than $99. However, by getting our daily market analysis, select stock recommendations and invaluable continuing education on the subject of investing in stocks, you'll be putting yourself and your family in a much better position to dramatically improve your long-term financial future.</p>
+      <h3>Ask yourself this question, "Would I pay a dedicated team of experienced professionals a total of $99 per month who will work diligently five days a week to help me become more profitable?"<br />
+        <strong>The answer should be pretty simple.</strong></h3>
+      
+      <p>And, if you're wondering why we don't charge less, the answer is quite simple again. Our information is not only worth a lot more, it's also our way of keeping the masses out of our way and our discreet analysis off the radar. When too many people are hearing about an extremely hot opportunity, it can often become an overly crowded trade. That wouldn't be good for you or us.</p>
+      <p>Once you become a <strong>SmallCap Network Elite Opportunity Member</strong>, you can then ignore all of the touts and false promises made by so many other newsletters that only end up failing to deliver.</p>
+      <p>The bottom line is this. Regardless of what many will tell you, identifying the right ideas isn't easy, there's no easy recipe and there's definitely no obvious homeruns when it comes to investing in stocks. It's a big boy's and big girl's game that rewards the most diligent investors. Let us start working for you. We don't think you'll be disappointed, at all.</p>
+      <h3 style="color: #EA2A16;"><em><strong>Enjoy two weeks FREE for a limited time only!</strong> Sign-up today and immediately receive a two week <strong>RISK FREE</strong> trial. No strings attached. Try us <strong>FREE</strong> for two weeks and we're confident you'll never want to miss another <strong>SmallCap Network Elite Opportunity Edition</strong>.</em></h3>
+      <h3><em>Becoming a SCN Elite Opportunity Member only takes a couple of minutes <strong>and you will have immediate access to everything mentioned above.</strong></em></h3>
+      <p>It's your choice.<br />
+        Sincerely,</p>
+      <p><img src="inc/img/monroe_sig.png" width="367" height="50" alt="John Monroe signature" /></p>
+      <p>John Monroe<br />
+        <em>Editor, SmallCap Network Elite Opportunity</em></p>
+    </div>
+    <!-- end section --> 
+  </div>
+  <!-- end white -->
+  <div class="gray" id="section7">
+    <div class="section">
+      
+      <h4 style="padding-bottom: 0;">Sign-Up Today For SCN Elite Opportunity:<br /><span style="color: #EA2A16;">Free Two Week Trial!</span></h4>
+
+
+        <!-- Begin Page -->
+        <div id="page" style="margin-top: 2em; clear: both;">
+        
+            <!-- Begin Page Body -->
+            <div id="page_body" class="acl_module access_controller index_action" style="margin: 0;">
+            
+                <!-- Begin SubLayout -->
+                <div class="page_body_internal">
+                	<div id="bd"><div id="yui-main"><div class="yui-b">
+                		<div id="content_area" style="margin: 1em;">
+        
+        <!--# include virtual="/acl/access/p/stype/VIA/sid/21066/mod/0/mid/0/iid/0/priv/10/?vmpd_self=/pages/SCNEO/luke/&vmpd_rqsv=vmpd_nar,vmpd_nsslr,vmcd_ncr,no_layout,tos,billing_agreement,access_selection,redirect&vmpd_nar=1&vmpd_nsslr=0&vmcd_ncr=1&no_layout=1&tos=1&billing_agreement=1&access_selection=VIA-21066-0-0-0-2&redirect=/via/21066/&$query_string" -->
+        
+                        </div>
+                    </div></div></div>
+                </div>
+            </div>
+        </div>
+        
+      <!-- end signup -->
+      
+      <br class="clear" />
+      <p class="legal">Copyright &copy; 2001-2013 SmallCapNetwork.com. All Rights Reserved.</p>
+    </div>
+    <!-- end section --> 
+  </div>
+  <!-- end gray --> 
+</div>
+<!-- end wrapper -->
+
+<script type="text/javascript" src="inc/js/contentflow.js"></script>
+<script type="text/javascript" src="inc/js/jquery.cycle.lite.js"></script>
+<script type="text/javascript" src="inc/js/scn.js"></script>
+<script type="text/javascript" src="inc/js/jqModal.js"></script>
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-1218496-6']);
+  _gaq.push(['_setDomainName', 'smallcapnetwork.com']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</body>
+</html>

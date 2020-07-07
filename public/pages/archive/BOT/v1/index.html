@@ -1,0 +1,518 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <script type="text/javascript">
+    //<![CDATA[
+        if (window.location.protocol == "http:" && !window.location.href.substr(7).match(/^internal/)) {
+            window.location = "https:" + window.location.href.substr(5);
+        }
+    //]]>
+    </script>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Black Ops Trader</title>
+    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" />
+    <link href="images/favicon.ico" rel="shortcut icon" />
+    <link href="images/favicon.ico" rel="icon" />
+    
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|PT+Serif:700,400,700italic,400italic' rel='stylesheet' type='text/css' />
+    <link href="https://static.viame.com/css/community/default/stylesheet.css?v=20130129" media="screen" rel="stylesheet" type="text/css" />
+    <link href="https://static.viame.com/css/theme/default/stylesheet.css?v=20130129" media="screen" rel="stylesheet" type="text/css" title="Default" />
+    <link href="https://static.viame.com/css/community/smallcapnetwork/stylesheet.css?v=20130129" media="screen" rel="stylesheet" type="text/css" />
+    <link href="https://static.viame.com/css/community/default/print.css?v=20130129" media="print" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    
+    <script type="text/javascript" src="//static.viame.com/js/yui/yui3/build/yui/yui-min.js"></script>
+    <script type="text/javascript" src="//static.viame.com/js/yui/yui_combo_local.js"></script>
+    <!--[if lt IE 9]> <script type="text/javascript" src="//ie7-js.googlecode.com/svn/version/2.1(beta4)/IE9.js"></script><![endif]-->
+    <script type="text/javascript" src="//static.viame.com/js/vm/vm.js"></script>
+    <script type="text/javascript" src="//static.viame.com/js/vm/yui/viame_form_helper.js"></script>
+    <script type="text/javascript" src="//static.viame.com/js/vivin/regula.js"></script>
+<style>
+body {
+    text-align: left;
+    font-size: 16px;
+}
+a:link, a:visited {
+    color: #337ab7;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+a.fakebutton {
+    color: #fff;
+}
+a.fakebutton:hover {
+    text-decoration: none;
+}
+ul.ul-checkbox,
+  ul.ul-small_checkbox {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+ul.ul-checkbox li {
+    background-image: url("images/li-check.gif");
+    background-repeat: no-repeat;
+    background-position: 0 5px;
+    padding: 0 20px 15px 30px;
+}
+.header .quote {
+    color: #275496;
+    font-weight: bold;
+    font-size: 40px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.header ul {
+    color: #1d1d1d;
+    font-size: 24px;
+    line-height: 25px;
+    margin: 24px 0 0 30px;
+    padding-left: 40px;
+}
+.header .tagline {
+    background: #e6f2f8;
+    background: -moz-linear-gradient(top,  #e6f2f8 0%, #207cca 100%, #207cca 100%, #38b5f4 100%);
+    background: -webkit-linear-gradient(top,  #e6f2f8 0%,#207cca 100%,#207cca 100%,#38b5f4 100%);
+    background: linear-gradient(to bottom,  #e6f2f8 0%,#207cca 100%,#207cca 100%,#38b5f4 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e6f2f8', endColorstr='#38b5f4',GradientType=0 );
+    color: #fff;
+    font-weight: bold;
+}
+.mainbody ul.ul-small_checkbox {
+    margin-top: 20px;
+    margin-left: 20px;
+}
+.mainbody ul.ul-small_checkbox li {
+    background-image: url("images/li-check-small-circle.gif");
+    background-repeat: no-repeat;
+    min-height: 22px;
+    color: #1d1d1d;
+    font-size: 18px;
+    margin-bottom: 10px;
+    padding: 2px 0 10px 40px;
+}
+div.whatyouget ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+div.whatyouget ul li {
+    background-image: url("images/li-check-box.gif");
+    background-repeat: no-repeat;
+    color: #1d1d1d;
+    margin-bottom: 10px;
+    padding: 0 0 10px 50px;
+}
+div.about {
+    background-color: #e8e8e8;
+    border: 1px solid #1d1d1d;
+}
+div.about blockquote {
+    border: none;
+    font-size: 14px;
+}
+div.testimonials div.testimonial {
+    background-image: url("images/quotes.gif");
+    background-repeat: no-repeat;
+    padding-left: 30px;
+    font-style: italic;
+}
+div.testimonials div.testimonial .author {
+    color: #275496;
+    font-style: normal;
+    font-weight: bold;
+}
+div.sidebar {
+    float: right;
+    margin: 0 0 20px 20px;
+    max-width: 360px;
+}
+@media (max-width: 992px) {
+    .header img.limited {
+        display: none;
+    }
+    div.sidebar {
+        float: none;
+        max-width: none;
+        margin-left: 0;
+    }
+}
+@media (max-width: 768px) {
+    .header ul {
+        margin-left: 0;
+        padding-left: 20px;
+    }
+}
+div.nofreebooks {
+    position: relative;
+    margin: 50px;
+    padding: 20px 350px 20px 20px;
+    border: 1px solid #333;
+    border-radius: 10px;
+    background-color: #f1f1f1;
+}
+div.nofreebooks img {
+     position: absolute;
+     top: -50px;
+     right: 0;
+}
+@media (max-width: 1200px) {
+    div.nofreebooks img {
+         top: -35px;
+    }
+}
+@media (max-width: 992px) {
+    div.nofreebooks img {
+         top: 10px;
+    }
+}
+@media (max-width: 768px) {
+    div.nofreebooks {
+        margin-left: 0;
+        margin-right: 0;
+        padding: 20px;
+    }
+    div.nofreebooks img {
+         position: static;
+         display: block;
+         top: auto;
+         right: auto;
+         margin: 10px auto;
+    }
+}
+</style>
+<style>
+.yui-skin-sam .yui-panel {
+    font: 13px/1.231 arial,helvetica,clean,sans-serif;
+}
+h1:first-child, h2:first-child, h3:first-child, h4:first-child, h5:first-child, h6:first-child {
+    margin-top: 20px;
+}
+#page_body .page_body_internal {
+    border: none;
+}
+#page_body.acl_module #member_form dl.zend_form {
+    font-size: 14px;
+}
+#page_body.acl_module #member_form dl.zend_form fieldset legend {
+    border: none;
+}
+#page_body.acl_module #member_form dl.zend_form fieldset dt label {
+    font-weight: normal !important;
+}
+#page_body.acl_module #member_form dl.zend_form #access_selection {
+    line-height: 1.231;
+}
+#page_body.acl_module #member_form dl.zend_form #country {
+    font-size: 12px;
+}
+@media (max-width: 1200px) {
+    #vivin_regula_error_dialog div.bd {
+        font-size: 12px !important;
+    }
+    #page_body.acl_module #member_form {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 650px;
+        width: auto;
+    }
+    #page_body.acl_module #member_form dl.zend_form .yui3-u-1-2 {
+        display: block;
+        width: 100%;
+    }
+    #page_body.acl_module #member_form dl.zend_form #access_selection {
+        padding: 10px !important;
+    }
+    #page_body.acl_module #member_form dl.zend_form fieldset legend {
+        background-color: #ccc;
+        box-sizing: border-box;
+        display: block;
+        margin: 0 0 1em;
+        padding: 0.5em;
+        width: 100%;
+        border: none;
+    }
+    #page_body.acl_module #member_form dl.zend_form input[type="text"],
+      #page_body.acl_module #member_form dl.zend_form input[type="email"],
+      #page_body.acl_module #member_form dl.zend_form input[type="tel"],
+      #page_body.acl_module #member_form dl.zend_form input[type="password"] {
+        width: 100%;
+    }
+    #page_body.acl_module #member_form dl.zend_form fieldset dt {
+        width: 100%;
+        float: none;
+        text-align: left;
+    }
+    #page_body.acl_module #member_form dl.zend_form fieldset dt label {
+        margin-bottom: 0 !important;
+        font-weight: normal !important;
+    }
+    #page_body.acl_module #member_form dl.zend_form fieldset dd {
+        width: 100%;
+        float: none;
+    }
+    #page_body.acl_module #member_form dl.zend_form dd#cc_exp_month-element, #page_body.acl_module #member_form dl.zend_form dd#cc_exp_year-element {
+        width: auto;
+        float: left;
+    }
+    #page_body.default_module #member_form dl.zend_form fieldset #cancel-element {
+        display: none;
+    }
+    #page_body.default_module #member_form dl.zend_form dd#buttons-element fieldset#fieldset-buttons > dl {
+        text-align: center;
+    }
+    #page_body.default_module #member_form dl.zend_form dd#buttons-element fieldset#fieldset-buttons > dl > dd {
+        float: none;
+        margin: 0;
+    }
+    #page_body.default_module #member_form dl.zend_form dd#buttons-element fieldset#fieldset-buttons > dl > dd#submit-element input#submit {
+        font-size: 22px;
+    }
+    
+    #page_body.acl_module #member_form dl.zend_form dt#tos-label,
+      #page_body.acl_module #member_form dl.zend_form dt#billing_agreement-label {
+        display: none;
+    }
+    #page_body.acl_module #member_form dl.zend_form dd#tos-element input,
+      #page_body.acl_module #member_form dl.zend_form dd#billing_agreement-element input {
+        position: static;
+        left: 0;
+    }
+    #page_body.acl_module #member_form dl.zend_form dd#tos-element p.description,
+      #page_body.acl_module #member_form dl.zend_form dd#billing_agreement-element p.description {
+        margin: -1.11em 0 0 2em;
+    }
+    #page_body.acl_module #member_form dl.zend_form dd#billing_agreement-element p.netdown {
+        margin-left: 2em;
+    }
+    #page_body.acl_module #member_form dl.zend_form #country {
+        max-width: 100%;
+    }
+    #page_body.acl_module #member_form dl.zend_form dt#apply_promo_button-label {
+        display: none;
+    }
+}
+@media (max-width: 992px) {
+    .topbar .container .row div {
+        text-align: center;
+    }
+}
+</style>
+
+</head>
+
+<body class="yui-skin-sam yui3-skin-sam">
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-MB98R3"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-MB98R3');</script>
+<!-- End Google Tag Manager -->
+
+<div class="container-fluid topbar" style="background-color: #f4f4f4; border-bottom: 1px solid #adacac; padding: 3px 0;">
+    <div class="container">
+        
+        <div class="row">
+            <div class="col-md-6"><strong>Get started now! Got a question? Call <span style="white-space: nowrap;"><nobr>+1 (619) 492-3225</nobr></span>.</strong></div>
+            <div class="col-md-6 text-right">Already subscribed? <a rel="nofollow" href="https://www.smallcapnetwork.com/net/13/?vmpd_paid=1" target="_blank">Member's Only Area</a></div>
+        </div>
+        
+    </div>
+</div>
+
+
+<div class="container-fluid" style="background-color: #444;">
+    <div class="container" style="background-color: #fff; margin: 1em auto;">
+        
+        <div class="row" style="border-bottom: 3px solid #303030;">
+            <div class="col-xs-12"><h1><strong>Black Ops Trader</strong></h1></div>
+        </div>
+        
+        <div class="row header" style="background-color: #e6f2f8;">
+            <img src="images/limited.gif" class="limited" style="position: absolute;" />
+            <div class="container"><div class="row">
+                <div class="col-xs-12 text-center"><h2 class="quote">Uncover Hard to Find Trading Opportunities For Profit</h2></div>
+            </div></div>
+            
+            <div class="container"><div class="row">
+                <div class="col-md-6">
+                    <ul class="ul-checkbox">
+                        <li>Looking to <strong>take advantage</strong> of every market environment?</li>
+                        <li>Want to <strong>successfully trade the technical trends</strong> of individual stocks?</li>
+                        <li>Ready to <strong>start taking advantage of moves</strong> others simply aren't seeing yet?</li>
+                    </ul>
+                    <div class="text-center" style="margin-top: 20px;"><a href="#sign-up-form" class="fakebutton green xlarge" style="display: inline-block;">Try Black Ops Trader</a></div>
+                </div>
+                <div class="col-md-6">
+                    <img src="images/blend.png" class="img-responsive center-block" style="margin-top: 1em;" />
+                </div>
+            </div></div>
+            
+            <div class="container text-center tagline">
+                <h2 style="margin: 20px 0; padding: 20px 0;">Join an <strong>underground team of experts</strong> who are actively identifying stock picks well before Wall Street sees them.</h2>
+            </div>
+        </div>
+        
+        <div class="row mainbody">
+            <div class="col-xs-12">
+                <p style="margin-top: 20px;"><strong>Black Ops Trader</strong> provides you with savvy and timely stock selections, commentary, and the technical context to trade like the pros do. Build your own portfolio's profits and grow your wealth in the process.</p>
+                <p><strong>If you're looking to take maximum advantage of the markets, and would like to:</strong></p>
+                <ul class="ul-small_checkbox">
+                    <li>Learn to <strong>trade for quick profits</strong> using pinpoint entries and exits, while minimizing risk.</li>
+                    <li>Take advantage of short-term moves using <strong>proven technical trading methods</strong>.</li>
+                    <li><strong>Not have to worry</strong> about whether or not we're in a bull or bear market.</li>
+                </ul>
+                
+                <div class="sidebar" style="background-color: #f5fafc; padding: 30px; border: 1px solid #ccc;">
+                    <h3 style="color: #275496; font-size:26px; font-weight: bold; margin: 0 0 15px;">Who is the Black Ops Trader?</h3>
+                    <p>It's not a single guy or gal, but an experienced team of individuals here who've collectively been involved in <strong>successfully analyzing the stock market and individual stocks for well over 20 years</strong>. We've seen everything from the oil boom in the 80's to the Dot Com crash and burn in 2000, the seven year bull market that followed, the inevitable crash of 2008 and finally all the way through the last seven years of monstrous gains in numerous individual ideas.</p>
+                    <p>For anyone interested in become a <strong>Black Ops Trader</strong> member, there isn't a technical or fundamental pattern we haven't seen. Stocks go up and stocks go down, but it's all of our experience that has taught us the uncanny ability to uncover <strong>the right ideas at the right time</strong> for <strong>quick trading profits</strong>.</p>
+                    <p>And, we're always striving on your behalf to stretch those profits for <strong>less action and more money</strong>.</p>
+                    <p>To start a <strong>free-trial subscription</strong>, simply <a href="#sign-up-form">click here now</a>.</p>
+                </div>
+                
+                <p>Most investors have to ride multi-year bull and bear markets before they cash in or find out if they've failed. It doesn't have to be that way.</p>
+                <p>As a matter of fact, in every single market environment dating back to when stocks started trading in 1817, there are and always will be stocks to avoid and stocks to exploit, regardless of the stock markets' environment.</p>
+                <p>It all comes down to using the <strong>right technical tools</strong> and <strong>years of intuitive trading experience</strong> in order to be able to successfully identify and trade individual stocks for <strong>maximum profits</strong>.</p>
+                <p>It's not good enough anymore to just stick with all of the same old technical tools that books and old school traders continue to preach. They know their days are numbered, because we live in a much different market environment now.</p>
+                <p>Although swing trading has definitely become the most popular method on <strong>Wall Street</strong> for traders looking to generate above average returns, it's not just about support and resistance anymore.</p>
+                <p>Now, it's about retracements, expansions, waves, and more. <strong>We identify early thrusters</strong> using proven current methods by showing how and why they're ready to move.</p>
+                <p>Defined as buying or shorting a stock for anywhere from a few days to a few months, swing trading allows the active trader an opportunity to exploit specific ideas for profits, regardless of their direction.</p>
+                <p>This is paramount to one's long-term success, because every successful trader knows it's not just about being in fast moving stocks, <strong>it's about knowing which side to be on and when</strong>.</p>
+                <p>20% of the traders out there make 80% of the money, so why be in the dark when you can take advantage of a service that will quickly bring you in the know?</p>
+                
+                <div class="text-center" style="margin:20px 0;"><a href="#sign-up-form" class="fakebutton green xlarge" style="display: inline-block;">Try Black Ops trader for 14 days - FREE!</a></div>
+                
+                <p>We're only ever looking for potential trading opportunities with <strong>maximum context</strong> for the trade. Meaning, more than just one or two reasons. This is the key to trading success.</p>
+                
+                <h2 class="text-center" style="margin: 20px 0; font-weight: bold; color: #275496;">Take the Guess Work Out of the Trade</h2>
+                
+                <p>Unfortunately, most traders are guessing based on a few things they've found to work sometimes. If you're going to trade successfully though, there has to be enough technical savvy and intuition to make it work consistently.</p>
+                <p>This is why our team at <strong>Black Ops Trader</strong> can be such a value added tool to your arsenal. Not only will we consistently bring you swing trading ideas you can profit from, we're going to give you a technical trading education worth thousands of dollars a year.</p>
+                <p>Then again, if you're an extremely well educated trader, then guess what? We'll no doubt prove our worth as part of your team.</p>
+                
+                <h2 class="text-center" style="margin: 20px 0; font-weight: bold; color: #275496;">Banking on Black Ops Trader</h2>
+
+                <p>We don't marry stocks, we date them. Here's some classic examples of how we do things, how you can profit and why...</p>
+                <p>In January of 2016, the once very promising <strong>3D Systems Corp. (DDD)</strong> finally started to change its short-term trading pattern from bearish to bullish. The stock managed to start picking up some reversal steam back to the upside. Following a brief pullback at the end of January, it was go time. The stock ran for the next two and a half months before the sell signal triggered the top at just under $20 per share.</p>
+                <p><strong>The two and a half month trade yielded a gain of 127%.</strong></p>
+
+                <p><img src="images/ddd.jpg" class="img-responsive center-block" style="margin-top: 1em; border: 1px solid #000;" /></p>
+                
+                <p>We identified a juicy reversal opportunity at just over $9 per share in <strong>GoPro (GPRO)</strong> in early February 2016. Without going into all of the proprietary technical details reserved for members only, <strong>the stock ran to a high of over $14 per share</strong>, before the stock strongly reversed its trend all in a single day. That was the time to get out, and thank the trading gods, because the stock has since fallen apart again.</p>
+                <p><strong>The one month trade yielded a gain of 44%.</strong></p>
+
+                <p><img src="images/gpro.jpg" class="img-responsive center-block" style="margin-top: 1em; border: 1px solid #000;" /></p>
+                
+                <div class="text-center" style="margin:20px 0;"><a href="#sign-up-form" class="fakebutton green xlarge" style="display: inline-block;">Try Us For Free Now!</a></div>
+                
+                <p>The exact same opportunity at the exact same time surfaced in shares of <strong>Twitter (TWTR)</strong>, only it was an entry of just over $14 and an exit of just under $20 before the stock decided it had had enough gains for a while. While so many investors continue to speculate on whether or not <strong>Twitter</strong> is a good long-term hold, we don't care. <strong>Just get in and get out when it's time.</strong></p>
+                <p><strong>The one month trade yielded a gain of 35%.</strong></p>
+            
+                <p><img src="images/twtr.jpg" class="img-responsive center-block" style="margin-top: 1em; border: 1px solid #000;" /></p>
+
+                <p>In March of 2016, <strong>Merrimack Pharma (MACK)</strong> breached a double bottom, but quickly gained its footing, further suggesting the stock was not only grossly oversold, but had some buy side legs to go along with it. The ensuing short-term rally lasted a good 30 days, before the stock displayed its first signal of a reversal looming once again.</p>
+                <p><strong>The one month trade yielded a gain of 47%.</strong></p>
+                
+                <p><img src="images/mack.jpg" class="img-responsive center-block" style="margin-top: 1em; border: 1px solid #000;" /></p>
+                
+                <div class="text-center" style="margin:20px 0;"><a href="#sign-up-form" class="fakebutton green xlarge" style="display: inline-block;">Try Us For Free Now!</a></div>
+                
+                <h2 class="text-center" style="margin: 20px 0; font-weight: bold; color: #275496;">Black Ops Trader Details - What You Can Expect</h2>
+                
+                <ul>
+                    <li><strong>Mobile Text and Email Alerts.</strong> Daily mobile text alert and email newsletter exploiting stock picks of all sizes poised to break out or break down for profits.</li>
+                    <li><strong>Exclusive Analysis.</strong> Find out which time tested analysis is still worth using, and which trading methodologies are no longer effective.</li>
+                    <li><strong>Specific Entries and Exits.</strong> Timely alerts pinpointing entry and exit levels with specific targets and stops for maximum swing trading profits.</li>
+                    <li><strong>Educational Training.</strong> Ongoing education on proven technical analysis techniques you can apply to your own ideas now and into the future.</li>
+                    <li><strong>All Access.</strong> Easy password protected access to all commentary, charts and analysis. All available at your fingertips 24/7.</li>
+                    <li><strong>One-On-One Coaching.</strong> Q &amp; A directly from one of our team members helping you get questions answered on stocks you like or own.</li>
+                </ul>
+                
+                
+                <div class="nofreebooks">
+                    <img src="images/no_books.png" class="img-responsive" />
+                    <p>There are <strong style="font-style: underline; color: #f00;">NO FREE BOOKS</strong> or gimmicks associated with this offer. Why? First, <strong>good things aren't free and free things aren't good</strong>. Rather than spending the majority of our time trying to come up with worthless gimmicks of no value to you like so many other financial advisory services try to do, <strong>we're going to provide with an ongoing lifetime of stock market education</strong> you won't find anywhere else. Not only that, you're not a dummy, so we're not going to treat you like one!</p>
+                </div>
+                
+                <h2 style="margin-bottom: 30px; text-align: center; color: #1a3764; text-transform: uppercase;">Get all of this for one low monthly cost. Add <strong>Black Ops Trader</strong> to your arsenal today. We're convinced you'll never want to leave.</h2>
+                    
+                <div class="text-center" style="margin:20px 0;"><a href="#sign-up-form" class="fakebutton green xlarge" style="display: inline-block;">Yes! I want to become a Member of Black Ops Trader Now!</a></div>
+
+
+
+            </div>
+        </div>
+        
+        <div id="sign-up-form" class="row"><div class="col-xs-12">
+            
+
+
+            <!-- Begin Page -->
+            <div id="page">
+            <!-- Begin Page Body -->
+            <div id="page_body" class="acl_module access_controller index_action">
+            
+                <!-- Begin SubLayout -->
+                <div class="page_body_internal">
+                	<div id="bd"><div id="yui-main"><div class="yui-b">
+                		<div id="content_area">
+                		    
+            
+                <!--# include virtual="/acl/access/p/stype/NET/sid/13/mod/0/mid/0/iid/0/priv/10/?vmpd_self=/pages/BOT/v1/&vmpd_rqsv=vmpd_nar,vmpd_nsslr,vmcd_ncr,no_layout,tos,billing_agreement,access_selection,redirect&vmpd_nar=1&vmpd_nsslr=0&vmcd_ncr=1&no_layout=1&tos=1&billing_agreement=1&redirect=/net/13/&$query_string" -->
+            
+                        
+                        </div>
+                    </div></div></div>
+                </div>
+            </div>
+            </div>
+
+
+            
+        </div></div>
+        
+    </div>
+</div>
+
+
+<div class="container-fluid" style="background-color: #f3f3f3; padding: 25px 0;">
+    <div class="container">
+        
+        <div class="row">
+            <div class="col-xs-12 text-center">Copyright &copy; <!--# config timefmt="%Y" --><!--# echo var="$date_local" default="2016" --> SmallCapNetwork.com. <span style="white-space: nowrap;"><nobr>All Rights Reserved.</nobr></span></div>
+        </div>
+        
+    </div>
+</div>
+
+
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+var $_Tawk_API={},$_Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/54b80245eebdcbe3571d44e5/default';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+<!--End of Tawk.to Script-->
+
+</body>
+</html>

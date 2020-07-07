@@ -1,0 +1,34 @@
+<?php $this->placeholder('temp')->captureStart(); ?>
+<p class="error">This network does not have any content modules.</p>
+
+<h2>Click the <a href="<?= $this->internal->target->pre ?>/module/setup/">Start Publishing</a> button below to automatically have your network space loaded with the most popular content modules.</h2>
+
+<table style="margin-top: 2em;">
+    <tr>
+        <td valign="top" style="width: 31%; padding-left: 55px; padding-right: 5px; background: url(<?= $this->internal->vars->static_host ?>/css/theme/default/assets/modules/member/register_verify/1.png) no-repeat;"><p><strong>Publish An Article</strong></p><p>Share your thoughts and opinions on your interests.</p></td>
+        <td style="width: 2%; border-left: 1px dotted #999;">&nbsp;</td>
+        <td valign="top" style="width: 31%; padding-left: 53px; padding-right: 5px; background: url(<?= $this->internal->vars->static_host ?>/css/theme/default/assets/modules/member/register_verify/2.png) no-repeat;"><p><strong>Publish An Analysis</strong></p><p>Create a customizable research report on stocks, mutual funds and other equities.</p></td>
+        <td style="width: 2%; border-left: 1px dotted #999;">&nbsp;</td>
+        <td valign="top" style="width: 31%; padding-left: 54px; background: url(<?= $this->internal->vars->static_host ?>/css/theme/default/assets/modules/member/register_verify/3.png) no-repeat;"><p><strong>Publish Stock Picks</strong></p><p>Let investors know which stocks you think are poised for big returns.</p></td>
+    </tr>
+</table>
+
+<p style="text-align: center; margin-top: 3em;"><a href="<?= $this->internal->target->pre ?>/module/setup/"><img src="<?= $this->internal->vars->static_host ?>/css/theme/default/assets/modules/member/register_verify/start_publishing.png"></a></p>
+
+<p style="text-align: right; color: #ccc; margin-top: 3em;">
+    <a href="<?= $this->internal->target->pre ?>/module/" style="color: #ccc;">Advanced Module Manager &raquo;</a>
+    <br />
+    <a href="<?= $this->internal->target->pre ?>/widget/" style="color: #ccc;">Advanced Widget Manager &raquo;</a>
+</p>
+
+<?php $this->placeholder('temp')->captureEnd(); ?>
+
+<?php
+echo $this->CM(array(
+    'class' => 'cm decorated plain errormessage',
+    'hd' => 'Verification Successful',
+    'hd2' => 'This network space is ready to setup for content',
+    'bd' => $this->placeholder('temp')
+));
+$this->placeholder('temp')->set(null);
+?>

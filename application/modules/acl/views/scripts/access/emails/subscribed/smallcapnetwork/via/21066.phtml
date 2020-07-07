@@ -1,0 +1,139 @@
+<p align="center" style="text-align: center;"><img border="0" src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/scneo/logo.png" alt="Elite Opportunity Pro Logo" /></p>
+
+<p>Welcome and thank you for becoming a member of <strong><?= $this->title ?></strong>. We are excited to have you on board and look forward to providing you with exceptional service. Your transaction has been successfully processed and you should now have proper access using your <?= $this->internal->community->display ?> account. You can access the Members Only Section
+<?php
+if (isset($this->access_selected->w_member_start) && $this->access_selected->w_member_start && strtotime($this->access_selected->w_member_start) > strtotime(date('Y-m-d'))) {
+    echo ' beginning ';
+    
+    $date = new Zend_Date();
+    $date->set($this->access_selected->w_member_start, Zend_Date::ISO_8601);
+    if (isset($this->internal->member)) {
+        $date->setTimezone($this->internal->member->timezone);
+        echo $date->toString(Zend_Date::DATE_LONG);
+    }
+    else {
+        $date->setTimezone($this->internal->config->timezone);
+        echo $date->toString(Zend_Date::DATE_LONG);
+    }
+    
+    echo ' ';
+}
+?>
+by logging in here:</p>
+<?php
+    $url = 'http://' . $this->internal->vars->host;
+    
+    if ($this->access_selected->net_id) {
+        $url .= '/net/' . $this->access_selected->net_id;
+    }
+    elseif ($this->access_selected->via_id) {
+        $url .= '/via/' . $this->access_selected->via_id;
+    }
+    
+    if ($this->access_selected->module_id) {
+        $url .= '/p/' . $this->internal->module_modules[$this->access_selected->module_id]->name;
+        
+        if ($this->access_selected->matrix_counter) {
+            $url .= '/mid/' . $this->access_selected->matrix_counter;
+            
+            if ($this->access_selected->item_counter) {
+                $url .= '/id/' . $this->access_selected->item_counter;
+            }
+        }
+    }
+    
+    $url .= '/';
+?>
+<p style="text-align: center;"><a href="<?= $url ?>?vmpd_paid=1"><span style="font-size: 116%; font-weight: bold;"><?= ((isset($this->access_selected->title) && $this->access_selected->title) ? $this->access_selected->title : $this->title)?> Members Only Section</span><br /><?= $url ?>?vmpd_paid=1</a></p>
+
+<p>Use your <strong><?= $this->internal->community->display ?></strong> credentials to login. If you have trouble signing in or have forgotten your password, <a href="http://<?= $this->internal->vars->host ?>/member/reset/">click here</a> to have your password reset.</p>
+
+<p>The details of your subscription are:</p>
+<table width="100%" cellspacing="2" cellpadding="3">
+    <tr>
+        <th>Product</th>
+        <th>Price</th>
+    </tr>
+    <tr>
+        <td colspan="2"><hr size="1" noshade="noshade" /></td>
+    </tr>
+    <tr>
+        <td><?= (isset($this->access_selected->display) && $this->access_selected->display ? $this->access_selected->display : $this->access_selected->title) ?></td>
+        <td align="right">
+<?php
+$currency = new ViaMe_Currency('USD');
+echo $currency->toCurrency($this->access_selected->w_member_amount);
+echo ' / ' . ($this->access_selected->w_member_quantity > 1 ? $this->access_selected->w_member_quantity . ' ' : '') . $this->access_selected->w_member_interval . ($this->access_selected->w_member_quantity > 1 ? 's' : '');
+if ($this->access_selected->w_member_auto_renew) {
+    echo ' (Recurring)';
+}
+?>
+        </td>
+    </tr>
+</table>
+
+<p>Before you run off, please take a few minutes to read the following important points that will help you take full advantage and maximize all of the features and benefits this exceptional investing service has to offer.</p>
+<dl>
+ <dt style="font-size: 14px; font-weight: bold;">Daily Newsletter:</dt>
+ <dd><p><strong>You should immediately start receiving our daily newsletter edition via email.</strong> It's your choice to read each one daily in its entirety or not, however, each daily edition will provide our <strong>current market commentary</strong> on where we believe these markets are going, where they may pause or reverse trends on both a short and long-term basis. Daily newsletters cover very important <strong>technical charting</strong> and <strong>fundamental lessons</strong> to <strong>help you become a better investor or trader</strong>.</p>
+   <p>The daily newsletter is also where we will initially reveal <strong>potentially profitable</strong> <strong>short-term swing trading opportunities, as well as long-term investing ideas we believe are going to outperform the major indexes over time.</strong></p>
+ </dd>
+    
+    <dt style="font-size: 14px; font-weight: bold;">SMS Text Alerts:</dt>
+    <dd>
+        <p>As a member of <strong><?= (isset($this->access_selected->display) && $this->access_selected->display ? $this->access_selected->display : $this->access_selected->title) ?></strong>, your subscription includes access to our <strong>SMS text alert service</strong>. We will use this notification service as a method of delivering timely information to our subscribers. We will send out notifications from time-to-time on <strong>newly suggested ideas</strong>, and when a <strong>new daily newsletter</strong> is out for delivery.</p>
+        <p><strong>The text messages will come from a US based long code (phone number) or short code.</strong> We will make every effort to keep this number consistent, but as our capacity needs increase, <strong>this number may periodically change</strong>. However, we will do our best to impact as few people and give you as much notice as possible.</p>
+        <p>Any type of alert notification service, including but not limited to SMS text messages, is subject to the reliability of many different service parts. While we make every effort to ensure notification deliverability, the sending and receiving of alert notifications should be considered as such, and <strong>there is no guarantee, implied or otherwise, that an alert will be sent or received</strong>.</p>
+        <p>If you haven't already setup your text alerts, please follow the instructions below.</p>
+        <p><strong>SMS Alert Setup Instructions:</strong></p>
+        <ol style="margin-bottom: 1em;">
+            <li>After you have confirmed your registration email account, log in and go to: <a href="https://www.smallcapnetwork.com/profile/alert/add/?type=2&vmpd_nar=1">https://www.smallcapnetwork.com/profile/alert/add/?type=2&vmpd_nar=1</a></li>
+            <li>Make sure the <strong>Alert Type</strong> is set to "<strong>SMS Text Message</strong>".</li>
+            <li>In the Identifier field, enter the <strong>FULL INTERNATIONAL NUMBER</strong> of your cell phone or other device. The number should be comprised of a <strong>COUNTRY CODE</strong>, <strong>AREA CODE</strong>, and <strong>PHONE NUMBER</strong>. For example, if you lived in Los Angeles, California, you would enter something like "12135551212" (<strong>notice the 1 in the front, as that is the country code for the US</strong>). If you do not know your country code, <a href="http://countrycode.org/" target="_blank">click here</a>&nbsp;(an alternate list can also be found <a href="http://en.wikipedia.org/wiki/List_of_country_calling_codes#Ordered_by_code" target="_blank">here</a>). <strong>Do not include any other non-numeric characters</strong>, such as plus signs, parenthesis, or hyphens. After entering your full international phone number, click the "<strong>Create Alert</strong>" button.</li>
+            <li>The system will send you a confirmation code that you will need to enter on the next step.</li>
+            <li>You will be redirected to a page where you will need to enter the confirmation code that was sent to your device. Enter the confirmation code in the Confirmation Code field and hit the "<strong>Confirm Alert</strong>" button. If you do not receive the confirmation code within 5 minutes, you can either click the "<strong>Re-Send Confirmation Code</strong>" button, or delete the newly created alert and try your request again.</li>
+            <li><strong>That's it. You're all set to receive alerts!</strong></li>
+        </ol>
+    </dd>
+ 
+ <dt style="font-size: 14px; font-weight: bold;">Member Section:</dt>
+ <dd>
+ <p>Our password protected <strong>Member Section</strong> lists all of our currently suggested long-term investment ideas. These are individual company ideas or ETF's we believe will provide index average beating returns on a year-to-year basis.</p>
+ 	<p>Within the password protected Member section, you will not only find access to all of our currently suggested long-term ideas, you will also find links to key articles on the ideas in question, previously suggested short and long-term ideas, as well as every single <a href="https://www.smallcapnetwork.com/Newsletter-Archives/s/via/21066/article/p/mid/1/?vmpd_paid=1">archived newsletter</a> edition for reference.</p>
+ 	<p>Keep in mind; since you are just now coming into <strong><?= (isset($this->access_selected->display) && $this->access_selected->display ? $this->access_selected->display : $this->access_selected->title) ?></strong>, <strong>it's important to review the dates and information with respect to each individual idea we've added to our current list of suggested long-term ideas</strong>.</p>
+ 	<p>Why is this so important? Because often times, the day we suggest an idea is the day we believe the idea is ready to start performing. However, some end up requiring a little more time before the idea in question starts providing the type of returns we expect. Regardless, <strong>we typically never put an idea on our current list of long-term picks on the Member page we don't like for the long haul, unless of course we let you know something seriously fundamental has changed.</strong></p>
+ 	<p>Just know that <strong>there's no need to rush out and start immediately snapping up every idea on our current list of long-term picks</strong> because your cost basis may be much different than what we initially suggested to our Members at the time we suggested the idea. A good rule of thumb is to <strong>build positions over time</strong>, especially when it comes to long-term investing. Never allocate 100% of your capital to any one idea and dollar cost averaging over time is OK when it comes to long-term investing, especially in a downward trending market.</p>
+ 	<p>It's also quite alright to be patient, read our daily commentaries on the major indexes and <strong>be selective as to which ideas you choose to trade or invest in and when</strong>. It's our philosophy that all stocks come back to center at some point, so <strong>patience is often rewarded on both the buy and sell side of the markets</strong>.</p>
+ 	<p>By taking the time to get to know our style and methodologies, in addition to getting comfortable with all of the information and analysis we provide daily, you will then be able to <strong>take full advantage of all we have to offer</strong>.</p>
+ </dd>
+ <dt style="margin-bottom: 1em; font-weight: bold;">Long-Term Ideas:</dt>
+ <dd>
+   <p>Since no investor simply has an endless amount of funds to invest in the markets, we maintain a current list of no more than <strong>12 long-term ideas on our Member page at any one given time</strong>, depending on the current market environment at the time in question. In other words, in a bad market environment, you will see less ideas and vice versa.</p>
+   <p>Although we always strive to provide individual company ideas we believe will provide good returns on a short-term basis, the ideas listed on our Member page are specifically provided for investors with a long-term strategy.</p>
+   <p><strong>We're committed to maintaining no more than 12 current long-term picks at any given time on our Member page</strong>, which allows for the removal of old ideas and the addition of new ones. <strong>Meaning,</strong> <strong>just because we remove an idea from our current list of long-term picks, doesn't mean we don't like it anymore</strong>, unless of course we inform you via the daily newsletter and deem the idea as such.</p>
+   <p>This again, is why it's so important to remember our current list of long-term picks is simply there for you to consider at any point in time, depending on what's going on with the rest of the markets. You can buy and hold them or trade in and out of them. It's up to you.</p>
+ </dd>
+ <dt style="margin-bottom: 1em; font-weight: bold;">Short-Term Swing Trading Ideas:</dt>
+ <dd>
+   <p>With respect to our extremely popular short-term swing trading opportunities, these are only ever revealed and covered within the daily newsletter and/or mobile text alert service. <strong>Currently suggested short-term ideas are not listed on the Member page </strong>for the simple reason they are <strong>far more time sensitive</strong> than long-term investing type ideas. Meaning, they can be traded over the course of weeks, several days, and sometimes can even be traded and exited all within a day.</p>
+   <p>These short-term ideas are specifically designed for the active short-term traders with an appetite for risk and are looking to generate far bigger returns than the more passive long-term investor.</p>
+   <p>Swing trading ideas are often far more technical in nature than fundamental. However, we typically will not suggest individual swing trading ideas on companies without at least decent fundamentals.</p>
+   <p>Swing trading ideas are always provided within the daily newsletter and/or mobile text alert service with our complete technical context for the trade, short-term targets, SSL's and more.</p>
+ </dd>
+ <dt style="margin-bottom: 1em; font-weight: bold;">Know Who You Are:</dt>
+ <dd>
+   <p><strong>The most important aspect of being a successful trader or investor is to know who you are. Strategies, goals, timeframes, risk tolerance and objectives are different for each individual investor.</strong> Therefore, although it's completely up to you, it is not recommended you simply add or remove an idea as we do with respect to our current list of long-term picks until you have a complete understanding of who you are as an investor or trader.</p>
+   <p><strong><?= (isset($this->access_selected->display) && $this->access_selected->display ? $this->access_selected->display : $this->access_selected->title) ?> should not be viewed as a total portfolio management service.</strong> It is impossible for anyone to manage someone else's portfolio without a complete understanding of who each investor is on an individual basis.</p>
+   <p>By taking the time to establish your goals, timeframes, risk tolerance and objectives, you can then take full advantage of all of our ideas and the constant flow of information we provide, as they relate to your personal trading or investing profile.</p>
+   <p>Pick and choose which ideas fit your profile best and determine in advance how they can be best suited for your own trading or investing preferences. Remember, <strong>the potential reward of any idea is usually directly correlated to the risk involved</strong>, so make sure you understand who you are as a trader or investor and it will make a world of difference to your bottom line returns.</p>
+ </dd>
+ </dl>
+
+<p><strong>A long-term commitment to the markets and the desire for an ongoing education of both technicals and fundamentals will help ensure you get the most from your investing or trading portfolio. <strong><?= (isset($this->access_selected->display) && $this->access_selected->display ? $this->access_selected->display : $this->access_selected->title) ?></strong> is here to help you accomplish all of that, for as long as you're committed to being a Member of this very unique and valuable service.</strong></p>
+<p>Should you ever have any questions or comments, simply reply to any one of our daily newsletters or fill out the <a href="mailto:customerservice@smallcapnetwork.com">contact us form</a> located in the <a href="<?= $url ?>?vmpd_paid=1"><strong>Member Section</strong></a>. We will always do our best to respond in a timely manner.</p>
+
+
+<p>Thank you again for subscribing. If you should have any questions or problems with your order, please contact our customer service team by sending an email to <a href="mailto:<?= $this->internal->community->email ?>"><?= $this->internal->community->email ?></a>. We are committed to providing you with great customer service, so please don't hesitate to contact us at any time.</p>
+<p>Sincerely,</p>
+<p><strong><?= $this->internal->community->display ?></strong></p>
+<p style="color: #f00;">Note: Charges will appear on your statement as <?= $this->internal->community->display ?>.</p>

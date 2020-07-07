@@ -1,0 +1,53 @@
+<?php
+#Zend_Debug::Dump($this->results);
+#Zend_Debug::Dump($this->quote_data);
+#Zend_Debug::Dump($this->verification);
+
+reset($this->verification);
+$current = current($this->verification);
+$this->current = $current;
+$tick = $current->symbol;
+$dtick = $current->delayed_symbol;
+
+$date = new Zend_Date();
+?>
+
+<?php require_once 'simple_qf_nav.phtml'; ?>
+
+<?php
+// Other Feeds
+$tmp_widget = new StdClass;
+$tmp_widget->interactive = true;
+$tmp_widget->widget_hide_summary = true;
+
+echo $this->CM(array(
+    'class' => 'cm decorated widget news',
+    'hd' => 'Other News and Information on ' . $current->internal_symbol,
+    'bd' => '
+<div id="quote_other_info_tabs"> 
+    <ul class="yui-nav"> 
+        <li class="selected"><a href="#tab1"><em>News</em></a></li>
+        <li><a href="#tab2"><em>Blogs</em></a></li>
+        <li><a href="#tab3"><em>Message Boards</em></a></li>
+        <li><a href="#tab4"><em>Twitter</em></a></li>
+    </ul>             
+    <div class="yui-content"> 
+        <div id="tab1" class="hidesummary"><script type="text/javascript" src="/zfbp/extfeeds/?set=news&format=json&callback=rssCallBack&limit=20&symbol='.$dtick.'"></script></div>
+        <div id="tab2" class="hidesummary"><script type="text/javascript" src="/zfbp/extfeeds/?set=blogs&format=json&callback=rssCallBack&limit=20&symbol='.urlencode($current->name . ' ' . $tick).'"></script></div>
+        <div id="tab3" class="hidesummary"><p style="margin: 3em 0; text-align: center; font-weight: bold;">No Message Board Sources.  Submit New Ones By <a href="/Contact-Us/s/page/view/p/mid/1/title/Contact+Us/">Clicking Here</a>.</p></div>
+        <div id="tab4" class="hidesummary"><script type="text/javascript" src="/zfbp/extfeeds/?set=twitter&format=json&callback=rssCallBack&limit=20&symbol='.$dtick.'"></script></div>
+    </div> 
+</div>
+    '
+));
+?>
+<?php $this->inlineScript()->captureStart(); ?>
+YAHOO.util.Event.onDOMReady(function() {
+    var quoteTabView = new YAHOO.widget.TabView('quote_other_info_tabs');
+});
+<?php $this->inlineScript()->captureEnd(); ?>
+
+
+
+
+</div>

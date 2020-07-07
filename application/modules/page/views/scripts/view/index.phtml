@@ -1,0 +1,161 @@
+<?php $module = 'page'; ?>
+
+<div class="cm decorated padded m_<?= $module ?> m-<?= $this->internal->target->currentModule->module_id ?>-<?= $this->internal->target->currentModule->counter ?> id_<?= $this->object->counter ?>">
+<div class="hd">
+    <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div>
+    </div>
+    <div class="con">
+    	<table class="table">
+            <tr>
+                <td class="lt"></td>
+
+                <td class="mn1<?= ($this->object->active == false ? ' draftitem' : '') ?><?= ($this->object->published_display_activated == false ? ' futureitem' : '') ?><?= ($this->object->published_display_expired == true ? ' expireditem' : '') ?>"><a href="<?= '/' . $this->SEO_Urlify($this->internal->target->currentModule->display ? $this->internal->target->currentModule->display : $this->internal->target->currentModule->m_display) . '/s' . (isset($this->internal->target->pre) ? $this->internal->target->pre : '') . '/' . $this->internal->target->currentModule->m_name . '/p/mid/' . $this->internal->params->mid . '/' ?>"><?= $this->escape(isset($this->internal->target->currentModule->display) && $this->internal->target->currentModule->display ? $this->internal->target->currentModule->display : $this->internal->target->currentModule->m_display) ?></a></td>
+                <td class="sep"></td>
+                <td class="mn2"><div class="administer">
+                    <?php
+                    // Edit Page Link
+                    if (!$this->masked && ($this->internal->target->acl->owner ||
+                        ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_EDIT))) {
+                    ?>          
+                    <a href="<?= $this->internal->target->pre ?>/<?= $module ?>/edit/p/mid/<?= $this->object->matrix_counter ?>/id/<?= $this->object->counter ?>/" class="edit">Edit Page</a>
+                    <?php
+                    }
+                    ?>
+                    
+                    <?php
+                    // Delete Page Link
+                    if (!$this->masked && ($this->internal->target->acl->owner ||
+                        ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_DELETE))) {
+                    ?>
+                    <a href="<?= $this->internal->target->pre ?>/<?= $module ?>/delete/p/mid/<?= $this->object->matrix_counter ?>/id/<?= $this->object->counter ?>/" onclick="return confirm('Are you sure you want to delete this page?');" class="delete">Delete Page</a>
+                    <?php
+                    }
+                    ?>
+                </div></td>
+                <td class="rt"></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="bd">
+    <div class="relay">
+        <?= $this->partial('partials/_AddThis.phtml', 'system', array('internal' => $this->internal)); ?>
+        
+        <?= $this->PrintEmailLink(array('link' => '', 'internal' => $this->internal)) ?>
+    </div>
+    
+    <?php if ($this->internal->target->currentModule->interactive && ($this->masked ? $this->object->x_interactive : true)) { ?>
+        <div class="interact">
+            <div class="comments"><span class="begin_comment_count">&nbsp;</span><a href="#comments_list" class="comment_count"><?= $this->object->total_comments_count ?></a><span class="end_comment_count">&nbsp;</span> <a href="#comments_list">Comment(s)</a>
+            <?php if (($this->internal->target->acl->allowed === null || $this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT) && $this->object->allow_comments) { ?>
+            - <a href="#post_a_comment">Post a Comment</a>
+            <?php } ?>
+            </div>
+            <div class="rating">Rating <span class="count rc<?= floor($this->object->rating * 2) ?>"><?= ($this->object->rating ? $this->object->rating : '') ?></span></div>
+        </div>
+    <?php } ?>
+    
+    
+<?php
+/*
+if (isset($this->page_links) && is_array($this->page_links) && count($this->page_links)) { ?>
+<div style="display: inline; float: right; border: 1px solid #123;">
+<?php
+
+
+function _displayLinks2($data, $internal, $view) {
+    if (isset($data) && is_array($data)) {
+        echo '<ul>';
+        foreach ($data as $item) {
+            
+            #if ($module->display_stack == $stack) {
+            #    if ($internal->target->acl->owner ||
+            #        $module->allowed === null ||
+            #        $module->show_on_fail ||
+            #        ($module->allowed && ($module->privilege > 0)) ||
+            #        ($internal->target->acl->recursive && ($internal->target->acl->privilege > 0))) {
+            #        
+            #        if ($display_new_list && !$new_list_displayed) {
+            #            echo '<div class="yuimenu"><div class="bd"><ul>';
+            #            $new_list_displayed = true;
+            #        }
+            #        
+            #        echo '<li class="' . (!$stack ? 'yuimenubaritem' : 'yuimenuitem') . '">';
+            #        echo '<a href=" ' . $internal->target->pre . '/' . $module->m_name . '/p/mid/' . $module->counter . '/" class="' . (!$stack ? 'yuimenubaritemlabel' : 'yuimenuitemlabel') . '">' . ($module->display ? $module->display : $module->m_display) . '</a>';
+            #        $display_stack = $module->module_id . '-' . $module->counter;
+            #        if (isset($modules_with_subs[$display_stack]) && $modules_with_subs[$display_stack]) {
+            #            _displayLinks($modules, $display_stack, $internal, $modules_with_subs, true);
+            #        }
+            #        echo '</li>';
+            #    }
+            #}
+            
+            echo '<li><a href="/' . $view->escape($view->SEO_Urlify($item['data']->title)) . '/s' . $internal->target->pre . '/page/p/mid/' . $internal->params->mid . '/id/' . $item['data']->counter . '/">' . $view->escape($item['data']->title) . '</a>';
+            if (isset($item['children']) && is_array($item['children'])) {
+                echo '<ul>';
+                _displayLinks2($item['children'], $internal, $view);
+                echo '</ul>';
+            }
+            echo '</li>';
+        }
+        echo '</ul>';
+    }
+}
+
+_displayLinks2($this->page_links, $this->internal, $this);
+?>
+</div>
+<?php }
+*/
+?>
+
+    <div class="part2">
+        <div class="content"><?= $this->object->content ?></div>
+    </div>
+    
+    <?= $this->partial('partials/_SocialBookmarks.phtml', 'system', array('internal' => $this->internal)); ?>
+    
+<?php if ($this->internal->target->currentModule->interactive && ($this->masked ? $this->object->x_interactive : true)) { ?>
+    <div class="part3" style="margin-bottom: 3em;">
+        <div class="interact">
+            <div class="comments"><span class="begin_comment_count">&nbsp;</span><a href="#comments_list" class="comment_count"><?= $this->object->total_comments_count ?></a><span class="end_comment_count">&nbsp;</span> <a href="#comments_list">Comment(s)</a>
+            <?php if (($this->internal->target->acl->allowed === null || $this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT) && $this->object->allow_comments) { ?>
+            - <a href="#post_a_comment">Post a Comment</a>
+            <?php } ?>
+            </div>
+            
+            <?php if (($this->internal->target->acl->allowed === null || $this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT) && $this->object->allow_ratings) { ?>
+            <div class="rateit">Rate It : 
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/1/" rel="nofollow" title="1 Star - Awful">1</a>
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/2/" rel="nofollow" title="2 Stars - Poor">2</a>
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/3/" rel="nofollow" title="3 Stars - Average">3</a>
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/4/" rel="nofollow" title="4 Stars - Good">4</a>
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/5/" rel="nofollow" title="5 Stars - Excellent">5</a>
+                </span></span></span></span></span>
+            </div>
+            <?php } ?>
+        </div>
+    </div>
+    
+    <div style="clear: both;"></div>
+    
+    <div class="comments">
+    <?php
+        echo $this->action('list', 'comments', 'system', (array) $this->internal->params);
+    ?>
+    </div>
+<?php } ?>
+
+    
+</div>
+<div class="ft">
+    <div class="dec">
+        <div class="lt"></div><div class="mn"></div><div class="rt"></div>
+
+    </div>
+</div>
+<span class="icon"></span>
+</div>
+
+
+<?php //$this->TextAds(); ?>

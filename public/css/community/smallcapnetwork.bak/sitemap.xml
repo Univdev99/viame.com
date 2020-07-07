@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <sitemap>
+        <!-- Latest 1000 From All Community Modules -->
+        <loc>https://www.smallcapnetwork.com/SmallCap-Network/s/system/widget/p/format/sitemap/w_limit/1000/</loc>
+    </sitemap>
+    <sitemap>
+        <loc>https://www.smallcapnetwork.com/Member-Articles/s/article/widget/p/mid/8/format/sitemap/w_limit/5000/</loc>
+    </sitemap>
+    <sitemap>
+        <loc>https://www.smallcapnetwork.com/Member-Blog-Posts/s/blog/widget/p/mid/3/format/sitemap/w_limit/5000/</loc>
+    </sitemap>
+    <sitemap>
+        <loc>https://www.smallcapnetwork.com/Member-Analysis/s/analysis/widget/p/mid/1/format/sitemap/w_limit/5000/</loc>
+    </sitemap>
+    <sitemap>
+        <loc>https://www.smallcapnetwork.com/Member-Message-Boards/s/message/widget/p/mid/1/format/sitemap/w_limit/5000/</loc>
+    </sitemap>
+    <sitemap>
+        <loc>https://www.smallcapnetwork.com/Member-Stock-Picks/s/pick/widget/p/mid/1/format/sitemap/w_limit/5000/</loc>
+    </sitemap>
+    <sitemap>
+        <loc>https://www.smallcapnetwork.com/SmallCap-Network-Newsletters/s/article/widget/p/mid/7/format/sitemap/w_limit/5000/</loc>
+    </sitemap>
+    <sitemap>
+        <!-- SmallCap Network Press Release Archive -->
+        <loc>https://www.smallcapnetwork.com/Press-Releases/s/article/widget/p/mid/4/format/sitemap/w_limit/5000/</loc>
+        <lastmod>2011-09-30</lastmod>
+    </sitemap>
+    <sitemap>
+        <!-- SmallCap Network Blog Archive -->
+        <loc>https://www.smallcapnetwork.com/SmallCap-Network-Blog/s/blog/widget/p/mid/1/format/sitemap/w_limit/5000/</loc>
+        <lastmod>2011-09-30</lastmod>
+    </sitemap>
+</sitemapindex>

@@ -1,0 +1,94 @@
+<h1><?= isset($this->page_title) && $this->page_title ? $this->page_title : 'Create A New Folder' ?></h1>
+
+<form id="mail_folder_form" enctype="application/x-www-form-urlencoded" method="post" class="form" action=""><dl class="zend_form">
+<?= $this->form->getDisplayGroup('hidden') ?>
+
+
+<div style="float: right; width: 400px; margin-left: 1em;">
+<!-- Begin Options -->
+<div class="cm decorated options">
+    <div class="hd">
+        <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div>
+        </div>
+        <div class="con">
+        	<table class="table">
+
+                <tr>
+
+                    <td class="lt"></td>
+                    <td class="mn1">Options</td>
+                    <td class="sep"></td>
+                    <td class="mn2"></td>
+                    <td class="rt"></td>
+                </tr>
+            </table>
+
+        </div>
+
+    </div>
+    <div class="bd">
+
+
+<!-- Begin Accordion -->
+        <div id="options_accordion" class="yui3-accordion larger">
+<?php
+    $counter = 0;
+    foreach ($this->form->getDisplayGroups() as $group) {
+        if (!preg_match('/^options/', $group->getName())) { continue; }
+?>
+            <div class="yui3-accordion-item<?= (!$counter ? ' first-of-type' : '') ?>">
+                <div class="yui3-accordion-item-hd">
+                    <a href="javascript:void(null);" class="yui3-accordion-item-trigger"><?= $group->getAttrib('legend') ?></a>
+                </div>
+                <div class="yui3-accordion-item-bd">
+                    <p><?php $group->removeAttrib('legend'); echo $group; ?></p>
+                </div>
+            </div>
+<?php
+        $counter++;
+    }
+?>
+        </div>
+<!-- End Accordion -->
+
+
+    </div>
+    <div class="ft">
+        <div class="dec">
+            <div class="lt"></div><div class="mn"></div><div class="rt"></div>
+        </div>
+    </div>
+</div>
+<!-- End Options -->
+</div>
+
+
+<div style="margin-right: 416px;">
+
+<?php
+if ($this->formErrors) {
+    print '<div class="errors"><ul>';
+    foreach ($this->formErrors as $message) {
+        print "<li>$message</li>\n";
+    }
+    print '</ul></div>';
+}
+
+echo $this->form->getDisplayGroup('main');
+echo $this->form->getDisplayGroup('buttons');
+?>
+
+</div>
+
+
+
+<?php $this->inlineScript()->captureStart(); ?>
+YUI({
+}).use('anim', 'gallery-node-accordion', function (Y) {
+	Y.one("#options_accordion").plug(Y.Plugin.NodeAccordion, {
+	    anim: Y.Easing.easeBothStrong
+	});	
+});
+<?php $this->inlineScript()->captureEnd(); ?>
+
+<?= $this->FormHelper(array('internal' => $this->internal)) ?>

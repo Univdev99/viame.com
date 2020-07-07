@@ -1,0 +1,11 @@
+<?php
+if ($this->formErrors) {
+    print '<div class="errors" style="color: #f00;">';
+    foreach ($this->formErrors as $message) {
+        print "$message<BR>\n";
+    }
+    print '</div>';
+}
+?>
+
+<?= $this->form ?>

@@ -1,0 +1,62 @@
+<?php
+    if (isset($this->internal->params->submodule)
+        && array_key_exists($this->internal->params->submodule, $this->module_modules)) {
+        #echo $this->action(
+        #    ((isset($this->internal->params->subaction) && $this->internal->params->subaction != '') ? $this->internal->params->subaction : 'index'),
+        #    ((isset($this->internal->params->subcontroller) && $this->internal->params->subcontroller != '') ? $this->internal->params->subcontroller : 'index'),
+        #    ($this->internal->params->submodule),
+        #    (array) $this->internal->params
+        #);
+    }
+    else {
+?>
+
+
+<p><?= $this->translate('Hello') ?></p>
+
+<p>Is the above "Hello" translated?</p>
+
+<p>Default Index View Script.</p>
+
+<p>Community : <?= $this->internal->community->display ?>
+<br />
+<?= $this->internal->community->description ?></p>
+
+<dl><dt>Need to pull and display the following modules: (<a href="<?= $this->internal->target->pre ?>/module/add/"><b>Add A New Module</b></a>)</dt>
+
+<?php
+if (isset($this->internal->target->modules)) {
+    foreach ($this->internal->target->modules as $module) {
+        if ($this->internal->target->acl->owner ||
+            $module->allowed === null ||
+            $module->show_on_fail ||
+            ($module->allowed && ($module->privilege > 0)) ||
+            ($this->internal->target->acl->recursive && ($this->internal->target->acl->privilege > 0))) {
+?>
+    <dd><a href="<?= $this->internal->target->pre ?>/<?= $module->m_name ?>/p/mid/<?= $module->counter ?>/"><?= ($module->display ? $module->display : $module->m_display) . ' : ' . ($module->description ? $module->description : $module->m_description) ?></a></dd>
+<?php
+        }
+    }
+}
+?>
+
+</dl>
+
+<p>
+<b>Profiles:</b><br />
+<?php foreach ($this->profiles as $profile) {
+    echo $this->ProfileDisplay(array('profile' => $profile, 'internal' => $this->internal)) . '<br />';
+} ?>
+</p>
+
+<p>
+<b>Networks:</b><br />
+<?php foreach ($this->networks as $network) { ?>
+    <a href="/<?= $this->SEO_Urlify($network->name) ?>/s/net/<?= $network->id ?>/"><?= $network->name ?></a> (<?= $network->total_member_count ?> Members)<br />
+<?php } ?>
+</p>
+
+
+<?php
+    }
+?>

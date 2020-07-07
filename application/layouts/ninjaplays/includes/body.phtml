@@ -1,0 +1,294 @@
+<?php
+$subscriptions = array(
+	'0-11-0-0-0-0' => array(
+		'title' => 'Ninja Plays',
+		#'landing' => '/via/21066/?vmpd_paid=1&vmpd_ckstr[signup_entrance]=Premium+Advice&vmpd_ckstr[click_track]=Premium_Advice-SCNEO',
+		'landing' => '/',
+		'access' => '/net/11/',
+	)
+);
+$my_subs = array();
+
+if (isset($this->internal->member) && ($db = Zend_Registry::get('db'))) {
+	$joined = "obj.com_id || '-' || obj.net_id || '-' || obj.via_id || '-' || obj.module_id || '-' || obj.matrix_counter || '-' || obj.item_counter";
+	$joined_clauses = array();
+	foreach ($subscriptions as $key => $val) {
+		$joined_clauses[] = "$joined = '$key'";
+	}
+	
+	$select1 = $db->select()
+        ->from(array('obj' => 'acl_members'), array('acl_id' => new Zend_Db_Expr($joined), 'identifier' => 'identifier', 'active' => 'active'))
+        ->where('obj.active NOTNULL')
+        ->where("obj.expiration ISNULL OR date(obj.expiration) >= date('now')")
+        
+        ->join(array('a' => 'acl_acls'), 'obj.com_id=a.com_id AND obj.net_id=a.net_id AND obj.via_id=a.via_id AND obj.module_id=a.module_id AND obj.matrix_counter=a.matrix_counter AND obj.item_counter=a.item_counter AND obj.acl_counter=a.counter',
+            array(
+            	#'title' => 'title'
+            )
+        )
+        ->where('a.active NOTNULL')
+        
+        ->join(array('p' => 'profile_profiles'), 'obj.profile_id = p.id',
+            array(
+            	'profile_id' => 'id'
+            )
+        )
+        ->where('p.active=?', 't')
+        
+        ->join(array('b' => 'member_members'), 'p.member_id = b.id',
+            array(
+            )
+        )
+        ->where('b.active = ?', 't')
+        ->where('b.id = ?', $this->internal->member->id)
+    ;
+    if (count($joined_clauses)) {
+    	$select1->where(implode(' OR ', $joined_clauses));
+    }
+ 
+    $select2 = $db->select()
+        ->from(array('obj' => 'acl_passwords'), array('acl_id' => new Zend_Db_Expr($joined), 'identifier' => new Zend_Db_Expr('null'), 'active' => 'active'))
+        ->where('obj.active')
+        
+        ->join(array('a' => 'acl_acls'), 'obj.com_id=a.com_id AND obj.net_id=a.net_id AND obj.via_id=a.via_id AND obj.module_id=a.module_id AND obj.matrix_counter=a.matrix_counter AND obj.item_counter=a.item_counter AND obj.acl_counter=a.counter',
+            array(
+            	#'title' => 'title'
+            )
+        )
+        ->where('a.active')
+        
+        ->join(array('p' => 'profile_profiles'), 'obj.profile_id = p.id',
+            array(
+            	'profile_id' => 'id'
+            )
+        )
+        ->where('p.active=?', 't')
+        
+        ->join(array('b' => 'member_members'), 'p.member_id = b.id',
+            array(
+            )
+        )
+        ->where('b.active = ?', 't')
+        ->where('b.id = ?', $this->internal->member->id)
+    ;
+    if (count($joined_clauses)) {
+    	$select2->where(implode(' OR ', $joined_clauses));
+    }
+    
+    $select = $db->select()->union(array($select1, $select2));
+    
+    $temp_my_subs = $db->fetchAll($select);
+    #Zend_Debug::Dump($temp_my_subs);
+    foreach ($temp_my_subs as $tms) {
+    	$my_subs[$tms->acl_id] = $tms;
+    }
+}
+
+if (count($my_subs)) {
+    $member_subscriptions = array();
+	foreach ($my_subs as $key => $val) {
+		#echo '<li><a href="' . ($this->internal->member->profile->id == $val ? $subscriptions[$key]['access'] : "/profile/switch/?id=$val&redirect=" . urlencode($subscriptions[$key]['access'])) . '">' . $subscriptions[$key]['title'] . '</a></li>';
+		#Zend_Debug::Dump($val);
+		$member_subscriptions[$key] = ($this->internal->member->profile->id == $val->profile_id ? $subscriptions[$key]['access'] : "/profile/switch/?id=" . $val->profile_id . "&redirect=" . urlencode($subscriptions[$key]['access']));
+		unset($subscriptions[$key]);
+	}
+	Zend_Registry::set('member_subscriptions', $member_subscriptions);
+	#Zend_Debug::Dump($member_subscriptions);
+}
+
+#if (count($subscriptions)) {
+#	foreach ($subscriptions as $sub) {
+#		echo '<li><a href="' . $sub['landing'] . '">' . $sub['title'] . '</a></li>';
+#	}
+#}
+#else {
+#	echo '<li>None</li>';
+#}
+?>
+
+<?php /*
+$pre = '/' . $this->SEO_Urlify($this->internal->member->profile->name) . '/s/via/' . $this->internal->member->profile->id;
+try { $member_subscriptions = Zend_Registry::get('member_subscriptions'); } catch (Exception $e) {}
+<?= (isset($member_subscriptions['0-0-21066-0-0-0']) ? $member_subscriptions['0-0-21066-0-0-0'] : '/?vmpd_ckstr[signup_entrance]=Member_Header_Icon_SCNEO&vmpd_ckstr[click_track]=Member_Header_Icon_SCNEO&vmpd_ckstr_redirect=/pages/SCNEO/v1/') ?>
+*/ ?>
+
+<!-- Begin Page -->
+<div id="page" class="type_<?= $this->internal->target->type ?> id_<?= $this->internal->target->id; ?>">
+    
+    <!-- Begin Page Header -->
+    <div id="page_header">
+
+    
+        <div id="navbar" class="navmenu navmenu-default navmenu-fixed-left offcanvas" data-disable-scrolling="false">
+<?php if (isset($this->internal->member)) { ?>
+            <span class="navmenu-brand">Welcome, <?= ((isset($this->internal->member->first_name) && $this->internal->member->first_name) ? $this->internal->member->first_name : $this->internal->member->profile->name) ?>!</span>
+<?php } else { ?>
+            <a class="navmenu-brand" href="/" title="Ninja Plays">Ninja Plays</a>
+<?php } ?>
+          <ul class="nav navmenu-nav">
+            <li><a href="/" title="Home">Home</a></li>
+            
+<?php if (!isset($this->internal->member) || (!isset($member_subscriptions['0-11-0-0-0-0']))) { ?>
+            <li><a href="/About-Us/s/page/view/p/mid/1/id/7/" title="About Us">About Us</a></li>
+            <li><a href="/Context/s/page/view/p/mid/1/id/6/" title="Context">Context</a></li>
+            <li><a href="/Testimonials/s/page/view/p/mid/1/id/5/" title="Testimonials">Testimonials</a></li>
+            <li><a href="/#sign_up" title="Sign-Up">Sign-Up</a></li>
+<?php } else { ?>
+            <li><a href="<?= $member_subscriptions['0-11-0-0-0-0'] ?>" title="Members Only Section">Members Only Section</a></li>
+            <li><a href="/profile/alert/" title="Manage Alerts">Manage Alerts</a></li>
+    <?php if (isset($my_subs['0-11-0-0-0-0']->identifier)) { ?>
+        <?php if (isset($my_subs['0-11-0-0-0-0']->active) && $my_subs['0-11-0-0-0-0']->active) { ?>
+            <li><a href="/acl/access/update_payment/?identifier=<?= $my_subs['0-11-0-0-0-0']->identifier ?>" title="Update Credit Card">Update Credit Card</a></li>
+            <li><a href="/acl/access/unsubscribe/stype/net/sid/11/mod/0/mid/0/iid/0/aid/1/" title="Unsubscribe">Unsubscribe</a></li>
+        <?php } ?>          
+    <?php } ?>
+<?php } ?>
+<?php if (isset($this->internal->member)) { ?>
+            <li><a href="/member/logout/" rel="nofollow" title="Logout">Logout</a></li>
+<?php } else { ?>
+            <li><a href="/member/login/p/signup_entrance/TB-Login/?redirect=/net/11/" rel="nofollow" onclick="return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/signup_entrance/TB-Login/?redirect=/net/11/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false });" title="Login">Login</a></li>
+<?php } ?>
+            
+            <li><a href="/Contact-Us/s/page/view/p/mid/1/id/1/" title="Contact Us">Contact Us</a></li>
+            
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Legal <b class="caret"></b></a>
+              <ul class="dropdown-menu navmenu-nav">
+                <li><a href="/Privacy-Policy/s/page/view/p/mid/1/id/2/" title="Privacy Policy">Privacy Policy</a></li>
+                <li><a href="/Terms-of-Use/s/page/view/p/mid/1/id/3/" title="Terms of Use">Terms of Use</a></li>
+                <li><a href="/Disclaimer/s/page/view/p/mid/1/id/4/" title="Disclaimer">Disclaimer</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+    
+        <div class="navbar navbar-default navbar-fixed-top">
+          <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          
+          <div class="navbar-welcome">
+<?php /*
+<?php if (isset($this->internal->member)) { ?>
+              Welcome, <?= ((isset($this->internal->member->first_name) && $this->internal->member->first_name) ? $this->internal->member->first_name : $this->internal->member->profile->name) ?>! | <a href="/member/logout/p/vmpd_far/1/?redirect=/" rel="nofollow"><span class="icon"></span>Logout</a>
+<?php } else { ?>      
+              <a href="/member/login/p/signup_entrance/TB-Login/" rel="nofollow" onclick="return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/signup_entrance/TB-Login/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false });" style="margin: 0 .25em 0 0;"><span class="icon"></span>Login</a> | <a href="/Register/s/member/register/p/shortform/1/signup_entrance/TB-Register/" rel="nofollow" style="margin-left: .25em;"><span class="icon"></span>Sign-Up</a>
+<?php } ?>
+*/?>
+            <a href="/" title="Ninja Plays">Ninja Plays</a>
+          </div>
+        </div>
+        
+
+    </div>
+    <!-- End Page Header -->
+    
+    
+    <!-- Begin Page Body -->
+    <div id="page_body" class="<?php $front = Zend_Controller_Front::getInstance(); echo $front->getRequest()->getModuleName() . '_module ' . $front->getRequest()->getControllerName() . '_controller ' . $front->getRequest()->getActionName() . '_action'; ?>">
+
+
+<?php
+    if (isset($this->internal->vars->sublayout)) {
+        echo $this->render($this->internal->vars->sublayout);
+    }
+    elseif (is_file(dirname(__FILE__) . '/../sublayouts/default.phtml')) {
+        echo $this->render('sublayouts/default.phtml');
+    }
+    else {
+        echo '<div id="doc4" class="page_body_internal"><div id="bd"><div id="yui-main"><div class="yui-b"><div id="content_area">' .
+             $this->layout()->content .
+             '</div></div></div></div></div>';
+    }
+?>
+
+        
+    </div>
+    <!-- End Page Body -->
+    
+    
+    <!-- Begin Page Footer -->
+    <div id="page_footer">
+<?php
+$pre = '';
+if (isset($this->internal->params->com_id) && $this->internal->params->com_id) {
+    $pre = '/com/' . $this->internal->params->com_id;
+}
+
+// NOTE - This whole mainnav should probably be cached for up to 4 hours or so
+//   If we do cache it, must remove all references to member and anything personalized to profile or member
+?>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-4 copyright">Copyright &copy; <?= date('Y') ?> <span style="white-space: nowrap;"><nobr><a href="/">Ninja Plays</a></nobr></span></div>
+                <div class="col-sm-4 col-sm-push-4 links">
+                    <ul>
+                        <li class="first-item"><span style="white-space: nowrap;"><nobr><a href="/Privacy-Policy/s/page/view/p/mid/1/id/2/" title="Privacy Policy">Privacy Policy</a></nobr></span></li>
+                        <li class="last-item"><span style="white-space: nowrap;"><nobr><a href="/Terms-of-Use/s/page/view/p/mid/1/id/3/" title="Terms of Use">Terms of Use</a></nobr></span></li>
+                    </ul>
+                </div>
+                <div class="col-sm-4 col-sm-pull-4 social_media">
+                    <ul>
+                        <li class="facebook first-item"><a href="https://www.facebook.com/ninjaplayz" title="Facebook">Facebook</a></li>
+                        <li class="instagram"><a href="https://instagram.com/ninja.plays/" title="Instgram">Instgram</a></li>
+                        <li class="twitter last-item"><a href="https://twitter.com/ninjaplayers" title="Twitter">Twitter</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-top"></div>
+        <?php $this->internal->log->debug('Load Time : ' . sprintf ('%.4f', microtime(true) - $this->internal->vars->timer)); ?>
+        
+    </div>
+    <!-- End Page Footer -->
+        
+        
+</div>
+<!-- End Page -->
+
+
+<!-- Begin Scratch Pad -->
+<div id="scratch_pad"></div>
+<!-- End Scratch Pad -->
+
+
+<?php /*
+<?php if (!isset($this->internal->member) && (!preg_match("/\/(member|acl)\//i", $this->internal->vars->request_uri))) { ?>
+<!-- Begin Fixed Signup Toolbar -->
+<div id="fixed2">
+    <?= $this->render('includes/signup_toolbar2.phtml'); ?>
+</div>
+<!-- End Fixed Signup Toolbar -->
+<?php } ?>
+<?php */ ?>
+
+
+<?php /*
+<?php if (!isset($this->internal->member) && (!preg_match("/\/(member|acl)\//i", $this->internal->vars->request_uri))) { ?>
+<!-- Begin Interstitial -->
+<?= $this->render('includes/interstitial.phtml') ?>
+<!-- End Interstitial -->
+<?php } ?>
+<?php */ ?>
+
+
+<?php /*
+<?php if (!isset($this->internal->member) && (!preg_match("/\/(member|acl)\//i", $this->internal->vars->request_uri))) { ?>
+<!-- Begin Modal Signup -->
+<?= $this->render('includes/signup_super_modal.phtml'); ?>
+<!-- End Modal Signup -->
+<?php } ?>
+<?php */ ?>
+
+
+
+<?php /*
+<?php if (!isset($this->internal->member) && (!preg_match("/\/(member|acl)\//i", $this->internal->vars->request_uri)) && (!preg_match("/Google/i", $_SERVER['HTTP_USER_AGENT']))) { ?>
+<!-- Begin Exit Modal Signup -->
+<?= $this->render('includes/signup_exit_popup.phtml'); ?>
+<!-- End Exit Modal Signup -->
+<?php } ?>
+*/ ?>
+

@@ -1,0 +1,63 @@
+<?php $this->placeholder('temp')->captureStart(); ?>
+
+<p class="success">Your transaction has been successfully processed.</p>
+<p>Your subscription is active and you should now have proper access using your <strong><?= $this->internal->community->display ?></strong> account.  If this is a new registration, you may have to <strong>check your email and confirm your email address</strong> first to activate your account.  You can access your subscription
+<?php
+if (isset($this->access_selected->w_member_start) && $this->access_selected->w_member_start && strtotime($this->access_selected->w_member_start) > strtotime(date('Y-m-d'))) {
+    echo ' beginning ';
+    
+    $date = new Zend_Date();
+    $date->set($this->access_selected->w_member_start, Zend_Date::ISO_8601);
+    if (isset($this->internal->member)) {
+        $date->setTimezone($this->internal->member->timezone);
+        echo $date->toString(Zend_Date::DATE_LONG);
+    }
+    else {
+        $date->setTimezone($this->internal->config->timezone);
+        echo $date->toString(Zend_Date::DATE_LONG);
+    }
+    
+    echo ' ';
+}
+?>
+by going to:</p>
+
+<?php
+    $url = 'http://' . $this->internal->vars->host;
+    
+    if ($this->access_selected->net_id) {
+        $url .= '/net/' . $this->access_selected->net_id;
+    }
+    elseif ($this->access_selected->via_id) {
+        $url .= '/via/' . $this->access_selected->via_id;
+    }
+    
+    if ($this->access_selected->module_id) {
+        $url .= '/p/' . $this->internal->module_modules[$this->access_selected->module_id]->name;
+        
+        if ($this->access_selected->matrix_counter) {
+            $url .= '/mid/' . $this->access_selected->matrix_counter;
+            
+            if ($this->access_selected->item_counter) {
+                $url .= '/id/' . $this->access_selected->item_counter;
+            }
+        }
+    }
+    
+    $url .= '/';
+?>
+<p><a href="<?= $url ?>?vmpd_paid=1" style="font-size: 116%;"><?= $url ?>?vmpd_paid=1</a></p>
+<p>We suggest you bookmark this link for future reference.  You will receive an email receipt regarding this transaction.  If you have any problems or questions, please contact our customer service team at <a href="mailto:<?= $this->internal->community->email ?>"><?= $this->internal->community->email ?></a>.</p>
+
+<?php
+$this->placeholder('temp')->captureEnd();
+
+echo $this->CM(array(
+    'class' => 'cm decorated plain successmessage',
+    'hd' => 'Successful Transaction',
+    'hd2' => 'Your subscription has been processed',
+    'bd' => $this->placeholder('temp')
+));
+
+$this->placeholder('temp')->set(null);
+?>

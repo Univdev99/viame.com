@@ -1,0 +1,50 @@
+            <!-- Begin SubLayout -->
+            <div class="page_body_internal">
+                <table id="sublayout" style="width: 100%px;"><tr>
+                
+                
+                    <!-- Begin SubLayout Left Column -->
+                    <td style="width: 160px; border: none; text-align: left; vertical-align: top;">
+                
+<div>
+You are in the <?= $this->internal->community->display ?> community.<br />
+<?php
+if (isset($this->internal->member)) {
+    if ($this->internal->member->profile->community_id == $this->internal->community->id) {
+        echo 'This profile is a member of this community.';
+    }
+    else {
+        echo "<a href=\"/profile/community/switch/\">Click here to switch your active profile to this community.</a><br />";
+    
+        $coms = explode(',', preg_replace('/^\{(.*)\}$/', '${1}', $this->internal->member->profile->community_ids));
+    
+        if (in_array($this->internal->community->id, $coms)) {
+            echo "This profile is also subscribed to this community. <a href=\"/profile/community/remove/\">Click here to unsubscribe.</a>";
+        }
+        else {
+            echo "<a href=\"/profile/community/add/\">Click here to subscribe your active profile to this community.</a><br />";
+        }
+    }
+}
+?>
+</div>
+                
+                        <?= $this->action('status', 'system', 'member') ?>
+                        <?= $this->action('list', 'community', 'system') ?>
+                        
+                    </td>
+                    <!-- End SubLayout Left Column -->
+                
+                
+                    <!-- Begin SubLayout Main Column -->
+                    <td style="border: none; text-align: left; vertical-align: top;">
+                
+                        <?= $this->layout()->content ?>
+    
+                    </td>
+                    <!-- End SubLayout Main Column -->
+                    
+                    
+                </tr></table>
+            </div>
+            <!-- End SubLayout -->

@@ -1,0 +1,29 @@
+<?php
+    $this->headTitle()->setIndent(4);
+    $this->headMeta()->setIndent(4);
+    $this->headLink()->setIndent(4);
+    $this->headScript()->setIndent(4);
+    $this->headStyle()->setIndent(0);
+    
+    // Remove the rest of the title parts
+    #$this->headTitle($this->headTitle()->offsetGet(0), 'SET');
+    
+    // Only last two parts of the title
+    if ($this->headTitle()->offsetExists(2)) {
+        for ($i = 2; $i < $this->headTitle()->count() + 1; $i++) {
+            $this->headTitle()->offsetUnset($i);
+        }
+    }
+
+    
+    echo $this->headTitle() . "\n";
+    echo $this->headMeta() . "\n";
+    if (Zend_Registry::isRegistered('Zend_Navigation') && count(Zend_Registry::get('Zend_Navigation'))) {
+        $this->navigation()->links()->setIndent(4);
+        Zend_Registry::get('Zend_Navigation')->setPages($this->internal->navigation);
+        echo $this->navigation()->links() . "\n";
+    }
+    echo $this->headLink() . "\n";
+    echo $this->headScript() . "\n";
+    echo $this->headStyle() . "\n";
+?>

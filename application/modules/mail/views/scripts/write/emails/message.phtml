@@ -1,0 +1,24 @@
+<p><?= $this->ProfileDisplay(array('profile' => $this->profile, 'internal' => $this->internal)) ?> has sent a message to your "<?= $this->tp->p_name ?>" profile on <?= $this->internal->community->display ?>.</p>
+
+
+<div><strong>Subject:</strong> <?= $this->data['subject'] ?></div>
+<div><strong>Message:</strong></div>
+<blockquote><?= $this->data['content'] ?></blockquote>
+
+
+<p class="administer">
+
+<a href="http://<?= $this->internal->vars->host ?>/profile/switch/p/id/<?= $this->tp->p_id ?>/?redirect=<?= urlencode('/mail/write/p/reply/1/pid/' . $this->profile->p_id . '/id/' . $this->new_message_counter . '/') ?>">Reply</a> -
+
+<a href="http://<?= $this->internal->vars->host ?>/profile/switch/p/id/<?= $this->tp->p_id ?>/?redirect=<?= urlencode('/mail/write/p/pid/' . $this->profile->p_id . '/id/' . $this->new_message_counter . '/') ?>">Forward</a> -
+
+<a href="http://<?= $this->internal->vars->host ?>/profile/switch/p/id/<?= $this->tp->p_id ?>/?redirect=<?= urlencode('/mail/multi/delete/mid/' . $this->profile->p_id . '-' . $this->new_message_counter . '/nar/1/') ?>">Delete</a>
+</p>
+
+<p>To manage all mail messages, follow the link below:</p>
+<?php $link = 'http://' . $this->internal->vars->host . '/profile/switch/p/id/' . $this->tp->p_id . '/?redirect=' . urlencode('/mail/'); ?>
+<p><a href="<?= $link ?>"><?= $link ?></a></p>
+
+<p>Thanks,</p>
+
+<p><?= $this->internal->community->display ?></p>

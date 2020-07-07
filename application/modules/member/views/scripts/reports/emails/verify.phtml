@@ -1,0 +1,31 @@
+<?php
+$verification_link = 'http://' . $this->internal->vars->host . ($this->internal->target->type == 'COM' && isset($this->internal->target->pre) ? $this->internal->target->pre : '') . '/member/reports/verify/vmpd_bpip/1/id/' . $this->id . '/?email=' . $this->email;
+
+if ($this->showreport) {
+    $verification_link .= '&showreport=1&report=' . $this->report;
+}
+/*
+if (isset($this->no_email_add) && $this->no_email_add) {
+    $verification_link .= '&no_email_add=1';
+}
+
+if (isset($this->internal->params->s_redirect) && $this->internal->params->s_redirect) {
+    // SUCCESS redirect link
+    $verification_link .= '&redirect=' . $this->internal->params->s_redirect;
+}
+elseif (isset($this->internal->params->redirect) && $this->internal->params->redirect) {
+    // Alternate redirect link
+    $verification_link .= '&redirect=' . $this->internal->params->redirect;
+}
+*/
+?>
+
+<h2>Thank you for registering.</h2>
+
+<p>Quickly confirm this is a valid email address by clicking the following link</u>:</p>
+
+<div style="text-align: center;"><div style="display: inline-block; text-align: center; margin: 1em auto; padding: .5em .8em; background-color: #74BB10;" class="fakebutton green"><a href="<?= $verification_link ?>" style="color: #fff; font-size: 18px; font-weight: normal; text-decoration: none;">Click Here to Verify Your Email</a></div></div>
+
+<p>Thank you for signing up!</p>
+
+<p><strong>SmallCap Network</strong></p>

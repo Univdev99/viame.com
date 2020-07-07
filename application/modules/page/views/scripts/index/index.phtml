@@ -1,0 +1,150 @@
+<?php $module = 'page'; ?>
+
+<!-- Begin Module -->
+<div class="cm decorated padded m_<?= $module ?> m-<?= $this->internal->target->currentModule->module_id ?>-<?= $this->internal->target->currentModule->counter ?>">
+    <div class="hd">
+        <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div>
+        </div>
+        <div class="con">
+        	<table class="table">
+                <tr>
+                    <td class="lt"></td>
+
+                    <td class="mn1"><h1><a href="<?=(
+                    !(isset($this->internal->params->nomid) && $this->internal->params->nomid)
+                    ?
+                    '/' . $this->SEO_Urlify($this->internal->target->currentModule->display ? $this->internal->target->currentModule->display : $this->internal->target->currentModule->m_display) . '/s' . (isset($this->internal->target->pre) ? $this->internal->target->pre : '') . '/' . $this->internal->target->currentModule->m_name . '/p/mid/' . $this->internal->params->mid . '/'
+                    :
+                    '/' . $this->SEO_Urlify($this->internal->target->currentModule->display ? $this->internal->target->currentModule->display : $this->internal->target->currentModule->m_display) . '/s' . (isset($this->internal->target->pre) ? $this->internal->target->pre : '') . '/' . $this->internal->target->currentModule->m_name . '/p/nomid/1/'
+                    )?>">
+                    <?= $this->escape(isset($this->internal->target->currentModule->display) && $this->internal->target->currentModule->display ? $this->internal->target->currentModule->display : $this->internal->target->currentModule->m_display) ?></a></h1></td>
+                    <td class="sep"></td>
+                    <td class="mn2"><?php if (!$this->masked && !(isset($this->internal->params->nomid) && $this->internal->params->nomid) && ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_WRITE)) { ?>
+<div class="administer"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/create/p/mid/<?= $this->internal->params->mid ?>/" class="create">Create New Page</a></div>
+<?php } ?></td>
+                    <td class="rt"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="bd">
+<?php
+if ($this->internal->target->currentModule->content) {
+    echo '<div class="index_content">' . $this->internal->target->currentModule->content . '</div>';
+}
+?>
+
+<?php
+$counter = 0;
+$refs = $list = array();
+
+foreach ($this->paginator as $object) {
+    $thisref = &$refs[ $object->counter ];
+
+    $thisref['data'] = $object;
+    
+    if (!$object->parent_id) {
+        $list[ $object->counter ] = &$thisref;
+    } else {
+        $refs[ $object->parent_id ]['children'][ $object->counter ] = &$thisref;
+    }
+}
+
+
+if (isset($list) && is_array($list) && count($list)) {
+    function _displayLinks2($data, $internal, $view) {
+        if (isset($data) && is_array($data)) {
+            echo '<ul>';
+            foreach ($data as $item) {
+                
+                if ($internal->target->acl->owner ||
+                    $item['data']->allowed === null ||
+                    $item['data']->show_on_fail ||
+                    ($item['data']->allowed && ($item['data']->privilege >= ViaMe_Controller_Action::ACL_READ)) ||
+                    ($internal->target->acl->recursive && ($internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_READ))) {
+                    
+                    // Create the link
+                    /*
+                    $link = '/' . $view->SEO_Urlify($item['data']->title) . '/s';
+                    if ($view->masked) {
+                        $link .= $internal->target->pre . "/" . $view->module . "/view/p/mid/" . $view->masked . '/id/' . $item['data']->counter . '/';
+                    }
+                    else {
+                        if ($item['data']->com_id && ((isset($internal->params->com_id) && $internal->params->com_id) || $item['data']->com_id != $internal->community->id)) { $link .= '/com/' . $item['data']->com_id; }
+                        elseif ($item['data']->net_id) { $link .= '/net/' . $item['data']->net_id; }
+                        elseif ($item['data']->via_id) { $link .= '/via/' . $item['data']->via_id; }
+                        
+                        $link .= "/" . $view->module . "/view/p/mid/" . $item['data']->matrix_counter . '/id/' . $item['data']->counter . '/';
+                    }
+                    */
+                    $link = $view->ContentLink(array('object' => $item['data'], 'view' => $view));
+                    
+                    echo '<li class="' . ($item['data']->active == false ? ' draftitem' : '') . ($item['data']->published_display_activated == false ? ' futureitem' : '') . ($item['data']->published_display_expired == true ? ' expireditem' : '') . '"><a href="' . $link . '">' . $view->escape($item['data']->title) . '</a>';
+                    echo ($item['data']->active == false ? ' <span class="drafttype">(Draft)</span>' : '');
+                    echo ($item['data']->published_display_activated == false ? ' <span class="futuretype">(Future)</span>' : '');
+                    echo ($item['data']->published_display_expired == true ? ' <span class="expiredtype">(Expired)</span>' : '');
+                    
+                    if (isset($item['children']) && is_array($item['children'])) {
+                        echo '<ul>';
+                        _displayLinks2($item['children'], $internal, $view);
+                        echo '</ul>';
+                    }
+                    echo '</li>';
+                }
+            }
+            echo '</ul>';
+        }
+    }
+    
+    _displayLinks2($list, $this->internal, $this);
+}
+
+
+/*
+foreach ($this->paginator as $object) {
+    $counter++;
+    if ($this->internal->target->acl->owner ||
+        $object->allowed === null ||
+        $object->show_on_fail ||
+        ($object->allowed && ($object->privilege >= ViaMe_Controller_Action::ACL_READ)) ||
+        ($this->internal->target->acl->recursive && ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_READ))) {
+            
+        // Create the link
+        $link = '/' . $this->SEO_Urlify($object->title) . '/s';
+        if ($this->masked) {
+            $link .= $this->internal->target->pre . "/$module/view/p/mid/" . $this->masked . '/id/' . $object->counter . '/';
+        }
+        else {
+            if ($object->com_id && ((isset($this->internal->params->com_id) && $this->internal->params->com_id) || $object->com_id != $this->internal->community->id)) { $link .= '/com/' . $object->com_id; }
+            elseif ($object->net_id) { $link .= '/net/' . $object->net_id; }
+            elseif ($object->via_id) { $link .= '/via/' . $object->via_id; }
+            
+            $link .= "/$module/view/p/mid/" . $object->matrix_counter . '/id/' . $object->counter . '/';
+        }
+?>
+
+<div class="<?= $module ?> <?= ($counter % 2) ? 'odd' : 'even' ?><?= ($counter == 1) ? ' firstitem' : (($counter == count($this->objects)) ? ' lastitem' : '') ?><?= ($object->active == false ? ' draftitem' : '') ?>">
+    <h2 class="title"><a href="<?= $link ?>"><?= $this->escape($object->title) ?></a><?= ($object->active == false ? ' <span class="drafttype">(Draft Status)</span>' : '') ?></h2>
+</div>
+
+<?php
+    }
+}
+*/
+?>
+
+<?php if (count($this->paginator) > 1) { echo $this->paginationControl($this->paginator, 'Sliding', 'index/paginator.phtml', array('internal' => $this->internal)); } ?>
+
+
+    </div>
+    
+    <div class="ft">
+        <div class="dec">
+            <div class="lt"></div><div class="mn"></div><div class="rt"></div>
+
+        </div>
+    </div>
+    <span class="icon"></span>
+</div>
+<!-- End Module -->

@@ -1,0 +1,58 @@
+/* Switched to Yahoo CDN with Rollup */
+
+@import url(stylesheet.css);
+
+html, body {
+    background-color: transparent !important;
+    background: transparent none !important;
+}
+
+#fixed, #fixed2, #page_header, #page_prefooter, #page_footer, #hd, #ft, #cx, #space_header, .hd, .ft, .icon, .relay, .interact, .administer, .paginator, .pager, .part3, .related, .comments, .advertisement, .related_quotes, #social_bookmarks, #profile_content_menu, #page > #page_body.article_module.view_controller.index_action > div.cm.widget.w_breadcrumb
+{
+    display: none !important;
+}
+
+#page, #page_body, #content_area, #content_area div.cm, #bd, #content_area div.cm .bd, .page_body_internal {
+    background-color: #fff !important;
+    color: #000 !important;
+    border: none !important;
+    background: transparent !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#space_header {
+    margin-top: 0;
+}
+#space_header .icon {
+    display: inline-block !important;
+}
+div.cm.decorated.widget .hd {
+    display: block !important;
+}
+.page_body_internal, .yui-b {
+    width: 100% !important;
+    margin: 0 !important;
+}
+
+#content_area {
+    padding: 1em !important;
+}
+
+/* BEGN YUI 3 */
+.yui3-g { padding: 0 !important; }
+#side_column { display: none !important; }
+/* END YUI 3 */
+
+a:link, a:visited {
+	color: #00d;
+	background: transparent !important;
+	font-weight: bold;
+	text-decoration: underline;
+}
+/*
+#content_area a:link:after, #content_area a:visited:after {
+   content: " (" attr(href) ") ";
+   font-size: 90%;
+}
+*/

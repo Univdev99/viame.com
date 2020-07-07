@@ -1,0 +1,19 @@
+<table style="width: 100%;">
+    <tr>
+        <td style="width: 410px; min-width: 410px; vertical-align: top;">
+            <?= $this->render('openid/simple.phtml') ?>
+        </td>
+        
+        <td style="vertical-align: top;"><div style="margin-left: 1em;">
+            
+            <div>
+                <div style="margin-bottom: 1em; font-size: larger; font-weight: bold;">What is OpenID?</div>
+                <p>OpenID is a new open standard that lets you sign in to web sites with a single URL that you own. This URL can be your homepage or blog, or it can be provided to you by a web site you use. In either case, you only have to sign in once to your OpenID provider and so you only need to maintain a single password.</p>
+                
+                <div style="margin-top: 1em; margin-bottom: 1em; font-size: larger; font-weight: bold;">How is <?= $this->internal->community->display ?> using OpenID?</div>
+                <p>You can attach your OpenID to your existing <?= $this->internal->community->display ?> account or use OpenID to register for a new <?= $this->internal->community->display ?> account. In both cases, you will then be able to sign in using your OpenID provider and you won't have to use or remember a separate password for <?= $this->internal->community->display ?>. If you register with your OpenID, your account will automatically be generated or the system may pre-fill your <?= $this->internal->community->display ?> registration information from your OpenID provider, making it the fastest way to get started with <?= $this->internal->community->display ?>. To get started, enter your OpenID URL and click "Sign In".</p>
+            </div>            
+            
+        </div></td>
+    </tr>
+</table>

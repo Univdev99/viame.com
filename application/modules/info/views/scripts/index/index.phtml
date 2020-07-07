@@ -1,0 +1,142 @@
+<?php
+    $id = 'mod_info';
+?>
+
+<div id="<?= $id ?>" class="yui-navset">
+    <ul class="yui-nav">
+<?php
+    foreach ($this->form->getSubForms() as $name => $subform) {
+        echo "<li><a href=\"#$name\"><em>" . $subform->getAttrib('legend') . "</em></a></li>";
+        $subform->removeAttrib('legend');
+    }
+?>
+    </ul>            
+    <div class="yui-content">
+<?php
+    foreach ($this->form->getSubForms() as $name => $subform) {
+        echo '<div id="' . $name . '"><dl>' . $subform . '</dl></div>';
+    }
+?>
+    </div>
+</div>
+
+<?php $this->inlineScript()->captureStart() ?>
+YAHOO.util.Event.onContentReady("<?= $id ?>", function () {
+    var o<?= $id ?> = new YAHOO.widget.TabView("<?= $id ?>", { activeIndex: 0 });
+    for (tab in o<?= $id ?>.get('tabs')) {
+        YAHOO.util.Dom.setStyle(o<?= $id ?>.getTab(tab).get('contentEl'), 'display', 'none');
+    }
+    YAHOO.util.Dom.setStyle(o<?= $id ?>.getTab(0).get('contentEl'), 'display', 'block');
+    // Bug Workaround
+    o<?= $id ?>.set('activeIndex', 0);
+    
+    o<?= $id ?>.contentTransition = function(newTab, oldTab) {
+        if ( newTab.anim && newTab.anim.isAnimated() ) {
+            newTab.anim.stop(true);
+        }
+        
+        //YAHOO.util.Dom.setStyle(newTab.get('contentEl'), 'opacity', 0);
+        YAHOO.util.Dom.setStyle(newTab.get('contentEl'), 'display', 'block');
+        newTab.set('contentVisible', true);
+        
+        //newTab.anim = newTab.anim || new YAHOO.util.Anim(newTab.get('contentEl'), { opacity: { to: 1 } }, 1);
+        
+        oldTab.set('contentVisible', false);
+        YAHOO.util.Dom.setStyle(oldTab.get('contentEl'), 'display', 'none');
+        //newTab.anim.animate();
+    };
+});
+<?php $this->inlineScript()->captureEnd() ?>
+
+
+
+
+<script type="text/javascript">
+YAHOO.util.Event.onDOMReady(function() {
+	YAHOO.namespace("viame.calendar.helper");
+	
+	YAHOO.viame.calendar.helper.hover = false;
+	YAHOO.viame.calendar.helper.container_div = document.createElement('DIV');
+	
+	YAHOO.viame.calendar.helper.container = new YAHOO.util.Element(YAHOO.viame.calendar.helper.container_div, {
+        id: 'calendar_helper_container'
+    });
+    YAHOO.viame.calendar.helper.container.appendTo('page');
+    YAHOO.util.Dom.setStyle('calendar_helper_container', 'position', 'absolute');
+    
+    YAHOO.viame.calendar.helper.calendar = new YAHOO.widget.Calendar("calendar_helper", 'calendar_helper_container', {
+	    title: "Select Date",
+        navigator: true,
+        iframe: true,
+        close: true,
+        hide_blank_weeks: true
+    });
+    YAHOO.viame.calendar.helper.calendar.selectEvent.subscribe(handleSelect, YAHOO.viame.calendar.helper.calendar, true);
+    YAHOO.viame.calendar.helper.calendar.renderEvent.subscribe(handleRender, YAHOO.viame.calendar.helper.calendar, true);
+    //YAHOO.viame.calendar.helper.calendar.beforeShowEvent.subscribe(function(){ this.oDomContainer.style.opacity = 0; }, YAHOO.viame.calendar.helper.calendar, true);
+    //YAHOO.viame.calendar.helper.calendar.showEvent.subscribe(showCalendarHelper, YAHOO.viame.calendar.helper.calendar, true);
+    
+	YAHOO.viame.calendar.helper.calendar.render();
+	YAHOO.viame.calendar.helper.calendar.hide();
+
+	function showCalendarHelper() {
+        var anim = new YAHOO.util.Anim(this.oDomContainer.id, { opacity: { from: 0, to: 1 } }, 1);
+        anim.animate();
+	}
+	
+	function handleRender(type, args, obj) {
+	    YAHOO.util.Event.addListener('calendar_helper_container', 'mouseover', overCal);
+        YAHOO.util.Event.addListener('calendar_helper_container', 'mouseout', outCal);
+	}
+	
+	function handleSelect(type, args, obj) {
+		var dates = args[0]; 
+		var date = dates[0];
+		var year = date[0], month = date[1], day = date[2];
+
+		YAHOO.viame.calendar.helper.item.value = year + "-" + (month < 10 ? '0' + month : month) + "-" + (day < 10 ? '0' + day : day);
+		YAHOO.viame.calendar.helper.calendar.hide();
+		YAHOO.viame.calendar.helper.calendar.hover = false;
+	}
+	
+	function showCal(iEl) {
+	    YAHOO.viame.calendar.helper.item = iEl;
+	    if (iEl.value) {
+	        var dates = iEl.value.split("-");
+	        if (!isNaN(dates[0]) && !isNaN(dates[1]) && !isNaN(dates[2])) {
+    	        var date = dates[1] + '/' + dates[2] + '/' + dates[0];
+    	        YAHOO.viame.calendar.helper.calendar.cfg.setProperty('selected', date); 
+    	        YAHOO.viame.calendar.helper.calendar.cfg.setProperty('pagedate', new Date(date), true); 
+    	        YAHOO.viame.calendar.helper.calendar.render(); 
+    	    }
+	    }
+	    YAHOO.viame.calendar.helper.calendar.show();
+	    
+	    YAHOO.util.Dom.setXY('calendar_helper_container', [
+	        YAHOO.util.Dom.getX(iEl),
+	        YAHOO.util.Dom.getY(iEl) + iEl.offsetHeight,
+	    ]);
+		
+		if (YAHOO.env.ua.opera && document.documentElement) {
+			// Opera needs to force a repaint
+			document.documentElement.className += "";
+		}
+	}
+	
+	function hideCal(iEl) {
+	    if (!YAHOO.viame.calendar.helper.hover) {
+	        YAHOO.viame.calendar.helper.calendar.hide();
+	    }
+	}
+	
+	function overCal() {
+	    YAHOO.viame.calendar.helper.hover = true;
+	}
+	function outCal() {
+	    YAHOO.viame.calendar.helper.hover = false;
+	}
+	
+	YAHOO.util.Event.on(YAHOO.util.Selector.query('input[type=text].vmfh_date'), 'focus', function() { showCal(this); });
+	YAHOO.util.Event.on(YAHOO.util.Selector.query('input[type=text].vmfh_date'), 'blur', function() { hideCal(this); });
+});
+</script>

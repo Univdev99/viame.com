@@ -1,0 +1,68 @@
+<?php
+    $id = 'accordionwidget' . $this->widget->counter;
+    
+    $this->inlineScript()->captureStart()
+?>
+
+YUI({
+}).use('anim', 'node', 'gallery-node-accordion', 'event-mouseenter', function (Y) {
+	var node = Y.one("#<?= $id ?>").plug(Y.Plugin.NodeAccordion, {
+	    persistent: <?= (isset($this->params['dp_collapsible']) && $this->params['dp_collapsible'] ? 'false' : 'true') ?>,
+	    multiple: <?= (isset($this->params['dp_expandible']) && $this->params['dp_expandible'] ? 'true' : 'false') ?>,
+	    anim: Y.Easing.easeBothStrong
+	});
+	
+	<?php if (isset($this->params['dp_hover']) && $this->params['dp_hover']) { ?>
+	// expanding on mouseenter
+    node.delegate ('mouseenter', function (e) {
+         node.accordion.expandItem(e.currentTarget);
+    }, '.yui3-accordion-item-trigger');
+    // collapsing on mouseleave
+    node.delegate ('mouseleave', function (e) {
+         node.accordion.collapseItem(e.currentTarget);
+    }, '.yui3-accordion-item-trigger');
+    
+    // finally, we might want to have a mouseleave event at the global level to collapse all items 
+    // when the mouse is out of the accordion area to guarantee no problems
+    // collapsing all items on mouseleave
+    //node.on ('mouseleave', function (e) {
+    //    node.accordion.collapseAllItems();
+    //});
+    <?php } ?>
+});
+<?php $this->inlineScript()->captureEnd() ?>
+
+<div id="<?= $id ?>" class="yui3-accordion">
+<?php 
+    $counter = 1;
+    foreach (preg_split('/\n/', $this->params['dp_widgets'], -1, PREG_SPLIT_NO_EMPTY) as $line) {
+        if ($line) {
+            list($id, $title) = explode(':', $line, 2);
+            $id = trim($id);
+            $title = trim($title);
+            
+            if ($id) {
+                $parts = explode('-', $id);
+                if (!(strtolower($parts[0]) == 'w' && $parts[1] == $this->widget->widget_id && $parts[2] == $this->widget->counter)) { // Prevent recursive
+                    $data = $this->DisplayWidget($id);
+                    
+                    if ($data) {
+?>
+    <div class="yui3-accordion-item<?= ((isset($this->params['dp_default_item']) && $this->params['dp_default_item'] && $this->params['dp_default_item']==$counter) ? ' yui3-accordion-item-active' : '') ?><?= (!$counter ? ' first-of-type' : '') ?>">
+        <div class="yui3-accordion-item-hd">
+            <a href="javascript:void(null);" class="yui3-accordion-item-trigger"><?= $title ?></a>
+        </div>
+        <div class="yui3-accordion-item-bd">
+            <p><?= $data ?></p>
+        </div>
+    </div>
+<?php
+                    }
+                }
+            }
+            
+            $counter++;
+        }        
+    }
+?>
+</div>

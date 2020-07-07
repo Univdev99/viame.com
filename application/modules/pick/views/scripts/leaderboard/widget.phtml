@@ -1,0 +1,78 @@
+<?php $module = 'pick-leaderboard'; ?>
+
+<?php
+if (isset($this->objects) && $this->objects) {
+    $counter = 0;
+    
+    foreach ($this->objects as $object) {
+        $counter++;
+        $mid = $object->matrix_counter;
+        $title = ($object->x_display ? $object->x_display : ($object->m_display ? $object->m_display : $object->m_name));
+        if ($object->com_id) {
+            $type = 'com';
+            $id = $object->com_id;
+        }
+        elseif ($object->net_id) {
+            $type = 'net';
+            $id = $object->net_id;
+        }
+        elseif ($object->via_id) {
+            $type = 'via';
+            $id = $object->via_id;
+        }
+        
+        $link = 'http://' . $this->internal->vars->host;
+        if ($title) { $link .= '/' . $this->SEO_Urlify($title) . '/s'; }
+        $link .= "/$type/$id/pick/p/mid/$mid/?status=1";
+?>
+
+<div class="<?= $module ?> <?= ($counter % 2) ? 'odd' : 'even' ?><?= ($counter == 1) ? ' firstitem' : (($counter == count($this->objects)) ? ' lastitem' : '') ?>"><table class="layout"><tr>
+    <td class="first">
+        <div class="image_area">
+            <div class="headshot<?= !(isset($object->p_picture_url) && $object->p_picture_url) ? ' VIA_default' : '' ?>">
+                <a href="<?= $link ?>" class="headshot_link">
+    <?php   if (isset($object->p_picture_url) && $object->p_picture_url) { ?>
+                    <img src="<?= (preg_match('#http://#i', $object->p_picture_url) ? '' : $this->internal->config->upload->picture_server . '/') ?><?= $this->escape($object->p_picture_url) ?>" />
+    <?php   } ?>
+                </a>
+            </div>
+        </div>
+    </td>
+    
+    
+    <td class="second">
+        <div class="title"><a href="<?= $link ?>"><?= $this->escape($object->p_name) ?></a></div>
+        <div class="followers"><?= $object->p_total_followers_count ?> Followers</div>
+
+        <div class="table_wrapper">
+        <table class="display">
+            <tr>
+                <td class="count firstitem">
+                    <div class="head"># Picks</div>
+                    <div class="data"><?= $object->total_positions_count ?></div>
+                </td>
+                <td class="gain">
+                    <div class="head">Total Gain</div>
+                    <div class="data<?= ($object->total_allocated_gain_percentage > 0 ? ' uptick' : ($object->total_allocated_gain_percentage < 0 ? ' downtick' : '')) ?>"><?= sprintf('%+.2f%%', $object->total_allocated_gain_percentage) ?></div>
+                </td>
+                <td class="follow<?= (isset($object->pfm_following) && $object->pfm_following ? ' following' : '') ?> lastitem">
+                    <div class="data">
+<?php if (isset($object->pfm_following) && $object->pfm_following) { ?>
+    <a href="/profile/follow/p/unfollow/1/id/<?= $object->p_id ?>/" rel="nofollow" >Unfollow</a>
+<?php } else { ?>
+    <a href="/profile/follow/p/id/<?= $object->p_id ?>/" rel="nofollow" >+ Follow</a>
+<?php } ?>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        </div>
+    </td>
+
+
+</tr></table></div>
+
+<?php
+    }
+}
+?>

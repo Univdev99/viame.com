@@ -1,0 +1,126 @@
+<?php
+$grid = $this->grid;
+
+
+if ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_OWNER) {
+    $this->headScript()->appendFile($this->internal->vars->static_host . '/js/vm/yui/space_grid.js');
+}
+else {
+    $this->inlineScript()->captureStart();
+?>
+YAHOO.util.Event.onDOMReady(function() {
+    var mods = YAHOO.util.Dom.getElementsByClassName('widget');
+    for (var i = 0; i < mods.length; i++) {
+        YAHOO.util.Dom.addClass(mods[i], 'hack');
+        YAHOO.util.Dom.removeClass(mods[i], 'hack');
+    }
+});
+<?php
+    $this->inlineScript()->captureEnd();
+}
+?>
+
+<div id="<?= (isset($this->internal->target->space->page_width) && $this->internal->target->space->page_width ? $this->internal->target->space->page_width : 'doc4') ?>" class="page_body_internal<?= ( isset($this->internal->target->space->page_layout) && $this->internal->target->space->page_layout ? ' yui-'.$this->internal->target->space->page_layout : '') ?>">
+	
+	<?php if ($this->placeholder('space_header')) { echo '<div id="space_header">' . $this->placeholder('space_header') . '</div>'; } ?>
+	
+	<!-- Begin Header -->
+	<div id="hd" class="grid_target">
+<?php foreach ($grid['hd'] as $id => $widget) { echo $this->DisplayWidget($id, $widget); } ?>
+	</div>
+	<!-- End Header -->
+	
+	<!-- Begin Body -->
+	<div id="bd">
+
+		<!-- Begin Main -->
+		<div id="yui-main">
+			<div class="yui-b">
+			
+<?php 
+// Should we display the main?
+if (isset($this->layout()->content) && $this->layout()->content) {
+    echo '<div id="content_area">' . $this->layout()->content . '</div>';
+}
+else {
+?>
+			    <!-- Begin Grid -->
+				<div<?= ( isset($this->internal->target->space->page_sublayout) && $this->internal->target->space->page_sublayout ? ' class="yui-'.($this->internal->target->space->page_sublayout == 'gg' ? 'g' : $this->internal->target->space->page_sublayout).'"' : '') ?>>
+				
+<?php if (isset($this->internal->target->space->page_sublayout) && $this->internal->target->space->page_sublayout == 'gg' ) { ?>
+        			<div class="yui-g first">
+<?php } ?>
+        
+        				<div id="c1" class="yui-u first grid_target">
+        				
+        				
+        				
+        				
+<?php
+   foreach ($grid['c1'] as $id => $widget) { echo $this->DisplayWidget($id, $widget); } ?>							
+        				</div>
+<?php
+if (isset($this->internal->target->space->page_sublayout) && $this->internal->target->space->page_sublayout) {
+?>
+        				<div id="c2" class="yui-u grid_target">
+<?php foreach ($grid['c2'] as $id => $widget) { echo $this->DisplayWidget($id, $widget); } ?>
+        				</div>
+<?php
+}
+if (isset($this->internal->target->space->page_sublayout) && ($this->internal->target->space->page_sublayout == 'gb' || $this->internal->target->space->page_sublayout == 'gg')) {
+    if (isset($this->internal->target->space->page_sublayout) && $this->internal->target->space->page_sublayout == 'gb' ) {
+?>
+                        <div id="c3" class="yui-u grid_target">
+<?php  
+    } elseif (isset($this->internal->target->space->page_sublayout) && $this->internal->target->space->page_sublayout == 'gg' ) {
+?>
+        			</div>
+        			<div class="yui-g">
+        				<div id="c3" class="yui-u first grid_target">
+<?php 
+    }
+?>
+<?php foreach ($grid['c3'] as $id => $widget) { echo $this->DisplayWidget($id, $widget); } ?>
+        				</div>
+<?php
+}
+if (isset($this->internal->target->space->page_sublayout) && $this->internal->target->space->page_sublayout == 'gg' ) {
+?>
+        				<div id="c4" class="yui-u grid_target">
+<?php foreach ($grid['c4'] as $id => $widget) { echo $this->DisplayWidget($id, $widget); } ?>
+        				</div>
+        		    </div>	
+        		
+<?php
+}
+?>
+
+                </div>
+                <!-- End Grid -->
+
+<?php
+}
+?>
+
+			</div>
+		</div>
+		<!-- End Main -->
+
+<?php if (isset($this->internal->target->space->page_layout) && $this->internal->target->space->page_layout) { ?>
+        <!-- Begin Fixed Column -->
+		<div id="cx" class="yui-b grid_target">
+<?php foreach ($grid['cx'] as $id => $widget) { echo $this->DisplayWidget($id, $widget); } ?>
+        </div>
+	    <!-- End Fixed Column -->
+<?php } ?>
+
+	</div>
+    <!-- End Body -->
+    
+    <!-- Begin Footer -->
+	<div id="ft" class="grid_target">
+<?php foreach ($grid['ft'] as $id => $widget) { echo $this->DisplayWidget($id, $widget); } ?>
+	</div>
+	<!-- End Footer -->
+	
+</div>

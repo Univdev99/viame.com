@@ -1,0 +1,29 @@
+<p><?= $this->ProfileDisplay(array('profile' => $this->profile, 'internal' => $this->internal)) ?> has requested to add your "<?= $this->tf->p_name ?>" profile to their contact list.</p>
+
+<?php if (isset($this->data['message']) && $this->data['message']) { ?>
+<blockquote>
+    <p><strong>Message:</strong> <?= $this->escape($this->data['message']) ?></p>
+</blockquote>
+<?php } ?>
+
+<p class="administer">
+
+<?php //if ($this->data['auto_reciprocate']) { ?>
+<a href="http://<?= $this->internal->vars->host ?>/profile/switch/p/id/<?= $this->data['contact_profile_id'] ?>/?redirect=<?= urlencode('/contact/multi/approve/r/1/cid/' . $this->data['profile_id'] . '/') ?>">Approve and Add Contact</a> -
+<?php //} ?>
+
+<a href="http://<?= $this->internal->vars->host ?>/profile/switch/p/id/<?= $this->data['contact_profile_id'] ?>/?redirect=<?= urlencode('/contact/multi/approve/cid/' . $this->data['profile_id'] . '/') ?>">Approve</a> -
+
+<a href="http://<?= $this->internal->vars->host ?>/profile/switch/p/id/<?= $this->data['contact_profile_id'] ?>/?redirect=<?= urlencode('/contact/multi/deny/cid/' . $this->data['profile_id'] . '/') ?>">Deny</a>
+
+</p>
+
+<p>For more options managing your contacts and incoming requests, follow the link below:</p>
+<?php
+$link = 'http://' . $this->internal->vars->host . '/profile/switch/p/id/' . $this->data['contact_profile_id'] . '/?redirect=' . urlencode('/contact/');
+?>
+<p><a href="<?= $link ?>"><?= $link ?></a></p>
+
+<p>Thanks,</p>
+
+<p><?= $this->internal->community->display ?></p>

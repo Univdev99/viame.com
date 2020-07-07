@@ -1,0 +1,35 @@
+<h1>Manage Your Networks</h1>
+
+<table width="100%" class="decorated">
+    <tr>
+        <th>Network Name</th>
+        <th>Description</th>
+        <th>Category</th>
+        <th>Public</th>
+        <th>Parent</th>
+        <th>Open</th>
+        <th>Count</th>
+        <th>Active</th>
+        <th>Delete</th>
+    </tr>
+<?php
+    foreach ($this->networks as $network) {
+        $network = (array) $network;
+?>
+    <tr<?=(!$network['active'] ? " bgcolor='#666666'" : '')?>>
+        <td><?=($network['active'] ? '<a href="' . $this->internal->target->pre . '/network/edit/p/id/'.$network['id'].'/">'.$network['name'].'</a>' : $network['name'])?></td>
+        <td><?= $network['description'] ?></td>
+        <td><?= $network['category'] ?></td>
+        <td><?= $network['public'] ?></td>
+        <td><?= $network['parent_id'] ?></td>
+        <td><?= $network['open'] ?></td>
+        <td><?= $network['total_member_count'] ?></td>
+        <td><a href="<?= $this->internal->target->pre ?>/network/active/p/id/<?= $network['id'] ?>/"><?= ($network['active'] ? 'Make Inactive' : 'Make Active') ?></a></td>
+        <td><a href="<?= $this->internal->target->pre ?>/network/delete/p/id/<?= $network['id'] ?>/" OnClick="return (confirm('Are you sure you want to delete the network <?= $network['name'] ?>?'));">Delete</a></td>
+    </tr>
+<?php
+    }
+?>
+</table>
+
+<?= $this->form ?>

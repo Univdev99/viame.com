@@ -1,0 +1,167 @@
+<?php
+    $this->headScript()->appendFile($this->internal->vars->static_host . '/js/dropzone/dropzone.js');
+    $this->headLink()->appendStylesheet($this->internal->vars->static_host . '/js/dropzone/dropzone.css');
+    $this->headStyle()->appendStyle('.dropzone .dz-message { border: 2px dashed #0087f7; } .dropzone { background: none; border: none; padding: 0; } .dropzone.dz-drag-hover { border: none; } .dropzone.dz-drag-hover .dz-message { border-style: solid; } .dropzone .dz-preview .dz-progress { display: none; } .dropzone .dz-preview .dz-image { z-index: 1; } .dropzone .dz-preview .dz-details { z-index: 2; } .dropzone .dz-preview .dz-error-mark,.dropzone .dz-preview .dz-success-mark { z-index: 2; }');
+    
+?>
+
+
+
+<h1><?= isset($this->page_title) && $this->page_title ? $this->page_title : 'Upload File' ?></h1>
+
+<form id="file_form" enctype="multipart/form-data" method="post" class="form dropzone" action="?" onsubmit="return (YAHOO.viame.vivin_regula.validate(this, { groups: [regula.Group.file_form] }) && YAHOO.viame.dubsub.check(this));"><dl class="zend_form">
+<?= $this->form->getDisplayGroup('hidden') ?>
+
+<table style="width: 100%;">
+    <tr>
+        <td style="width: 230px; min-width: 230px; vertical-align: top;">
+
+<!-- Begin Options -->
+<div class="cm decorated options">
+    <div class="hd">
+        <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div>
+        </div>
+        <div class="con">
+        	<table class="table">
+
+                <tr>
+
+                    <td class="lt"></td>
+                    <td class="mn1">Options</td>
+                    <td class="sep"></td>
+                    <td class="mn2"></td>
+                    <td class="rt"></td>
+                </tr>
+            </table>
+
+        </div>
+
+    </div>
+    <div class="bd">
+
+
+<!-- Begin Accordion -->
+        <div id="options_accordion" class="yui3-accordion">
+<?php
+    $counter = 0;
+    foreach ($this->form->getDisplayGroups() as $group) {
+        if (!preg_match('/^options/', $group->getName())) { continue; }
+?>
+            <div class="yui3-accordion-item yui3-accordion-item-active<?= (!$counter ? ' first-of-type' : '') ?>">
+                <div class="yui3-accordion-item-hd">
+                    <a href="javascript:void(null);" class="yui3-accordion-item-trigger"><?= $group->getAttrib('legend') ?></a>
+                </div>
+                <div class="yui3-accordion-item-bd">
+                    <p><?php $group->removeAttrib('legend'); echo $group; ?></p>
+                </div>
+            </div>
+<?php
+        $counter++;
+    }
+?>
+        </div>
+<!-- End Accordion -->
+
+
+    </div>
+    <div class="ft">
+        <div class="dec">
+            <div class="lt"></div><div class="mn"></div><div class="rt"></div>
+        </div>
+    </div>
+</div>
+<!-- End Options -->
+
+        </td>
+        <td style="vertical-align: top;"><div style="margin-left: 1em;">
+
+<?php
+if ($this->formErrors) {
+    print '<div class="errors"><ul>';
+    foreach ($this->formErrors as $message) {
+        print "<li>$message</li>\n";
+    }
+    print '</ul></div>';
+}
+
+//echo $this->form->getDisplayGroup('main');
+///////////////////////////////////////////
+echo '<dt id="main-label"></dt><dd id="main-element"><fieldset id="fieldset-main"><dl>';
+echo $this->form->getElement('title');
+echo '<div class="dropzone-previews dz-default dz-message" style="min-height: 150px; margin: 20px; padding: 20px; display: none;"><div style="text-align: center; color: #646c7f; font-size: 120%; font-weight: bold;">Drop files here or click to upload.</div></div>';
+echo '<div class="fallback">'.$this->form->getElement('file_upload').'</div>';
+echo '</dl></fieldset></dd>';
+///////////////////////////////////////////
+echo $this->form->getDisplayGroup('buttons');
+
+
+?>
+
+            <p style="text-align: right;"><a href="?<?= (isset($this->internal->params->fallback) && $this->internal->params->fallback ? '' : 'fallback=1') ?>">Switch to <?= (isset($this->internal->params->fallback) && $this->internal->params->fallback ? 'Modern (Drag & Drop)' : 'Classic') ?> File Upload Dialog</a><p>
+
+        </div></td>
+    </tr>
+</table>
+</dl></form>
+
+
+
+<?php $this->inlineScript()->captureStart(); ?>
+YUI({
+}).use('anim', 'gallery-node-accordion', function (Y) {
+	Y.one("#options_accordion").plug(Y.Plugin.NodeAccordion, {
+	    anim: Y.Easing.easeBothStrong
+	});	
+});
+
+
+//Dropzone.autoDiscover = false;
+$('.dz-default').show();
+Dropzone.options.fileForm = {
+    <?= (isset($this->internal->params->fallback) && $this->internal->params->fallback ? '' : '//') ?>forceFallback: true,
+    <?= (isset($this->internal->params->fallback) && $this->internal->params->fallback ? '' : '//') ?>fallback: function () { $('.dz-default').hide(); },
+    paramName: "file_upload",
+    //clickable: true,
+    filesizeBase: 1024,
+    maxFiles: <?= (isset($this->internal->config->upload->max_num) && $this->internal->config->upload->max_num ? $this->internal->config->upload->max_num : '10') ?>,
+    maxFilesize: 8,
+    dictFileTooBig: 'File is too big. Max Size: {{maxFilesize}} MB.',
+    addRemoveLinks: true,
+    previewsContainer: '.dropzone-previews',
+    autoProcessQueue: false,
+    uploadMultiple: true,
+    parallelUploads: 100,
+    
+    init: function() {
+        var myDropzone = this;
+        $('<input />').attr({ type: 'hidden', name: 'no_layout', value: '1' }).appendTo('#file_form');
+        
+        // First change the button to actually tell Dropzone to process the queue.
+        this.element.querySelector("input[type=submit]").addEventListener("click", function(e) {
+            // Make sure that the form isn't actually being sent.
+            e.preventDefault();
+            e.stopPropagation();
+            if (YAHOO.viame.vivin_regula.validate($('#file_form')[0], { groups: [regula.Group.file_form] }) && YAHOO.viame.dubsub.check($('#file_form')[0])) {
+                $('#fieldset-buttons').hide();
+                if (myDropzone.files.length) {
+                    $('#cancel').val('')
+                    myDropzone.processQueue();
+                } else { alert('Select one or more files to upload.'); }
+            }
+        });
+        
+        this.on("successmultiple", function(files, response) {
+            this.removeEventListeners();
+            $('#content_area').html('<div style="text-align: left;">' + response + '</div>');
+        });
+        this.on("maxfilesexceeded", function(file) {  this.removeFile(file); });
+        //this.on("addedfile", function() {
+            //if (this.files[1]!=null){
+                //this.removeFile(files);
+            //}
+        //});
+    }
+};
+<?php $this->inlineScript()->captureEnd(); ?>
+
+<?= $this->FormHelper(array('internal' => $this->internal)) ?>

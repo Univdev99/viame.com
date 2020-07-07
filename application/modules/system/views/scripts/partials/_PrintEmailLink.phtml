@@ -1,0 +1,27 @@
+<?php
+/*
+ * Print Email Link
+ */
+?>
+
+<?php
+if ($this->link) { $link = $this->link; }
+elseif (isset($this->internal->vars->new_request_uri)) { $link = 'http://' . $_SERVER['SERVER_NAME'] . $this->internal->vars->new_request_uri; }
+else { $link = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']; }
+
+$sep = (strpos($link, '?') ? '&' : '?');
+
+$to_print_link = $link . $sep . 'to_print=1';
+
+if (isset($this->internal->member)) {
+    $to_email_link = $link . $sep . 'to_email=1';
+} else {
+    if (strpos($link, 'http://') === false) {
+        $link = 'http://' . $_SERVER['SERVER_NAME'] . $link;
+    }
+    $to_email_link = "mailto:?subject=Check Out This Content&body=Here's a link to some content that I wanted to share with you...%0A%0a" . urlencode($link);
+}
+?>
+
+<a href="<?= $to_print_link ?>" rel="nofollow" class="to_print_link" target="_blank"><span class="icon"></span><span class="to_print"><?= (isset($this->print_text) && $this->print_text) ? $this->print_text : 'Print' ?></span></a>
+<a href="<?= $to_email_link ?>" rel="nofollow" class="to_email_link"><span class="icon"></span><span class="to_email"><?= (isset($this->email_text) && $this->email_text) ? $this->email_text : 'Email' ?></span></a>

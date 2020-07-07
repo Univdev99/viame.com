@@ -1,0 +1,195 @@
+<?php $this->placeholder('temp')->captureStart(); ?>
+
+
+<form action="" class="form" method="get" id="pick_index_form"><dl class="zend_form">
+<table style="width: 100%;" class="params">
+    <thead>
+    	<tr>
+            <th scope="col">Start Date</th>
+            <th scope="col">End Date</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody><tr style="background-color: #f1f1f1;">
+        <td align="center"><input type="text" autocomplete="off" class="vmfh_date" value="<?= (isset($this->internal->params->start_date) ? $this->internal->params->start_date : '') ?>" id="start_date" name="start_date"></td>
+        <td align="center"><input type="text" autocomplete="off" class="vmfh_date" value="<?= (isset($this->internal->params->end_date) ? $this->internal->params->end_date : '') ?>" id="end_date" name="end_date"></td>
+        <td align="center"><input type="submit" value="Generate Report" id="submit" name="submit"></td>
+    </tr>
+</tbody></table>
+</dl></form>
+
+
+<?php
+$currency = new ViaMe_Currency();
+$date = new Zend_Date();
+$date->setTimezone($this->internal->member->timezone);
+
+$comp_date = new DateTime('2000-01-01');
+#Zend_Debug::Dump($comp_date);
+$start_date = null;
+if (isset($this->internal->params->start_date) && $this->internal->params->start_date) {
+    $start_date = new DateTime($this->internal->params->start_date);
+    #Zend_Debug::Dump($start_date);
+}
+$end_date = null;
+if (isset($this->internal->params->end_date) && $this->internal->params->end_date) {
+    $end_date = new DateTime($this->internal->params->end_date);
+    #Zend_Debug::Dump($end_date);
+}
+
+$new_subscriber_profile_id_array = array();
+$new_subs_one_billing_array = array();
+$initial_payments_count = $initial_payments_amount = 0;
+$new_subs_count = $new_subs_amount = $new_subs_cancel = 0;
+$total_amount_all_subs = $total_subs_cancel = 0;
+
+foreach ($this->records as $object) {
+    if ($start_date || $end_date) {
+        $date->set($object->creation, Zend_Date::ISO_8601);
+        $comp_date->setDate($date->get(Zend_Date::YEAR), $date->get(Zend_Date::MONTH), $date->get(Zend_Date::DAY));
+        if ($end_date && ($comp_date > $end_date)) { break; }
+        if ($start_date && ($comp_date < $start_date)) { continue; }
+    }
+    
+    if ($object->message == 'Initial Payment') {
+        $initial_payments_count++;
+        $initial_payments_amount += $object->amount;
+    }
+    elseif ($object->message == 'Subscription Created') {
+        $new_subs_count++;
+        $new_subscriber_profile_id_array[$object->profile_id] = true;
+    }
+    elseif ($object->message == 'Recurring Billing') {
+        $total_amount_all_subs += $object->amount;
+        if (isset($new_subscriber_profile_id_array[$object->profile_id]) && $object->amount) {
+            $new_subs_one_billing_array[$object->profile_id]++;
+            $new_subs_amount += $object->amount;
+        }
+    }
+    elseif ($object->message == 'Subscription Canceled') {
+        $total_subs_cancel++;
+        if (isset($new_subscriber_profile_id_array[$object->profile_id])) {
+            $new_subs_cancel++;
+        }
+    }
+}
+?>
+
+<h2>Total # of Referral Clicks : <?= $this->total_clicks ?></h2>
+<h2>Total # of Initial Payments : <?= $initial_payments_count ?></h2>
+<blockquote>
+    <h2>Total $ Amount of Initial Payments : <?php echo $currency->toCurrency($initial_payments_amount); ?></h2>
+</blockquote>
+<h2>Total # of New Subscriptions : <?= $new_subs_count ?></h2>
+<blockquote>
+    <h2>Total # of New Subscriptions With At Least One Billing : <?= count($new_subs_one_billing_array) ?></h2>
+    <h2>Total $ Amount of New Subscriptions With Billing : <?php echo $currency->toCurrency($new_subs_amount); ?></h2>
+    <h2>Total # of New Subscriptions That Have Canceled : <?= $new_subs_cancel ?></h2>
+</blockquote>
+<h2>Total $ Amount of All Subscriptions : <?php echo $currency->toCurrency($total_amount_all_subs); ?></h2>
+<h2>Total # of Canceled Subscriptions : <?= $total_subs_cancel ?></h2>
+
+<form>
+    <input type="checkbox" checked="checked" id="row_initial" onchange='$("#revenue_table tr.initial").fadeToggle( "slow", "linear" );' /> Initial
+    <input type="checkbox" checked="checked" id="row_subscribe" onchange='$("#revenue_table tr.subscribe").fadeToggle( "slow", "linear" );' /> Subscribe
+    <input type="checkbox" checked="checked" id="row_recurring" onchange='$("#revenue_table tr.recurring").fadeToggle( "slow", "linear" );' /> Recurring
+    <input type="checkbox" checked="checked" id="row_recurring" onchange='$("#revenue_table tr.canceled").fadeToggle( "slow", "linear" );' /> Canceled
+</form>
+<table id="revenue_table" width="100%">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Amount</th>
+            <th>Balance</th>
+        </tr>
+    </thead>
+<?php
+$counter = 0;
+$recurring_billing_counter_array = array();
+
+foreach ($this->records as $object) {
+    $date->set($object->creation, Zend_Date::ISO_8601);
+    $rowclass = '';
+    
+    $amount = 0;
+    if ($object->message != 'Recurring Billing') {
+        $amount = $object->amount * ($object->revenue_share_override ? $object->revenue_share_override : $this->internal->member->revenue_share) / 100;
+    }
+    elseif ($object->message == 'Recurring Billing') {
+        if ($this->internal->member->revenue_share_recurring && (is_null($this->internal->member->revenue_share_recurring_count) || is_null($recurring_billing_counter_array[$object->profile_id]) || $this->internal->member->revenue_share_recurring_count > $recurring_billing_counter_array[$object->profile_id])) {
+            $amount = $object->amount * ($object->revenue_share_override ? $object->revenue_share_override : $this->internal->member->revenue_share_recurring) / 100;
+        }
+        
+        $recurring_billing_counter_array[$object->profile_id]++;
+        $rowclass .= ' recurring';
+    }
+    
+    if ($object->message == 'Initial Payment') {
+        $rowclass .= ' initial';
+    }
+    elseif ($object->message == 'Subscription Created') {
+        $rowclass .= ' subscribe';
+    }
+    elseif ($object->message == 'Subscription Canceled') {
+        $rowclass .= ' canceled';
+    }
+    $balance += sprintf("%.2f", $amount);
+    
+    
+    if ($start_date || $end_date) {
+        $comp_date->setDate($date->get(Zend_Date::YEAR), $date->get(Zend_Date::MONTH), $date->get(Zend_Date::DAY));
+        if ($end_date && ($comp_date > $end_date)) { break; }
+        if ($start_date && ($comp_date < $start_date)) { continue; }
+    }
+    
+    if ($object->aa_display) {
+        $description1 = $object->aa_display;
+        $description2 = '<br />' . $object->message;
+        if ($object->message == 'Recurring Billing') { $description2 .= ' #' . $recurring_billing_counter_array[$object->profile_id]; }
+        $description2 .= ' (' . $currency->toCurrency($object->amount) . ') - ' . $this->ProfileDisplay(array('profile' => $object, 'internal' => $this->internal));
+    }
+    else {
+        $description1 = $object->message;
+        if ($object->message == 'Recurring Billing') { $description1 .= ' #' . $recurring_billing_counter_array[$object->profile_id]; }
+        $description1 .= ' (' . $currency->toCurrency($object->amount) . ')';
+        $description2 = ' - ' . $this->ProfileDisplay(array('profile' => $object, 'internal' => $this->internal));
+    }
+    
+    if ($object->rpb_id) {
+        $description2 .= ' : Referrer ID # ' . $object->rpb_id;
+    }
+    else {
+        $description2 .= ' : Referrer ID # ' . $object->rpa_id;
+    }
+    
+    $counter++;
+?>
+    <tr class="<?= ($counter % 2 ? 'odd' : 'even') ?><?= (($counter + 3) % 4) ? '' : ' other' ?><?= $rowclass ?>">
+        <td class="date"><?= $date->toString(Zend_Date::DATE_SHORT) ?></td>
+        <td class="message"><span class="display"><?= $description1 ?></span><?= $description2 ?></td>
+        <td class="amount<?= (sprintf("%.2f", $amount) > 0 ? ' netup' : (sprintf("%.2f", $amount) < 0 ? ' netdown' : '')) ?>"><?= $currency->toCurrency(sprintf("%.2f", $amount) != 0 ? sprintf("%.2f", $amount) : 0) ?></td>
+        <td class="balance<?= (sprintf("%.2f", $balance) > 0 ? ' netup' : (sprintf("%.2f", $balance) < 0 ? ' netdown' : '')) ?>"><?= $currency->toCurrency(sprintf("%.2f", $balance) != 0 ? sprintf("%.2f", $balance) : 0) ?></td>
+    </tr>
+<?php
+}
+?>
+</table>
+<div style="margin: 5em 0; text-align: center;">
+<?php
+    if ($balance > 100) {
+        echo '<a href="/system/form-to-email/p/vmpd_npr/1/vmpd_fp/1/vmpd_nar/1/?recipient=webtech&pre_spec=SCN Referrals&subject=Request+Payment" class="fakebutton large green">Click Here to Request Payment</a>';
+    }
+?>
+</div>
+
+<?php $this->placeholder('temp')->captureEnd(); ?>
+
+<?php
+echo $this->CM(array(
+    'class' => 'cm decorated padded',
+    'hd' => 'Revenue',
+    'bd' => $this->placeholder('temp')
+));
+$this->placeholder('temp')->set(null);
+?>

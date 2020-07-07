@@ -1,0 +1,107 @@
+<?php $module = 'admin'; ?>
+
+<!-- Begin Module -->
+<div class="cm decorated padded m_<?= $module ?>">
+    <div class="hd">
+        <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div>
+        </div>
+        <div class="con">
+        	<table class="table">
+                <tr>
+                    <td class="lt"></td>
+
+                    <td class="mn1"><?= $this->escape($this->internal->module_modules[$module]->display) ?></td>
+                    <td class="sep"></td>
+                    <td class="mn2"></td>
+                    <td class="rt"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="bd">
+    
+    <ul>
+        <li>
+            Simple Encrypt / Decrypt
+            <ul>
+                <li><a href="/admin/crypt/">Encrypt A String</a></li>
+                <li><a href="/admin/crypt/?des_act=1">Decrypt A String</a></li>
+            </ul>
+        </li>
+        <li>
+            Quote Module
+            <ul>
+                <li>
+                    Symbols
+                    <ul>
+                        <li><a href="/admin/quote/symbolEdit/">Edit Stock</a></li>
+                        <li><a href="/admin/quote/stockSplit/">Stock Split</a></li>
+                        <li><a href="/admin/quote/symbolEdit/">Change Symbol</a></li>
+                        <li><a href="/admin/quote/symbolMerge/">Merge Symbol</a></li>
+                        <li>Delete Symbol</li>
+                        <li>Set Overrides That Are Same to NULL</li>
+                        <li><a href="/admin/quote/dupIntSyms/">Duplicate Internal Symbols Report</a></li>
+                    </ul>
+                </li>
+                <li>
+                    Exchanges
+                    <ul>
+                        <li>Delete Exchange</li>
+                    </ul>
+                </li>
+                <li>
+                    Types
+                    <ul>
+                        <li>Delete Type</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li>
+            Article Spinner
+            <ul>
+                <li><a href="/admin/article/">Spin A New Article</a></li>
+            </ul>
+        </li>
+        <li>
+            Members
+            <ul>
+                <li><a href="/admin/member/lookupByEmail/">Lookup Member By Email</a></li>
+            </ul>
+        </li>
+        <li>
+            Subscriptions
+            <ul>
+                <li><a href="/admin/subscription/unsubscribe/">Unsubscribe</a></li>
+            </ul>
+        </li>
+        <li>
+            Plivo
+            <ul>
+                <li><a href="/admin/plivo/outbound_call/">Make An Outbound Call</a></li>
+                <li><a href="/admin/plivo/list_recordings/">List Recordings</a></li>
+                <li><a href="/admin/plivo/delete_recordings/" onclick="return confirm('Are you sure you want to delete all recordings?');">Delete All Recordings</a></li>
+            </ul>
+        </li>
+        <li>
+            Cron Jobs
+            <ul>
+                <li><a href="/admin/cron/newAuthors/">Articles By New Authors Report</a></li>
+                <li><a href="/admin/cron/expiredMembers/">Process Expired Members</a></li>
+                <li><a href="/admin/cron/ccExpire/">Send E-Mail Reminder For Expiring Credit Cards</a></li>
+            </ul>
+        </li>
+    </ul>
+    
+    </div>
+    
+    <div class="ft">
+        <div class="dec">
+            <div class="lt"></div><div class="mn"></div><div class="rt"></div>
+
+        </div>
+    </div>
+    <span class="icon"></span>
+</div>
+<!-- End Module -->

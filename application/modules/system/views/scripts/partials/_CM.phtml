@@ -1,0 +1,122 @@
+<?php
+/*
+ * Content Module Partial
+ * 
+ * id
+ * class
+ * tl
+ * hd
+ * hd2
+ * tr
+ * bd
+ * bl
+ * ft
+ * ft2
+ * br
+ *
+ */ 
+?>
+<?php /*
+<!-- Begin Module -->
+<div<?= (isset($this->id)) ? ' id="'.$this->id.'"' : '' ?><?= (isset($this->class)) ? ' class="'.$this->class.'"' : '' ?>>
+    <?= (isset($this->hd) || isset($this->tl) || isset($this->tr))
+        ? 
+        '<div class="hd">' .
+            (isset($this->tl) ? '<div class="tl">' . $this->tl . '</div>' : '') . 
+            (isset($this->hd) ? '<span>' . $this->hd . '</span>' : '') . 
+            (isset($this->tr) ? '<div class="tr">' . $this->tr . '</div>' : '') . 
+            '</div>'
+        :
+        ''
+     ?>
+    <?= (isset($this->bd)) ? '<div class="bd">'.$this->bd.'</div>' : '' ?>
+    <?= (isset($this->ft) || isset($this->bl) || isset($this->br))
+        ? 
+        '<div class="ft">' .
+            (isset($this->bl) ? '<div class="bl">' . $this->bl . '</div>' : '') . 
+            (isset($this->ft) ? '<span>' . $this->ft . '</span>' : '') . 
+            (isset($this->br) ? '<div class="br">' . $this->br . '</div>' : '') . 
+            '</div>'
+        :
+        ''
+     ?>
+</div>
+<!-- End Module -->
+*/ ?>
+
+<?php /*
+<!-- Begin Module -->
+<div<?= (isset($this->id)) ? ' id="'.$this->id.'"' : '' ?><?= (isset($this->class)) ? ' class="'.$this->class.'"' : '' ?>>
+    <?= (isset($this->hd) || isset($this->hd2) || isset($this->tl) || isset($this->tr))
+        ? 
+        '<div class="hd">' .
+            '<div class="tl">' . (isset($this->tl) ? $this->tl : (isset($this->hd) || isset($this->hd2) || isset($this->tr) ? '&nbsp;' : '')) . '</div>' .
+            (isset($this->hd) ? '<span class="primary">' . $this->hd . '</span>' : (isset($this->hd2) || isset($this->tr) || isset($this->tl) ? '&nbsp;' : '')) .
+            (isset($this->hd) || isset($this->hd2) ? '<span class="seperator">&nbsp;</span>' : '') .
+            '<div class="tr">' . (isset($this->tr) ? $this->tr : (isset($this->hd) || isset($this->hd2) || isset($this->tl) ? '&nbsp;' : '')) . '</div>' .
+        '</div>'
+        :
+        ''
+     ?>
+    <?= (isset($this->bd)) ? '<div class="bd">'.$this->bd.'</div>' : '' ?>
+    <?= (true || isset($this->ft) || isset($this->ft2) || isset($this->bl) || isset($this->br))
+        ? 
+        '<div class="ft">' .
+            '<div class="bl">' . (isset($this->bl) ? $this->bl : (isset($this->ft) || isset($this->ft2) || isset($this->br) ? '&nbsp;' : '')) . '</div>' .
+            (isset($this->ft) ? '<span class="primary">' . $this->ft . '</span>' : (isset($this->ft2) || isset($this->br) || isset($this->bl) ? '&nbsp;' : '')) .
+            (isset($this->ft) || isset($this->ft2) ? '<span class="seperator">&nbsp;</span>' : '') .
+            '<div class="br">' . (isset($this->br) ? $this->br : (isset($this->ft) || isset($this->ft2) || isset($this->bl) ? '&nbsp;' : '')) . '</div>' .
+        '</div>'
+        :
+        ''
+     ?>
+</div>
+<!-- End Module -->
+*/ ?>
+
+<!-- Begin Module -->
+<div<?= (isset($this->id)) ? ' id="'.$this->id.'"' : '' ?><?= (isset($this->class)) ? ' class="'.$this->class.'"' : '' ?>>
+    <div class="hd">
+        <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div>
+        </div>
+<?php if (isset($this->tl) || isset($this->hd) || isset($this->hd2) || isset($this->tr)) { ?>
+        <div class="con">
+        	<table class="table">
+                <tr>
+                    <td class="lt"><?= (isset($this->tl) ? $this->tl : '') ?></td>
+                    <td class="mn1"><?= (isset($this->hd) ? $this->hd : '') ?></td>
+                    <td class="sep"></td>
+                    <td class="mn2"><?= (isset($this->hd2) ? $this->hd2 : '') ?></td>
+                    <td class="rt"><?= (isset($this->tr) ? $this->tr : '') ?></td>
+                </tr>
+            </table>
+        </div>
+<?php } ?>
+    </div>
+<?php if (isset($this->bd)) { ?>
+    <div class="bd"><?= $this->bd ?></div>
+<?php } ?>
+    <div class="ft">
+<?php if (isset($this->bl) || isset($this->ft) || isset($this->ft2) || isset($this->br)) { ?>
+    	<div class="con">
+            <table class="table">
+                <tr>
+                    <td class="lt"><?= (isset($this->bl) ? $this->bl : '') ?></td>
+                    <td class="mn1"><?= (isset($this->ft) ? $this->ft : '') ?></td>
+                    <td class="sep"></td>
+                    <td class="mn2"><?= (isset($this->ft2) ? $this->ft2 : '') ?></td>
+                    <td class="rt"><?= (isset($this->br) ? $this->br : '') ?></td>
+                </tr>
+            </table>
+        </div>
+<?php } ?>
+        <div class="dec">
+            <div class="lt"></div><div class="mn"></div><div class="rt"></div>
+        </div>
+    </div>
+    <span class="icon"></span>
+<?php
+    if (isset($this->extra)) { echo $this->extra; }
+?>
+</div>
+<!-- End Module -->

@@ -1,0 +1,260 @@
+<?php $module = 'file'; ?>
+<?php
+$link = (
+    $this->object->public_location ?
+        ($this->internal->config->upload->public_server . ($this->object->title ? '/' . $this->escape($this->SEO_Urlify($this->object->title)) : '/No-Title') . '/' . $this->object->file_dir . '/' . $this->object->file_id . '/' . urlencode($this->object->file_name))
+        :
+        (($this->object->title ? '/' . $this->escape($this->SEO_Urlify($this->object->title)) . '/s' : '') . $this->internal->target->pre . '/file/view/check/mid/' . (isset($this->masked) ? $this->masked : $this->object->matrix_counter) . '/id/' . $this->object->counter . '/file/' . $this->object->file_id . '/' . urlencode($this->object->file_name))
+);
+?>
+
+<div class="cm decorated padded m_<?= $module ?> m-<?= $this->internal->target->currentModule->module_id ?>-<?= $this->internal->target->currentModule->counter ?> id_<?= $this->object->counter ?>">
+<div class="hd">
+    <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div>
+    </div>
+    <div class="con">
+    	<table class="table">
+            <tr>
+                <td class="lt"></td>
+
+                <td class="mn1"><a href="<?= '/' . $this->SEO_Urlify($this->internal->target->currentModule->display ? $this->internal->target->currentModule->display : $this->internal->target->currentModule->m_display) . '/s' . (isset($this->internal->target->pre) ? $this->internal->target->pre : '') . '/' . $this->internal->target->currentModule->m_name . '/p/mid/' . $this->internal->params->mid . '/' ?>"><?= $this->escape(isset($this->internal->target->currentModule->display) && $this->internal->target->currentModule->display ? $this->internal->target->currentModule->display : $this->internal->target->currentModule->m_display) ?></a></td>
+                <td class="sep"></td>
+                <td class="mn2">
+<?php if (!$this->masked && ($this->internal->target->acl->owner || ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_EDIT) || ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_DELETE))) { ?>
+                    <div class="administer">
+        <?php
+        // Edit Article Link
+        if ($this->internal->target->acl->owner || ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_EDIT)) {
+        ?>          
+        <a href="<?= $this->internal->target->pre ?>/<?= $module ?>/edit/p/mid/<?= $this->object->matrix_counter ?>/id/<?= $this->object->counter ?>/" class="edit">Edit File</a>
+        <?php
+        }
+        ?>
+        
+        <?php
+        // Delete File Link
+        if ($this->internal->target->acl->owner || ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_DELETE)) {
+        ?>
+        <a href="<?= $this->internal->target->pre ?>/<?= $module ?>/delete/p/mid/<?= $this->object->matrix_counter ?>/id/<?= $this->object->counter ?>/" onclick="return confirm('Are you sure you want to delete this file?');" class="delete">Delete File</a>
+        <?php
+        }
+        ?>
+                    </div>
+<?php } ?>
+                </td>
+                <td class="rt"></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="bd">
+
+
+    <div class="title<?= ($this->object->active == false ? ' draftitem' : '') ?><?= ($this->object->published_display_activated == false ? ' futureitem' : '') ?><?= ($this->object->published_display_expired == true ? ' expireditem' : '') ?>"><h1><?= $this->escape($this->object->title) ?><?= ($this->object->active == false ? ' <span class="drafttype">(Draft)</span>' : '') ?><?= ($this->object->published_display_activated == false ? ' <span class="futuretype">(Future)</span>' : '') ?><?= ($this->object->published_display_expired == true ? ' <span class="expiredtype">(Expired)</span>' : '') ?></h1></div>
+
+    <div class="part1">
+        <div class="author">Uploaded By <?= $this->ProfileDisplay(array('profile' => $this->object, 'internal' => $this->internal)) ?></div>
+        
+        <div class="datetime">Uploaded: 
+        <?php
+            $date = new Zend_Date();
+            $date->set($this->object->published_display_date, Zend_Date::ISO_8601);
+            if (isset($this->internal->member)) {
+                $date->setTimezone($this->internal->member->timezone);
+            }
+            else {
+                $date->setTimezone($this->internal->config->timezone);
+            }
+            echo $date->toString(Zend_Date::DATETIME_LONG);
+        ?>
+        </div>
+        
+        <div class="relay">
+            <?= $this->partial('partials/_AddThis.phtml', 'system', array('internal' => $this->internal)); ?>
+            
+            <?= $this->PrintEmailLink(array('link' => '', 'internal' => $this->internal)) ?>
+        </div>
+    </div>
+    
+    <?php if ($this->internal->target->currentModule->interactive && ($this->masked ? $this->object->x_interactive : true)) { ?>
+        <div class="interact">
+            <div class="comments"><span class="begin_comment_count">&nbsp;</span><a href="#comments_list" class="comment_count"><?= $this->object->total_comments_count ?></a><span class="end_comment_count">&nbsp;</span> <a href="#comments_list">Comment(s)</a>
+            <?php if (($this->internal->target->acl->allowed === null || $this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT) && $this->object->allow_comments) { ?>
+            - <a href="#post_a_comment">Post a Comment</a>
+            <?php } ?>
+            </div>
+            <div class="rating">Rating <span class="count rc<?= floor($this->object->rating * 2) ?>"><?= ($this->object->rating ? $this->object->rating : '') ?></span></div>
+        </div>
+    
+    <?php /*
+    <div class="interact">
+        <p style="display: inline; float: left; margin-top: 0;"><a href="#comments_list"><strong><?= $this->object->total_comments_count ?> Comment(s)</a></strong>
+        <?php if ($this->internal->target->acl->allowed === null || $this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT) { ?>
+         - <a href="#post_a_comment">Post a Comment</a>
+        <?php } ?>
+        <?php / <a href="/<?= $this->SEO_Urlify($this->object->title) ?>/s<?= $this->internal->target->pre ?>/<?= $module ?>/comments/post/mid/<?= $this->object->matrix_counter ?>/id/<?= $this->object->counter ?>/">Post a Comment</a> / ?>
+        </p>
+        
+        <p style="display: inline; float: right; margin-top: 0;"># / Rating : <strong><?= $this->object->total_ratings_count ?> / <?= sprintf ("%.2f", $this->object->rating) ?></strong>
+        <?php if ($this->internal->target->acl->allowed === null || $this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT) { ?>
+        -
+        <a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/1/">1</a> : 
+        <a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/2/">2</a> : 
+        <a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/3/">3</a> : 
+        <a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/4/">4</a> : 
+        <a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/5/">5</a>
+        <?php } ?>
+        </p>
+    </div>
+    */ ?>
+    
+    <?php } ?>
+    
+    <?php if ($this->internal->community->meta_stocks && isset($this->object->symbols) && !is_null($this->object->symbols)) { echo $this->RelatedQuotes(array('symbols' => $this->object->symbols, 'internal' => $this->internal, 'which_part' => '1')); } ?>
+    
+    <div class="part2">
+        <div id="div-gpt-ad-1391041472821-0" class="advertisement" style="float: right; margin: 0 0 1em 1em; width: 160px; height: 600px;">
+<script type='text/javascript'>
+googletag.pubads().display('/1063461/VM-Platform-File_View_Default-160x600', [160, 600], 'div-gpt-ad-1391041472821-0');
+</script>
+        </div>
+        
+        <div class="content">
+
+            <table align="center" class="fileinfo decorated" style="margin-top: 1em; font-size: 150%; font-weight: bold;">
+                <tr>
+                    <td rowspan="3" style="width: 1px;">
+                        <a href="<?= $link ?>"><img src="http://www.stdicon.com/crystal/<?= ($this->object->file_name ? $this->object->file_name : $this->object->file_type) ?>?size=88&default=http%3A%2F%2Fwww.stdicon.com%2Fcrystal%2Fapplication%2Foctet-stream%3Fsize%3D88" /></a>
+                    </td>
+                    <td class="item">FileName:</td>
+                    <td class="value"><a href="<?= $link ?>"><?= $this->object->file_name ?></a></td>
+                </tr>
+                <tr>
+                    <td class="item">FileSize:</td>
+                    <td class="value">
+<?php
+
+$size = $this->object->file_size;
+$ext = 'Byte';
+
+if ($size >= (1024 * 1024 * 1024)) {
+    $size = $size / 1024 / 1024 / 1024;
+    $ext = 'GB';
+}
+elseif ($size >= (1024 * 1024)) {
+    $size = $size / 1024 / 1024;
+    $ext = 'MB';
+}
+elseif ($size >= 1024) {
+    $size = $size / 1024;
+    $ext = 'KB';
+}
+
+echo Zend_Locale_Format::toNumber($size, array('precision' => 2)) . " $ext" . ($size > 1 ? 's' : '');
+?>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="item">MimeType:</td>
+                    <td class="value"><?= $this->object->file_type ?></td>
+                </tr>
+            </table>
+
+<p style="margin-top: 1em; text-align: center; font-size: x-large; font-weight: bold;">
+<a href="<?= $link ?>">Click Here To Access This File</a>
+</p>
+        
+        </div>
+    </div>
+    
+    <?= $this->partial('partials/_SocialBookmarks.phtml', 'system', array('internal' => $this->internal)); ?>
+    
+    <?php if ($this->internal->community->meta_stocks && isset($this->object->symbols) && !is_null($this->object->symbols)) { echo $this->RelatedQuotes(array('symbols' => $this->object->symbols, 'internal' => $this->internal, 'which_part' => '2')); } ?>
+    
+    <div class="part3" style="margin-bottom: 3em;">
+    <?php if ($this->internal->target->currentModule->interactive && ($this->masked ? $this->object->x_interactive : true)) { ?>
+        <div class="interact">
+            <div class="comments"><span class="begin_comment_count">&nbsp;</span><a href="#comments_list" class="comment_count"><?= $this->object->total_comments_count ?></a><span class="end_comment_count">&nbsp;</span> <a href="#comments_list">Comment(s)</a>
+            <?php if (($this->internal->target->acl->allowed === null || $this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT) && $this->object->allow_comments) { ?>
+            - <a href="#post_a_comment">Post a Comment</a>
+            <?php } ?>
+            </div>
+            
+            <?php if (($this->internal->target->acl->allowed === null || $this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT) &&
+                $this->object->allow_ratings) { ?>
+            <div class="rateit">Rate It : 
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/1/" rel="nofollow" title="1 Star - Awful">1</a>
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/2/" rel="nofollow" title="2 Stars - Poor">2</a>
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/3/" rel="nofollow" title="3 Stars - Average">3</a>
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/4/" rel="nofollow" title="4 Stars - Good">4</a>
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/5/" rel="nofollow" title="5 Stars - Excellent">5</a>
+                </span></span></span></span></span>
+            </div>
+            <?php } ?>
+            
+        </div>
+    <?php } ?>
+    </div>
+    
+    <div style="clear: both; padding-bottom: 4em;" class="pager">
+        <?php if (isset($this->prev_object)) { ?>
+        <div class="previous" style="display: inline; float: left; margin-bottom: 1em;">
+    <?php
+    $link = '/' . $this->SEO_Urlify($this->prev_object->title) . '/s';
+    if ($this->masked) {
+        $link .= $this->internal->target->pre . "/$module/view/p/mid/" . $this->masked . '/id/' . $this->prev_object->counter . '/';
+    }
+    else {
+        if ($this->prev_object->com_id && ((isset($this->internal->params->com_id) && $this->internal->params->com_id) || $this->prev_object->com_id != $this->internal->community->id)) { $link .= '/com/' . $this->prev_object->com_id; }
+        elseif ($this->prev_object->net_id) { $link .= '/net/' . $this->prev_object->net_id; }
+        elseif ($this->prev_object->via_id) { $link .= '/via/' . $this->prev_object->via_id; }
+        
+        $link .= "/$module/view/p/mid/" . $this->prev_object->matrix_counter . '/id/' . $this->prev_object->counter . '/';
+    }
+    ?>
+            <a href="<?= $link ?>" title="<?= $this->escape($this->prev_object->title) ?>" >&laquo; Previous</a>
+        </div>
+        <?php } ?>
+        
+        <?php if (isset($this->next_object)) { ?>
+        <div class="next" style="display: inline; float: right; margin-bottom: 1em;">
+    <?php
+    $link = '/' . $this->SEO_Urlify($this->next_object->title) . '/s';
+    if ($this->masked) {
+        $link .= $this->internal->target->pre . "/$module/view/p/mid/" . $this->masked . '/id/' . $this->next_object->counter . '/';
+    }
+    else {
+        if ($this->next_object->com_id && ((isset($this->internal->params->com_id) && $this->internal->params->com_id) || $this->next_object->com_id != $this->internal->community->id)) { $link .= '/com/' . $this->next_object->com_id; }
+        elseif ($this->next_object->net_id) { $link .= '/net/' . $this->next_object->net_id; }
+        elseif ($this->next_object->via_id) { $link .= '/via/' . $this->next_object->via_id; }
+        
+        $link .= "/$module/view/p/mid/" . $this->next_object->matrix_counter . '/id/' . $this->next_object->counter . '/';
+    }
+    ?>
+            <a href="<?= $link ?>" title="<?= $this->escape($this->next_object->title) ?>" >Next &raquo;</a>
+        </div>
+        <?php } ?>
+    </div>
+    
+    <div style="clear: both;"></div>
+    
+    <?php if ($this->internal->target->currentModule->interactive && ($this->masked ? $this->object->x_interactive : true)) { ?>
+    <div class="comments">
+    <?php
+        echo $this->action('list', 'comments', 'system', (array) $this->internal->params);
+    ?>
+    </div>
+    <?php } ?>
+    
+</div>
+<div class="ft">
+    <div class="dec">
+        <div class="lt"></div><div class="mn"></div><div class="rt"></div>
+
+    </div>
+</div>
+<span class="icon"></span>
+</div>
+
+
+<?php #$this->TextAds(); ?>

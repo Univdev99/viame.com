@@ -1,0 +1,125 @@
+<?php
+/*
+    ViaMe Application
+    Levelogic, Inc. (http://www.levelogic.com)
+*/
+
+class Mail_DeleteController extends ViaMe_Controller_Action
+{   
+    // PreDispatch Overrides
+    //protected $_routeThruDefault = true;
+    protected $_memberDefined = true;
+    //protected $_moduleInMatrix = true;
+    //protected $_modObjectCheck = true;
+    protected $_minPrivilege = self::ACL_OWNER;
+    //protected $_defaultAllow = true;
+    protected $_mustBeOwner = true;
+    
+    
+    public function init()
+    {
+        parent::init();
+        
+        if (isset($this->target->type) && $this->target->type == 'VIA' && isset($this->via)) {
+            $this->target->id = $this->via->id;
+        }
+        else {
+            $this->target->id = $this->member->profile->id;
+            $this->_minPrivilege = null;
+            $this->target->acl->owner = true;
+        }
+    }
+    
+    
+    public function indexAction()
+    {
+        // Handle deletions and perm deltions within any folder too
+        $which = array();
+        if ($this->_getParam('id')) {
+            foreach ((is_array($this->_getParam('id')) ? $this->_getParam('id') : array($this->_getParam('id'))) as $dm) {
+                list($pid, $cid) = explode('-', $dm);
+                $which[] = $this->db->quoteInto('(profile_id=?',  $pid) . $this->db->quoteInto(' AND counter=?)', $cid);
+            }
+        }
+
+        if (!$this->_getParam('fid')) {
+            // To Me - Inbox Only
+            $query = $this->db->quoteInto('UPDATE mail_mails SET status_deleted=array_distinct(status_deleted || ?::bigint) WHERE ', $this->target->id);
+            if (count($which)) {
+                $query .= '(' . implode(' OR ', $which) . ')' . ' AND ';
+            }
+            $query .= $this->db->quoteInto('(ARRAY[?::bigint] <@ (to_profile_id || cc_profile_id || bcc_profile_id))', $this->target->id);
+            #print $query;
+            $this->db->query($query);
+            
+            $this->db->query('SELECT resync_mail_stats(?)', $this->target->id);
+            #$this->_helper->viewRenderer->setNoRender();
+            #return;
+        }
+        elseif ($this->_getParam('fid') == 'D' || $this->_getParam('fid') == 'T' || $this->_getParam('fid') == 'S') {
+            // Drafts, Templates, or Sent
+            $query = $this->db->quoteInto("UPDATE mail_mails SET active='f' WHERE profile_id=? AND active='t' AND ", $this->target->id);
+            
+            switch ($this->_getParam('fid')) {
+                case 'D':
+                    $query .= "template_status='f'";
+                    break;
+                case 'T':
+                    $query .= "template_status='t'";
+                    break;
+                case 'S':
+                    $query .= "template_status ISNULL";
+                    break;
+            }
+            
+            if (count($which)) {
+                $query .= ' AND (' . implode(' OR ', $which) . ')';
+            }
+            
+            $this->db->query($query);
+        }
+        elseif ($this->_getParam('fid') == 'R') {
+            // Trash
+            
+            // Drafts, Templates, or Sent
+            $query .= $this->db->quoteInto("UPDATE mail_mails SET active=NULL WHERE profile_id=? AND active='f'", $this->target->id);
+            if (count($which)) {
+                $query .= ' AND (' . implode(' OR ', $which) . ')';
+            }
+            
+            $this->db->query($query);
+            
+            // Inbox
+            $query = $this->db->quoteInto('UPDATE mail_mails SET status_perm_deleted=array_distinct(status_perm_deleted || ?::bigint) WHERE ', $this->target->id);
+            if (count($which)) {
+                $query .= '(' . implode(' OR ', $which) . ')' . ' AND ';
+            }
+            $query .= $this->db->quoteInto('(ARRAY[?::bigint] <@ (to_profile_id || cc_profile_id || bcc_profile_id))', $this->target->id);
+            $this->db->query($query);
+        }
+        elseif ($this->_getParam('fid')) {
+            // Folder
+            $delete_where = array();
+            
+            $delete_where[] = $this->db->quoteInto('profile_id=?', $this->target->id);
+            $delete_where[] = $this->db->quoteInto('folder_counter_id=?', $this->_getParam('fid'));
+            
+            if (count($which)) {
+                $which = array();
+                foreach ((is_array($this->_getParam('id')) ? $this->_getParam('id') : array($this->_getParam('id'))) as $dm) {
+                    list($pid, $cid) = explode('-', $dm);
+                    $which[] = $this->db->quoteInto('(from_profile_id=?',  $pid) . $this->db->quoteInto(' AND from_counter_id=?)', $cid);
+                }
+                
+                $delete_where[] = '(' . implode(' OR ', $which) . ')';
+            }
+
+            $this->db->delete('mail_folder_matrix', $delete_where);
+            
+            // Restore the flags to show in trash if needed
+
+        }
+        
+        $this->_redirect($this->target->pre . '/' . $this->getRequest()->getModuleName() . '/');
+    }
+}

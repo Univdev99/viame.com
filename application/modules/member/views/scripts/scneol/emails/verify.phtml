@@ -1,0 +1,30 @@
+<?php
+$verification_link = 'http://' . $this->internal->vars->host . ($this->internal->target->type == 'COM' && isset($this->internal->target->pre) ? $this->internal->target->pre : '') . '/member/scneol/verify/vmpd_bpip/1/id/' . $this->id . '/?email=' . $this->email;
+
+/*
+if (isset($this->no_email_add) && $this->no_email_add) {
+    $verification_link .= '&no_email_add=1';
+}
+
+if (isset($this->internal->params->s_redirect) && $this->internal->params->s_redirect) {
+    // SUCCESS redirect link
+    $verification_link .= '&redirect=' . $this->internal->params->s_redirect;
+}
+elseif (isset($this->internal->params->redirect) && $this->internal->params->redirect) {
+    // Alternate redirect link
+    $verification_link .= '&redirect=' . $this->internal->params->redirect;
+}
+*/
+?>
+
+<h2>Congratulations! You're only two steps away from receiving your SmallCap Network Elite Opportunity Free Mobile Text and Email Alerts.</h2>
+
+<p>First, <u>you need to quickly confirm this is a valid email address by clicking the following link</u>:</p>
+
+<div style="text-align: center;"><div style="display: inline-block; text-align: center; margin: 1em auto; padding: .5em .8em; background-color: #74BB10;" class="fakebutton green"><a href="<?= $verification_link ?>" style="color: #fff; font-size: 18px; font-weight: normal; text-decoration: none;">Click Here to Verify Your Email<br>and Complete the Signup Process</a></div></div>
+
+<p>Once you have confirmed your email address, you will soon begin receiving <strong>free email alerts on the hottest trending stocks</strong> and the <strong>most profitable trading opportunities we identify</strong>.</p>
+
+<p>Welcome Aboard!</p>
+
+<p><strong>Staff at SmallCap Network Elite Opportunity</strong></p>

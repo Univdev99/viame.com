@@ -1,0 +1,1434 @@
+<?php
+#Zend_Debug::Dump($this->results);
+#Zend_Debug::Dump($this->quote_data);
+#Zend_Debug::Dump($this->verification);
+
+reset($this->verification);
+$current = current($this->verification);
+$tick = $current->symbol;
+$dtick = $current->delayed_symbol;
+
+$date = new Zend_Date();
+?>
+
+<div class="<?= ($this->symbol_data->featured ? 'featured' : '') ?>">
+
+<div class="header_area">
+<table class="header_table"><tr>
+    <td class="spacer"></td>
+    <td align="left" valign="middle" class="company_info"><div class="encap">
+        <table><tr>
+            <td>
+                <?php /* <h1 class="company"><?= $current->name ?> <span class="exch_symb">(<?= $this->results[2] ?>: <?= $current->internal_symbol ?>)</span></h1> */ ?>
+                <h1 class="company"><?= $current->internal_symbol ?> - <?= $current->name ?></h1>
+                <span style="font-size: 140%;"><?= Zend_Locale_Format::toNumber($this->results[3], array('locale' => $this->internal->locale)) ?></span>
+                <span<?= ($this->results[9] > 0 ? ' class="uptick"' : ($this->results[9] < 0 ? ' class="downtick"' : '')) ?> style="font-size: 110%;"><?= Zend_Locale_Format::toNumber($this->results[9], array('locale' => $this->internal->locale)) ?> (<?= $this->results[10] ?>)</span>
+            </td>
+            <td nowrap="nowrap" width="1%" style="padding-left: 1em;">
+<!-- Begin Rating -->
+<div class="stock_rating">
+<?php
+if ($db = Zend_Registry::get('db')) {
+    #$rating = $db->fetchRow("SELECT COUNT(*) AS total, AVG(position) AS rating FROM pick_picks WHERE creation > ('now'::timestamp - '30 Days'::interval) AND symbol_id=?", $this->symbol_id);
+    $rating = $db->fetchRow("SELECT COUNT(*) AS total, AVG(\"obj\".position) AS rating"
+        .
+        ", COUNT(NULLIF((DATE(obj.creation) >= DATE('now'::timestamp - '7 Days'::interval)), 'f')) AS sd_total,
+        AVG(CASE (DATE(obj.creation) >= DATE('now'::timestamp - '7 Days'::interval)) WHEN 't' THEN obj.position ELSE NULL END) AS sd_rating,
+        COUNT(NULLIF((DATE(obj.creation) >= DATE('now'::timestamp - '1 Month'::interval)), 'f')) AS om_total,
+        AVG(CASE (DATE(obj.creation) >= DATE('now'::timestamp - '1 Month'::interval)) WHEN 't' THEN obj.position ELSE NULL END) AS om_rating,
+        COUNT(NULLIF((DATE(obj.creation) >= DATE('now'::timestamp - '3 Months'::interval)), 'f')) AS tm_total,
+        AVG(CASE (DATE(obj.creation) >= DATE('now'::timestamp - '3 Months'::interval)) WHEN 't' THEN obj.position ELSE NULL END) AS tm_rating,
+        COUNT(NULLIF((DATE(obj.creation) >= DATE('now'::timestamp - '6 Months'::interval)), 'f')) AS sm_total,
+        AVG(CASE (DATE(obj.creation) >= DATE('now'::timestamp - '6 Months'::interval)) WHEN 't' THEN obj.position ELSE NULL END) AS sm_rating,
+        COUNT(NULLIF((DATE(obj.creation) >= DATE('now'::timestamp - '1 Year'::interval)), 'f')) AS oy_total,
+        AVG(CASE (DATE(obj.creation) >= DATE('now'::timestamp - '1 Year'::interval)) WHEN 't' THEN obj.position ELSE NULL END) AS oy_rating"
+        .
+      " FROM \"pick_picks\" AS \"obj\" INNER JOIN \"module_matrix\" AS \"x\" ON obj.com_id=x.com_id AND obj.net_id=x.net_id AND obj.via_id=x.via_id AND obj.module_id=x.module_id AND obj.matrix_counter=x.counter INNER JOIN \"module_modules\" AS \"m\" ON x.module_id=m.id INNER JOIN \"profile_profiles\" AS \"p\" ON obj.profile_id = p.id INNER JOIN \"member_members\" AS \"b\" ON p.member_id = b.id INNER JOIN \"system_communities\" AS \"c\" ON p.community_id = c.id INNER JOIN \"quote_view_symbol_matrix\" AS \"qx\" ON obj.symbol_id=qx.id WHERE (x.active='t') AND (m.active='t') AND (p.active='t') AND (b.active='t') AND (c.active='t') AND ((obj.com_id='2') OR (m.allow_flow='t' AND x.allow_out_flow AND (obj.net_id = 0 OR (ARRAY[obj.via_id, x.counter] :: text ~ E'()' AND x.allow_community_outflow && ARRAY[2] :: bigint[])))) AND (obj.active='t') AND (obj.activation ISNULL OR obj.activation <= now()) AND (obj.expiration ISNULL OR obj.expiration >= now()) AND (obj.partial_close_parent_id ISNULL) AND (obj.symbol_id=?)", $this->symbol_id);
+    if ($rating->total) {
+        $the_rating_value = sprintf("%.1f", (intval(($rating->rating + 1) / 2 * 9) + 1) / 2);
+        echo '<h1 class="rating">Investor Rating: <span id="stock_rating_stars" class="star_rating stars'.preg_replace('/\./', '-', $the_rating_value).'">'.$the_rating_value.'</span></h1>';
+        #echo '# Buy Ratings : ' . ($rating->total - (($rating->total - ($rating->total * $rating->rating)) / 2)) . "<br />\n";
+        #echo '# Sell Ratings : ' . (($rating->total - ($rating->total * $rating->rating)) / 2) . "<br />\n";
+        #echo 'Total # Ratings : ' . $rating->total . "<br />\n";
+        $sr_tooltip = "<strong>Rating: $the_rating_value Stars</strong><br />";
+        $sr_tooltip .= '# Buy Ratings : ' . ($rating->total - (($rating->total - ($rating->total * $rating->rating)) / 2)) . '<br />';
+        $sr_tooltip .= '# Sell Ratings : ' . (($rating->total - ($rating->total * $rating->rating)) / 2) . '<br />';
+        $sr_tooltip .= 'Total # Ratings : ' . $rating->total;
+        #$this->inlineScript()->appendScript("tfs_tt_obj = new YAHOO.widget.Tooltip(\"srtt\", { context: \"stock_rating_stars\", text: \"$sr_tooltip\" });");
+        $this->inlineScript()->appendScript("tfs_tt_obj = new YAHOO.widget.Tooltip(\"srtt\", { context: \"stock_rating_stars\" }); tfs_tt_obj.setBody(\"$sr_tooltip\");");
+        
+        echo '<div style="margin-top: .25em; font-size: 12px; font-weight: normal;">';
+        $counter = 0;
+        foreach (array(
+            '7 Days' => 'sd',
+            '1 Month' => 'om',
+            '3 Months' => 'tm',
+            '6 Months' => 'sm',
+            '1 Year' => 'oy',
+            'All' => ''
+        ) as $tf_display => $tf_data) {
+            $tfs_total = $rating->{($tf_data ? $tf_data . '_' : '') . 'total'};
+            $tfs_rating = $rating->{($tf_data ? $tf_data . '_' : '') . 'rating'};
+            if ($tfs_total) {
+                $tfs_rating_value = sprintf("%.1f", (intval(($tfs_rating + 1) / 2 * 9) + 1) / 2);
+            }
+            else {
+                $tfs_rating_value = 0;
+            }
+            #echo "$tfs_rating - $tfs_rating_value - ";
+            $tfs_total_buy = $tfs_total - (($tfs_total - ($tfs_total * $tfs_rating)) / 2);
+            $tfs_total_sell = ($tfs_total - ($tfs_total * $tfs_rating)) / 2;
+            
+            echo '<a href="javascript: void(null);" class="sr_tf_select" ';
+            echo "onclick=\"$('.sr_tf_select').css('font-weight', 'normal'); $(this).css('font-weight', 'bold'); $('#stock_rating_stars').removeClass(); $('#stock_rating_stars').html('$tfs_rating_value'); $('#stock_rating_stars').addClass('star_rating stars".preg_replace('/\./', '-', $tfs_rating_value)."'); $('#tf_total_num_ratings').html('$tfs_total'); $('#tf_total_num_buy_ratings').html('";
+            echo Zend_Locale_Format::toNumber(($tfs_total - (($tfs_total - ($tfs_total * $tfs_rating)) / 2)), array('locale' => $this->internal->locale)) .
+                ($tfs_total ? ' (' . Zend_Locale_Format::toNumber((($tfs_total - (($tfs_total - ($tfs_total * $tfs_rating)) / 2)) / $tfs_total * 100), array('locale' => $this->internal->locale, 'precision' => 2)) . '%)' : '');
+            echo "'); $('#tf_total_num_sell_ratings').html('";
+            echo Zend_Locale_Format::toNumber((($tfs_total - ($tfs_total * $tfs_rating)) / 2), array('locale' => $this->internal->locale)) .
+                ($tfs_total ? ' (' . Zend_Locale_Format::toNumber(((($tfs_total - ($tfs_total * $tfs_rating)) / 2) / $tfs_total * 100), array('locale' => $this->internal->locale, 'precision' => 2)) . '%)' : '');
+        
+            if ($tfs_total) {
+                $sr_tooltip = "<strong>Rating: $tfs_rating_value Stars</strong><br />";
+                $sr_tooltip .= '# Buy Ratings : ' . ($tfs_total - (($tfs_total - ($tfs_total * $tfs_rating)) / 2)) . '<br />';
+                $sr_tooltip .= '# Sell Ratings : ' . (($tfs_total - ($tfs_total * $tfs_rating)) / 2) . '<br />';
+                $sr_tooltip .= 'Total # Ratings : ' . $tfs_total;
+            }
+            else {
+                $sr_tooltip = 'This stock has no ratings<br />for that time period';
+            }
+            
+            echo "'); tfs_tt_obj.setBody('$sr_tooltip');\"";
+            echo ($counter == 5 ? ' style="font-weight: bold;"' : '') . '>';
+            echo $tf_display;
+            echo '</a>';
+            
+            echo ($counter < 5 ? ' - ' : '');
+            $counter++;
+        }
+        echo '</div>';
+    }
+    else {
+        echo '<h1 class="rating">Investor Rating: <span id="stock_rating_stars" class="star_rating stars0">0</span></h1>'; // No Ratings
+        echo '<div>No ratings on this stock.</div>';
+        #$this->inlineScript()->appendScript("new YAHOO.widget.Tooltip(\"srtt\", { context: \"stock_rating_stars\", text: \"This stock has no ratings<br />for the last 30 days.\" });");
+        $this->inlineScript()->appendScript("new YAHOO.widget.Tooltip(\"srtt\", { context: \"stock_rating_stars\", text: \"This stock currently has no ratings\" });");
+    }
+    
+    /*
+    if (!isset($this->internal->member)) {
+        #echo '<div style="text-align: center;">You must be <a href="/member/register/p/signup_entrance/StockHQ-Rating/">registered</a> and <a href="/member/login/p/signup_entrance/StockHQ-Rating/" rel="nofollow" onclick="return YAHOO.viame.shadowbox.shadowto(' . "'/member/login/p/no_layout/1/simple_content/1/signup_entrance/Comment/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false }" . ');">signed-in</a> to rate this stock.</div>';
+        echo '<a href="/member/login/p/signup_entrance/StockHQ-Rating/" rel="nofollow" onclick="return YAHOO.viame.shadowbox.shadowto(' . "'/member/login/p/no_layout/1/simple_content/1/signup_entrance/StockHQ-Rating/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false }" . ');" class="fakebutton green" style="margin-right: 2em;">Rate '.$current->internal_symbol.' A Buy</a> <a href="/member/login/p/signup_entrance/StockHQ-Rating/" rel="nofollow" onclick="return YAHOO.viame.shadowbox.shadowto(' . "'/member/login/p/no_layout/1/simple_content/1/signup_entrance/StockHQ-Rating/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false }" . ');" class="fakebutton red">Rate '.$current->internal_symbol.' A Sell</a>';
+    }
+    else {
+        if ($vote = $db->fetchRow('SELECT * FROM pick_picks WHERE close_datestamp ISNULL AND close_temp_price ISNULL AND close_price ISNULL AND profile_id=? AND symbol_id=? ORDER BY creation DESC LIMIT 1', array($this->internal->member->profile->id, $this->symbol_id))) {
+            $close_position_link = '/via/'. $vote->via_id . '/pick/close/p/mid/' . $vote->matrix_counter . '/id/' . $vote->counter . '/allocation/'.$vote->allocation.'/vmpd_fp/1/';
+            if ($vote->position < 0) {
+                if ($vote->open_price) {
+                    echo '<a href="' . $close_position_link . '" class="fakebutton yellow" style="color: #000; font-weight: normal;">Cancel Sell Rating On '.$current->internal_symbol.'</a>';
+                }
+                else {
+                    echo 'Your <strong>Sell Rating</strong> on <strong>'.$current->internal_symbol.'</strong> is being processed.<br />Please check back later.';
+                }
+            }
+            else {
+                if ($vote->open_price) {
+                    echo '<a href="' . $close_position_link . '" class="fakebutton yellow" style="color: #000; font-weight: normal;">Cancel Buy Rating On '.$current->internal_symbol.'</a>';
+                }
+                else {
+                    echo 'Your <strong>Buy Rating</strong> on <strong>'.$current->internal_symbol.'</strong> is being processed.<br />Please check back later.';
+                }
+            }
+        }
+        else {
+            echo '<a href="/module/setup/publish/module_name/pick/extra_params/symbol%3D'.$current->internal_symbol.'%26position%3D1%26allocation%3D1%26vmpd_fp%3D1/" class="fakebutton green" style="margin-right: 2em;">Rate '.$current->internal_symbol.' A Buy</a> <a href="/module/setup/publish/module_name/pick/extra_params/symbol%3D'.$current->internal_symbol.'%26position%3D-1%26allocation%3D1%26vmpd_fp%3D1/" class="fakebutton red">Rate '.$current->internal_symbol.' A Sell</a>';
+        }
+    }
+    */
+}
+?>
+</div>
+<!-- End Rating -->
+            </td>
+        </tr></table>
+    </div></td>
+    <?php /*
+    <td align="right" valign="middle" style="padding-left: 3em;">
+        <table class="publish_links"><tr>
+            <td style="min-width: 196px;"><div style="position: relative;">
+                <div class="doit"><div class="text">Publish on <?= $current->internal_symbol ?></div></div>
+                <ul>
+                    <li><a href="/module/setup/publish/module_name/pick/extra_params/symbol%3D<?= $current->internal_symbol ?>/" rel="nofollow" title="Stock Pick" class="pick"><span class="icon"></span>Pick</a></li>
+                    <li><a href="/module/setup/publish/module_name/article/extra_params/symbols%3D<?= $current->internal_symbol ?>/" rel="nofollow" title="Article" class="article"><span class="icon"></span>Article</a></li>
+                    <li><a href="/module/setup/publish/module_name/blog/extra_params/symbols%3D<?= $current->internal_symbol ?>/" rel="nofollow" title="Blog Post" class="blog"><span class="icon"></span>Blog</a></li>
+                    <li><a href="/module/setup/publish/module_name/message/extra_params/symbols%3D<?= $current->internal_symbol ?>/" rel="nofollow" title="Message Board Post" class="message"><span class="icon"></span>Forum</a></li>
+                    <li><a href="/module/setup/publish/module_name/analysis/extra_params/symbols%3D<?= $current->internal_symbol ?>/" rel="nofollow" title="Analysis" class="analysis"><span class="icon"></span>Analysis</a></li>
+                </ul>
+            </div></td>
+        </tr></table>
+        <?= $this->partial('partials/_AddThis.phtml', 'system', array('internal' => $this->internal)); ?>
+    </td>
+    */ ?>
+</tr></table>
+<span class="featured_icon"></span>
+</div>
+
+
+
+<!-- Begin Rating -->
+<div class="yui3-g">
+    <div class="yui3-u-2-3"><div style="padding-right: .25em;">
+    <!-- Begin First Column -->
+        
+        
+<?php
+if ($db = Zend_Registry::get('db')) {
+    if (!isset($this->internal->member)) {
+?>
+        <form onclick="return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/signup_entrance/StockHQ-Rating/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false }); return false;">
+            <table width="100%" class="stock_rating" style="">
+                <tr>
+                    <td style="padding: .75em;">
+                        <table width="100%"><tr>
+                            <td><a id="stock_rating-buy" href="/member/login/p/signup_entrance/StockHQ-Rating/" class="fakebutton green" style="display: block; width: 90%;" onclick="return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/signup_entrance/StockHQ-Rating/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false });">Rate <?= $current->internal_symbol ?> A Buy</a></td>
+                            <td><a id="stock_rating-sell" href="/member/login/p/signup_entrance/StockHQ-Rating/" class="fakebutton red" style="display: block; width: 90%;" onclick="return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/signup_entrance/StockHQ-Rating/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false });">Rate <?= $current->internal_symbol ?> A Sell</a></td>
+                        </tr></table>
+                         
+                    </td>
+                </tr>
+                <tr>
+                    <td><textarea name="notes" class="vmfh_expandable_textarea" disabled="disabled" onclick="return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/signup_entrance/StockHQ-Rating/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false });" style="height: 4em; font-style: italic; overflow: auto;">Please explain why you chose your rating and help others learn more about the sentiment of this stock.</textarea></td>
+                </tr>
+                <tr>
+                    <td align="right" style="padding: .5em 0 0 0;"><input id="stock_rating-form-submit" type="submit" value="Submit Rating" onclick="return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/signup_entrance/StockHQ-Rating/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false });" /></td>
+                </tr>
+            </table>
+        </form>
+<?php
+    }
+    else {
+        if ($vote = $db->fetchRow('SELECT * FROM pick_picks WHERE close_datestamp ISNULL AND close_temp_price ISNULL AND close_price ISNULL AND profile_id=? AND symbol_id=? ORDER BY creation DESC LIMIT 1', array($this->internal->member->profile->id, $this->symbol_id))) {
+            $close_position_link = '/via/'. $vote->via_id . '/pick/close/p/mid/' . $vote->matrix_counter . '/id/' . $vote->counter . '/allocation/'.$vote->allocation.'/vmpd_fp/1/';
+            if ($vote->position < 0) {
+                if ($vote->open_price) {
+                    echo '<a href="' . $close_position_link . '" class="fakebutton yellow" style="display: block; text-align: center; width: 100%; color: #000; font-weight: normal; font-size: 22px;">Cancel Your Current <strong>Sell</strong> Rating On '.$current->internal_symbol.'</a>';
+                }
+                else {
+                    #echo 'Your <strong>Sell Rating</strong> on <strong>'.$current->internal_symbol.'</strong> is being processed.<br />Please check back later.';
+                    echo $this->CM(array(
+                        'class' => 'cm decorated plain successmessage',
+                        'hd' => 'Processing Rating',
+                        'hd2' => 'Your recent sell rating is being processed.',
+                        'bd' => '<p class="success">Processing Your Rating...</p><p>Your <strong>Sell Rating</strong> on <strong>'.$current->internal_symbol.'</strong> is currently being processed. Please check back later for more options, such as closing or changing your rating.</p>'
+                    ));
+                }
+            }
+            else {
+                if ($vote->open_price) {
+                    echo '<a href="' . $close_position_link . '" class="fakebutton yellow" style="display: block; text-align: center; color: #000; font-weight: normal; font-size: 22px;">Cancel Your Current <strong>Buy</strong> Rating On '.$current->internal_symbol.'</a>';
+                }
+                else {
+                    #echo 'Your <strong>Buy Rating</strong> on <strong>'.$current->internal_symbol.'</strong> is being processed.<br />Please check back later.';
+                    echo $this->CM(array(
+                        'class' => 'cm decorated plain successmessage',
+                        'hd' => 'Processing Rating',
+                        'hd2' => 'Your recent buy rating is being processed.',
+                        'bd' => '<p class="success">Processing Your Rating...</p><p>Your <strong>Buy Rating</strong> on <strong>'.$current->internal_symbol.'</strong> is currently being processed. Please check back later for more options, such as closing or changing your rating.</p>'
+                    ));
+                }
+            }
+        }
+        else {
+?>
+<script type="text/javascript">
+//<![CDATA[
+    var default_textarea_text = 'Please explain why you chose your rating and help others learn more about the sentiment of this stock.';
+    var default_action;
+    function check_stock_rating_form () {
+        //alert('checking form');
+        
+        if (!$('#stock_rating-form input[name=position]').val()) {
+            alert('Please select a rating for <?= $current->internal_symbol ?>\nof either Buy or Sell.');
+            return false;
+        }
+        
+        if ((!($('#stock_rating-form textarea[name=notes]').val()) || $('#stock_rating-form textarea[name=notes]').val() == default_textarea_text) && confirm("Would you like add a comment to your rating?\n\nTo go back and add a comment, click OK.\nTo submit your rating without a comment, click Cancel.")) {
+            $('#stock_rating-form textarea[name=notes]').focus();
+            return false;
+        }
+        
+        if ($('#stock_rating-form textarea[name=notes]').val() == default_textarea_text) {
+            $('#stock_rating-form textarea[name=notes]').val('')
+        }
+        
+        if (!default_action) {
+            default_action = $('#stock_rating-form').attr('action');
+        }
+        
+        var tempAdd = '%26vmpd_fp%3D1';
+        tempAdd += '%26position%3D' + encodeURIComponent($('#stock_rating-form input[name=position]').val());
+        tempAdd += '&notes%3D' + encodeURIComponent(encodeURIComponent(encodeURIComponent($('#stock_rating-form textarea[name=notes]').val())));
+        tempAdd += '/';
+        
+        $('#stock_rating-form').attr('action', default_action + tempAdd)
+        //alert($('#stock_rating-form').attr('action'));
+        
+        return true;
+    }
+//]]>
+</script>
+        <form id="stock_rating-form" action="/module/setup/publish/module_name/pick/extra_params/symbol%3D<?= $current->internal_symbol ?>%26allocation%3D1" onsubmit="return check_stock_rating_form();">
+            <input type="hidden" name="position" />
+            <table width="100%" class="stock_rating" style="">
+                <tr>
+                    <td style="padding: .75em;">
+                        <table width="100%"><tr>
+                            <td><a id="stock_rating-buy" href="/module/setup/publish/module_name/pick/extra_params/symbol%3D<?= $current->internal_symbol ?>%26position%3D1%26allocation%3D1%26vmpd_fp%3D1/" class="fakebutton green" style="display: block; width: 90%;" onclick="$(this).addClass('green'); $('#stock_rating-sell').removeClass('red'); $('#stock_rating-form input[name=position]').val('1'); $('#stock_rating-form-submit').val('Submit Buy Rating on <?= $current->internal_symbol ?>'); return false;">Rate <?= $current->internal_symbol ?> A Buy</a></td>
+                            <td><a id="stock_rating-sell" href="/module/setup/publish/module_name/pick/extra_params/symbol%3D<?= $current->internal_symbol ?>%26position%3D-1%26allocation%3D1%26vmpd_fp%3D1/" class="fakebutton red" style="display: block; width: 90%;" onclick="$(this).addClass('red'); $('#stock_rating-buy').removeClass('green'); $('#stock_rating-form input[name=position]').val('-1'); $('#stock_rating-form-submit').val('Submit Sell Rating on <?= $current->internal_symbol ?>'); return false;">Rate <?= $current->internal_symbol ?> A Sell</a></td>
+                        </tr></table>
+                         
+                    </td>
+                </tr>
+                <tr>
+                    <td><textarea name="notes" class="vmfh_expandable_textarea" onblur="if (this.value == '') { this.style.fontStyle='italic';  this.value = default_textarea_text; }" onfocus="if (this.value == default_textarea_text) { this.value = ''; this.style.fontStyle='normal'; }" style="height: 4em; font-style: italic; overflow: auto;">Please explain why you chose your rating and help others learn more about the sentiment of this stock.</textarea></td>
+                </tr>
+                <tr>
+                    <td align="right" style="padding: .5em 0 0 0;"><input id="stock_rating-form-submit" type="submit" value="Submit Rating" /></td>
+                </tr>
+            </table>
+        </form>
+<?php
+        }
+    }
+    
+    $select = clone $this->ratings_select_query_base;
+    $select->where('obj.symbol_id=?', $this->symbol_id);
+    $select->where('obj.partial_close_parent_id ISNULL');
+    
+    $select->limit(50);
+    $select->order('obj.creation DESC');
+    
+    $objects = $db->fetchAll($select);
+    $counter = 0;
+    foreach ($objects as $object) {
+        if (!$counter) { echo '<table width="100%" class="stock_rating" style="margin-top: 1em;">'; }
+        
+        $this->module = 'pick';
+        $content_link = $this->ContentLink(array('object' => $object, 'view' => $this));
+        $this->module = 'quote';
+        
+        /*
+        $mid = $object->matrix_counter;
+        $title = (isset($object->x_display) && $object->x_display ? $object->x_display : (isset($object->m_display) && $object->m_display ? $object->m_display : $object->m_name));
+        if ($object->com_id) {
+            $type = 'com';
+            $id = $object->com_id;
+        }
+        elseif ($object->net_id) {
+            $type = 'net';
+            $id = $object->net_id;
+        }
+        elseif ($object->via_id) {
+            $type = 'via';
+            $id = $object->via_id;
+        }
+        
+        $link = 'http://' . $this->internal->vars->host;
+        if ($title) { $link .= '/' . $this->SEO_Urlify($title) . '/s'; }
+        $link .= "/$type/$id/pick/p/mid/$mid/?status=1";
+        */
+?>
+        <tr><td colspan="2"><hr style="margin: 1em 0;" /></tr>
+        <tr>
+            <td style="width: 150px; text-align: left; vertical-align: top;">
+                <div class="image_area">
+                    <div class="headshot<?= !(isset($object->p_picture_url) && $object->p_picture_url) ? ' VIA_default' : '' ?>">
+                        <a href="<?= $this->ProfileDisplay(array('profile' => $object, 'href_only' => true, 'internal' => $this->internal)) ?>" class="headshot_link">
+            <?php   if (isset($object->p_picture_url) && $object->p_picture_url) { ?>
+                            <img src="<?= (preg_match('#http://#i', $object->p_picture_url) ? '' : $this->internal->config->upload->picture_server . '/') ?><?= $this->escape($object->p_picture_url) ?>" />
+            <?php   } ?>
+                        </a>
+                    </div>
+                </div>
+                <div class="followers"><?= $object->p_total_followers_count ?></div>
+                
+                <div style="clear: both; font-size: 11px;">
+                    <?= $this->ProfileDisplay(array('profile' => $object, 'internal' => $this->internal)) ?>
+                    <a href="/via/<?= $object->p_id ?>/pick/p/mid/<?= $object->matrix_counter ?>/?status=1" style="display: block; margin-top: .25em;">View All Ratings</a>
+                </div>
+            </td>
+            <td style="text-align: left; vertical-align: top;">
+                <div style="margin-bottom: 14px; font-size: 11px;">
+                    <a href="<?= $content_link ?>" class="fakebutton <?= ($object->position == -1 ? 'red' : 'green') ?>" style="margin-right: .5em; padding: 2px 4px; font-size: 11px; font-weight: normal;"><?= ($object->position == -1 ? 'Sell' : 'Buy') ?> Rating</a>
+                    <span>
+<?php
+    $date->set((isset($object->published) && $object->published ? $object->published : $object->creation), Zend_Date::ISO_8601);
+    if (isset($this->internal->member)) {
+        $date->setTimezone($this->internal->member->timezone);
+        echo $date->toString(Zend_Date::DATE_SHORT);
+    }
+    else {
+        $date->setTimezone($this->internal->config->timezone);
+        echo $date->toString(Zend_Date::DATE_SHORT);
+    }
+?>
+                    @
+                    <?php $currency = new ViaMe_Currency(array('currency' => 'USD'));  echo $currency->toCurrency(isset($object->open_price) && $object->open_price ? $object->open_price : $object->open_temp_price); ?>
+                    </span>
+<?php
+if (isset($object->modified) && $object->modified) {
+    $sdate = new DateTime(isset($object->published) && $object->published ? $object->published : $object->creation);
+    $sdate->setTime(0, 0, 0);
+    #echo $sdate->format("Y-m-d\TH:i:s\Z");
+    $udate = new DateTime($object->modified);
+    $udate->setTime(0, 0, 0);
+    #echo $udate->format("Y-m-d\TH:i:s\Z");
+    if ($udate > $sdate) {
+        $updated_date = new Zend_Date();
+        $updated_date->set($object->modified, Zend_Date::ISO_8601);
+        if (isset($this->internal->member)) {
+            $updated_date->setTimezone($this->internal->member->timezone);
+        }
+        else {
+            $updated_date->setTimezone($this->internal->config->timezone);
+        }
+        
+        echo '<span> - Updated: ' . $updated_date->toString(Zend_Date::DATE_SHORT) . '</span>';
+    }
+}
+?>
+                    <span style="float: right;">
+<?php
+if (isset($object->close_datestamp) && $object->close_datestamp &&
+    ((isset($object->close_price) && $object->close_price) || (isset($object->close_temp_price) && $object->close_temp_price))) {
+    $date->set($object->close_datestamp, Zend_Date::ISO_8601);
+    echo '<strong>Closed:</strong> ';
+    echo $date->toString(Zend_Date::DATE_SHORT);
+    echo ' @ ';
+    echo $currency->toCurrency(isset($object->close_price) && $object->close_price ? $object->close_price : $object->close_temp_price);
+    $change = ((isset($object->close_price) && $object->close_price ? $object->close_price : $object->close_temp_price) - (isset($object->open_price) && $object->open_price ? $object->open_price : $object->open_temp_price)) * $object->position;
+    $perc = $change / (isset($object->open_price) && $object->open_price ? $object->open_price : $object->open_temp_price) * 100;
+    echo ' <span';
+    if ($change > 0) { echo ' class="netup"'; }
+    elseif ($change < 0) { echo ' class="netdown"'; }
+    echo '>';
+    #echo $currency->toCurrency($change);
+    echo ' (' . Zend_Locale_Format::toNumber($perc, array('locale' => $this->internal->locale, 'precision' => 2)) . '%)';
+    echo '</span>';
+    #5/22/13 @ $12.33 (+5.88%)';
+}
+else {
+    echo 'Performance: ';
+    $change = ($this->results[3] - (isset($object->open_price) && $object->open_price ? $object->open_price : $object->open_temp_price)) * $object->position;
+    $perc = $change / (isset($object->open_price) && $object->open_price ? $object->open_price : $object->open_temp_price) * 100;
+    echo '<span';
+    if ($change > 0) { echo ' class="netup"'; }
+    elseif ($change < 0) { echo ' class="netdown"'; }
+    echo '>';
+    echo $currency->toCurrency($change);
+    echo ' (' . Zend_Locale_Format::toNumber($perc, array('locale' => $this->internal->locale, 'precision' => 2)) . '%)';
+    echo '</span>';
+}
+?>
+                    </span>
+                </div>
+                <?= (isset($object->title) && $object->title && !preg_match('/^(buy long|sell short)/i', $object->title) ? '<h3>' . $object->title . '</h3>': '') ?>
+                <div>
+<?php 
+    if (isset($object->content) && $object->content) {
+        echo $object->content;
+    }
+    elseif (isset($object->notes) && $object->notes) {
+        echo '<pre style="white-space: pre-wrap; line-height: inherit; font-family: inherit;">' . $this->escape($object->notes) . '</pre>';
+    }
+    else {
+        echo '<div style="margin: 1em 0;"><i>No Comment</i></div>';
+    }
+?>
+                </div>
+                <div class="bottom_links" style="margin-top: 1em; font-size: 10px;">
+                    <?= $this->PrintEmailLink(array('link' => $content_link, 'internal' => $this->internal, 'print_text' => 'Print Rating', 'email_text' => 'Send to a Friend')) ?>
+                    <a href="<?= $content_link ?>" class="the_link_link"><span class="icon"></span><span class="the_link">Link to this Rating</span></a>
+                </div>
+            </td>
+        </tr>
+<?php
+        #Zend_Debug::Dump($object);
+        $counter++;
+    }
+    if ($counter) {
+        // Close table if necesary
+        echo '</table>';
+    }
+    else {
+?>
+    <div style="margin: 2em 0; text-align: center; font-size: 18px; font-weight: bold;">Be the first investor to rate this stock.</div>
+<?php
+    }
+}
+?>
+    <!-- End First Column -->
+    </div></div>
+    <div class="yui3-u-1-3"><div style="padding-left: .25em;">
+    <!-- Begin Second Column -->
+    
+        <div class="cm decorated">
+            <div class="bd" style="padding: 1em;">
+                <p style="margin: 0 0 12px 0; padding: 0; text-align: center; font-size: 180%; font-weight: bold;">Total # Ratings : <span id="tf_total_num_ratings"><?= Zend_Locale_Format::toNumber($rating->total, array('locale' => $this->internal->locale)) ?></span></p>
+                
+                <table align="center" style="font-size: 110%;">
+                    <tr><td align="right"> Total # <strong class="netup">Buy</strong> Ratings : </td><td style="padding-left: .5em;"><span id="tf_total_num_buy_ratings"><?= Zend_Locale_Format::toNumber(($rating->total - (($rating->total - ($rating->total * $rating->rating)) / 2)), array('locale' => $this->internal->locale)) ?><?= ($rating->total) ? ' (' . Zend_Locale_Format::toNumber((($rating->total - (($rating->total - ($rating->total * $rating->rating)) / 2)) / $rating->total * 100), array('locale' => $this->internal->locale, 'precision' => 2)) . '%)' : '' ?></span></td></tr>
+                    <tr><td align="right">Total # <strong class="netdown">Sell</strong> Ratings : </td><td style="padding-left: .5em;"><span id="tf_total_num_sell_ratings"><?= Zend_Locale_Format::toNumber((($rating->total - ($rating->total * $rating->rating)) / 2), array('locale' => $this->internal->locale)) ?><?= ($rating->total) ? ' (' . Zend_Locale_Format::toNumber(((($rating->total - ($rating->total * $rating->rating)) / 2) / $rating->total * 100), array('locale' => $this->internal->locale, 'precision' => 2)) . '%)' : '' ?></span></td></tr>
+                </table>
+                
+            </div>
+        </div>
+        
+<?php
+/* SELECT DATA - Put LIMIT and ORDER on SELECT OUTSIDE of the SELECT with window functions - Flip the order last after limiting
+
+SELECT * FROM (
+    SELECT * FROM
+    (
+        SELECT DISTINCT real_date, AVG(position) OVER (ORDER BY real_date) AS rating, COUNT(NULLIF(position, -1)) OVER (partition BY real_date) AS day_buy, COUNT(NULLIF(position, 1)) OVER (partition by real_date) AS day_sell, COUNT(creation) OVER (PARTITION BY real_date) AS day_total, COUNT(creation) OVER (ORDER BY real_date) AS running_total FROM
+            (
+                SELECT COALESCE(date(n1.creation), n2.date) AS real_date, * FROM
+                    (
+        				SELECT * FROM pick_picks WHERE symbol_id=201
+                    ) n1
+                FULL OUTER JOIN
+                    (
+                        SELECT DATE('now'::timestamp - '30 Days'::interval + (gs::text || '   Days')::interval) AS date FROM generate_series(0, 30) AS gs
+                    ) n2
+                ON date(n1.creation)=n2.date
+                
+            ) sq1
+        ORDER BY real_date
+    ) tt
+    ORDER BY real_date DESC
+    LIMIT 30
+) uu
+ORDER BY real_date
+*/
+?>
+<?php
+if ($rating->total && ($db || $db = Zend_Registry::get('db'))) {
+    $query = "
+SELECT * FROM (
+    SELECT * FROM
+    (
+        SELECT DISTINCT real_date, TO_CHAR(real_date, 'FMMM/FMDD/YYYY') AS real_date_converted, AVG(position) OVER (ORDER BY real_date) AS rating, COUNT(NULLIF(position, -1)) OVER (partition BY real_date) AS day_buy, COUNT(NULLIF(position, 1)) OVER (partition by real_date) AS day_sell, COUNT(this_creation) OVER (PARTITION BY real_date) AS day_total, COUNT(this_creation) OVER (ORDER BY real_date) AS running_total FROM
+            (
+                SELECT COALESCE(n1.date, n2.date) AS real_date, * FROM
+                    (
+        				SELECT date(obj.creation) AS date, obj.creation AS this_creation, * FROM \"pick_picks\" AS \"obj\" INNER JOIN \"module_matrix\" AS \"x\" ON obj.com_id=x.com_id AND obj.net_id=x.net_id AND obj.via_id=x.via_id AND obj.module_id=x.module_id AND obj.matrix_counter=x.counter INNER JOIN \"module_modules\" AS \"m\" ON x.module_id=m.id INNER JOIN \"profile_profiles\" AS \"p\" ON obj.profile_id = p.id INNER JOIN \"member_members\" AS \"b\" ON p.member_id = b.id INNER JOIN \"system_communities\" AS \"c\" ON p.community_id = c.id INNER JOIN \"quote_view_symbol_matrix\" AS \"qx\" ON obj.symbol_id=qx.id WHERE (x.active='t') AND (m.active='t') AND (p.active='t') AND (b.active='t') AND (c.active='t') AND ((obj.com_id='2') OR (m.allow_flow='t' AND x.allow_out_flow AND (obj.net_id = 0 OR (ARRAY[obj.via_id, x.counter] :: text ~ E'()' AND x.allow_community_outflow && ARRAY[2] :: bigint[])))) AND (obj.active='t') AND (obj.activation ISNULL OR obj.activation <= now()) AND (obj.expiration ISNULL OR obj.expiration >= now()) AND (obj.partial_close_parent_id ISNULL) AND (obj.symbol_id=?)
+                    ) n1
+                FULL OUTER JOIN
+                    (
+                        SELECT DATE('now'::timestamp - '30 Days'::interval + (gs::text || '   Days')::interval) AS date FROM generate_series(0, 30) AS gs
+                    ) n2
+                ON n1.date=n2.date
+                
+            ) sq1
+        ORDER BY real_date
+    ) tt
+    ORDER BY real_date DESC
+    LIMIT 30
+) uu
+ORDER BY real_date
+    ";
+    #echo $query;
+    $ratings_data = $db->fetchAll($query, $this->symbol_id);
+    if (count($ratings_data)) {
+?>
+        <div class="cm decorated"><div class="bd" style="padding: 1em;"><p style="margin: 0 0 1em 0; padding: 0;"><strong><?= $current->internal_symbol ?> Ratings History - Last 30 Days</strong></p><div id="ratingchart" style="height: 200px;"></div></div></div>
+<script type="text/javascript">
+(function() {
+    YUI().use('charts', function (Y) 
+    { 
+        var ratingDataValues = [
+<?php
+        foreach ($ratings_data as $data) {
+            echo '{date: "' . $data->real_date_converted. '", sell: ' . $data->day_sell . ', buy: ' . $data->day_buy . ', rating: ' . sprintf("%.2f", (!is_null($data->rating) ? (((($data->rating + 1) / 2 * 9) + 1) / 2) : 0)) . ' },' . "\n";
+        }
+?>
+        ];
+        
+		//Define axes and assign keys
+		var ratingAxes = {
+			count: {
+			    //title: "Count",
+				type: "numeric",
+				position: "right",
+				keys: ["buy", "sell"],
+				type: "stacked",
+				labelFormat: {
+					//prefix:"$",
+					thousandsSeparator: ","
+				},
+				alwaysShowZero: true,
+				//hideLastMajorUnit: true,
+				styles:{
+					label: {
+						fontSize: "10px"
+					}
+				}
+			},
+			rating: {
+			    //title: "Rating",
+				type: "numeric",
+				position: "left",
+				keys: ["rating"],
+				labelFormat: { suffix: " Stars" },
+				alwaysShowZero: true,
+				minimum: 0,
+				maximum: 5.5,
+				majorUnit: 1,
+				minorUnit: 1,
+				hideLastMajorUnit: true,
+				//topTickOffset: 50,
+				styles:{
+					label: {
+						fontSize: "10px"
+					},
+					majorUnit: {
+					    determinant: "count",
+					    count: 12,
+					    //distance: 1
+					}
+				}
+			},
+			date:{
+				calculateEdgeOffset: true,
+				position: "bottom",
+				keys: ["date"],
+				type: "time",
+				styles:{
+					label: {
+						fontSize: "8px",
+						rotation: -45,
+						margin: { top: 3 }
+					}
+				}
+			}
+		};
+	
+		//Define a series collection so that we can assign nice display names
+		var ratingSeries = [
+			{ yKey: "sell", yDisplayName: "# Sell Ratings", xDisplayName: "Date"},
+			{ yKey: "buy", yDisplayName: "# Buy Ratings", xDisplayName: "Date"},
+			{ type: "combo", yKey: "rating", yDisplayName: "Rating", xDisplayName: "Date"}
+		];
+		
+		var ratingchart = new Y.Chart({
+			dataProvider: ratingDataValues,
+			type: "column", 
+			stacked:true,
+			axes: ratingAxes,
+			seriesCollection: ratingSeries,
+			render: "#ratingchart",
+			/*
+			horizontalGridlines: {
+                styles: {
+                    line: {
+                        color: "#dad8c9"
+                    }
+                }
+            },
+            verticalGridlines: {
+                styles: {
+                    line: {
+                        color: "#dad8c9"
+                    }
+                }
+            },
+            */
+			styles: {
+			    graph: {
+			        background: {
+                        fill : {   
+                            //color : "#faf9f2"
+                            
+                        },
+                        border : {
+                            color : "#dad8c9",
+                            weight : 1   
+                        }
+                    }
+			    },
+				series: {
+					sell: {
+						line: {
+							color: "#ca2413"
+						},
+						marker: {
+							fill: {
+								color: "#ca2413"
+							},
+							over: {
+								fill: {
+									color: "#FF0000"
+								}
+							},
+							width: 6
+						}
+					},
+					buy: {
+						line: {
+							color: "#05AB19"
+						},
+						marker: {
+							fill: {
+								color: "#05AB19"
+							},
+							over: {
+								fill: {
+									color: "#00FF00"
+								}
+							},
+							width: 6
+						}
+					},
+					rating: {
+						line:{
+							color: "#ccc",
+							weight: 2
+						},
+						marker:
+						{
+							fill:{
+								color:"#ddd"
+							},
+							border:{
+								color:"#999"
+							},
+							over: {
+								fill: {
+									color: "#eee"
+								},
+								border: {
+									color: "#000"
+								}
+							},
+							width: 4,
+							height: 4
+						}
+					}
+				}
+			}
+		});
+    });
+})();
+</script>
+<?php
+    }
+}
+?>
+
+<?php
+if ($rating->total && ($db || $db = Zend_Registry::get('db'))) {
+    $query = 'SELECT sq.*, random() FROM (SELECT "obj".symbol_id, "qx"."internal_symbol" AS "qx_internal_symbol", "qx"."name" AS "qx_name", "qx"."type" AS "qx_type", "qx"."exch" AS "qx_exch", "qx"."internal_symbol" AS "qx_internal_symbol", "qx"."delayed_symbol" AS "qx_delayed_symbol", "qx"."realtime_symbol" AS "qx_realtime_symbol", COUNT(*) AS rating_total, AVG("obj".position) AS rating_rating, MAX(COALESCE("obj".published, "obj".creation)) AS rating_max_creation FROM "pick_picks" AS "obj" INNER JOIN "module_matrix" AS "x" ON obj.com_id=x.com_id AND obj.net_id=x.net_id AND obj.via_id=x.via_id AND obj.module_id=x.module_id AND obj.matrix_counter=x.counter INNER JOIN "module_modules" AS "m" ON x.module_id=m.id INNER JOIN "profile_profiles" AS "p" ON obj.profile_id = p.id INNER JOIN "member_members" AS "b" ON p.member_id = b.id INNER JOIN "system_communities" AS "c" ON p.community_id = c.id INNER JOIN "quote_view_symbol_matrix" AS "qx" ON obj.symbol_id=qx.id WHERE' .
+        "(x.active='t') AND (m.active='t') AND (p.active='t') AND (b.active='t') AND (c.active='t') AND ((obj.com_id='" . $this->internal->community->id . "') OR (m.allow_flow='t' AND x.allow_out_flow AND (obj.net_id = 0 OR (ARRAY[obj.via_id, x.counter] :: text ~ E'()' AND x.allow_community_outflow && ARRAY[" . $this->internal->community->id . "] :: bigint[])))) AND (obj.active NOTNULL AND ((obj.active='t' AND (obj.activation ISNULL OR obj.activation <= now()) AND (obj.expiration ISNULL OR obj.expiration >= now())))) AND obj.partial_close_parent_id ISNULL AND obj.symbol_id<>'" . $this->symbol_id . "' AND (obj.symbol_id IN (SELECT DISTINCT symbol_id FROM pick_picks WHERE profile_id IN ( SELECT DISTINCT profile_id FROM pick_picks WHERE symbol_id='" . $this->symbol_id . "' ))) GROUP BY " .
+        '"obj".symbol_id, "qx"."symbol", "qx"."name", "qx"."type", "qx"."exch", "qx"."internal_symbol", "qx"."delayed_symbol", "qx"."realtime_symbol") AS sq ORDER BY random() LIMIT 10';
+    $others = $db->fetchAll($query);
+    if (count($others)) {
+        $counter = 0;
+        echo '<div class="cm decorated"><div class="bd"><p><strong>People Who Rated This Stock Also Rated...</strong></p>';
+        foreach ($others as $other) {
+            $other_link = 'http://' . $this->internal->vars->host . '/' . ($other->qx_name ? $this->SEO_Urlify($other->qx_name) . '/s/' : '' ) . 'quote/p/s/' . urlencode($other->qx_internal_symbol) . '/';
+            $the_rating_value = sprintf("%.1f", (intval(($other->rating_rating + 1) / 2 * 9) + 1) / 2);
+        
+            echo "<div style=\"margin: 0 1em;\"><a href=\"$other_link\" class=\"quote_symbol\">" . $this->escape($other->qx_name) . ' (' . $this->escape($other->qx_internal_symbol) . ')</a></div>';
+            #rating_total, rating_rating, rating_max_creation
+            echo '<div style="margin: 0 1em 1em 1.5em; text-align: left; font-size: 11px; line-height: 16px;" class="stock_rating">';
+            echo '<span class="star_rating small stars'.preg_replace('/\./', '-', $the_rating_value).'" style="margin-right: 3px;">'.$the_rating_value.'</span>';
+            echo $other->rating_total . ' Rating(s)';
+            if (isset($other->rating_max_creation) && $other->rating_max_creation) {
+                echo '<span style="float: right;">Last Rated: ';
+                $date->set($other->rating_max_creation, Zend_Date::ISO_8601);
+                echo $date->toString(Zend_Date::DATE_SHORT);
+            }
+            echo '</div>';
+            $counter++;
+        }
+        echo '</div></div>';
+    }
+}
+?>
+
+
+
+<?php
+if ($db || $db = Zend_Registry::get('db')) {
+    $query = 'SELECT "obj".symbol_id, "qx"."internal_symbol" AS "qx_internal_symbol", "qx"."name" AS "qx_name", "qx"."type" AS "qx_type", "qx"."exch" AS "qx_exch", "qx"."internal_symbol" AS "qx_internal_symbol", "qx"."delayed_symbol" AS "qx_delayed_symbol", "qx"."realtime_symbol" AS "qx_realtime_symbol", COUNT(*) AS rating_total, AVG("obj".position) AS rating_rating, MAX(COALESCE("obj".published, "obj".creation)) AS rating_max_creation, '.
+        "COUNT(NULLIF('f', obj.creation > ('now'::timestamp - '7 Days'::interval))) AS ".
+        '"rating_count_recent" FROM "pick_picks" AS "obj" INNER JOIN "module_matrix" AS "x" ON obj.com_id=x.com_id AND obj.net_id=x.net_id AND obj.via_id=x.via_id AND obj.module_id=x.module_id AND obj.matrix_counter=x.counter INNER JOIN "module_modules" AS "m" ON x.module_id=m.id INNER JOIN "profile_profiles" AS "p" ON obj.profile_id = p.id INNER JOIN "member_members" AS "b" ON p.member_id = b.id INNER JOIN "system_communities" AS "c" ON p.community_id = c.id INNER JOIN "quote_view_symbol_matrix" AS "qx" ON obj.symbol_id=qx.id WHERE ' .
+        "(x.active='t') AND (m.active='t') AND (p.active='t') AND (b.active='t') AND (c.active='t') AND ((obj.com_id='" . $this->internal->community->id . "') OR (m.allow_flow='t' AND x.allow_out_flow AND (obj.net_id = 0 OR (ARRAY[obj.via_id, x.counter] :: text ~ E'()' AND x.allow_community_outflow && ARRAY[" . $this->internal->community->id . "] :: bigint[])))) AND (obj.active NOTNULL AND ((obj.active='t' AND (obj.activation ISNULL OR obj.activation <= now()) AND (obj.expiration ISNULL OR obj.expiration >= now())))) AND obj.partial_close_parent_id ISNULL AND obj.symbol_id<>'" . $this->symbol_id . "' GROUP BY " .
+        '"obj".symbol_id, "qx"."symbol", "qx"."name", "qx"."type", "qx"."exch", "qx"."internal_symbol", "qx"."delayed_symbol", "qx"."realtime_symbol" HAVING '.
+        "COUNT(NULLIF('f', obj.creation > ('now'::timestamp - '7 Days'::interval))) > 0 ORDER BY rating_count_recent DESC, rating_max_creation DESC LIMIT 10";
+    $others = $db->fetchAll($query);
+    if (count($others)) {
+        $counter = 0;
+        echo '<div class="cm decorated"><div class="bd" style=""><p><strong>Stocks Trending Up In Ratings Activity...</strong></p>';
+        foreach ($others as $other) {
+            $other_link = 'http://' . $this->internal->vars->host . '/' . ($other->qx_name ? $this->SEO_Urlify($other->qx_name) . '/s/' : '' ) . 'quote/p/s/' . urlencode($other->qx_internal_symbol) . '/';
+            $the_rating_value = sprintf("%.1f", (intval(($other->rating_rating + 1) / 2 * 9) + 1) / 2);
+        
+            echo "<div style=\"margin: 0 1em;\"><a href=\"$other_link\" class=\"quote_symbol\">" . $this->escape($other->qx_name) . ' (' . $this->escape($other->qx_internal_symbol) . ')</a></div>';
+            #rating_total, rating_rating, rating_max_creation
+            echo '<div style="margin: 0 1em 1em 1.5em; text-align: left; font-size: 11px; line-height: 16px;" class="stock_rating">';
+            echo '<span class="star_rating small stars'.preg_replace('/\./', '-', $the_rating_value).'" style="margin-right: 3px;">'.$the_rating_value.'</span>';
+            echo $other->rating_total . ' Rating(s)';
+            if (isset($other->rating_max_creation) && $other->rating_max_creation) {
+                echo '<span style="float: right;">Last Rated: ';
+                $date->set($other->rating_max_creation, Zend_Date::ISO_8601);
+                echo $date->toString(Zend_Date::DATE_SHORT);
+            }
+            echo '</div>';
+            $counter++;
+        }
+        echo '</div></div>';
+    }
+}
+?>
+        
+        
+        
+    <!-- End Second Column -->
+    </div></div>
+</div>
+<!-- End Rating -->
+<hr />
+
+
+
+
+<div class="yui3-g">
+    <div class="yui3-u-2-3"><div style="margin-right: .25em;">
+
+
+        
+
+<div class="more_stuff">
+<?php
+if (isset($this->symbol_data->report_url) && $this->symbol_data->report_url) {
+    echo '<a href="' . $this->symbol_data->report_url . '" class="report">Download ' . $current->internal_symbol . ' Research Report</a>';
+}
+        
+if (isset($this->symbol_data->qfm_following) && $this->symbol_data->qfm_following) {
+    echo '<a href="/quote/qfirmc/follow/unfollow/1/s/' . $this->symbol_id . '/" rel="nofollow" class="mailing_list">UnFollow Stock Symbol ' . $current->internal_symbol . "</a>";
+}
+else {
+    echo '<a href="/quote/qfirmc/follow/s/' . $this->symbol_id . '/" rel="nofollow" class="mailing_list">Follow Stock Symbol ' . $current->internal_symbol . "</a>";
+}
+?>
+
+
+
+<?php /*
+    <a id="show_more_info_dialog" href="javascript:void(null);">Request More Information on the Company</a>
+    <div id="more_info_dialog" style="display: none;">
+        <div class="hd">Please Send More Information</div>
+        <div class="bd">
+            <form method="POST" action="/quote/qrirrmi/p/no_layout/1/symbol/<?= $current->internal_symbol ?>/id/<?= $this->symbol_id ?>/">
+                <input type="hidden" name="vmpd_npr" value="1" />
+                <input type="hidden" name="qrirfq" value="0" />
+                <label for="qrirn">Your Name:</label><input type="text" name="qrirn" value="<?= trim(isset($this->internal->member) ? $this->internal->member->first_name . ' ' . $this->internal->member->middle_name . ' ' . $this->internal->member->last_name : '') ?>" />
+                <label for="qrire">E-mail:</label><input type="text" name="qrire" value="<?= (isset($this->internal->member) ? $this->internal->member->email : '') ?>" />
+                <label for="qrirp">Phone #:</label><input type="text" name="qrirp" value="" />
+                <label for="textarea" style="margin-bottom: 0;" for="qrirm">Message:</label><textarea name="qrirm">Please send me more information on <?= $current->name ?> (<?= $current->internal_symbol ?>).</textarea>
+            </form>
+        </div>
+    </div>
+<?php $this->inlineScript()->captureStart(); ?>
+YAHOO.util.Event.onDOMReady(function () {
+	YAHOO.namespace("viame.quote.more_info");
+	    
+	var handleSubmit = function() {
+	    this.form.elements['qrirfq'].value = 1;
+	    this.submit();
+	};
+	var handleCancel = function() {	this.cancel(); };
+	var handleSuccess = function(o) {
+	    //YAHOO.viame.quote.more_info.dialog.body.innerHTML = '<p align="center" style="margin-bottom: 0;">Thank you for your submission.<br />Somebody will respond to you shortly.</p>';
+		YAHOO.viame.quote.more_info.dialog.body.innerHTML = '<p align="center" style="margin-bottom: 0;">' + o.responseText + '</p>';
+		YAHOO.viame.quote.more_info.dialog.footer.parentElement.removeChild(YAHOO.viame.quote.more_info.dialog.footer);
+		setTimeout("YAHOO.viame.quote.more_info.dialog.hide()", 4000);
+	};
+	var handleFailure = function(o) {
+		YAHOO.viame.quote.more_info.dialog.body.innerHTML = '<p align="center" style="margin-bottom: 0;">Your request has failed.<br />Please try again later.</p>';
+		YAHOO.viame.quote.more_info.dialog.footer.parentElement.removeChild(YAHOO.viame.quote.more_info.dialog.footer);
+		setTimeout("YAHOO.viame.quote.more_info.dialog.hide()", 4000);
+	};
+
+	// Instantiate the Dialog
+	YAHOO.viame.quote.more_info.dialog = new YAHOO.widget.Dialog("more_info_dialog", 
+							{ width : "22em",
+							  fixedcenter : false,
+							  visible : false, 
+							  constraintoviewport : true,
+							  hideaftersubmit: false,
+							  buttons : [ { text:"Submit", handler:handleSubmit, isDefault:true },
+								      { text:"Cancel", handler:handleCancel } ]
+							});
+	YAHOO.util.Dom.setStyle(YAHOO.viame.quote.more_info.dialog.id, 'display', 'block');
+	
+	// Validate the entries in the form to require that both first and last name are entered
+	YAHOO.viame.quote.more_info.dialog.validate = function() {
+		var data = this.getData();
+		if (data.qrirn == "" || data.qrire == "" || data.qrirp == "") {
+			alert("Please enter your name, email and phone #.");
+			return false;
+		} else {
+			return true;
+		}
+	};
+	
+	YAHOO.viame.quote.more_info.dialog.callback = { success: handleSuccess, failure: handleFailure };
+	
+	// Render the Dialog
+	YAHOO.viame.quote.more_info.dialog.render();
+	
+	YAHOO.viame.quote.more_info.dialog.show_more_info = function(e) {
+		var tar = YAHOO.util.Event.getTarget(e);
+		YAHOO.viame.quote.more_info.dialog.cfg.setProperty("context", [tar, "tl", "bl"]);
+		YAHOO.viame.quote.more_info.dialog.show();
+	}
+	
+	YAHOO.util.Event.addListener("show_more_info_dialog", "click", YAHOO.viame.quote.more_info.dialog.show_more_info);
+});
+<?php $this->inlineScript()->captureEnd(); ?>
+*/ ?>
+
+
+</div>
+
+
+
+
+<h2><?= $current->exchdisp ?>: <?= $current->internal_symbol ?> Stock Quote</h2>
+<table class="quote_table">
+    <tbody>
+        <tr class="first even">
+            <td class="col1">Last Trade:</td>
+            <td class="col2"><big><?= Zend_Locale_Format::toNumber($this->results[3], array('locale' => $this->internal->locale)) ?></big></td>
+            <td class="col3">&nbsp;</td>
+            <td class="col4">Day's Range:</td>
+            <td class="col5"><?= Zend_Locale_Format::toNumber($this->results[4], array('locale' => $this->internal->locale)) ?> - <?= Zend_Locale_Format::toNumber($this->results[5], array('locale' => $this->internal->locale)) ?></td>
+        </tr>
+        <tr class="odd">
+            <td class="col1">Trade Time:</td>
+            <td class="col2"><?= $this->results[6] ?></td>
+            <td class="col3">&nbsp;</td>
+            <td class="col4">52wk Range:</td>
+            <td class="col5"><?= Zend_Locale_Format::toNumber($this->results[7], array('locale' => $this->internal->locale)) ?> - <?= Zend_Locale_Format::toNumber($this->results[8], array('locale' => $this->internal->locale)) ?></td>
+        </tr>
+        <tr class="even">
+            <td class="col1">Change:</td>
+            <td class="col2"><span<?= ($this->results[9] > 0 ? ' class="uptick"' : ($this->results[9] < 0 ? ' class="downtick"' : '')) ?>><?= Zend_Locale_Format::toNumber($this->results[9], array('locale' => $this->internal->locale)) ?> (<?= $this->results[10] ?>)</span></td>
+            <td class="col3">&nbsp;</td>
+            <td class="col4">Volume:</td>
+            <td class="col5"><?= Zend_Locale_Format::toNumber($this->results[11], array('locale' => $this->internal->locale)) ?></td>
+        </tr>
+        <tr class="odd">
+            <td class="col1">Prev Close:</td>
+            <td class="col2"><?= Zend_Locale_Format::toNumber($this->results[12], array('locale' => $this->internal->locale)) ?></td>
+            <td class="col3">&nbsp;</td>
+            <td class="col4">Avg Vol <span class="small">(3m):</td>
+            <td class="col5"><?= Zend_Locale_Format::toNumber($this->results[13], array('locale' => $this->internal->locale)) ?></td>
+        </tr>
+        <tr class="even">
+            <td class="col1">Open:</td>
+            <td class="col2"><?= Zend_Locale_Format::toNumber($this->results[14], array('locale' => $this->internal->locale)) ?></td>
+            <td class="col3">&nbsp;</td>
+            <td class="col4">Market Cap:</td>
+            <td class="col5"><?= $this->results[15] ?></td>
+        </tr>
+        <tr class="odd">
+            <td class="col1">Bid:</td>
+            <td class="col2"><?= Zend_Locale_Format::toNumber($this->results[16], array('locale' => $this->internal->locale)) ?><small> x <?= Zend_Locale_Format::toNumber($this->results[17], array('locale' => $this->internal->locale)) ?></small></td>
+            <td class="col3">&nbsp;</td>
+            <td class="col4">P/E <small>(ttm):</small></td>
+            <td class="col5"><?= Zend_Locale_Format::toNumber($this->results[18], array('locale' => $this->internal->locale)) ?></td>
+        </tr>
+        <tr class="even">
+            <td class="col1">Ask:</td>
+            <td class="col2"><?= Zend_Locale_Format::toNumber($this->results[19], array('locale' => $this->internal->locale)) ?><small> x <?= Zend_Locale_Format::toNumber($this->results[20], array('locale' => $this->internal->locale)) ?></small></td>
+            <td class="col3">&nbsp;</td>
+            <td class="col4">EPS <small>(ttm):</small></td>
+            <td class="col5"><?= Zend_Locale_Format::toNumber($this->results[21], array('locale' => $this->internal->locale)) ?></td>
+        </tr>
+        <tr class="last odd">
+            <td class="col1">1y Target Est:</td>
+            <td class="col2"><?= Zend_Locale_Format::toNumber($this->results[22], array('locale' => $this->internal->locale)) ?></td>
+            <td class="col3">&nbsp;</td>
+            <td class="col4">Div &amp; Yield:</td>
+            <td class="col5"><?= Zend_Locale_Format::toNumber($this->results[23], array('locale' => $this->internal->locale)) ?> (<?= Zend_Locale_Format::toNumber($this->results[24], array('locale' => $this->internal->locale)) ?>)</td>
+        </tr>
+    </tbody>
+</table>
+
+<?php /*
+<p style="text-align: center; margin-top: 1em;"><iframe src="http://cdn.investingchannel.com/bw_600x55.html?s=smallcapnetwork" scrolling="no" width="600" height="55" frameborder="0"></iframe></p>
+<p style="text-align: center; margin-top: 1em;"><iframe src="http://cdn.investingchannel.com/quote_widget_4.html?s=smallcapnetwork " scrolling="no" width="600" height="70" frameborder="0"></iframe></p>
+*/ ?>
+
+<hr />
+
+<script type="text/javascript">
+    var page_count = 'off';
+    if (typeof OAS_rdl == 'undefined') {
+        var OAS_rdl = '';
+        var OAS_CA = '';
+        page_count = 'on';
+        document.write('<script type="text/javascript" src="http://oasc17.247realmedia.com/Scripts/oas_analytics.js"></scr' + 'ipt>');
+    } 
+</script>
+<table width="100%"><tr>
+    <td align="center" valign="middle" style="text-align: center; vertical-align: middle;">
+<!--Include OAS Analytics Setup Script 120x60 Position1-->
+<script type="text/javascript">
+    var OAS_url = 'http://oascentral.investingmediasolutions.com';
+    var OAS_sitepage = 'smallcapnetworkbutton/quotes';
+    var OAS_pos = 'Position1,Position2,Position3,Position4!Position1';
+    var OAS_searchterms = '';
+    var OAS_taxonomy = '';
+    if (typeof OAS_RNS == 'undefined'){
+        var OAS_RN = new String (Math.random());
+        var OAS_RNS = OAS_RN.substring(2, 11);
+    }
+    if (OAS_searchterms != '') { OAS_searchterms += '&'; }
+    if (OAS_taxonomy != '') { OAS_taxonomy = '&' + OAS_taxonomy; }
+    if (page_count != 'on') { OAS_taxonomy = '&oas_pv=no_analytics' + OAS_taxonomy; }
+    document.write('<script type="text/javascript" src="' + OAS_url + '/RealMedia/ads/adstream_jx.ads/' + OAS_sitepage + '/1' + OAS_RNS + '@' + OAS_pos + '?' + OAS_searchterms + 'XE' + OAS_taxonomy + OAS_rdl + '&if_nt_CookieAccept=' + OAS_CA + '&XE"></scr' + 'ipt>');
+</script>
+    </td>
+    <td align="center" valign="middle" style="text-align: center; vertical-align: middle;">
+<script type="text/javascript">
+    var OAS_url = 'http://oascentral.investingmediasolutions.com';
+    var OAS_sitepage = 'smallcapnetworkbutton/quotes';
+    var OAS_pos = 'Position1,Position2,Position3,Position4!Position2';
+    var OAS_searchterms = '';
+    var OAS_taxonomy = '';
+    if (typeof OAS_RNS == 'undefined'){
+        var OAS_RN = new String (Math.random());
+        var OAS_RNS = OAS_RN.substring(2, 11);
+    }
+    if (OAS_searchterms != '') { OAS_searchterms += '&'; }
+    if (OAS_taxonomy != '') { OAS_taxonomy = '&' + OAS_taxonomy; }
+    if (page_count != 'on') { OAS_taxonomy = '&oas_pv=no_analytics' + OAS_taxonomy; }
+    document.write('<script type="text/javascript" src="' + OAS_url + '/RealMedia/ads/adstream_jx.ads/' + OAS_sitepage + '/1' + OAS_RNS + '@' + OAS_pos + '?' + OAS_searchterms + 'XE' + OAS_taxonomy + OAS_rdl + '&if_nt_CookieAccept=' + OAS_CA + '&XE"></scr' + 'ipt>');
+</script>
+    </td>
+    <td align="center" valign="middle" style="text-align: center; vertical-align: middle;">
+<script type="text/javascript">
+    var OAS_url = 'http://oascentral.investingmediasolutions.com';
+    var OAS_sitepage = 'smallcapnetworkbutton/quotes';
+    var OAS_pos = 'Position1,Position2,Position3,Position4!Position3';
+    var OAS_searchterms = '';
+    var OAS_taxonomy = '';
+    if (typeof OAS_RNS == 'undefined'){
+        var OAS_RN = new String (Math.random());
+        var OAS_RNS = OAS_RN.substring(2, 11);
+    }
+    if (OAS_searchterms != '') { OAS_searchterms += '&'; }
+    if (OAS_taxonomy != '') { OAS_taxonomy = '&' + OAS_taxonomy; }
+    if (page_count != 'on') { OAS_taxonomy = '&oas_pv=no_analytics' + OAS_taxonomy; }
+    document.write('<script type="text/javascript" src="' + OAS_url + '/RealMedia/ads/adstream_jx.ads/' + OAS_sitepage + '/1' + OAS_RNS + '@' + OAS_pos + '?' + OAS_searchterms + 'XE' + OAS_taxonomy + OAS_rdl + '&if_nt_CookieAccept=' + OAS_CA + '&XE"></scr' + 'ipt>');
+</script>
+    </td>
+    <td align="center" valign="middle" style="text-align: center; vertical-align: middle;">
+<script type="text/javascript">
+    var OAS_url = 'http://oascentral.investingmediasolutions.com';
+    var OAS_sitepage = 'smallcapnetworkbutton/quotes';
+    var OAS_pos = 'Position1,Position2,Position3,Position4!Position4';
+    var OAS_searchterms = '';
+    var OAS_taxonomy = '';
+    if (typeof OAS_RNS == 'undefined'){
+        var OAS_RN = new String (Math.random());
+        var OAS_RNS = OAS_RN.substring(2, 11);
+    }
+    if (OAS_searchterms != '') { OAS_searchterms += '&'; }
+    if (OAS_taxonomy != '') { OAS_taxonomy = '&' + OAS_taxonomy; }
+    if (page_count != 'on') { OAS_taxonomy = '&oas_pv=no_analytics' + OAS_taxonomy; }
+    document.write('<script type="text/javascript" src="' + OAS_url + '/RealMedia/ads/adstream_jx.ads/' + OAS_sitepage + '/1' + OAS_RNS + '@' + OAS_pos + '?' + OAS_searchterms + 'XE' + OAS_taxonomy + OAS_rdl + '&if_nt_CookieAccept=' + OAS_CA + '&XE"></scr' + 'ipt>');
+</script>
+    </td>
+</tr></table>
+
+<hr style="margin-top: 1em;" />
+
+<?php if (isset($this->symbol_data->description) && $this->symbol_data->description) { ?>
+    <p class="description">
+        <h2><?= $current->exchdisp ?>: <?= $current->internal_symbol ?> Overview<?= ($this->symbol_data->website_url ? ' - <a href="' . $this->symbol_data->website_url . '" rel="nofollow" target="_blank">Company Website</a>' : '') ?></h2></p>
+<?php 
+    if ($this->symbol_data->logo_url) {
+        if ($this->symbol_data->website_url) {
+            echo '<a href="' . $this->symbol_data->website_url . '" rel="nofollow" target="_blank">';
+        }
+        echo '<img src="' . $this->symbol_data->logo_url . '" align="right" style="float: right; margin: 0 0 5px 10px;" />';
+        if ($this->symbol_data->website_url) {
+            echo '</a>';
+        }
+    }
+?>
+        <div style="padding-left: 1em;">
+        <?= $this->symbol_data->description ?>
+        </div>
+    </p>
+    <hr style="clear: both;" />
+<?php } ?>
+
+
+        <div class="yui3-g">
+            <div class="yui3-u-1-2"><div style="margin-right: .25em;">
+
+<?php
+// Comments
+$this->placeholder('temp')->captureStart();
+?>
+<div>
+<?php if (isset($this->internal->member)) { ?>
+<form id="quote_comment_form" enctype="application/x-www-form-urlencoded" method="post" class="form" action="" onsubmit="return (YAHOO.viame.vivin_regula.validate(this, { groups: [regula.Group.quote_comment_form] }) && YAHOO.viame.dubsub.check(this));">
+    <dl class="zend_form">
+        <dt id="comment-label"><label for="comment" class="required">Comment or Rumor</label></dt>
+        <dd id="comment-element" style="margin: 0;">        
+            <textarea name="comment" id="comment" data-constraints='@Required(label="comment", message="The {label} cannot be empty.", groups=[quote_comment_form])' class="regula-validation vmfh_expandable_textarea" onkeyup="YAHOO.viame.textarea_limiter.check(this, 256);" maxheight="64" minheight="32" style="height: 2em;"></textarea>
+            <p class="description">256 character(s) remaining</p>
+        </dd>
+        <dd id="buttons-element">
+            <fieldset id="fieldset-buttons" style="margin: 3px 0 0 0;"><dl>
+                <dt id="submit-label">&nbsp;</dt><dd id="submit-element">
+                <input type="submit" value="Post Comment" id="submit" name="submit" class="red"></dd>
+            </dl></fieldset>
+        </dd>
+    </dl>
+</form>
+
+<?php } else { ?>
+<div style="font-weight: bold; text-align: center;">Please <a href="/member/login/p/signup_entrance/SHQ-Comment/" rel="nofollow" onclick="return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/signup_entrance/SHQ-Comment/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false });">sign-in</a> to post a comment, or <a href="/member/register/p/signup_entrance/SHQ-Comment/" rel="nofollow">register</a> for a free <?= ($this->internal->community->display ? $this->internal->community->display : $this->internal->community->name) ?> account.</div>
+<?php } ?>
+</div>
+<?php
+// List the Comments
+if (isset($this->comments) && $this->comments) {
+    $counter = 0;
+    
+    foreach ($this->comments as $comment) {
+        $counter++;
+?>
+<div class="<?= ($counter % 2) ? 'odd' : 'even' ?><?= ($counter == 1) ? ' firstitem' : (($counter == count($this->comments)) ? ' lastitem' : '') ?>">
+    <div class="comment" style="white-space: pre; white-space: pre-wrap; white-space: pre-line; white-space: -pre-wrap; white-space: -o-pre-wrap; white-space: -moz-pre-wrap; white-space: -hp-pre-wrap; word-wrap: break-word;"><?= $this->escape($comment->content) ?></div>
+    <div class="author" style="border: none; margin-top: .5em;">By <?= $this->ProfileDisplay(array('profile' => $comment, 'internal' => $this->internal)) ?></div>
+    <div class="datetime" style="text-align: right; margin-top: .5em;">[
+<?php
+    $date = new Zend_Date();
+    $date->set($comment->creation, Zend_Date::ISO_8601);
+    
+    if ((time() - $date->get(Zend_Date::TIMESTAMP)) < 3600) {
+        echo sprintf("%d minute(s) ago", ((time() - $date->get(Zend_Date::TIMESTAMP)) / 60));
+    }
+    else {
+        if (isset($this->internal->member)) {
+            $date->setTimezone($this->internal->member->timezone);
+            echo $date->toString(Zend_Date::DATE_SHORT . ' ' . Zend_Date::TIME_SHORT);
+        }
+        else {
+            $date->setTimezone($this->internal->config->timezone);
+            echo $date->toString(Zend_Date::DATE_SHORT . ' ' . Zend_Date::TIME_SHORT . ' z');
+        }
+    }
+?>
+    ]</div>
+</div>
+<?php
+    }
+}
+?>
+<?php
+$this->placeholder('temp')->captureEnd();
+echo $this->CM(array(
+    'class' => 'cm decorated widget m_quote_comment',
+    'hd' => 'Comments &amp; Rumors On ' . $current->internal_symbol,
+    'bd' => $this->placeholder('temp'),
+    'ft' => '<span class="addicon"></span>Have something to say about ' . $current->internal_symbol . '? Just type something in the box above.'
+));
+$this->placeholder('temp')->set(null);
+?>
+
+<?php
+// Analysis
+$tmp_widget = new StdClass;
+$tmp_widget->interactive = true;
+$tmp_widget->widget_hide_summary = true;
+
+echo $this->CM(array(
+    'class' => 'cm decorated widget m_analysis',
+    'hd' => 'Member Analysis Of ' . $current->internal_symbol,
+    'bd' => $this->partial('widget/index.phtml', 'analysis', array('module' => 'analysis', 'objects' => $this->analysis, 'widget' => $tmp_widget, 'masked' => false, 'internal' => $this->internal)),
+    'ft' => '<a href="/module/setup/publish/module_name/analysis/extra_params/symbols%3D' . $current->internal_symbol . '/" rel="nofollow" title="Analysis"><span class="addicon"></span>Publish an analysis on ' . $current->internal_symbol . '</a>',
+    'ft2' => (count($this->analysis) >= 10 ? '<a href="/' . $this->SEO_Urlify($current->name) . '/s/analysis/p/symbol/' . $this->SEO_Urlify($current->internal_symbol) . '/">More</a>' : ''),
+    'extra' => '<a href="/' . $this->SEO_Urlify($current->name) . '/s/system/widget/symbol/p/symbol/' . $this->SEO_Urlify($current->internal_symbol) . '/mid/18/format/rss/" rel="nofollow" title="' . $current->name . ' Feed" class="feeder">Analysis</a>'
+));
+?>
+
+<?php
+// File
+$tmp_widget = new StdClass;
+$tmp_widget->interactive = true;
+$tmp_widget->widget_hide_summary = false;
+
+echo $this->CM(array(
+    'class' => 'cm decorated widget m_file',
+    'hd' => $current->internal_symbol . ' Research Media',
+    'bd' => $this->partial('widget/index.phtml', 'file', array('module' => 'file', 'objects' => $this->files, 'widget' => $tmp_widget, 'masked' => false, 'internal' => $this->internal)),
+    'ft' => '<a href="/module/setup/publish/module_name/file/extra_params/symbols%3D' . $current->internal_symbol . '/" rel="nofollow" title="File"><span class="addicon"></span>Upload media on ' . $current->internal_symbol . '</a>',
+    'ft2' => (count($this->files) >= 10 ? '<a href="/' . $this->SEO_Urlify($current->name) . '/s/file/p/symbol/' . $this->SEO_Urlify($current->internal_symbol) . '/">More</a>' : ''),
+    'extra' => '<a href="/' . $this->SEO_Urlify($current->name) . '/s/system/widget/symbol/p/symbol/' . $this->SEO_Urlify($current->internal_symbol) . '/mid/12/format/rss/" rel="nofollow" title="' . $current->name . ' Feed" class="feeder">File</a>'
+));
+?>
+
+            </div></div>
+            <div class="yui3-u-1-2"><div style="margin-left: .25em;">
+            
+<?php
+// Articles
+$tmp_widget = new StdClass;
+$tmp_widget->interactive = true;
+$tmp_widget->widget_hide_summary = true;
+
+echo $this->CM(array(
+    'class' => 'cm decorated widget m_article',
+    'hd' => 'Member Articles On ' . $current->internal_symbol,
+    'bd' => $this->partial('widget/index.phtml', 'article', array('module' => 'article', 'objects' => $this->articles, 'widget' => $tmp_widget, 'masked' => false, 'internal' => $this->internal)),
+    'ft' => '<a href="/module/setup/publish/module_name/article/extra_params/symbols%3D' . $current->internal_symbol . '/" rel="nofollow" title="Article"><span class="addicon"></span>Write an article on ' . $current->internal_symbol . '</a>',
+    'ft2' => (count($this->articles) >= 10 ? '<a href="/' . $this->SEO_Urlify($current->name) . '/s/article/p/symbol/' . $this->SEO_Urlify($current->internal_symbol) . '/">More</a>' : ''),
+    'extra' => '<a href="/' . $this->SEO_Urlify($current->name) . '/s/system/widget/symbol/p/symbol/' . $this->SEO_Urlify($current->internal_symbol) . '/mid/15/format/rss/" rel="nofollow" title="' . $current->name . ' Feed" class="feeder">Article</a>'
+));
+?>
+
+<?php
+// Messages
+$tmp_widget = new StdClass;
+$tmp_widget->interactive = true;
+$tmp_widget->widget_hide_summary = true;
+
+echo $this->CM(array(
+    'class' => 'cm decorated widget m_message',
+    'hd' => 'Message Board Posts On ' . $current->internal_symbol,
+    'bd' => $this->partial('widget/index.phtml', 'message', array('module' => 'message', 'objects' => $this->messages, 'widget' => $tmp_widget, 'masked' => false, 'internal' => $this->internal)),
+    'ft' => '<a href="/module/setup/publish/module_name/message/extra_params/symbols%3D' . $current->internal_symbol . '/" rel="nofollow" title="Board"><span class="addicon"></span>Create a message board post on ' . $current->internal_symbol . '</a>',
+    'ft2' => (count($this->messages) >= 10 ? '<a href="/' . $this->SEO_Urlify($current->name) . '/s/message/p/symbol/' . $this->SEO_Urlify($current->internal_symbol) . '/">More</a>' : ''),
+    'extra' => '<a href="/' . $this->SEO_Urlify($current->name) . '/s/system/widget/symbol/p/symbol/' . $this->SEO_Urlify($current->internal_symbol) . '/mid/21/format/rss/" rel="nofollow" title="' . $current->name . ' Feed" class="feeder">Message</a>'
+));
+?>
+            
+            </div></div>
+        </div>
+
+    </div></div>
+    <div class="yui3-u-1-3"><div style="margin-left: .25em;">
+
+
+<div>
+<!--Include OAS Analytics Setup Script Text link 300x30 Position1-->
+<script type="text/javascript">
+    var page_count = 'off';
+    if (typeof OAS_rdl == 'undefined') {
+        var OAS_rdl = '';
+        var OAS_CA = '';
+        page_count = 'on';
+        document.write('<script type="text/javascript" src="http://oasc17.247realmedia.com/Scripts/oas_analytics.js"></scr' + 'ipt>');
+    } 
+</script>
+<script type="text/javascript">
+    var OAS_url = 'http://oascentral.investingmediasolutions.com';
+    var OAS_sitepage = 'smallcapnetworkbutton/quotes';
+    var OAS_pos = 'x13!x13';
+    var OAS_searchterms = '';
+    var OAS_taxonomy = '';
+    if (typeof OAS_RNS == 'undefined'){
+        var OAS_RN = new String (Math.random());
+        var OAS_RNS = OAS_RN.substring(2, 11);
+    }
+    if (OAS_searchterms != '') { OAS_searchterms += '&'; }
+    if (OAS_taxonomy != '') { OAS_taxonomy = '&' + OAS_taxonomy; }
+    if (page_count != 'on') { OAS_taxonomy = '&oas_pv=no_analytics' + OAS_taxonomy; }
+    document.write('<script type="text/javascript" src="' + OAS_url + '/RealMedia/ads/adstream_jx.ads/' + OAS_sitepage + '/1' + OAS_RNS + '@' + OAS_pos + '?' + OAS_searchterms + 'XE' + OAS_taxonomy + OAS_rdl + '&if_nt_CookieAccept=' + OAS_CA + '&XE"></scr' + 'ipt>');
+</script>
+</div>
+
+<p style="text-align: center;"><img src="http://chart.finance.yahoo.com/t?lang=en-US&amp;region=US&amp;width=300&amp;height=180&amp;s=<?= $dtick ?>" alt="" /></p>
+
+<?php if ($current->internal_symbol == 'AAGC') { ?>
+<p style="text-align: center;" style="z-index: 0;">
+   <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="280" height="178" id="viddler_f6b522ce" style="z-index: 0;">
+   <param name="movie" value="http://www.viddler.com/simple/f6b522ce/" />
+   <param name="allowScriptAccess" value="always" />
+   <param name="allowFullScreen" value="true" />
+   <param name="WMODE" value="transparent"> 
+   <embed src="http://www.viddler.com/simple/f6b522ce/" width="280" height="178" type="application/x-shockwave-flash" allowScriptAccess="always" allowFullScreen="true" WMODE="transparent" name="viddler_f6b522ce" style="z-index: 0;"></embed>
+   </object>
+</p>
+<?php } elseif ($current->internal_symbol == 'AHRO') {?>
+<p style="font-size: 130%; padding: 1em .5em; border-top: 1px solid #dadee5; border-bottom: 1px solid #dadee5;"><strong>Investor Relations:</strong><br />Jeff Ramson<br />ProActive Capital Resources Group<br />(212) 792-4294</p>
+<p style="text-align: center;" style="z-index: 0;"><object style="height: 182px; width: 300px;"><param name="movie" value="http://www.youtube.com/v/iP3DydQI3DA?version=3&feature=player_profilepage&autohide=1"><param name="allowFullScreen" value="true"><param name="allowScriptAccess" value="always"><param name="wmode" value="opaque" /><embed src="http://www.youtube.com/v/iP3DydQI3DA?version=3&feature=player_profilepage&autohide=1" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="always" width="300" height="182" wmode="opaque"></object></p>
+
+<p style="text-align: center;" style="z-index: 0;"><object style="height: 182px; width: 300px;"><param name="movie" value="http://www.youtube.com/v/IW_8VJHBRrA?version=3&feature=player_profilepage&autohide=1"><param name="allowFullScreen" value="true"><param name="allowScriptAccess" value="always"><param name="wmode" value="opaque" /><embed src="http://www.youtube.com/v/IW_8VJHBRrA?version=3&feature=player_profilepage&autohide=1" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="always" width="300" height="182" wmode="opaque"></object></p>
+<?php } elseif ($current->internal_symbol == 'BBLU') {?>
+<p style="font-size: 130%; padding: 1em .5em; border-top: 1px solid #dadee5; border-bottom: 1px solid #dadee5;"><strong>Investor Relations:</strong><br />John C. Francis<br />Vice President<br />Blue Earth, Inc.<br />(702) 263-1808 x103<br /><a href="mailto:jfrancis@blueearthinc.com">jfrancis@blueearthinc.com</a></p>
+<?php } elseif ($current->internal_symbol == 'MFON') {?>
+<p style="font-size: 130%; padding: 1em .5em; border-top: 1px solid #dadee5; border-bottom: 1px solid #dadee5;"><strong>Investor Relations:</strong><br />Ted Haberfield<br />Managing Partner<br />MZ North America<br />(760) 755-2716<br /><a href="http://www2.marketwire.com/mw/emailprcntct?id=6CCB7C90D980AC8C">Email Contact</a><br /><a href="http://www.mz-ir.com/">http://www.mz-ir.com/</a></p>
+<?php } elseif ($current->internal_symbol == 'CDXC') {?>
+<p style="text-align: center;" style="z-index: 0;"><object style="height: 182px; width: 300px;"><param name="movie" value="http://www.youtube.com/v/VO1Z58yUN0Q?version=3&feature=player_profilepage&autohide=1"><param name="allowFullScreen" value="true"><param name="allowScriptAccess" value="always"><param name="wmode" value="opaque" /><embed src="http://www.youtube.com/v/VO1Z58yUN0Q?version=3&feature=player_profilepage&autohide=1" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="always" width="300" height="182" wmode="opaque"></object></p>
+<?php } ?>
+
+<p style="text-align: center;"><iframe scrolling="no" height="352" frameborder="0" width="202" padding="0" src="http://trading.stockusa.com/QuoteSnapshot/Default.aspx?w=200&a=31b289fa-f7b0-4196-8150-07b2bd74a906&t=white&l=blue&s=<?= $tick ?>"></iframe></p>
+
+<?php /*
+<p style="text-align: center;"><iframe src="http://cdn.investingchannel.com/bw_300x260.html?s=smallcapnetwork" scrolling="no" width="300" height="250" frameborder="0"></iframe></p>
+*/ ?>
+
+<?php
+// Blogs
+$tmp_widget = new StdClass;
+$tmp_widget->interactive = true;
+$tmp_widget->widget_hide_summary = true;
+
+echo $this->CM(array(
+    'class' => 'cm decorated widget m_blog',
+    'hd' => 'Member Blog Posts On ' . $current->internal_symbol,
+    'bd' => $this->partial('widget/index.phtml', 'blog', array('module' => 'blog', 'objects' => $this->blogs, 'widget' => $tmp_widget, 'masked' => false, 'internal' => $this->internal)),
+    'ft' => '<a href="/module/setup/publish/module_name/blog/extra_params/symbols%3D' . $current->internal_symbol . '/" rel="nofollow" title="Blog"><span class="addicon"></span>Create a blog post on ' . $current->internal_symbol . '</a>',
+    'ft2' => (count($this->blogs) >= 10 ? '<a href="/' . $this->SEO_Urlify($current->name) . '/s/blog/p/symbol/' . $this->SEO_Urlify($current->internal_symbol) . '/">More</a>' : ''),
+    'extra' => '<a href="/' . $this->SEO_Urlify($current->name) . '/s/system/widget/symbol/p/symbol/' . $this->SEO_Urlify($current->internal_symbol) . '/mid/22/format/rss/" rel="nofollow" title="' . $current->name . ' Feed" class="feeder">Blog</a>'
+));
+?>
+
+<?php
+// Picks
+$remap = array();
+$tmp_widget = new StdClass;
+$tmp_widget->interactive = true;
+$tmp_widget->widget_hide_summary = true;
+
+$pick_bd = '';
+if (count($this->picks)) {
+    $remap[$this->picks[0]->symbol_id] = new StdClass;
+    #$remap[$this->picks[0]->symbol_id]->last = $this->quote_data[$this->picks[0]->qx_internal_symbol][1];
+    $remap[$this->picks[0]->symbol_id]->last = $this->results[3];
+    $remap[$this->picks[0]->symbol_id]->internal_symbol = $this->verification[$this->picks[0]->qx_internal_symbol]->internal_symbol;
+    $remap[$this->picks[0]->symbol_id]->name = $this->verification[$this->picks[0]->qx_internal_symbol]->name;
+
+    $pick_bd = $this->partial('widget/index.phtml', 'pick', array('module' => 'pick', 'objects' => $this->picks, 'quote_data' => $remap, 'symbols_data' => $remap, 'widget' => $tmp_widget, 'masked' => false, 'internal' => $this->internal));
+}
+
+echo $this->CM(array(
+    'class' => 'cm decorated widget m_pick',
+    'hd' => 'Members Picking ' . $current->internal_symbol,
+    'bd' => $pick_bd,
+    'ft' => '<a href="/module/setup/publish/module_name/pick/extra_params/symbols%3D' . $current->internal_symbol . '/" rel="nofollow" title="Pick"><span class="addicon"></span>Pick ' . $current->internal_symbol . '</a>',
+    'ft2' => (count($this->picks) >= 10 ? '<a href="/' . $this->SEO_Urlify($current->name) . '/s/pick/p/symbol/' . $this->SEO_Urlify($current->internal_symbol) . '/">More</a>' : ''),
+    'extra' => '<a href="/' . $this->SEO_Urlify($current->name) . '/s/system/widget/symbol/p/symbol/' . $this->SEO_Urlify($current->internal_symbol) . '/mid/20/format/rss/" rel="nofollow" title="' . $current->name . ' Feed" class="feeder">Pick</a>'
+));
+?>
+
+    </div></div>
+</div>
+
+
+<?php
+// Other Feeds
+$tmp_widget = new StdClass;
+$tmp_widget->interactive = true;
+$tmp_widget->widget_hide_summary = true;
+
+echo $this->CM(array(
+    'class' => 'cm decorated widget news',
+    'hd' => 'Other News and Information on ' . $current->internal_symbol,
+    'bd' => '
+<div id="quote_other_info_tabs"> 
+    <ul class="yui-nav"> 
+        <li class="selected"><a href="#tab1"><em>News</em></a></li>
+        <li><a href="#tab2"><em>Blogs</em></a></li>
+        <li><a href="#tab3"><em>Message Boards</em></a></li>
+        <li><a href="#tab4"><em>Twitter</em></a></li>
+    </ul>             
+    <div class="yui-content"> 
+        <div id="tab1"><script type="text/javascript" src="http://pipes.yahoo.com/pipes/pipe.run?_id=c7510b5f49b7068cd742c34ffcbfa0cc&_callback=rssCallback&_render=json&s='.$dtick.'"></script></div>
+        <div id="tab2"><script type="text/javascript" src="http://pipes.yahoo.com/pipes/pipe.run?_id=a9db5383b76feb71f4c0b62662bca7c8&_callback=rssCallback&_render=json&s='.urlencode($current->name . ' ' . $tick).'"></script></div>
+        <div id="tab3"><p style="margin: 3em 0; text-align: center; font-weight: bold;">No Message Board Sources.  Submit New Ones By <a href="/Contact-Us/s/page/view/p/mid/1/title/Contact+Us/">Clicking Here</a>.</p></div>
+        <div id="tab4"><script type="text/javascript" src="http://pipes.yahoo.com/pipes/pipe.run?_id=8fa3839e335998352c204736003a20ff&_callback=rssCallback&_render=json&s='.$dtick.'"></script></div>
+    </div> 
+</div>
+    '
+));
+?>
+<?php $this->inlineScript()->captureStart(); ?>
+YAHOO.util.Event.onDOMReady(function() {
+    var quoteTabView = new YAHOO.widget.TabView('quote_other_info_tabs');
+});
+<?php $this->inlineScript()->captureEnd(); ?>
+
+
+
+
+
+<hr />
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="links_table">
+    <tr>
+        <td width="33%" valign="top" class="col1">
+            <h4>Other Commentary on <?= $current->internal_symbol ?></h4>
+            <p><a target="_blank" href="http://search.cnbc.com/main.do?keywords=<?= $tick ?>">CNBC</a>, <a target="_blank" href="http://www.marketwatch.com/investing/stock/<?= $tick ?>/">Market Watch</a>, <a target="_blank" href="http://www.zacks.com/search/?q=IBM<?= $tick ?>">Zacks</a>, <a target="_blank" href="http://www.thestreet.com/find/results?q=<?= $tick ?>">The Street</a>, <a target="_blank" href="http://www.fool.com/search/solr.aspx?dataSource=article&q=<?=$tick ?>+<?= preg_replace('/\s+.*/', '', $current->name) ?>">Motley Fool</a>, <a target="_blank" href="http://247wallst.com/?s=<?= $tick ?>">24/7 Wall St.</a></p>
+            
+            <h4><?= $tick ?> Profiles</h4>
+            <p><a target="_blank" href="http://www.reuters.com/finance/stocks/companyProfile?symbol=<?= $dtick ?>">Reuters</a>, <a target="_blank" href="http://finance.yahoo.com/q/pr?s=<?= $dtick ?>">Yahoo! Finance</a>, <a target="_blank" href="http://www.otcmarkets.com/stock/<?= $tick ?>/company-info">OTC Markets</a>, <a target="_blank" href="http://www.otcbb.com/asp/Info_Center.asp?symbol=<?= $tick ?>">OTCBB</a></p>
+            <h4><?= $current->internal_symbol ?>'s Competition</h4>
+            <p><a target="_blank" href="http://www.smartmoney.com/quote/<?= $tick ?>/?story=competition">Smart Money</a>, <a target="_blank" href="http://finance.yahoo.com/q/co?s=<?= $dtick ?>">Yahoo! Finance</a>, <a target="_blank" href="http://www.wikinvest.com/stock/<?= $tick ?>#Competition">Wiki Invest</a></p>
+            <h4><?= $current->internal_symbol ?> Financials</h4>
+            <p><a target="_blank" href="http://www.google.com/finance?fstype=ii&amp;q=<?= $tick ?>">Google</a>, <a target="_blank" href="http://investing.businessweek.com/research/stocks/financials/financials.asp?ticker=<?= $tick ?>">Business Week</a>, <a target="_blank" href="http://moneycentral.msn.com/investor/invsub/results/statemnt.aspx?Symbol=<?= $tick ?>">Money Central</a>, <a target="_blank" href="http://www.reuters.com/finance/stocks/incomeStatement?symbol=<?= $dtick ?>">Reuters</a>, <a target="_blank" href="http://data.cnbc.com/quotes/<?= $tick ?>/tab/7">CNBC</a></p>
+            <h4>Transcripts for <?= $current->internal_symbol ?></h4>
+            <p><a target="_blank" href="http://www.morningstar.com/earnings/earnings-call-transcript.aspx?t=<?= $tick ?>&amp;region=USA&amp;culture=en-us">Morning Star</a>, <a target="_blank" href="http://seekingalpha.com/search/transcripts?term=<?= $tick ?>">Seeking Alpha</a></p>
+            <h4>Analysts Covering <?= $current->internal_symbol ?></h4>
+            <p><a target="_blank" href="http://www.briefing.com/Investor/Public/Calendars/UpgradesDowngrades.htm">Briefing</a>, <a target="_blank" href="http://moneycentral.msn.com/investor/invsub/analyst/recomnd.asp?symbol=<?= $tick ?>">Money Central</a>, <a target="_blank" href="http://finance.yahoo.com/q/ao?s=<?= $dtick ?>">Yahoo! Finance</a>, <a target="_blank" href="http://thestockmarketwatch.com/stock-data.aspx?stock=<?= $tick ?>&amp;a=showAnalyst">Stock Market Watch</a></p>
+            <h4><?= $current->internal_symbol ?> Insider Buying or Selling</h4>
+            <p class="last-of-type"><a target="_blank" href="http://www.insidercow.com/history/company.jsp?company=<?= $tick ?>">Insider Cow</a>, <a target="_blank" href="http://moneycentral.msn.com/investor/invsub/insider/trans.asp?Symbol=<?= $tick ?>">Money Central</a>, <a target="_blank" href="http://www.reuters.com/finance/stocks/insiderTrading?symbol=<?= $dtick ?>">Reuters</a>, <a target="_blank" href="http://finance.yahoo.com/q/it?s=<?= $dtick ?>">Yahoo! Finance</a></p>
+        </td>
+        <td width="33%" valign="top" class="col2">
+            <h4>Other Blogs on <?= $current->internal_symbol ?></h4>
+            <p><a target="_blank" href="http://seekingalpha.com/symbol/<?= $tick ?>">Seeking Alpha</a>, <a target="_blank" href="http://www.bloggingstocks.com/search/?q=<?= $tick ?>">Blogging Stocks</a>, <a target="_blank" href="http://www.google.com/search?hl=en&amp;q=<?= $tick ?>&amp;tbm=blg">Google's Blog Search</a>, <a target="_blank" href="http://www.marketminute.com/search?q=<?= $tick ?>">Market Minute</a>, <a target="_blank" href="http://www.fool.com/search/solr.aspx?dataSource=blog&q=<?=$tick ?>+<?= preg_replace('/\s+.*/', '', $current->name) ?>">Motley Fool</a></p>
+            
+            <h4><?= $current->internal_symbol ?>'s Management</h4>
+            <p><a target="_blank" href="http://www.reuters.com/finance/stocks/companyOfficers?symbol=<?= $tick ?>">Reuters</a>, <a target="_blank" href="http://investing.businessweek.com/research/stocks/people/people.asp?ticker=<?= $tick ?>">Business Week</a>, <a target="_blank" href="http://finance.yahoo.com/q/pr?s=<?= $dtick ?>+Profile">Yahoo! Finance</a></p>
+            <h4><?= $current->internal_symbol ?> Share Statistics</h4>
+            <p><a target="_blank" href="http://finance.yahoo.com/q/ks?s=<?= $dtick ?>">Yahoo! Finance</a>, <a target="_blank" href="http://www.smartmoney.com/quote/<?= $tick ?>/?story=keystatistics">Smart Money</a>, <a target="_blank" href="http://eresearch.fidelity.com/eresearch/evaluate/fundamentals/keyStatistics.jhtml?stockspage=keyStatistics&amp;symbols=<?= $tick ?>">Fidelity</a>, <a target="_blank" href="http://quote.barchart.com/profile.php?sym=<?= $tick ?>&amp;view=key_statistics">Bar Chart</a></p>
+            <h4>SEC Filings for <?= $current->internal_symbol ?></h4>
+            <p><a target="_blank" href="http://www.sec.gov/cgi-bin/browse-edgar?company=&amp;match=&amp;CIK=<?= $tick ?>&amp;filenum=&amp;State=&amp;Country=&amp;SIC=&amp;owner=exclude&amp;Find=Find+Companies&amp;action=getcompany">SEC</a>, <a target="_blank" href="http://freeedgar.com/results/default.asp?cx=017929059329229388003%3At0nzbd312ts&amp;cof=FORID%3A11&amp;q=<?= $tick ?>#978">Free Edgar</a>, <a target="_blank" href="http://www.otcbb.com/asp/Info_Center.asp?symbol=<?= $tick ?>&action=showFilingResults">OTCBB</a></p>
+            <h4><?= $current->internal_symbol ?> Earnings</h4>
+            <p><a target="_blank" href="http://www.earningswhispers.com/stocks.asp?symbol=<?= $tick ?>">Earnings Whisper</a>, <a target="_blank" href="http://investing.businessweek.com/research/stocks/earnings/earnings.asp?ticker=<?= $tick ?>">Business Week</a>, <a target="_blank" href="http://eresearch.fidelity.com/eresearch/evaluate/fundamentals/earnings.jhtml?stockspage=earnings&amp;symbols=<?= $tick ?>">Fidelity</a>, <a target="_blank" href="http://www.thestreet.com/quote/<?= $tick ?>/details/earnings-estimates.html">The Street</a>, <a target="_blank" href="http://moneycentral.msn.com/investor/invsub/analyst/earnest.asp?symbol=<?= $tick ?>">MSN Money</a></p>
+            <h4>Trading <?= $current->internal_symbol ?></h4>
+            <p><a target="_blank" href="http://www.tdameritrade.com/welcome3.html">Ameritrade</a>, <a target="_blank" href="http://www.esignal.com/">Trading Software from E Signal</a>, <a target="_blank" href="http://www.tradestation.com/default_2.shtm">Trading Software from Trade Station</a></p>
+            <h4><?= $current->internal_symbol ?> Short Sale Data</h4>
+            <p class="last-of-type"><a target="_blank" href="http://www.shortsqueeze.com/?symbol=<?= $tick ?>">Short Squeeze</a>, <a target="_blank" href="http://www.nasdaq.com/aspxcontent/shortinterests.aspx?symbol=<?= $tick ?>">NASDAQ</a>, <a target="_blank" href="http://www.otcmarkets.com/stock/<?= $tick ?>/short-sales">OTC Markets</a>, <a target="_blank" href="http://www.dailyfinance.com/company/company/<?= $tick ?>/nas/short-interest">Daily Finance</a></p>
+        </td>
+        <td width="33%" valign="top" class="col3">
+            <h4>Other <?= $current->internal_symbol ?> Message Boards</h4>
+            <p><a target="_blank" href="http://messages.finance.yahoo.com/mb/<?= $dtick ?>/">Yahoo!</a>, <a target="_blank" href="http://ragingbull.quote.com/mboard/boards.cgi?board=<?= $tick ?>">Raging Bull</a>, <a target="_blank" href="http://www.fool.com/search/solr.aspx?dataSource=board&q=<?=$tick ?>+<?= preg_replace('/\s+.*/', '', $current->name) ?>">Motley Fool</a>, <a target="_blank" href="http://investorshub.advfn.com/boards/search_results.asp?where=Ticker&SearchStr=<?= $tick ?>">Investor's Hub</a>, <a target="_blank" href="http://www.investorvillage.com//findboard.asp?symbol=<?= $dtick ?>">Investor Village</a>, <a target="_blank" href="http://www.thelion.com/bin/aio_msg.cgi?cmd=search&symbol=<?= $tick ?>">Aggregated Board &amp; Tweet Search at The Lion</a>, <a target="_blank" href="http://boardcentral.com/boards/<?= $tick ?>">Aggregated Board Search at Board Central</a></p>
+            
+            <h4>News on <?= $current->internal_symbol ?></h4>
+            <p><a target="_blank" href="http://news.google.com/news/search?q=<?= $tick ?>">Aggregated News at  Google</a>, <a target="_blank" href="http://news.search.yahoo.com/search/news?p=<?= $tick ?>">Aggregated News at Yahoo!</a>, <a target="_blank" href="http://www.prnewswire.com/search-results/news/<?= $tick ?>-7-days-page-1">PR News Wire</a>, <a target="_blank" href="http://www.marketwire.com/mw/search.do?grpSearch=K&amp;hdLanguage=E1&amp;params=<?= $tick ?>">Market Wire</a>, <a target="_blank" href="http://www.businesswire.com/portal/site/home/news/?ndmHsc=infSearch&amp;vnsId=-2147483648&amp;ndmConfigId=searchNDMConfig&amp;searchHereRadio=false&amp;keywordType=4&amp;keyword=<?= $tick ?>&amp;go=Go">Business Wire</a>, <a target="_blank" href="http://www.reuters.com/search?blob=<?= $tick ?>">Reuters</a>, <a target="_blank" href="http://www.bloomberg.com/apps/quote?ticker=<?= $tick ?>">Bloomberg</a></p>
+            <h4>Charts for <?= $current->internal_symbol ?></h4>
+            <p><a target="_blank" href="http://ycharts.com/companies/<?= $tick ?>">Y Charts</a>, <a target="_blank" href="http://moneycentral.msn.com/investor/charts/chartdl.aspx?symbol=<?= $tick ?>">MSN Money</a>, <a target="_blank" href="http://www.investorguide.com/stock-charts.php?ticker=<?= $tick ?>">Investor Guide</a>, <a target="_blank" href="http://www.google.com/finance?q=<?= $tick ?>">Google</a>, <a target="_blank" href="http://stockcharts.com/h-sc/ui?s=<?= $tick ?>">Technical Analysis at Stock Charts</a>, <a target="_blank" href="http://bigcharts.marketwatch.com/advchart/frames/frames.asp?symb=<?= $tick ?>">Technical Analysis at Big Charts</a>, <a target="_blank" href="http://finviz.com/quote.ashx?t=<?= $tick ?>">Technical Analysis at FinViz</a>, <a target="_blank" href="http://www.stockta.com/cgi-bin/analysis.pl?symb=<?= $tick ?>">Technical Analysis at Stock TA</a>, <a target="_blank" href="http://clearstation.etrade.com/cgi-bin/details?Symbol=<?= $tick ?>">Technical Analysis at Clear Station</a></p>
+            <h4>Scheduled <?= $current->internal_symbol ?> Company Events</h4>
+            <p><a target="_blank" href="http://finance.yahoo.com/q/ce?s=<?= $dtick ?>+Company+Events">Yahoo! Finance</a>, <a target="_blank" href="http://www.dailyfinance.com/event/cisco-systems-inc/<?= $tick ?>/nas">Daily Finance</a></p>
+            <h4>Research Reports on <?= $current->internal_symbol ?></h4>
+            <p><a target="_blank" href="http://finance.yahoo.com/q/rr?s=<?= $dtick ?>">Yahoo! Finance</a>, <a target="_blank" href="http://www.reuters.com/finance/stocks/analystResearch?symbol=<?= $dtick ?>">Reuters</a>, <a target="_blank" href="http://eresearch.fidelity.com/eresearch/goto/evaluate/analystsOpinions.jhtml?symbols=<?= $tick ?>">Fidelity</a>, <a target="_blank" href="http://www.thestreet.com/r/ratings/reports/analysis/<?= $tick ?>.html">The Street</a></p>
+            <h4><?= $current->internal_symbol ?> Share Holders</h4>
+            <p class="last-of-type"><a target="_blank" href="http://investors.morningstar.com/ownership/shareholders-overview.html?t=<?= $tick ?>">Morningstar</a></p>
+        </td>
+    </tr>
+</table>
+<hr />
+<p align="center" class="know_more">Do you know of another great research resource for <?= $current->internal_symbol ?> that belongs here? <a href="/Contact-Us/s/page/view/p/mid/1/title/Contact+Us/">Please let us know and provide the URL.</a></p>
+
+</div>

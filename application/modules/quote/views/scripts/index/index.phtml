@@ -1,0 +1,86 @@
+<?php $module = 'quote'; ?>
+
+<style>
+@media (max-width: 767px) {
+    div.includedresearch { display: none !important; }
+    div.yui3-u-1-5 { display: none; }
+}
+</style>
+
+<!-- Begin Module -->
+<div class="cm decorated padded m_<?= $module ?>">
+    <div class="hd">
+        <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div>
+        </div>
+        <div class="con">
+        	<table class="table">
+                <tr>
+                    <td class="lt"></td>
+
+                    <td class="mn1">Stock Ratings and Research</td>
+                    <td class="sep"></td>
+                    <td class="mn2"></td>
+                    <td class="rt"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="bd">
+        
+        <div style="width: 100%; margin: 1em auto;" class="yui3-g-r">
+            <div class="yui3-u-4-5">
+                <p style="background: url(<?= $this->internal->vars->static_host ?>/css/theme/default/assets/modules/quote/mag.png) no-repeat; min-height: 50px; color: #868686; font-size: 146.5%; padding-top: 8px; padding-left: 70px; margin-bottom: .5em;"><?= $this->internal->community->display ?> Ratings, Opinions, Research and More...</p>
+                
+                <p style="font-size: 108%;">Enter a symbol to view all published content associated with your selection.</p>
+                
+                <div style="margin: 1em; padding: 1em; background-color: #f3f3f3; -moz-border-radius: 8px; -webkit-border-radius: 8px;">
+<form class="quote_form" method="get" action="/quote/"><dl class="zend_form">
+<dd id="s-element" style="margin: 0;">
+<input type="text" name="s" id="quote_symbol" value="Stock Symbol" class="vmfh_acss autogo" onfocus="if (this.value == 'Stock Symbol') { this.value = ''; this.style.textTransform='uppercase'; }" onblur="if (this.value == '') { this.style.textTransform='none'; this.value = 'Stock Symbol'; }" style="height: 26px; line-height: 26px; color: #868686; font-size: 108%; width: 70%;" /><input type="submit" value="Search" style="-moz-border-radius:0 0 0 0; border:medium none; height:33px; padding:0.25em 0.5em 0.4em; text-transform:uppercase;" />
+<p class="description"><a href="/quote/lookup/">Symbol Lookup</a></p></dd></dl></form>
+                </div>
+                
+                <p style="font-size: 108%;"><?= $this->internal->community->display ?> aggregates all community content associated with your selection on the stock's homepage.</p>
+                
+                <div style="margin-bottom: 1em; font-size: 108%;" class="includedresearch">
+                    This includes:
+                    <ul style="color: #213874; font-weight: bold; list-style: none;">
+                        <li style="list-style: none; background: url(<?= $this->internal->vars->static_host ?>/css/theme/default/assets/modules/quote/list1.png) no-repeat; height: 32px; line-height: 32px; padding-left: 38px;">Articles
+                        <li style="list-style: none; background: url(<?= $this->internal->vars->static_host ?>/css/theme/default/assets/modules/quote/list2.png) no-repeat; height: 32px; line-height: 32px; padding-left: 38px;">Analysis Reports
+                        <li style="list-style: none; background: url(<?= $this->internal->vars->static_host ?>/css/theme/default/assets/modules/quote/list3.png) no-repeat; height: 32px; line-height: 32px; padding-left: 38px;">Stock Picks
+                        <li style="list-style: none; height: 32px; line-height: 32px; padding-left: 38px;">And More...
+                    </ul>
+                </div>
+            </div>
+            <div class="yui3-u-1-5">
+                    <p style="background: url(<?= $this->internal->vars->static_host ?>/css/theme/default/assets/modules/quote/index.png) no-repeat; padding-left: 17px; font-size: 108%; color: #868686; margin-bottom: 5px;">Symbol Index</p>
+<?php
+    $start_chars = array_merge(range('A', 'Z'), range(0, 9));
+    
+    #foreach (array(range('A', 'M'), range('N', 'Z'), range(0, 9)) as $set) {
+    #    echo '<p style="margin-bottom: 0;">';
+        foreach ($start_chars as $char) {
+            echo "<span style=\"padding: .25em; font-size: 116%; font-weight: bold;";
+            if (isset($this->internal->params->start_char) && (string) $char == $this->internal->params->start_char) {
+                echo ' background-color: #ccc;';
+            }
+            echo "\"><a href=\"" . $this->internal->target->pre . "/quote/lookup/p/start_char/$char/\" style=\"font-family: Courier; \">$char</a></span> ";
+        }
+    #    echo '</p>';
+    #}
+?>
+            </div>
+        </div>
+        
+    </div>
+    
+    <div class="ft">
+        <div class="dec">
+            <div class="lt"></div><div class="mn"></div><div class="rt"></div>
+
+        </div>
+    </div>
+    <span class="icon"></span>
+</div>
+<!-- End Module -->

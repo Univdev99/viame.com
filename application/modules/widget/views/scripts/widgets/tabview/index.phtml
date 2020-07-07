@@ -1,0 +1,102 @@
+<?php
+    $id = 'tabview' . $this->widget->counter;
+?>
+
+
+<div id="<?= $id ?>" class="yui-navset" style="display: none;">
+    <ul class="yui-nav">
+
+<?php
+    $counter = 0;
+    $content = array();
+    foreach (preg_split('/\n/', $this->params['dp_widgets'], -1, PREG_SPLIT_NO_EMPTY) as $line) {
+        if ($line) {
+            $tokens = preg_split('/(?<!\\\\):/', $line);
+            $tokens = preg_replace('/\\\\:/', ':', $tokens);
+            #Zend_Debug::Dump($tokens);
+            $data = $source = $title = $backup = null;
+            if (isset($tokens[0]) && $tokens[0]) { $source = trim($tokens[0]); }
+            if (isset($tokens[1]) && $tokens[1]) { $title = trim($tokens[1]); }
+            if (isset($tokens[2]) && $tokens[2]) { $backup = trim($tokens[2]); }
+            
+            if ($source) {
+                if (preg_match('/(m|w)\-\d+\-\d+/', $source)) {
+                    $parts = explode('-', $source);
+                    if (!(strtolower($parts[0]) == 'w' && $parts[1] == $this->widget->widget_id && $parts[2] == $this->widget->counter)) { // Prevent recursive
+                        $data = $this->DisplayWidget($source, null, array('doNotUnset' => array('bl', 'ft', 'ft2', 'br', 'class')));
+                        if (!$data && preg_replace('/^"(.*)"$/', '\\1', $backup)) {
+                            $data = preg_replace('/^"(.*)"$/', '\\1', $backup);
+                        }
+                    }
+                }
+                elseif(preg_match('/^(\/|https?:\/\/)/', $source)) {
+                    if ($backup && preg_replace('/^"(.*)"$/', '\\1', $backup)) {
+                        $data = preg_replace('/^"(.*)"$/', '\\1', $backup);
+                    }
+                    else {
+                        #$data = '<div style="text-align: center; padding: 2em;"><img src="' . $this->internal->vars->static_host . '/js/yui/yui2/build/assets/skins/sam/ajax-loader.gif" /></div>';
+                        $data = '<div class="loading"></div>';
+                    }
+                    
+                    $content_sources[$counter] = $source;
+                }
+                else {
+                    if ($source && preg_replace('/^"(.*)"$/', '\\1', $source)) {
+                        $data = preg_replace('/^"(.*)"$/', '\\1', $source);
+                    }
+                    elseif ($backup && preg_replace('/^"(.*)"$/', '\\1', $backup)) {
+                        $data = preg_replace('/^"(.*)"$/', '\\1', $backup);
+                        
+                    }
+                }
+                
+                if ($data) {
+                    $content[] = $data;
+    ?>
+    <li<?= ($counter == 0 ? ' class="selected"' : '') ?>><a href="#tab<?= $counter + 1 ?>"><em><?= ($title ? $title : 'Tab ' . ($counter + 1)) ?></em></a></li>
+    <?php
+                    $counter++;
+                }
+            }
+        }
+    }
+?>
+    </ul>            
+    <div class="yui-content">
+<?php
+    $counter = 0;
+    foreach ($content as $line) {
+?>
+        <div id="tab<?= $counter + 1 ?>"><?= $line ?></div>
+<?php
+        $counter++;
+    }
+?>
+    </div>
+</div>
+
+
+<?php $this->inlineScript()->captureStart() ?>    
+YAHOO.util.Event.onContentReady("<?= $id ?>", function () {
+    var tabcontainer<?= $this->widget->counter ?> = new YAHOO.widget.TabView('<?= $id ?>', {
+        activeIndex: <?= (isset($this->params['dp_default_item']) && $this->params['dp_default_item'] ? $this->params['dp_default_item'] - 1 : 0) ?>,
+        orientation: <?= (isset($this->params['dp_orientation']) && $this->params['dp_orientation'] ? '"' . strtolower($this->params['dp_orientation']) . '"' : 'null') ?>
+    });
+<?php
+    if (count($content_sources)) {
+        $counter = 1;
+        foreach ($content_sources as $tab => $url) {
+            echo 'tabcontainer' . $this->widget->counter . ".getTab($tab).addClass('tabNum-$counter');\n";
+            echo 'tabcontainer' . $this->widget->counter . ".getTab($tab).set('dataSrc', '$url');\n";
+            echo 'tabcontainer' . $this->widget->counter . ".getTab($tab).set('cacheData', true);\n";
+            echo 'tabcontainer' . $this->widget->counter . ".getTab($tab).addListener('contentChange', (function(e) {YAHOO.viame.vpd.helper.goInit();}));\n";
+            //echo 'tabcontainer' . $this->widget->counter . ".selectTab($tab);\n";
+            $counter++;
+        }
+        
+        echo 'tabcontainer' . $this->widget->counter . ".selectTab(" . (isset($this->params['dp_default_item']) && $this->params['dp_default_item'] ? $this->params['dp_default_item'] - 1 : 0) . ");\n";
+    }
+?>
+    YAHOO.util.Dom.setStyle('<?= $id ?>', 'display', 'inherit');
+});
+<?php $this->inlineScript()->captureEnd() ?>

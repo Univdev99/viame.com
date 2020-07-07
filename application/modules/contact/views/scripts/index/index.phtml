@@ -1,0 +1,230 @@
+<h1>Contact Manager</h1>
+
+
+
+<div>
+    <?= $this->render('sidebar.phtml') ?>
+    <div style="margin-left: 176px;">
+
+<?php /*
+<h2>Requests</h2> 
+<table width="100%" class="decorated">
+    <tr>
+        <th>Contact</th>
+        <th>Message</th>
+        <th>Action</th>
+    </tr>
+    
+
+<?php
+    foreach ($this->requests as $request) {
+?>
+    <tr>
+        <td><?= $request->name ?></td>
+        <td><?= $request->message ?></td>
+        <td width="160px;" class="datetime">
+            <form action="<?= $this->internal->target->pre ?>/contact/approve/p/id/<?= $request->profile_id ?>/">
+                <input type="submit" value="Approve" style="font-size: 9px; width: 50px;" /> - 
+                <input type="checkbox" checked="checked" name="r" value="1" style="position: relative; top: 3px;" /> Add Contact
+            </form>
+            <hr size="1" noshade="noshade" />
+            <form action="<?= $this->internal->target->pre ?>/contact/deny/p/id/<?= $request->profile_id ?>/">
+                <input type="submit" value="Deny" style="font-size: 9px; width: 50px;" /> - 
+                <input type="checkbox" name="f" value="1" style="position: relative; top: 3px;"/> Forever
+                <br />
+                Reason / Response (Optional): <input type="text" name="m" maxlength="256" style="width: 95%;" />
+            </form>
+        </td>
+    </tr>
+<?php
+    }
+?>
+</table>    
+*/ ?>
+
+
+<h2>Contacts (<?php
+if (isset($this->internal->params->gid) && $this->internal->params->gid) {
+    switch ($this->internal->params->gid) {
+        case 'I':
+            echo 'Incoming Requests';
+            break;
+        case 'R':
+            echo 'Outgoing Requests';
+            break;
+        case 'P':
+            echo 'Outgoing Requests - Pending';
+            break;
+        case 'D':
+            echo 'Outgoing Requests - Denied';
+            break;
+        case 'F':
+            echo 'Outgoing Requests - Forbidden';
+            break;
+        default:
+            foreach ($this->groups as $group) {
+                if ($group->counter == $this->internal->params->gid) {
+                    echo $group->name;
+                    break;
+                }
+            }
+            break;
+    }
+}
+else {
+    echo 'All';
+}
+?>)</h2>
+
+<form method="post" action="<?= $this->internal->target->pre ?>/contact/multi/">
+<input type="hidden" name="function" id="hidden_function" value="" />
+<input type="hidden" name="gid2" id="hidden_gid2" value="" />
+<table width="100%" class="decorated">
+    <tr>
+        <th width="1%"><input type="checkbox" onclick="toggleCheckboxes(this, 'cid');"></th>
+        <th>Contact</th>
+        <th><?= (isset($this->internal->params->gid) && ($this->internal->params->gid == 'I')) ? 'Note' : 'Description' ?></th>
+        <?php if (isset($this->internal->params->gid) && ($this->internal->params->gid == 'R')) { ?><th>Status</th><?php } ?>
+        <th>Action</th>
+    </tr>
+    
+
+<?php
+    foreach ($this->contacts as $contact) {
+        if (isset($this->internal->params->gid) && ($this->internal->params->gid == 'I')) {
+            // Incoming Requests
+?>
+    <tr>
+        <td class="calign"><input type="checkbox" name="cid[]" value="<?= ((isset($this->internal->params->gid) && ($this->internal->params->gid == 'I')) ? $contact->profile_id : $contact->contact_profile_id) ?>" /></td>
+        <td><?= ((isset($this->internal->params->gid) && ($this->internal->params->gid == 'I')) ? $contact->p2_name : $contact->name) ?></td>
+        <td><?= $contact->message ?></td>
+        <td class="datetime">
+            <a href="<?= $this->internal->target->pre ?>/contact/multi/approve/cid/<?= $contact->profile_id ?>/" title="Approve Request">Approve</a> - <a href="<?= $this->internal->target->pre ?>/contact/multi/approve/cid/<?= $contact->profile_id ?>/r/1/" title="Approve and Add Contact">Approve and Add</a>
+            <br />
+            <a href="<?= $this->internal->target->pre ?>/contact/multi/deny/cid/<?= $contact->profile_id ?>/" title="Deny Request">Deny</a> - <a href="<?= $this->internal->target->pre ?>/contact/multi/deny/cid/<?= $contact->profile_id ?>/f/1/" title="Deny and Disallow Future Requests">Deny Forever</a>
+        </td>
+    </tr>
+<?php } else { ?>
+    <tr>
+        <td class="calign"><input type="checkbox" name="cid[]" value="<?= $contact->contact_profile_id ?>" /></td>
+        <td><a href="<?= $this->internal->target->pre ?>/contact/edit/p/id/<?= $contact->contact_profile_id ?>/"><?=($contact->display ? $contact->display : $contact->name) ?></a></td>
+        <td><?= $contact->description ?></td>
+        <?php if (isset($this->internal->params->gid) && ($this->internal->params->gid == 'R')) {
+            echo '<td style="text-align: center;">';
+                if ($contact->active) {
+                    if ($contact->status !== true) { echo 'Pending'; }
+                } elseif ($contact->active === false) {
+                    if ($contact->status === true) { echo 'Denied'; }
+                    else { echo 'Forbidden'; }
+                }
+            echo '</td>';
+        } ?>
+        <td>
+<?php
+if ($contact->active) {
+    // Normal Contacts
+    if ($contact->status === true) { echo '<span class="datetime"><a href="/mail/write/p/cid/' . $contact->contact_profile_id . '/">Send Message</a> <a href="' . ($this->internal->target->pre . 
+        '/contact/multi/delete/cid/' . $contact->contact_profile_id . '/') . "\" onclick=\"return confirm('Are you sure you want to delete this contact?');\">Delete</a></span>"; }
+    else { echo '<span class="datetime"><a href="' . ($this->internal->target->pre . '/contact/multi/delete/cid/' . $contact->contact_profile_id . '/') . '">Delete</a></span>'; }
+}
+elseif ($contact->active === false) {
+    // Denied Requests
+    if ($contact->status === true) {
+        echo '<span class="datetime"><a href="' . ($this->internal->target->pre . 
+        '/contact/multi/delete/cid/' . $contact->contact_profile_id . '/?redirect=' . urlencode($this->internal->target->pre . 
+        '/contact/create/p/id/' . $contact->contact_profile_id)) . '">Re-Request</a> - <a href="' . ($this->internal->target->pre . 
+        '/contact/multi/delete/cid/' . $contact->contact_profile_id . '/') . '">Delete</a></span>';
+        if (isset($contact->message) && $contact->message) {
+            echo '<br /><span class="datetime"><strong>Response:</strong> ' . $this->escape($contact->message) . '</span>';
+        }
+    }
+    else {
+        echo '<span class="datetime"><a href="' . ($this->internal->target->pre . 
+        '/contact/multi/hide/cid/' . $contact->contact_profile_id . '/') . '">Hide</a></span>';
+        if (isset($contact->message) && $contact->message) {
+            echo '<br /><span class="datetime"><strong>Response:</strong> ' . $this->escape($contact->message) . '</span>';
+        }
+    }
+    
+}
+?>
+        </td>
+    </tr>
+<?php
+        }
+    }
+?>
+</table>
+
+<?php if (isset($this->internal->params->gid) && ($this->internal->params->gid == 'I')) { ?>
+
+<div style="float: right; width: 50%;">
+    <input type="submit" value="Deny" onclick="YAHOO.util.Dom.get('hidden_function').value='deny';" /> - 
+    <input type="checkbox" name="f" value="1" /> Forever <span class="datetime">(Disallow any future requests from this user)</span><br /> 
+    <span class="datetime">Response</span>: <input type="text" name="m" maxlength="256" style="width: 300px;" />
+</div>
+<div style="width: 50%;">
+    <input type="submit" value="Approve" onclick="YAHOO.util.Dom.get('hidden_function').value='approve';" /> - 
+    <input type="checkbox" checked="checked" name="r" value="1" /> Add Auto-Reciprocated Contact(s)
+</div>
+<div style="clear: both;"></div>
+
+<?php } else { ?>
+
+<?php if (!(isset($this->internal->params->gid) && (in_array($this->internal->params->gid, array('I', 'R', 'P', 'D', 'F'))))) { ?>
+  <input type="submit" value="Send Message" onclick="YAHOO.util.Dom.getAncestorByTagName(this, 'form').action = '/mail/write/'; YAHOO.util.Dom.get('hidden_function').value='mailwrite';" />
+<?php } ?>
+  
+<?php if (isset($this->internal->params->gid) && ($this->internal->params->gid == 'F')) { ?>
+  <input type="submit" value="Hide" onclick="YAHOO.util.Dom.get('hidden_function').value='hide';" />  
+<?php } else { ?>
+  <input type="submit" value="Delete" onclick="YAHOO.util.Dom.get('hidden_function').value='delete'; return confirm('Are you sure you want to delete contact(s)?');" />
+<?php } ?>
+
+<?php if (!(isset($this->internal->params->gid) && (in_array($this->internal->params->gid, array('I', 'R', 'P', 'D', 'F'))))) { ?>
+    <?php if (isset($this->internal->params->gid) && $this->internal->params->gid) { ?>
+    <input type="submit" value="Remove From This Group" onclick="YAHOO.util.Dom.get('hidden_function').value='remgroup'; YAHOO.util.Dom.get('hidden_gid2').value='<?= $this->internal->params->gid ?>';" />
+    <?php } ?>
+<input type="submit" value="Copy To Group" onclick="YAHOO.util.Dom.get('hidden_function').value='addgroup';" />
+<select name="gid">
+    <option value="">-- Select a Group --</option>
+<?php
+    foreach ($this->groups as $group) {
+?>
+    <option value="<?= $group->counter ?>"<?= ((isset($this->internal->params->gid) && $this->internal->params->gid && $this->internal->params->gid == $group->counter) ? ' disabled="disabled"' : '') ?>><?= (str_repeat(' -- ', substr_count($group->sort_order, '-'))) . $group->name ?></option>
+<?php
+    }
+?>
+</select>
+<?php } ?>
+
+
+
+<?php } ?>
+
+</form>
+
+
+    </div>
+    <div style="clear: both;"></div>
+</div>
+
+
+<?php $this->inlineScript()->captureStart() ?>    
+
+function toggleCheckboxes(which, target) {
+    if (which) {
+        if (!target && YAHOO.util.Dom.getAttribute(which, 'name')) {
+            target = YAHOO.util.Dom.getAttribute(which, 'name');
+        }
+        
+        if (target) {
+            var nodes = YAHOO.util.Selector.query('input[name^=' + target + ']', YAHOO.util.Dom.getAncestorByTagName(which, 'form'));
+            for (var i = 0; i < nodes.length; i++) {
+                nodes[i].checked = which.checked;
+            }
+        }
+    }
+}
+
+<?php $this->inlineScript()->captureEnd() ?>

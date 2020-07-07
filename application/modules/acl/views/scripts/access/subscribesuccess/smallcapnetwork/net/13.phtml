@@ -1,0 +1,35 @@
+<?php echo $this->render('access/subscribesuccess.phtml'); ?>
+
+<?php $this->headScript()->captureStart(); ?>
+
+window.dataLayer = window.dataLayer || [];
+dataLayer.push({
+    'adwordsConversion_id': '<?= (isset($this->internal->cookie->gawci) && $this->internal->cookie->gawci ? $this->internal->cookie->gawci : '') ?>',
+    'adwordsConversion_label': '<?= (isset($this->internal->cookie->gawcl) && $this->internal->cookie->gawcl ? $this->internal->cookie->gawcl : '') ?>',
+    'adwordsConversion_value': '<?= (isset($this->conversion_value) && $this->conversion_value ? $this->conversion_value : 0) ?>',
+    
+    'ecommerce': {
+        'purchase': {
+            'actionField': {
+                'id': '<?= isset($this->initial_invoice_number) ? $this->initial_invoice_number : 'Default' ?>',
+                'affiliation': '<?= isset($this->internal->community->display) && $this->internal->community->display ? $this->internal->community->display : $this->internal->community->name ?>',
+                'revenue': '<?= (isset($this->conversion_value) && $this->conversion_value ? $this->conversion_value : 0) ?>',
+                'tax': '0',
+                'shipping': '0'
+                <?php if (isset($this->promo) && isset($this->promo->code) && $this->promo->code) { ?>
+                , 'coupon': '<?= $this->promo->code ?>'
+                <?php } ?>
+            },
+            'products': [
+                {
+                    'name': '<?= (isset($this->access_selected->display) && $this->access_selected->display ? $this->access_selected->display : $this->access_selected->title) ?>',
+                    'id': '<?= $this->internal->params->access_selection ?>',
+                    'price': '<?= (isset($this->conversion_value) && $this->conversion_value ? $this->conversion_value : 0) ?>',
+                    'quantity': 1
+                }
+            ]
+        }
+    }
+});
+
+<?php $this->headScript()->captureEnd(); ?>

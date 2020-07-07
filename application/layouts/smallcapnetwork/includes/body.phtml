@@ -1,0 +1,1495 @@
+<!-- Begin Page -->
+<div id="page" class="type_<?= $this->internal->target->type ?> id_<?= $this->internal->target->id; ?>">
+    
+    
+    <!-- Begin Page Header -->
+    <div id="page_header">
+
+<?php /*
+        <!-- Begin Top -->
+        <div class="top">
+        	<div class="slider">&nbsp;<div class="centerblock"><div class="dec right"></div><div class="contentarea">
+<?php
+if (isset($this->internal->member)) {
+    echo 'Welcome, ' . $this->internal->member->first_name . '!';
+}
+else {
+    echo "<a href=\"/member/login/\" onclick=\"return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false });\">Login</a> <span style=\"margin: 0 5px;\">|</span> <a href=\"/member/register/\">Sign Up!</a>";
+}
+?>
+            </div><div class="dec left"></div></div></div>
+            <table width="974" border="0" align="center" cellpadding="0" cellspacing="0">
+                <tr>
+                	<td colspan="2" align="left" style="text-align: left; padding-bottom: 0; font-weight: bold; font-style: italic;">
+                    	<!-- <span style="margin-right: 10px; padding-right: 10px; border-right: 1px solid #b1d745;"><a href="http://china.smallcapnetwork.com">SCN China</a></span>--><span style="margin-right: 10px; padding-right: 10px; border-right: 1px solid #b1d745;"><a href="http://www.rhinoreport.com/amember/go.php?r=71&i=l0">James Brumley's Rhino Report</a></span><a href="http://www.emergingchinastocks.com/amember/go.php?r=240&i=l0">Larry Isen's Emerging China Stocks</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center" valign="middle"><a href="https://www.smallcapnetwork.com/" title="SmallCap Network"><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/logo/logo2.png" alt="SmallCap Network" /></a></td>
+                    <td align="right" valign="middle" width="728">
+
+<div class="advertisement"><div id='div-gpt-ad-1336195451378-0' style='width:728px; height:90px;'>
+<script type='text/javascript'>
+googletag.pubads().display('/1063461/SCN-Site-Header-728x90', [728, 90], 'div-gpt-ad-1336195451378-0');
+</script>
+</div></div>
+
+                    </td>
+                </tr>
+            </table>
+		</div>
+		<!-- End Top -->
+*/ ?>
+
+<?php /*
+		<!-- Begin NavBar -->
+        <div class="nav">
+            <div id="navbar" class="yuimenubar yuimenubarnav">
+                <div class="bd">
+            
+                    <ul class="first-of-type">
+                        <li class="yuimenubaritem first-of-type">
+                            <a class="yuimenubaritemlabel" href="/" title="Home">Home</a>
+                        </li>
+                        <!--
+                        <li class="yuimenubaritem">
+                            <a class="yuimenubaritemlabel" href="#">Research</a>
+                        </li>
+                        <li class="yuimenubaritem">
+                            <a class="yuimenubaritemlabel" href="#">Articles</a>
+                        </li>
+                        <li class="yuimenubaritem">
+                            <a class="yuimenubaritemlabel" href="#">Portfolio</a>
+                        </li>
+                        <li class="yuimenubaritem">
+                            <a class="yuimenubaritemlabel" href="#">China Stocks</a>
+                        </li>
+                        <li class="yuimenubaritem">
+                            <a class="yuimenubaritemlabel" href="#">Small Cap Stocks</a>
+                        </li>
+                        <li class="yuimenubaritem">
+                            <a class="yuimenubaritemlabel" href="#">Penny Stocks</a>
+                        </li>
+                        <li class="yuimenubaritem">
+                            <a class="yuimenubaritemlabel" href="#">Member Profiles</a>
+                        </li>
+                        <li class="yuimenubaritem">
+                            <a class="yuimenubaritemlabel" href="#">Networks</a>
+                        </li>
+                        <li class="yuimenubaritem">
+                            <a class="yuimenubaritemlabel" href="#">Rankings</a>
+                        </li>
+                        <li class="yuimenubaritem">
+                            <a class="yuimenubaritemlabel" href="http://access.smallcapnetwork.com/Open_Stock_Picks/af/trading_alerts/">Trading Alerts</a>
+                        </li>
+                        -->
+                        <li class="yuimenubaritem">
+                            <a class="yuimenubaritemlabel" href="/quote/">Stock Research</a>
+                        </li>
+                        
+                        <li class="yuimenubaritem">
+                            <a class="yuimenubaritemlabel" href="/Latest-Member-Articles/s/article/p/mid/8/">Articles</a>
+                        </li>
+                        <li class="yuimenubaritem">
+                            <a class="yuimenubaritemlabel" href="/Latest-Member-Stock-Picks/s/pick/p/mid/1/">Stock Picks</a>
+                        </li>
+                        <li class="yuimenubaritem">
+                            <a class="yuimenubaritemlabel" href="/Latest-Member-Analysis/s/analysis/p/mid/1/">Research Analysis</a>
+                        </li>
+                        <li class="yuimenubaritem">
+                            <a class="yuimenubaritemlabel" href="/Latest-Member-Blog-Posts/s/blog/p/mid/3/">Blogs</a>
+                        </li>
+
+                        <li class="yuimenubaritem">
+                            <a class="yuimenubaritemlabel" href="/Newsletters/s/article/p/mid/7/">SCN Newsletters</a>
+                        </li>
+<?php
+//                        <li class="yuimenubaritem">
+//                            <a class="yuimenubaritemlabel" href="/Contributors/s/page/view/p/mid/1/id/7/">Contributors</a>
+//                        </li>
+?>
+                        <li class="yuimenubaritem">
+                            <a class="yuimenubaritemlabel" href="/About-Us/s/page/view/p/mid/1/id/11/">About Us</a>
+                            
+                            <div class="yuimenu">
+                                <div class="bd">
+                                    
+                                    <ul class="first-of-type">
+                                        <li class="yuimenuitem first-of-type"><a class="yuimenuitemlabel" href="/About-Us/s/page/view/p/mid/1/id/11/">About the SmallCap Network</a></li>
+                                        <li class="yuimenuitem"><a class="yuimenuitemlabel" href="/Contributors/s/page/view/p/mid/1/id/7/">Contributors</a></li>
+                                        <li class="yuimenuitem"><a class="yuimenuitemlabel" href="/Contact-Us/s/page/view/p/mid/1/id/8/">Contact Us</a></li>
+                                    </ul>
+            
+<?php                    
+//                                    <ul>
+//                                        <li class="yuimenuitem"><a class="yuimenuitemlabel" href="/profile/create/"><span class="icon"></span>Create A New Profile</a></li>
+//                                    </ul>
+?>
+
+<?php 
+//                                    <ul class="last-of-type">
+//                                        <li class="yuimenuitem first-of-type"><a class="yuimenuitemlabel" href="/member/logout/complete/vmpd_far/1/"><span class="icon"></span>Logout</a></li>
+//                                    </ul>
+?>
+                                </div>
+                            </div>
+                        </li>
+                        
+                        <li class="yuimenubaritem premium">
+                            <span class="yuimenubaritemlabel">Premium Services</span>
+                            
+                            <div class="yuimenu">
+                                <div class="bd">
+                                    
+                                    <ul class="first-of-type">
+                                        <li class="yuimenuitem first-of-type"><a class="yuimenuitemlabel" href="http://www.rhinoreport.com/amember/go.php?r=71&i=l0">James Brumley's Rhino Report</a></li>
+                                        <li class="yuimenuitem"><a class="yuimenuitemlabel" href="http://www.emergingchinastocks.com/amember/go.php?r=240&i=l0">Larry Isen's Emerging China Stocks</a></li>
+                                    </ul>
+            
+
+                                </div>
+                            </div>
+                        </li>
+<?php
+//                        <li class="yuimenubaritem">
+//                            <a class="yuimenubaritemlabel" href="/Contact-Us/s/page/view/p/mid/1/id/8/">Contact Us</a>
+//                        </li>
+?>
+                    </ul>
+                             
+                </div>
+            </div>
+        </div>
+<script type="text/javascript">
+YAHOO.util.Event.onContentReady("navbar", function () {
+     var onavbar = new YAHOO.widget.MenuBar("navbar", {
+            autosubmenudisplay: true,
+            showdelay: 250,
+            hidedelay: 750,
+            lazyload: true });
+        onavbar.render();
+        onavbar.show();         
+});
+</script>
+		<!-- End NavBar -->
+*/ ?>
+
+        <!-- Begin Mobile Nav -->
+        <div id="Mobile_Nav">
+            <div id="mobile_navbar">
+            <a href="/"><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/logo/logo6.png" style="float: left; max-height: 34px; margin: 2px 0 0 2px;" /></a>
+                <button class="mobile-navbar-toggle" type="button">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div id="mobile_navmenu">
+                <ul>
+                    <li><a title="Home" href="/">Home</a></li>
+                    <li><a title="Articles" href="/Member-Articles/s/article/p/mid/8/">Articles</a></li>
+                    <li><a title="Articles" href="/Stock-Quotes/s/quote/">Ratings</a></li>
+                    <li>
+                        <a title="Premium Advice" href="/Premium-Subscription-Services/s/page/view/p/mid/1/id/23/">Premium Advice</a>
+                        <ul>
+                            <li><a href="/?vmpd_ckstr[signup_entrance]=Mobile+Menu&vmpd_ckstr[click_track]=Mobile_Menu-EOP&vmpd_ckstr_redirect=/pages/EOP/v1/" class="premium_0-0-21066-0-0-0">Elite Opportunity Pro</a></li>
+                            <?php /*
+                            <li><a href="/?vmpd_ckstr[signup_entrance]=Mobile+Menu&vmpd_ckstr[click_track]=Mobile_Menu-URM&vmpd_ckstr_redirect=/pages/URM/v1/" class="premium_0-12-0-0-0-0">Under the Radar Movers</a></li>
+                            */ ?>
+                        </ul>
+                    </li>
+<?php if (isset($this->internal->member)) { ?>
+                    <li><a title="Logout" rel="nofollow" href="/member/logout/p/vmpd_far/1/">Logout</a></li>
+<?php } else { ?>
+                    <li><a title="Register" href="/Register/s/member/register/p/shortform/1/signup_entrance/TB-Register/">Register</a></li>
+                    <li><a title="Login" onclick="return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/signup_entrance/TB-Login/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false });" rel="nofollow" href="/member/login/p/signup_entrance/TB-Login/">Login</a></li>
+<?php } ?>
+                    
+                </ul>
+            </div>
+        </div>
+<?php $this->inlineScript()->captureStart(); ?>
+    $( "#Mobile_Nav #mobile_navbar button.mobile-navbar-toggle" ).click(function() {
+        $( "#Mobile_Nav #mobile_navmenu" ).slideToggle();
+    });
+    
+    $( "#Mobile_Nav #mobile_navmenu a" ).click(function() {
+        $( "#Mobile_Nav #mobile_navmenu" ).slideUp();
+    });
+<?php $this->inlineScript()->captureEnd(); ?>
+        <!-- End Mobile Nav -->
+        
+
+<?php /*
+        <!-- Begin MinNavHead -->
+        <div id="MinNavHead_outside"><div id="MinNavHead">
+        	<table><tr>
+            	<td class="first_column"><div>
+            	    <span style="color: #ffc62b; font-weight: bold; font-style: italic;">Small Stocks.  Big Returns.</span>
+            	    <!-- 
+                	<span class="icon"></span>
+                	<form action="/Google-Search-Results/s/page/view/p/mid/1/id/6/" onSubmit="if (this.q.value == '' || this.q.value == 'Enter Search Term') { return false; }">
+                      <input name="cx" type="hidden" value="partner-pub-3297144036592508:3fsnf8-a1xo" />
+                      <input name="cof" type="hidden" value="FORID:10" />
+                      <input name="ie" type="hidden" value="UTF-8" />
+                    
+                      <input name="q" type="text" value="Search Entire Site" onfocus="if (this.value == 'Search Entire Site') { this.value = ''; } this.style.backgroundColor='#fff'; this.style.width='150px';" onblur="if (this.value == '') { this.value = 'Search Entire Site'; } this.style.backgroundColor='#e7e7e7'; this.style.width='110px';" />
+                    </form>
+                    -->
+                </div></td>
+                <td class="second_column"></td>
+                <td class="third_column" nowrap="nowrap"><!-- <a href="https://www.instagram.com/smallcapnetwork/" class="instagram">Instagram</a> <a href="http://www.facebook.com/pages/SmallCap-Network/88202206436" class="facebook">Facebook</a> <a href="https://twitter.com/SmallCapNetwork" class="twitter">Twitter</a> <a href="https://www.smallcapnetwork.com/SmallCap-Network/s/system/widget/p/format/atom/" class="feed">Feed</a> --><!-- <a href="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/MinNavHead/smallcapnetwork_qrcode.png" class="qrcode">QRCode</a> -->
+                
+                <span style="text-shadow: none; line-height: 14px;">
+                    <span style="margin-right: 1.5em; padding-right: 1.5em; border-right: 1px solid #2d465a;">
+                        <a href="javascript:void(null);" onclick="$('#search_input').fadeToggle('slow');"><i class="fa fa-search fa-flip-horizontal" aria-hidden="true"></i></a>
+                    
+                        <form action="/Google-Search-Results/s/page/view/p/mid/1/id/6/" onSubmit="if (this.q.value == '' || this.q.value == 'Enter Search Term') { return false; }" style="display: inline;">
+                          <input name="cx" type="hidden" value="partner-pub-3297144036592508:3fsnf8-a1xo" />
+                          <input name="cof" type="hidden" value="FORID:10" />
+                          <input name="ie" type="hidden" value="UTF-8" />
+                        
+                          <input id="search_input" name="q" type="text" placeholder="Search Entire Site" />
+                        </form>
+                    </span>
+                </span>
+*/ ?>
+
+<?php
+$subscriptions = array(
+	'0-0-21066-0-0-0' => array(
+		'title' => 'Elite Opportunity Pro',
+		#'landing' => '/via/21066/?vmpd_paid=1&vmpd_ckstr[signup_entrance]=Premium+Advice&vmpd_ckstr[click_track]=Premium_Advice-SCNEO',
+		'landing' => '/?vmpd_ckstr[signup_entrance]=Premium+Advice&vmpd_ckstr[click_track]=Premium_Advice-EOP&vmpd_ckstr_redirect=/pages/EOP/v1/',
+		'access' => '/via/21066/',
+	),
+	//'0-12-0-0-0-0' => array(
+	//	'title' => 'Under the Radar Movers',
+	//	'landing' => '/?vmpd_ckstr[signup_entrance]=Premium+Advice&vmpd_ckstr[click_track]=Premium_Advice-URM&vmpd_ckstr_redirect=/pages/URM/v1/',
+	//	'access' => '/net/12/',
+	//),
+	//'0-14-0-0-0-0' => array(
+	//	'title' => 'The Future Investor',
+	//	'landing' => '/?vmpd_ckstr[signup_entrance]=Premium+Advice&vmpd_ckstr[click_track]=Premium_Advice-TFI&vmpd_ckstr_redirect=/pages/TFI/v1/',
+	//	'access' => '/net/14/',
+	//),
+	//'0-13-0-0-0-0' => array(
+	//	'title' => 'Black Ops Trader',
+	//	'landing' => '/?vmpd_ckstr[signup_entrance]=Premium+Advice&vmpd_ckstr[click_track]=Premium_Advice-BOT&vmpd_ckstr_redirect=/pages/BOT/v1/',
+	//	'access' => '/net/13/',
+	//)
+);
+$this->subscriptions = $subscriptions;
+
+$my_subs = array();
+
+if (isset($this->internal->member) && ($db = Zend_Registry::get('db'))) {
+	$joined = "obj.com_id || '-' || obj.net_id || '-' || obj.via_id || '-' || obj.module_id || '-' || obj.matrix_counter || '-' || obj.item_counter";
+	$joined_clauses = array();
+	foreach ($subscriptions as $key => $val) {
+		$joined_clauses[] = "$joined = '$key'";
+	}
+	
+	$select1 = $db->select()
+        ->from(array('obj' => 'acl_members'), array('acl_id' => new Zend_Db_Expr($joined), 'identifier' => 'identifier', 'acl_counter' => 'acl_counter', 'active' => 'active'))
+        ->where('obj.active NOTNULL')
+        ->where("obj.expiration ISNULL OR date(obj.expiration) >= date('now')")
+        
+        ->join(array('a' => 'acl_acls'), 'obj.com_id=a.com_id AND obj.net_id=a.net_id AND obj.via_id=a.via_id AND obj.module_id=a.module_id AND obj.matrix_counter=a.matrix_counter AND obj.item_counter=a.item_counter AND obj.acl_counter=a.counter',
+            array(
+            	'title' => 'title'
+            )
+        )
+        ->where('a.active NOTNULL')
+        
+        ->join(array('p' => 'profile_profiles'), 'obj.profile_id = p.id',
+            array(
+            	'profile_id' => 'id'
+            )
+        )
+        ->where('p.active=?', 't')
+        
+        ->join(array('b' => 'member_members'), 'p.member_id = b.id',
+            array(
+            )
+        )
+        ->where('b.active = ?', 't')
+        ->where('b.id = ?', $this->internal->member->id)
+    ;
+    if (count($joined_clauses)) {
+        // ONLY Select the subscriptions in the subscription list
+    	#$select1->where(implode(' OR ', $joined_clauses));
+    }
+ 
+    $select2 = $db->select()
+        ->from(array('obj' => 'acl_passwords'), array('acl_id' => new Zend_Db_Expr($joined), 'identifier' => new Zend_Db_Expr('null'), 'acl_counter' => new Zend_Db_Expr('null'), 'active' => 'active'))
+        ->where('obj.active')
+        
+        ->join(array('a' => 'acl_acls'), 'obj.com_id=a.com_id AND obj.net_id=a.net_id AND obj.via_id=a.via_id AND obj.module_id=a.module_id AND obj.matrix_counter=a.matrix_counter AND obj.item_counter=a.item_counter AND obj.acl_counter=a.counter',
+            array(
+            	'title' => 'title'
+            )
+        )
+        ->where('a.active')
+        
+        ->join(array('p' => 'profile_profiles'), 'obj.profile_id = p.id',
+            array(
+            	'profile_id' => 'id'
+            )
+        )
+        ->where('p.active=?', 't')
+        
+        ->join(array('b' => 'member_members'), 'p.member_id = b.id',
+            array(
+            )
+        )
+        ->where('b.active = ?', 't')
+        ->where('b.id = ?', $this->internal->member->id)
+    ;
+    if (count($joined_clauses)) {
+        // ONLY Select the subscriptions in the subscription list
+    	#$select2->where(implode(' OR ', $joined_clauses));
+    }
+    
+    $select = $db->select()->union(array($select1, $select2));
+    
+    $temp_my_subs = $db->fetchAll($select);
+    
+    foreach ($temp_my_subs as $tms) {
+    	$my_subs[$tms->acl_id] = $tms;
+    }
+    $this->my_subs = $my_subs;
+}
+?>
+
+
+<?php /*
+                <span style="padding-right: 1.5em; border-right: 1px solid #2d465a;"><ul id="premium_nav">
+                    <li class="dropdown"><a href="/Premium-Subscription-Services/s/page/view/p/mid/1/id/23/" style="color: #fff;">Premium Advice</a>
+                        <ul class="submenu">
+                            <li class="heading">My Subscriptions</li>
+<?php
+if (count($my_subs)) {
+    $member_subscriptions = array();
+	foreach ($my_subs as $key => $val) {
+	    if (isset($subscriptions[$key]) && isset($subscriptions[$key]['access']) && $subscriptions[$key]['access']) {
+	        $subLink = $subscriptions[$key]['access'];
+	        $subLink = ($this->internal->member->profile->id == $val->profile_id ? $subLink : "/profile/switch/?id=".$val->profile_id."&redirect=" . urlencode($subLink));
+    		echo '<li><a href="' . $subLink . '">' . $subscriptions[$key]['title'] . '</a>';
+    		// Begin Change Out the Mobile Links
+    		$this->inlineScript()->captureStart(); ?>
+                $( "#Mobile_Nav #mobile_navmenu a.premium_<?= $key ?>" ).attr("href", "<?= $subLink ?>");
+            <?php $this->inlineScript()->captureEnd();
+            // End Change Out the Mobile Links
+    	}
+    	else {
+    	    $subTokens = explode('-', $key);
+    		if ($subTokens[0]) {
+    		    $tempStype = 'com';
+    		    $tempId = $subTokens[0];
+    		}
+    		elseif ($subTokens[1]) {
+    		    $tempStype = 'net';
+    		    $tempId = $subTokens[1];
+    		}
+    		else {
+    		    $tempStype = 'via';
+    		    $tempId = $subTokens[2];
+    		}
+    		
+    	    $subLink = "/$tempStype/$tempId/";
+    	    $subLink = ($this->internal->member->profile->id == $val->profile_id ? $subLink : "/profile/switch/?id=".$val->profile_id."&redirect=" . urlencode($subLink));
+    	    echo "<li><a href=\"$subLink\">" . $val->title . '</a>';
+    	    
+    	}
+		if (isset($val->active) && $val->active && isset($val->identifier) && $val->identifier) {
+    		echo '<ul>';
+    		echo '<li><a href="/acl/access/update_payment/?identifier=' . $val->identifier . '">Update Credit Card</a></li>';
+    		echo '<li><a href="/acl/access/unsubscribe/?identifier=' . $val->identifier . '">Unsubscribe</a></li>';
+    		echo '</ul>';
+    	}
+		echo '</li>';
+		#$member_subscriptions[$key] = ($this->internal->member->profile->id == $val->profile_id ? $subscriptions[$key]['access'] : "/profile/switch/?id=".$val->profile_id."&redirect=" . urlencode($subscriptions[$key]['access']));
+		$member_subscriptions[$key] = $subLink;
+		unset($subscriptions[$key]);
+	}
+	Zend_Registry::set('member_subscriptions', $member_subscriptions);
+	#Zend_Debug::Dump($member_subscriptions);
+}
+else {
+	echo '<li>None</li>';
+}
+?>
+                            
+                            <li class="heading">Other Services</li>
+<?php
+if (count($subscriptions)) {
+	foreach ($subscriptions as $sub) {
+		echo '<li><a href="' . $sub['landing'] . '">' . $sub['title'] . '</a></li>';
+	}
+}
+else {
+	echo '<li>None</li>';
+}
+?>
+                        </ul>
+                    </li>
+                </ul></span>
+
+                <span style="text-shadow: none; line-height: 14px;">
+                    
+<?php if (isset($this->internal->member)) { ?>
+                    <span style="margin: 0 2.25em 0 1.5em;">Welcome, <?= ((isset($this->internal->member->first_name) && $this->internal->member->first_name) ? $this->internal->member->first_name : $this->internal->member->profile->name) ?>!</span> <a href="/member/logout/p/vmpd_far/1/" rel="nofollow" style="text-transform: uppercase; font-size: 10px; font-weight: bold; color: #ffc62b;"><span class="icon"></span>Logout</a>
+<?php } else { ?>
+                    
+                    <a href="/member/login/p/signup_entrance/TB-Login/" rel="nofollow" onclick="return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/signup_entrance/TB-Login/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false });" style="margin: 0 2.25em 0 1.5em; text-transform: uppercase; font-size: 10px;"><span class="icon"></span>Login</a> <a href="/Register/s/member/register/p/shortform/1/signup_entrance/TB-Register/" rel="nofollow" style="text-transform: uppercase; font-size: 10px; font-weight: bold; color: #a3ec6a;"><span class="icon"></span>Create Account</a>
+<?php } ?>
+                </span>
+                </td>
+            </tr></table>
+        </div></div>
+        <!-- End MinNavHead -->
+*/ ?>
+
+
+
+        <!-- Begin Stick -->
+        <div id="stickyheader" class="curb" style="width: 100%;">
+            <!-- Begin MinNavHead -->
+            <div id="MinNavHead_outside"><div id="MinNavHead" class="bscontainer">
+            	<table><tr>
+                	<td class="first_column"><div>
+                	    <span style="color: #ffc62b; font-weight: bold; font-style: italic;">Small Stocks.  Big Returns.</span>
+                    </div></td>
+                    <td class="second_column"></td>
+                    <td class="third_column" nowrap="nowrap"><!-- <a href="https://www.instagram.com/smallcapnetwork/" class="instagram">Instagram</a> <a href="http://www.facebook.com/pages/SmallCap-Network/88202206436" class="facebook">Facebook</a> <a href="https://twitter.com/SmallCapNetwork" class="twitter">Twitter</a> <a href="https://www.smallcapnetwork.com/SmallCap-Network/s/system/widget/p/format/atom/" class="feed">Feed</a> --><!-- <a href="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/MinNavHead/smallcapnetwork_qrcode.png" class="qrcode">QRCode</a> -->
+                    
+                    <span style="text-shadow: none; line-height: 14px;">
+                        <span style="margin-right: 1.5em; padding-right: 1.5em; border-right: 1px solid #2d465a;">
+                            <a href="javascript:void(null);" onclick="$('#search_input').fadeToggle('slow');"><i class="fa fa-search fa-flip-horizontal" aria-hidden="true"></i></a>
+                        
+                            <form action="/Google-Search-Results/s/page/view/p/mid/1/id/6/" onSubmit="if (this.q.value == '' || this.q.value == 'Enter Search Term') { return false; }" style="display: inline;">
+                              <input name="cx" type="hidden" value="partner-pub-3297144036592508:3fsnf8-a1xo" />
+                              <input name="cof" type="hidden" value="FORID:10" />
+                              <input name="ie" type="hidden" value="UTF-8" />
+                            
+                              <input id="search_input" name="q" type="text" placeholder="Search Entire Site" />
+                            </form>
+                        </span>
+                    </span>
+    
+                        
+    <?php if (isset($this->internal->member)) { ?>
+                    <span style="text-shadow: none; line-height: 14px; font-size: 10px; text-transform: uppercase;">
+                        <span style="margin: 0 2.25em 0 0">Welcome, <a href="/<?= $this->SEO_Urlify($this->internal->member->profile->name) ?>/s/via/<?= $this->internal->member->profile->id ?>/"><?= ((isset($this->internal->member->first_name) && $this->internal->member->first_name) ? $this->internal->member->first_name : $this->internal->member->profile->name) ?></a>!</span>
+                    </span>
+                    
+<?php $this->inlineScript()->captureStart() ?>
+YAHOO.util.Event.onAvailable("toolbar_mini", function () {
+    function loadToolbar() {
+        var omenubar = new YAHOO.widget.Menu("menubar", {
+            autosubmenudisplay: true,
+            position: "static",
+            showdelay: 0,
+            hidedelay: 750,
+            shadow: false,
+            lazyload: true });
+        omenubar.render();
+        omenubar.show();
+	    
+        var omenubar2 = new YAHOO.widget.Menu("menubar2", {
+            autosubmenudisplay: true,
+            position: "static",
+            showdelay: 0,
+            hidedelay: 750,
+            shadow: false,
+            lazyload: true });
+        omenubar2.render();
+        omenubar2.show();
+        
+        // Rendering menus changes display type to block.  Have to revert this back manually
+        //YAHOO.util.Dom.setStyle(['menubar', 'menubar2'], 'display', 'block');
+        
+        //YAHOO.util.Dom.setStyle('toolbar_mini', 'visibility', 'visible');
+        
+        
+        
+        
+        var timeoutTimer = 0;
+        
+        function hideToolbarMini() {
+            $('#toolbar_container').hide();
+        }
+        
+        $('#toolbar_container').mouseenter(
+            function() {
+                if (timeoutTimer) { clearTimeout(timeoutTimer); }
+            }
+        );
+        $('#toolbar_container').mouseleave(
+            function() {
+                timeoutTimer = setTimeout(hideToolbarMini, 500);
+            }
+        );
+        $('#hamburger_button').hover(
+            function() {
+                if (timeoutTimer) { clearTimeout(timeoutTimer); }
+                $('#toolbar_container').show();
+            },
+            function() {
+                timeoutTimer = setTimeout(hideToolbarMini, 500);
+            }
+        );
+        $('#hamburger_button').click(
+            function() {
+                if (timeoutTimer) { clearTimeout(timeoutTimer); }
+                $('#toolbar_container').show();
+            }
+        );
+    }
+    
+    loadToolbar();
+});
+<?php $this->inlineScript()->captureEnd() ?>
+                        <span id="hamburger_menu" style="position: relative;">
+                            <a id="hamburger_button"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a>
+                            <div id="toolbar_container" style="position: absolute; right: 0; z-index: 1; display: none;">
+                                <div id="toolbar_mini" style="display: inline-block;">
+                                <?php $this->yuiMenuBarType = 'yuimenu'; echo $this->render('includes/member.phtml'); ?>
+                                </div>
+                            </div>
+                        </span>
+                        
+                        <!-- <a href="/member/logout/p/vmpd_far/1/" rel="nofollow" style="text-transform: uppercase; font-size: 10px; font-weight: bold; color: #ffc62b;"><span class="icon"></span>Logout</a> -->
+    <?php } else { ?>
+                    <span style="text-shadow: none; line-height: 14px;">
+                        <a href="/member/login/p/signup_entrance/TB-Login/" rel="nofollow" onclick="return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/signup_entrance/TB-Login/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false });" style="margin: 0 2.25em 0 0; text-transform: uppercase; font-size: 10px;"><span class="icon"></span>Login</a> <a href="/Register/s/member/register/p/shortform/1/signup_entrance/TB-Register/" rel="nofollow" style="text-transform: uppercase; font-size: 10px; font-weight: bold; color: #a3ec6a;"><span class="icon"></span>Create Account</a>
+                    </span>
+    <?php } ?>
+                    </td>
+                </tr></table>
+            </div></div>
+            <!-- End MinNavHead -->
+            
+            
+            <?php /*
+            <!-- Begin Toolbar -->
+            <div id="toolbar_outside"><div id="toolbar" style="visibility: hidden;">
+                <?php echo $this->render('includes/menubar.phtml'); ?>
+            </div></div>
+            <!-- End Toolbar -->
+            */ ?>
+            
+            
+            <!-- Begin MainNav -->
+            <div id="mainnav_outside">
+                <?php echo $this->render('includes/mainnav.phtml'); ?>
+            </div>
+            <!-- End MainNav -->
+        </div>
+<?php $this->inlineScript()->captureStart(); ?>
+YUI().use('node', 'event', 'plugin', 'anim', 'stickyElement', function (Y) {
+    Y.on('domready', function () {
+		var dzOffset = ($('#MinNavHead_outside').is(':visible') ? ($('#MinNavHead_outside').outerHeight() * -1) : 0);
+		var stickEl = Y.one('#stickyheader');
+		
+		stickEl.plug(Y.Plugin.StickyElement, { container: '#page', zindex: 5, holdspace: true, offset: dzOffset, stuckHeightAdjust: -36 });
+		
+		Y.one("#toolbar_toggle_button").on('click', function (e) {
+            if (this.hasClass('toggle_opened')) {
+				new Y.Anim({ node: stickEl, to: { top: dzOffset }, easing: 'bounceOut' }).run();
+				if (stickEl.hasPlugin('sticky')) {
+					//stickEl.unplug(Y.Plugin.StickyElement);
+					//stickEl.plug(Y.Plugin.StickyElement, { container: '#page', zindex: 5, holdspace: true, offset: dzOffset });
+					stickEl.sticky.setOffset(dzOffset);
+					
+				}
+				this.removeClass('toggle_opened');
+			}
+			else {
+				// Animate to open, change dzOffset to zero, unplug and replug, add class
+				// backIn bounceOut
+				new Y.Anim({ node: stickEl, to: { top: 0 }, easing: 'bounceOut' }).run();
+				if (stickEl.hasPlugin('sticky')) {
+					//stickEl.unplug(Y.Plugin.StickyElement);
+					//stickEl.plug(Y.Plugin.StickyElement, { container: '#page', zindex: 5, holdspace: true, offset: 0 });
+					stickEl.sticky.setOffset(0);
+					
+				}
+				this.addClass('toggle_opened');
+			}
+        });
+	});
+});
+<?php $this->inlineScript()->captureEnd(); ?>
+        <!-- End Stick -->
+        
+<?php /*
+        <!-- Start SearchBar -->
+        <div id="searchbar2"><div class="interior" >
+            <table width="100%" cellpadding="0" cellspacing="0"><tr>
+                <td class="first"><span class="icon"></span>
+                    <form action="/quote/" onSubmit="if (this.s.value == '' || this.s.value == 'Enter Company Name or Symbol') { return false; }">
+                        <input id="searchbaracss" type="text" name="s" value="Enter Company Name or Symbol" class="vmfh_acss autogo" onfocus="if (this.value == 'Enter Company Name or Symbol') { this.value = ''; this.style.textTransform='uppercase'; this.style.fontStyle='normal'; }" onblur="if (this.value == '') { this.style.textTransform='none'; this.style.fontStyle='italic'; this.value = 'Enter Company Name or Symbol'; }" />
+                        <input type="submit" value="GO" />
+                    </form>
+                </td>
+                <td class="second"><div style="height: 30px; overflow: hidden;"><a href="http://www.facebook.com/pages/SmallCap-Network/88202206436" title="Like Us On Facebook"><img src="<?= $this->internal->vars->static_host ?>/css/theme/default/assets/social_media/icons/64x64/facebook.png" width="30" height="30" style="" /></a><a href="https://twitter.com/SmallCapNetwork" title="Follow Us On Twitter"><img src="<?= $this->internal->vars->static_host ?>/css/theme/default/assets/social_media/icons/64x64/twitter.png" width="30" height="30" style="margin-left: 5px;" /></a></div></td>
+                <td class="third"><span class="icon"></span>
+                    <form id="cse-search-box" action="https://www.smallcapnetwork.com/Google-Search-Results/s/page/view/p/mid/1/id/6/" onSubmit="if (this.q.value == '' || this.q.value == 'Enter Search Term') { return false; }">
+                      <input name="cx" type="hidden" value="partner-pub-3297144036592508:3fsnf8-a1xo" />
+                      <input name="cof" type="hidden" value="FORID:10" />
+                      <input name="ie" type="hidden" value="UTF-8" />
+                    
+                      <input name="q" type="text" value="Enter Search Term" onfocus="if (this.value == 'Enter Search Term') { this.value = ''; this.style.fontStyle='normal'; }" onblur="if (this.value == '') { this.style.fontStyle='italic'; this.value = 'Enter Search Term'; }" />
+                      <input name="sa" type="submit" value="Search" />
+                    </form>
+                </td>
+            </tr></table>
+        </div></div>
+        <!-- End SearchBar -->
+*/ ?>
+
+<?php /*
+        <div id="top2">
+            <div class="interior">
+                <table width="100%" cellpadding="0" cellspacing="0"><tr>
+                    <td class="first"><div class="advertisement"><div id='div-gpt-ad-1336195451378-0' style='width:728px; height:90px;'>
+<?php
+//<script type='text/javascript'>
+//GA_googleFillSlotWithSize("ca-pub-3297144036592508", "SCN-Site-Header-728x90", 728, 90);
+//</script>
+?>
+<script type='text/javascript'>
+googletag.pubads().display('/1063461/SCN-Site-Header-728x90', [728, 90], 'div-gpt-ad-1336195451378-0');
+</script>
+                        </div></div></td>
+                    <td class="second" style="height: 90px; overflow: hidden;"><div class="advertisement"><div id='div-gpt-ad-1346438954422-0' style='width:240px; line-height: 0;'>
+<script type='text/javascript'>
+googletag.pubads().display('/1063461/SCN-Site-Header-240x90', [240, 90], 'div-gpt-ad-1346438954422-0');
+</script>
+                        </div></div></td>
+                </tr></table>
+            </div>
+        </div>
+*/ ?>
+
+<?php /*
+<!-- Porsche Ad on Homepage -->
+<?php
+    $front = Zend_Controller_Front::getInstance();
+    if (
+        ($front->getRequest()->getModuleName() == 'default') &&
+        ($front->getRequest()->getControllerName() == 'index') &&
+        ($front->getRequest()->getActionName() == 'index')) { ?>
+            
+        <div>
+            <!--Include OAS Analytics Setup Script Middle-->
+            <script type="text/javascript">
+                var page_count = 'off';
+                if (typeof OAS_rdl == 'undefined') {
+                    var OAS_rdl = '';
+                    var OAS_CA = '';
+                    page_count = 'on';
+                    document.write('<script type="text/javascript" src="http://oasc17.247realmedia.com/Scripts/oas_analytics.js"></scr' + 'ipt>');
+                } 
+            </script>
+            <script type="text/javascript">
+                var OAS_url = 'http://oascentral.investingmediasolutions.com';
+                var OAS_sitepage = 'smallcapnetwork/homepage';
+                var OAS_pos = 'Middle';
+                var OAS_searchterms = '';
+                var OAS_taxonomy = '';
+                if (typeof OAS_RNS == 'undefined'){
+                    var OAS_RN = new String (Math.random());
+                    var OAS_RNS = OAS_RN.substring(2, 11);
+                }
+                if (OAS_searchterms != '') { OAS_searchterms += '&'; }
+                if (OAS_taxonomy != '') { OAS_taxonomy = '&' + OAS_taxonomy; }
+                if (page_count != 'on') { OAS_taxonomy = '&oas_pv=no_analytics' + OAS_taxonomy; }
+                document.write('<script type="text/javascript" src="' + OAS_url + '/RealMedia/ads/adstream_jx.ads/' + OAS_sitepage + '/1' + OAS_RNS + '@' + OAS_pos + '?' + OAS_searchterms + 'XE' + OAS_taxonomy + OAS_rdl + '&if_nt_CookieAccept=' + 
+            
+            OAS_CA + '&XE"></scr' + 'ipt>');
+            </script>
+        </div>
+<?php
+    }
+?>
+*/ ?>
+        
+
+<?php /*
+        <!-- Start SearchBar -->
+        <div id="searchbar"><div style="width: 976px; margin: 0 auto; position: relative; text-align: left;">
+        <form action="/quote/" onSubmit="if (this.s.value == '' || this.s.value == 'Enter Company Name or Symbol') { return false; }">
+        <img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/searchbar/left_arrow.png" style="position: absolute; top: 1px; left: 1px;" />
+        <input type="image" src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/searchbar/right_arrow.png" style="position: absolute; top: 1px; right: 116px;" />
+        <div style="float: right; text-align: center; color: #22477c; font-weight: bold; margin-top: -6px;"><span style="font-size: 10px;">Connecting Investors</span><br /><a href="http://www.facebook.com/pages/SmallCap-Network/88202206436" title="Like Us On Facebook"><img src="<?= $this->internal->vars->static_host ?>/css/theme/default/assets/social_media/icons/64x64/facebook.png" width="45" height="45" style="" /></a><a href="https://twitter.com/SmallCapNetwork" title="Follow Us On Twitter"><img src="<?= $this->internal->vars->static_host ?>/css/theme/default/assets/social_media/icons/64x64/twitter.png" width="45" height="45" style="margin-left: 5px;" /></a>
+        </div>
+        <table cellpadding=0 cellspacing=0 style="width: 870px; margin: 0; text-align: left; vertical-align: middle;">
+            <tr>
+                <td style="padding-right: 10px; padding-top: 2px; color: #244a80; font-weight: bold; font-size: 12px; position: relative; text-align: right;">A Single Community Destination For Every Small Stock.</td>
+                <td rowspan="2" style="width: 287px; padding-left: 13px;"><input id="searchbaracss" type="text" name="s" value="Enter Company Name or Symbol" class="vmfh_acss autogo" onfocus="if (this.value == 'Enter Company Name or Symbol') { this.value = ''; this.style.textTransform='uppercase'; this.style.fontStyle='normal'; }" onblur="if (this.value == '') { this.style.textTransform='none'; this.style.fontStyle='italic'; this.value = 'Enter Company Name or Symbol'; }" /></td>
+            </tr>
+            <tr>
+                <td style="text-align: right; padding-right: 3px; padding-bottom: 5px; height: 27px;">
+                    <div style="margin-left: 200px; height: 27px; line-height: 27px; background-color: #73797c;">
+                      <marquee scrollamount="3" scrolldelay="50" onmouseover="stop();" onmouseout="start();">
+<?php
+if ($db = Zend_Registry::get('db')) {
+    $select = $db->select()
+        ->union(array(
+            $db->select()
+                ->from(array('obj' => 'module_template'), array('creation', 'modified', 'published', 'module_id', 'com_id', 'net_id', 'via_id', 'matrix_counter', 'counter', 'profile_id', 'symbols', 'title', 'heading', 'summary', 'more_link', 'meta_title', 'meta_description', 'meta_keywords', 'content', 'allow_comments', 'allow_ratings', 'total_comments_count', 'total_ratings_count', 'rating', 'activation', 'expiration', 'hidden_on_fail', 'quip', 'search', 'acl', 'updated', 'active', new Zend_Db_Expr('null AS symbol_id'), new Zend_Db_Expr('COALESCE(obj.published, obj.creation) AS orderbyhere')))
+                ->where('obj.active=?', 't')
+                
+                ->join(array('x' => 'module_matrix'), 'obj.com_id=x.com_id AND obj.net_id=x.net_id AND obj.via_id=x.via_id AND obj.module_id=x.module_id AND obj.matrix_counter=x.counter',
+                    array()
+                )
+                ->where('x.active=?', 't')
+                
+                ->join(array('m' => 'module_modules'), 'x.module_id=m.id',
+                    array('m_name' => 'name', 'm_display' => 'display')
+                )
+                ->where('m.active=?', 't')
+                ->where('m.name <> ?', 'file')
+                
+                ->join(array('p' => 'profile_profiles'), 'obj.profile_id = p.id',
+                    array(
+                        'name' => 'name',
+                        'p_id' => 'id',
+                        'p_name' => 'name',
+                        'p_site_admin' => 'site_admin',
+                        'p_active' => 'active'
+                    )
+                )
+                ->where('p.active=?', 't')
+                
+                ->join(array('b' => 'member_members'), 'p.member_id = b.id',
+                    array(
+                    'b_id' => 'id',
+                    'b_site_admin' => 'site_admin',
+                    'b_active' => 'active',
+                    'b_email' => 'email'
+                    )
+                )
+                ->where('b.active=?', 't')
+                
+                ->join(array('c' => 'system_communities'), 'p.community_id = c.id',
+                    array(
+                    'c_id' => 'id',
+                    'c_name' => 'name',
+                    'c_hostname' => 'hostname'
+                    )
+                )
+                ->where('c.active=?', 't')
+                
+                ->where('obj.com_id=? OR p.community_id=?', $this->internal->community->id)
+                #->where('obj.published NOTNULL')
+                ->where('obj.acl ISNULL')
+                ->where('x.acl ISNULL')
+                #->where('x.community_mask ISNULL')
+                #->where('x.network_mask ISNULL')
+                #->where('x.profile_mask ISNULL')
+                ->where('obj.activation ISNULL OR obj.activation <= now()')
+                ->where('obj.expiration ISNULL OR obj.expiration >= now()')
+                
+                ->where('symbols NOTNULL AND array_length(symbols, 1) > 0')
+            ,
+            $db->select()
+                ->from(array('obj' => 'pick_picks'), array('creation', 'modified', 'published', 'module_id', 'com_id', 'net_id', 'via_id', 'matrix_counter', 'counter', 'profile_id', 'symbols', 'title', 'heading', 'summary', 'more_link', 'meta_title', 'meta_description', 'meta_keywords', 'content', 'allow_comments', 'allow_ratings', 'total_comments_count', 'total_ratings_count', 'rating', 'activation', 'expiration', 'hidden_on_fail', 'quip', 'search', 'acl', 'updated', 'active', 'symbol_id', new Zend_Db_Expr('COALESCE(obj.published, obj.creation) AS orderbyhere')))
+                ->where('obj.active=?', 't')
+                
+                ->join(array('x' => 'module_matrix'), 'obj.com_id=x.com_id AND obj.net_id=x.net_id AND obj.via_id=x.via_id AND obj.module_id=x.module_id AND obj.matrix_counter=x.counter',
+                    array()
+                )
+                ->where('x.active=?', 't')
+                
+                ->join(array('m' => 'module_modules'), 'x.module_id=m.id',
+                    array('m_name' => 'name', 'm_display' => 'display')
+                )
+                ->where('m.active=?', 't')
+                
+                ->join(array('p' => 'profile_profiles'), 'obj.profile_id = p.id',
+                    array(
+                        'name' => 'name',
+                        'p_id' => 'id',
+                        'p_name' => 'name',
+                        'p_site_admin' => 'site_admin',
+                        'p_active' => 'active'
+                    )
+                )
+                ->where('p.active=?', 't')
+                
+                ->join(array('b' => 'member_members'), 'p.member_id = b.id',
+                    array(
+                    'b_id' => 'id',
+                    'b_site_admin' => 'site_admin',
+                    'b_active' => 'active',
+                    'b_email' => 'email'
+                    )
+                )
+                ->where('b.active=?', 't')
+                
+                ->join(array('c' => 'system_communities'), 'p.community_id = c.id',
+                    array(
+                    'c_id' => 'id',
+                    'c_name' => 'name',
+                    'c_hostname' => 'hostname'
+                    )
+                )
+                ->where('c.active=?', 't')
+                
+                ->where('obj.com_id=? OR p.community_id=?', $this->internal->community->id)
+                #->where('obj.published NOTNULL')
+                ->where('obj.acl ISNULL')
+                ->where('x.acl ISNULL')
+                #->where('x.community_mask ISNULL')
+                #->where('x.network_mask ISNULL')
+                #->where('x.profile_mask ISNULL')
+                ->where('obj.activation ISNULL OR obj.activation <= now()')
+                ->where('obj.expiration ISNULL OR obj.expiration >= now()')
+                
+                ->where('symbol_id NOTNULL')
+        ))
+    ->limit(10)
+    ->order('orderbyhere DESC');
+        
+    #echo $select;
+    $items = $db->fetchAll($select);
+    $symbol_ids = array();
+    foreach ($items as $item) {
+        if (isset($item->symbol_id) && $item->symbol_id) {
+            $symbol_ids[] = $item->symbol_id;
+        }
+        elseif ($item->symbols) {
+            $symbol_ids = array_merge($symbol_ids, explode(',', preg_replace('/^\{(.*)\}$/', '${1}', $item->symbols)));
+        }
+    }
+    $symbol_info = $this->Quote_ConvertIdToSymbol( $symbol_ids );
+    #foreach ($ids as $id) {
+    #    echo $this->Quote_SymbolDisplay(array('id' => $id, 'symbol' => $info[$id]->internal_symbol, 'name' => $info[$id]->name, 'internal' => $this->internal));
+    #}
+    $stack = array();
+    foreach ($items as $item) {
+        $this->module = $item->m_name;
+        $string = '<a href="' . $this->ContentLink(array('object' => $item, 'view' => $this)) . '">New ' . $item->m_display . '</a> by ' . $this->ProfileDisplay(array('profile' => $item, 'internal' => $this->internal));
+        
+        if ((isset($item->symbol_id) && $item->symbol_id) || count(explode(',', preg_replace('/^\{(.*)\}$/', '${1}', $item->symbols)))) {
+            $ticks = array();
+            if (isset($item->symbol_id) && $item->symbol_id) {
+                $ticks[] = $this->Quote_SymbolDisplay(array('id' => $item->symbol_id, 'symbol' => $symbol_info[$item->symbol_id]->internal_symbol, 'name' => $symbol_info[$item->symbol_id]->name, 'internal' => $this->internal));
+            }
+            else {
+                foreach (explode(',', preg_replace('/^\{(.*)\}$/', '${1}', $item->symbols)) as $tt) {
+                    $ticks[] = $this->Quote_SymbolDisplay(array('id' => $tt, 'symbol' => $symbol_info[$tt]->internal_symbol, 'name' => $symbol_info[$tt]->name, 'internal' => $this->internal));
+                }
+            }
+            $string .= ' on ' . implode($ticks, ', ');;
+        }
+        
+        $string .= ' : &quot;<a href="' . $this->ContentLink(array('object' => $item, 'view' => $this)) . '">' . $item->title . '</a>&quot;';
+        $stack[] = $string;
+        #$stack[] = '<a href="' . $this->ContentLink(array('object' => $item, 'view' => $this)) . '">New ' . $item->m_display . ' by ' . $item->p_name . ' : "' . $item->title . '"</a>';
+        
+    }
+    if (count($stack)) {
+        echo implode(' - ', $stack);
+    }
+    else {
+        echo 'Get the latest community content and valuable research links on any stock.  Simply enter the ticker in the box and hit GO!';
+    }
+}
+?>
+                      </marquee>
+                    </div>
+                </td>
+            </tr>
+        </table></form></div></div>
+        <!-- End SearchBar -->
+*/ ?>
+        
+<?php /*
+        <div id="searchbar"><table cellpadding=0 cellspacing=0 style="text-align: left; vertical-align: middle;"><tr>
+            <td align="left" valign="middle">
+<script type="text/javascript"><!--
+google_ad_client = "ca-pub-3297144036592508";
+// 468x15 (5 Link Unit) //
+google_ad_slot = "5451346389";
+google_ad_width = 468;
+google_ad_height = 15;
+google_color_bg = "e8eef0";
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+
+
+<a href="https://www.smallcapnetwork.com/" title="SmallCap Network"><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/logo/logo3.png" alt="SmallCap Network" /></a>
+            </td>
+
+            <td style="width: 1px; padding: 10px 20px 10px 30px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/searchbar/chart.png) center center no-repeat;"></td>
+            <td style="padding: 10px; font-size: 24px; font-weight: bold; white-space: nowrap;" width="5%">
+                Due Diligence Tool
+            </td>
+            <td style="padding: 10px; font-size: 13px; white-space: nowrap;" width="5%">
+                All your small cap research in one place.<br />
+                Find valuable opinions, information, research & more.
+            </td>
+            <td align="right" style="padding: 0 20px 0 0; background: #1f4176 url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/searchbar/arrow.png) left center no-repeat; white-space: nowrap; border-top-right-radius: 8px; border-bottom-right-radius: 8px; -moz-border-radius-topright: 8px; -moz-border-radius-bottomright: 8px; -webkit-border-top-right-radius: 8px; -webkit-border-bottom-right-radius: 8px;">
+                <form action="/quote/" onSubmit="if (this.s.value == '' || this.s.value == 'Company Name or Symbol') { return false; }">
+                    <input type="text" name="s" value="Company Name or Symbol" class="vmfh_acss autogo" onfocus="if (this.value == 'Company Name or Symbol') { this.value = ''; this.style.textTransform='uppercase'; }" onblur="if (this.value == '') { this.style.textTransform='none'; this.value = 'Company Name or Symbol'; }" /><div class="submitdiv"><input type="submit" value="Research" /></div>
+                </form>
+            </td>
+        </tr></table></div>
+*/ ?>
+        <!-- End SearchBar -->
+
+    </div>
+    <!-- End Page Header -->
+    
+    
+    <!-- Begin Page Body -->
+    <div id="page_body" class="<?php $front = Zend_Controller_Front::getInstance(); echo $front->getRequest()->getModuleName() . '_module ' . $front->getRequest()->getControllerName() . '_controller ' . $front->getRequest()->getActionName() . '_action'; ?>">
+
+<?php /*
+<!-- Begin Special Home -->
+<?php
+    $front = Zend_Controller_Front::getInstance();
+    if ((!isset($this->internal->member)) &&
+        ($front->getRequest()->getModuleName() == 'default') &&
+        ($front->getRequest()->getControllerName() == 'index') &&
+        ($front->getRequest()->getActionName() == 'index')) {
+?>
+<div id="specialhome" class="yui-navset">
+    <ul class="yui-nav">
+        <li class="selected firstitem one"><a href="javascript:void(0);">Publish your picks and opinions publicly or privately.</a></li><li class="two"><a href="javascript:void(0);">Create multiple profiles, customizable research reports and more...</a></li><li class="three"><a href="javascript:void(0);">Find savvy investors to follow or make yourself available for others.</a></li><li class="last four"><a href="javascript:void(0);">Before acting on stock tips, find out what other top traders think first!</a></li>
+    </ul>            
+    <div class="yui-content">
+        <div>
+        	<table>
+                <tr>
+                    <td width="90%" style="font-size: 22px; padding: 2em 1em;">Create your own custom investment space.  Share and exchange information on Small Cap and Penny Stocks with others like never before!</td>
+                    <td><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/specialhome/screenshot1.jpg" alt="" /></td>
+                </tr>
+            </table>
+        </div>
+        <div>
+        	<table>
+                <tr>
+                    <td width="90%" style="font-size: 22px; padding: 2em 1em;">Manage multiple profiles all from the same place. Publish your own custom research reports, news articles and discussion forums!</td>
+                    <td><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/specialhome/screenshot2.jpg" alt="" /></td>
+                </tr>
+            </table>
+        </div>
+        <div>
+        	<table>
+                <tr>
+                    <td width="90%" style="font-size: 22px; padding: 2em 1em;">Make your winning stock picks available to others for viewing or find red hot traders and investors to learn from and follow!</td>
+                    <td><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/specialhome/screenshot3.jpg" alt="" /></td>
+                </tr>
+            </table>
+        </div>
+        <div>
+        	<table>
+                <tr>
+                    <td width="90%" style="font-size: 22px; padding: 2em 1em;">Eliminate all the noise from media and various tout sheets. Find out what other like minded investors think before you invest!</td>
+                    <td><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/specialhome/screenshot4.jpg" alt="" /></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div style="position: absolute; top: 0; left: 707px; width: 211px; height: 175px; font-size: 14px; color: #000; padding: 2em;">
+    	<p style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">Sign Up Now!</p>
+        <p>It's <span style="font-weight: bold; color: #bc0000">FREE</span> and anyone can join.</p>
+        <form action="/member/register/" onsubmit="if (this.fullname.value == 'Name') { this.fullname.value = '';} if (this.email.value == 'Email') { this.email.value = '';}">
+            <input type="text" name="fullname" value="Name" onfocus="if (this.value == 'Name') { this.value = ''; }" onblur="if (this.value == '') { this.value = 'Name'; }" style="width: 100%; color: #7c7c7c; padding: .25em; margin-bottom: 5px;" /><br />
+            <input type="text" name="email" value="Email" onfocus="if (this.value == 'Email') { this.value = ''; }" onblur="if (this.value == '') { this.value = 'Email'; }" style="width: 100%; color: #7c7c7c; padding: .25em; margin-bottom: 1em;" /><br />
+            <div style="text-align: right;"><input type="submit" name="button" id="button" value="Sign Up!" style="text-transform: uppercase;" /></div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+(function() {
+    var tabView = new YAHOO.widget.TabView('specialhome', { orientation: "bottom" });
+	//tabView.get('tabs')[1].set('disabled', true);
+	//tabView.get('tabs')[2].set('disabled', true);
+	//tabView.get('tabs')[3].set('disabled', true);
+})();
+</script>
+<?php } ?>
+<!-- End Special Home -->
+*/ ?>
+
+<?php
+    if (isset($this->internal->vars->sublayout)) {
+        echo $this->render($this->internal->vars->sublayout);
+    }
+    elseif (is_file(dirname(__FILE__) . '/../sublayouts/default.phtml')) {
+        echo $this->render('sublayouts/default.phtml');
+    }
+    else {
+        echo '<div id="doc4" class="page_body_internal"><div id="bd"><div id="yui-main"><div class="yui-b"><div id="content_area">' .
+             $this->layout()->content .
+             '</div></div></div></div></div>';
+    }
+?>
+        
+    </div>
+    <!-- End Page Body -->
+    
+    
+    <!-- Begin Page PreFooter -->
+    <div id="page_prefooter" class="bootstrap" style="position: relative; top: 2em; padding: 2em 0; color: #fff; background: #84c733; background: -moz-linear-gradient(left,  #84c733 0%, #4daa74 100%); background: -webkit-linear-gradient(left,  #84c733 0%,#4daa74 100%); background: linear-gradient(to right,  #84c733 0%,#4daa74 100%); filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#84c733', endColorstr='#4daa74',GradientType=1 );">
+        <div class="container text-center">
+            <strong style="letter-spacing: 2px;">GO PREMIUM:</strong> SmallCap Network's Premium Subscription Service For Serious Stock Market Traders and Investors
+            <a href="/pages/EOP/v1/" style="margin-left: 2em; padding: 8px 25px; background-color: #fff; border-radius: 20px; -moz-border-radius: 20px; -webkit-border-radius: 20px;">Learn More</a>
+        </div>
+    </div>
+    <!-- End Page PreFooter -->
+    
+    <!-- Begin Page Footer -->
+    <div id="page_footer" class="bootstrap">
+        <div class="container">
+<?php
+$pre = '';
+if (isset($this->internal->params->com_id) && $this->internal->params->com_id) {
+    $pre = '/com/' . $this->internal->params->com_id;
+}
+
+// NOTE - This whole mainnav should probably be cached for up to 4 hours or so
+//   If we do cache it, must remove all references to member and anything personalized to profile or member
+?>
+            
+            <img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/footer/scn_logo.png" alt="SmallCap Network" class="hidden-xs" style="float: left; margin-top: 40px; margin-right: 50px;" />
+            
+            <div class="rightbox">
+                <div class="row">
+                    <div class="col-sm-5 col-sm-push-7 text-right">
+                        <ul class="straight social_media">
+                            <li class="firstitem facebook"><a href="http://www.facebook.com/pages/SmallCap-Network/88202206436">Facebook</a></li>
+                            <li class="twitter"><a href="https://twitter.com/SmallCapNetwork">Twitter</a></li>
+                            <li class="instagram"><a href="https://www.instagram.com/smallcapnetwork/">Instagram</a></li>
+                            <li class="rss"><a href="https://www.smallcapnetwork.com/SmallCap-Network/s/system/widget/p/format/atom/">RSS</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-3 col-sm-pull-5 text-left">
+                        <ul class="links">
+                            <li class="firstitem"><a href="<?= $pre ?>/">Home</a></li>
+                            <li><a href="/About-Us/s<?= $pre ?>/page/view/p/mid/1/id/11/">About Us</a></li>
+                            <li><a href="/Contributors/s<?= $pre ?>/page/view/p/mid/1/id/7/">Contributors</a></li>
+                            <li><a href="/SmallCap-Network-Newsletter-Subscription/s<?= $pre ?>/page/view/p/mid/1/id/9/">Subscribe</a></li>
+                            <li><a href="/Newsletters/s<?= $pre ?>/article/p/mid/7/">Archives</a></li>
+                            <li><a href="/Stock-Quotes/s<?= $pre ?>/quote/">Stock Quotes</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-4 col-sm-pull-5 text-left">
+                        <ul class="links">
+                            <li class="firstitem"><a href="/Privacy-Policy/s<?= $pre ?>/page/view/p/mid/1/id/3/">Privacy Policy</a></li>
+                            <li><a href="/Terms-of-Use/s<?= $pre ?>/page/view/p/mid/1/id/1/">Terms of Use</a></li>
+                            <li><a href="/Disclaimer/s<?= $pre ?>/page/view/p/mid/1/id/2/">Disclaimer</a></li>
+                            <li><a href="/SEC-Rule-17b-Disclosure/s<?= $pre ?>/page/view/p/mid/1/id/4/">SEC Rule 17b Disclosure</a></li>
+                            <li><a href="/Contact-Us/s<?= $pre ?>/page/view/p/mid/1/id/8/">Contact Us</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <p class="copyright"><nobr style="white-space: nowrap;">Copyright &copy; <?= date('Y') ?> SmallCapNetwork.com.</nobr> <nobr style="white-space: nowrap;">All Rights Reserved. v2.0.</nobr></p>
+                <p style="margin-bottom: 0; padding-bottom: 0;"><a href="http://www.copyscape.com/"><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/copyscape.png" width="200" height="25" border="0" alt="Protected by Copyscape" title="Protected by Copyscape Plagiarism Checker - Do not copy content from this page." /></a></p>
+            </div>
+            
+            
+            <?php //$this->internal->log->debug('Load Time : ' . sprintf ('%.4f', microtime(true) - $this->internal->vars->timer)); ?>
+        
+        </div>
+    </div>
+    
+    
+    <!-- Footer Popup Start -->
+    
+    
+    <style>
+    
+    .chatbox {
+    position: fixed;
+    bottom: 0;
+    right: 30px;
+    width:375px;
+    height: auto;
+    background-color: #fff;
+	text-align:left;
+    -webkit-transition: all 600ms cubic-bezier(0.19, 1, 0.22, 1);
+    transition: all 600ms cubic-bezier(0.19, 1, 0.22, 1);
+	-webkit-box-shadow: 0px 0px 30px 5px rgba(0,0,0,0.2);
+	-moz-box-shadow: 0px 0px 30px 5px rgba(0,0,0,0.2);
+	box-shadow: 0px 0px 30px 5px rgba(0,0,0,0.2);
+    display: -webkit-flex;
+    display: flex;
+	z-index: 999999;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    box-sizing: border-box;
+	}
+	
+	.chatbox--tray {
+    	bottom: -204px;
+	}
+
+
+	.chatbox .form-control:focus {
+	    border-color: #1f2836;
+	}
+
+	.chatbox__title,
+	.chatbox__body {
+	    border-bottom: none;
+	}
+
+	.chatbox__title {
+	    min-height:40px;
+	    background-color:#053255;
+	    border-top-left-radius:5px;
+	    border-top-right-radius:5px;
+	    cursor: pointer;
+		padding:0px 10px;
+		padding-left:15px;
+	    display: -webkit-flex;
+	    display: flex;
+		border-radius: 0;
+	    -webkit-align-items: center;
+	    align-items: center;
+	    box-sizing: border-box;
+	}
+
+	.chatbox__title h5 {
+	    height: 50px;
+	    margin: 0;
+	    line-height: 50px;
+	    position: relative;
+	    -webkit-flex-grow: 1;
+	    flex-grow: 1;
+	}
+
+	.chatbox__title h5 a {
+	    color: #fff;
+	    max-width:250px;
+	    display: inline-block;
+	    text-decoration: none;
+	    white-space: nowrap;
+	    overflow: hidden;
+	    text-overflow: ellipsis;
+	    box-sizing: border-box;
+	    font-size: 15px;
+    	text-transform: capitalize;
+    	font-weight: 500;
+	}
+
+	.chatbox__title__tray {
+	    width: 24px;
+	    height: 24px;
+	    outline: 0;
+	    border: none;
+	    background-color: transparent;
+	    opacity: 0.9;
+	    cursor: pointer;
+	    -webkit-transition: opacity 200ms;
+	    transition: opacity 200ms;
+	    box-sizing: border-box;
+	}
+
+	.chatbox__title__tray:hover,
+	.chatbox__title__close:hover {
+	    opacity: 1;
+	}
+
+	.chatbox__credentials {
+	    padding:0px;
+	    border-top: 0;
+	    background-color: #f5f5f5;
+	    border-left: 1px solid #ddd;
+	    border-right: 1px solid #ddd;
+		text-align:left;
+	    box-sizing: border-box;
+	}
+	
+	.chatbox__credentials .form-group{
+		width:100%;
+		float:left;
+		padding:0px 10px;
+		margin-bottom:20px;
+		box-sizing: border-box;
+	}
+	
+	.chatbox__credentials .form-group label{
+		width:40px;
+		float:left;
+		box-sizing: border-box;
+	}
+	.chatbox__credentials .form-group .form-control{
+		width:clac(100% - 40px);
+		float:left;
+		box-sizing: border-box;
+	}
+
+	.chatbox__body__message--left p {
+	    margin-left: 15px;
+	    padding-left: 30px;
+	    text-align: left;
+	    box-sizing: border-box;
+	}
+	form#mc-embedded-subscribe-form {
+    	padding-top: 15px;
+    	padding-right: 7px;
+	}
+	.plus{
+		display: block;
+		color:#fff;
+		opacity: 1;
+	}
+	.minimize{
+		color:#fff;
+		opacity: 1;
+		display:none;
+	}
+	button.chatbox__title__tray.close_icon .plus{
+		display:none;
+	}
+	button.chatbox__title__tray.close_icon .minimize{
+		display: block;
+	}
+		
+    
+    </style>
+    
+    
+    
+    <div class="chatbox chatbox--tray chatbox--empty">
+    	<div class="chatbox__title">
+        	<h5><a href="javascript:void(0);">Subscribe to the SmallCap Network</a></h5>
+        	<button class="chatbox__title__tray">
+            	<span class="minimize"><i class="fa fa-minus" aria-hidden="true"></i></span>
+            	<span class="plus"><i class="fa fa-plus" aria-hidden="true"></i></span>
+        	</button>
+    	</div>
+    	<!--<form class="chatbox__credentials">
+        	<div class="form-group">
+            	<label for="inputName">Name:</label>
+            	<input type="text" class="form-control" id="inputName" required>
+        	</div>
+        	<div class="form-group">
+            	<label for="inputEmail">Email:</label>
+            	<input type="email" class="form-control" id="inputEmail" required>
+        	</div>
+        	<button type="submit" class="btn btn-success btn-block">Enter Chat</button>
+    	</form>-->
+    	
+			<form action="https://smallcapnetwork.us16.list-manage.com/subscribe/post?u=634211ce4ec4474211fac39e4&amp;id=3419ef652c" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate="">
+				<table style="width: 100%; border-spacing: 18px;" border="0" cellspacing="18" cellpadding="0">
+				<tbody>
+				<tr>
+					<td style="color: 464c54; white-space: nowrap;" width="5%" valign="middle">
+						   Full Name:
+					</td>
+					<td valign="middle">
+						 <input type="text" value="" name="FNAME" class="" id="mce-FNAME" style="width:92%; border: 1px solid #cfcfcf; padding: 8px; background: url('https://static.viame.com/css/community/smallcapnetwork/assets/contact_us/formfield_bg.png') center left repeat-x; color: #52585f; font-size: 120%;">
+					</td>
+				</tr>
+				<tr>
+					<td style="color: 464c54; white-space: nowrap;" valign="middle">
+						   Email Address:
+					</td>
+					<td valign="middle">
+						 <input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL" style="width:92%; border: 1px solid #cfcfcf; padding: 8px; background: url('https://static.viame.com/css/community/smallcapnetwork/assets/contact_us/formfield_bg.png') center left repeat-x; color: #52585f; font-size: 120%;">
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" align="right" valign="middle">
+						 <input type="submit" src="https://static.viame.com/css/community/smallcapnetwork/assets/contact_us/submit_button.png" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button">
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" align="right" valign="middle">
+						<div id="mce-responses" class="clear">
+							<div class="response" id="mce-error-response" style="display:none">
+							</div>
+							<div class="response" id="mce-success-response" style="display:none">
+							</div>
+						</div>
+						<!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+						<div style="position: absolute; left: -5000px;" aria-hidden="true">
+							<input type="text" name="b_634211ce4ec4474211fac39e4_3419ef652c" tabindex="-1" value="">
+						</div>
+					</td>
+				</tr>
+				</tbody>
+				</table>
+			</form>
+	
+    	
+    	
+	</div>
+    
+    <script>
+    	(function($) {
+    $(document).ready(function() {
+        var $chatbox = $('.chatbox'),
+            $chatboxTitle = $('.chatbox__title'),
+            $chatboxTitleClose = $('.chatbox__title__close'),
+            $chatboxCredentials = $('.chatbox__credentials');
+        $chatboxTitle.on('click', function() {
+            $chatbox.toggleClass('chatbox--tray');
+            $('.chatbox__title__tray').toggleClass('close_icon');
+        });
+        $chatboxTitleClose.on('click', function(e) {
+            e.stopPropagation();
+            $chatbox.addClass('chatbox--closed');
+        });
+        $chatbox.on('transitionend', function() {
+            if ($chatbox.hasClass('chatbox--closed')) $chatbox.remove();
+        });
+        $chatboxCredentials.on('submit', function(e) {
+            e.preventDefault();
+            $chatbox.removeClass('chatbox--empty');
+        });
+    });
+})(jQuery);
+    </script>
+    
+    <!-- Footer Popup Start -->
+    
+    
+    
+    
+    
+    <!-- End Page Footer -->
+
+    <!-- Begin ScrollTop -->
+    <div class="scroll-top"></div>
+<?php $this->inlineScript()->captureStart(); ?>
+    // Scroll Top
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > $(window).height()) {
+            $('div.scroll-top').addClass('on');
+        } else {
+            $('div.scroll-top').removeClass('on');
+            $('div.scroll-top').addClass('off');
+        }
+    });
+    $( 'div.scroll-top' ).click(function() {
+        $('div.scroll-top').removeClass('on');
+        $('div.scroll-top').addClass('off');
+        $('html,body').animate({
+            scrollTop: 0
+            }, 500);
+    });
+<?php $this->inlineScript()->captureEnd(); ?>
+    <!-- End ScrollTop -->        
+        
+</div>
+<!-- End Page -->
+
+
+<!-- Begin Scratch Pad -->
+<div id="scratch_pad"></div>
+<!-- End Scratch Pad -->
+
+
+
+<!-- Begin Fixed -->
+<?php /*
+<div id="toolbar_outside"><div id="toolbar">
+    <?php // echo $this->render('../default/includes/menubar.phtml'); ?>
+    <?php echo $this->render('includes/menubar.phtml'); ?>
+</div></div>
+*/ ?>
+<?php /* $this->inlineScript()->captureStart() */ ?>
+<?php /*
+YAHOO.util.Event.onContentReady("fixed", function () {
+    YAHOO.util.Dom.setY('fixed', 0 + YAHOO.util.Dom.getDocumentScrollTop());
+    YAHOO.util.Dom.setStyle('fixed', 'visibility', 'visible');
+    YAHOO.util.Dom.setStyle('page', 'margin-top', (YAHOO.util.Dom.get('fixed').offsetHeight - 8) + 'px'); // Works Better in IE
+*/ ?>
+<?php /*
+    // Some default undos
+    //YAHOO.util.Dom.setStyle('fixed', 'display', 'block');
+    //YAHOO.util.Dom.setStyle('fixed', 'position', 'fixed');
+    
+    
+    // Fixed at top - Scootch page down
+    
+    //YAHOO.util.Dom.setY('page', YAHOO.util.Dom.get('fixed').offsetHeight - 8); // Match Fixed Padding
+    
+
+    // Fixed at bottom
+    function positionFixedBottom() {
+        YAHOO.util.Dom.setY('fixed', YAHOO.util.Dom.getViewportHeight() - YAHOO.util.Dom.get('fixed').offsetHeight + YAHOO.util.Dom.getDocumentScrollTop());
+        YAHOO.util.Dom.setStyle('fixed', 'visibility', 'visible');
+    }
+    //YAHOO.util.Dom.setY('fixed', YAHOO.util.Dom.getViewportHeight() - YAHOO.util.Dom.get('fixed').offsetHeight);
+    YAHOO.util.Event.addListener(window, 'resize', positionFixedBottom);
+    
+    function slideFixedIn() {
+        YAHOO.util.Dom.setStyle('fixed', 'visibility', 'visible');
+        var attributes = {
+            points: { from: [0, YAHOO.util.Dom.getViewportHeight() + YAHOO.util.Dom.getDocumentScrollTop()], to: [0, YAHOO.util.Dom.getViewportHeight() - YAHOO.util.Dom.get('fixed').offsetHeight + YAHOO.util.Dom.getDocumentScrollTop()] }
+        };
+        var anim = new YAHOO.util.Motion('fixed', attributes, 1, YAHOO.util.Easing.easeOut);
+        anim.animate();
+    }
+    //YAHOO.util.Event.addListener(window, 'load', slideFixedIn); // IE Error
+    slideFixedIn();
+*/ ?>
+<?php /* }); */ ?>
+<?php /* $this->inlineScript()->captureEnd() */ ?>
+<!-- End Fixed -->
+
+<?php /*
+<?php if (!isset($this->internal->member) && (!preg_match("/\/(member|acl)\//i", $this->internal->vars->request_uri))) { ?>
+<!-- Begin Fixed Signup Toolbar -->
+<div id="fixed2">
+    <?= $this->render('includes/signup_toolbar2.phtml'); ?>
+</div>
+<!-- End Fixed Signup Toolbar -->
+<?php } ?>
+*/ ?>
+
+<?php /*
+<?php if (!isset($this->internal->member) && (!preg_match("/\/(member|acl)\//i", $this->internal->vars->request_uri))) { ?>
+<!-- Begin Interstitial -->
+<?= $this->render('includes/interstitial.phtml') ?>
+<!-- End Interstitial -->
+<?php } ?>
+*/ ?>
+
+
+
+<?php /*
+<?php if (!isset($this->internal->member) && (!preg_match("/\/(member|acl)\//i", $this->internal->vars->request_uri))) { ?>
+<!-- Begin Modal Signup -->
+<?= $this->render('includes/signup_super_modal.phtml'); ?>
+<!-- End Modal Signup -->
+<?php } ?>
+*/ ?>
+
+
+
+<?php /*
+<?php if (!isset($this->internal->member) && (!preg_match("/\/(member|acl)\//i", $this->internal->vars->request_uri)) && (!preg_match("/Google/i", $_SERVER['HTTP_USER_AGENT']))) { ?>
+<!-- Begin Exit Modal Signup -->
+<?= $this->render('includes/signup_exit_popup.phtml'); ?>
+<!-- End Exit Modal Signup -->
+<?php } ?>
+*/ ?>
+
+
+
+
+
+<?php // JavaScript Based FixUps ?>
+<?php $this->inlineScript()->captureStart(); ?>
+// Scroll Top
+$( document ).ready(function() {
+    $('#page > #page_body.article_module.view_controller.index_action > .page_body_internal > #hd > div.cm.widget.w_breadcrumb').prependTo('#page_body');
+});
+<?php $this->inlineScript()->captureEnd(); ?>

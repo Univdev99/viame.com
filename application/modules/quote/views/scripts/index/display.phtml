@@ -1,0 +1,613 @@
+<?php
+#Zend_Debug::Dump($this->results);
+#Zend_Debug::Dump($this->quote_data);
+#Zend_Debug::Dump($this->verification);
+
+reset($this->verification);
+$current = current($this->verification);
+$this->current = $current;
+$tick = $current->symbol;
+$dtick = $current->delayed_symbol;
+
+$date = new Zend_Date();
+?>
+
+<?php require_once 'simple_qf_nav.phtml'; ?>
+
+<?php
+if (isset($rating->total) && $rating->total) {
+    $baseURL = '/' .
+        $this->SEO_Urlify(
+            ((isset($this->current->internal_symbol) && $this->current->internal_symbol) ? $this->current->internal_symbol : $this->results[0]) . ' ' .
+            ((isset($this->symbol_data->name) && $this->symbol_data->name) ? $this->symbol_data->name : ($this->results[1] ? $this->results[1] : 'Quote'))
+        ) .
+        '/s/quote/p/s/' .
+        ((isset($this->current->internal_symbol) && $this->current->internal_symbol) ? $this->current->internal_symbol : $this->results[0]) .
+        '/';
+    
+    echo '<div class="more_stuff" style="margin: 1em 0;"><a href="' . $baseURL . 'f/rating/" class="rating">View All Ratings For ' . $this->current->internal_symbol . '</a></div>';
+}
+?>
+
+<?php
+    echo '<div style="margin: 1em 0;">';
+    if (!isset($this->internal->member)) {
+?>
+        <form onclick="return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/signup_entrance/StockHQ-Rating/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false }); return false;">
+            <table width="100%" class="stock_rating" style="">
+                <tr>
+                    <td style="padding-bottom: .5em;">
+                        <table width="100%"><tr>
+                            <td align="center" style="padding-right: .25em;"><a id="stock_rating-buy" href="/member/login/p/signup_entrance/StockHQ-Rating/" class="fakebutton green" onclick="return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/signup_entrance/StockHQ-Rating/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false });">Rate <?= $current->internal_symbol ?> A Buy</a></td>
+                            <td align="center" style="padding-left: .25em;"><a id="stock_rating-sell" href="/member/login/p/signup_entrance/StockHQ-Rating/" class="fakebutton red" onclick="return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/signup_entrance/StockHQ-Rating/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false });">Rate <?= $current->internal_symbol ?> A Sell</a></td>
+                        </tr></table>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center"><textarea name="notes" class="vmfh_expandable_textarea" style="width: 92%;" disabled="disabled" onclick="return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/signup_entrance/StockHQ-Rating/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false });" style="height: 4em; font-style: italic; overflow: auto;">Please explain why you chose your rating and help others learn more about the sentiment of this stock.</textarea></td>
+                </tr>
+                <tr>
+                    <td align="right" style="padding: 1em .25em 0 0;"><input id="stock_rating-form-submit" type="submit" value="Submit Rating" onclick="return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/signup_entrance/StockHQ-Rating/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false });" /></td>
+                </tr>
+            </table>
+        </form>
+<?php
+    }
+    else {
+        if ($vote = $db->fetchRow('SELECT * FROM pick_picks WHERE close_datestamp ISNULL AND close_temp_price ISNULL AND close_price ISNULL AND profile_id=? AND symbol_id=? ORDER BY creation DESC LIMIT 1', array($this->internal->member->profile->id, $this->symbol_id))) {
+            $close_position_link = '/via/'. $vote->via_id . '/pick/close/p/mid/' . $vote->matrix_counter . '/id/' . $vote->counter . '/allocation/'.$vote->allocation.'/vmpd_fp/1/';
+            if ($vote->position < 0) {
+                if ($vote->open_price) {
+                    echo '<a href="' . $close_position_link . '" class="fakebutton yellow" style="display: block; padding: .5em 0; text-align: center; width: 100%; color: #000; font-weight: normal; font-size: 22px;">Cancel Your Current<br /><strong class="netdown">Sell</strong> Rating On '.$current->internal_symbol.'</a>';
+                }
+                else {
+                    #echo 'Your <strong>Sell Rating</strong> on <strong>'.$current->internal_symbol.'</strong> is being processed.<br />Please check back later.';
+                    echo $this->CM(array(
+                        'class' => 'cm decorated plain successmessage',
+                        'hd' => 'Processing Rating',
+                        'hd2' => 'Your recent sell rating is being processed.',
+                        'bd' => '<p class="success">Processing Your Rating...</p><p>Your <strong>Sell Rating</strong> on <strong>'.$current->internal_symbol.'</strong> is currently being processed. Please check back later for more options, such as closing or changing your rating.</p>'
+                    ));
+                }
+            }
+            else {
+                if ($vote->open_price) {
+                    echo '<a href="' . $close_position_link . '" class="fakebutton yellow" style="display: block; padding: .5em 0; text-align: center; width: 100%; color: #000; font-weight: normal; font-size: 22px;">Cancel Your Current<br /><strong class="netup">Buy</strong> Rating On '.$current->internal_symbol.'</a>';
+                }
+                else {
+                    #echo 'Your <strong>Buy Rating</strong> on <strong>'.$current->internal_symbol.'</strong> is being processed.<br />Please check back later.';
+                    echo $this->CM(array(
+                        'class' => 'cm decorated plain successmessage',
+                        'hd' => 'Processing Rating',
+                        'hd2' => 'Your recent buy rating is being processed.',
+                        'bd' => '<p class="success">Processing Your Rating...</p><p>Your <strong>Buy Rating</strong> on <strong>'.$current->internal_symbol.'</strong> is currently being processed. Please check back later for more options, such as closing or changing your rating.</p>'
+                    ));
+                }
+            }
+        }
+        else {
+?>
+<script type="text/javascript">
+//<![CDATA[
+    var default_textarea_text = 'Please explain why you chose your rating and help others learn more about the sentiment of this stock.';
+    var default_action;
+    function check_stock_rating_form () {
+        //alert('checking form');
+        
+        if (!$('#stock_rating-form input[name=position]').val()) {
+            alert('Please select a rating for <?= $current->internal_symbol ?>\nof either Buy or Sell.');
+            return false;
+        }
+        
+        if ((!($('#stock_rating-form textarea[name=notes]').val()) || $('#stock_rating-form textarea[name=notes]').val() == default_textarea_text) && confirm("Would you like add a comment to your rating?\n\nTo go back and add a comment, click OK.\nTo submit your rating without a comment, click Cancel.")) {
+            $('#stock_rating-form textarea[name=notes]').focus();
+            return false;
+        }
+        
+        if ($('#stock_rating-form textarea[name=notes]').val() == default_textarea_text) {
+            $('#stock_rating-form textarea[name=notes]').val('')
+        }
+        
+        if (!default_action) {
+            default_action = $('#stock_rating-form').attr('action');
+        }
+        
+        var tempAdd = '%26vmpd_fp%3D1';
+        tempAdd += '%26position%3D' + encodeURIComponent($('#stock_rating-form input[name=position]').val());
+        tempAdd += '&notes%3D' + encodeURIComponent(encodeURIComponent(encodeURIComponent($('#stock_rating-form textarea[name=notes]').val())));
+        tempAdd += '/';
+        
+        $('#stock_rating-form').attr('action', default_action + tempAdd)
+        //alert($('#stock_rating-form').attr('action'));
+        
+        return true;
+    }
+//]]>
+</script>
+        <form id="stock_rating-form" action="/module/setup/publish/module_name/pick/extra_params/symbol%3D<?= $current->internal_symbol ?>%26allocation%3D1" onsubmit="return check_stock_rating_form();">
+            <input type="hidden" name="position" />
+            <table width="100%" class="stock_rating" style="">
+                <tr>
+                    <td style="padding-bottom: .5em;">
+                        <table width="100%"><tr>
+                            <td align="center" style="padding-right: .25em;"><a id="stock_rating-buy" href="/module/setup/publish/module_name/pick/extra_params/symbol%3D<?= $current->internal_symbol ?>%26position%3D1%26allocation%3D1%26vmpd_fp%3D1/" class="fakebutton green" onclick="$(this).addClass('green'); $('#stock_rating-sell').removeClass('red'); $('#stock_rating-form input[name=position]').val('1'); $('#stock_rating-form-submit').val('Submit Buy Rating on <?= $current->internal_symbol ?>'); return false;">Rate <?= $current->internal_symbol ?> A Buy</a></td>
+                            <td align="center" style="padding-left: .25em;"><a id="stock_rating-sell" href="/module/setup/publish/module_name/pick/extra_params/symbol%3D<?= $current->internal_symbol ?>%26position%3D-1%26allocation%3D1%26vmpd_fp%3D1/" class="fakebutton red" onclick="$(this).addClass('red'); $('#stock_rating-buy').removeClass('green'); $('#stock_rating-form input[name=position]').val('-1'); $('#stock_rating-form-submit').val('Submit Sell Rating on <?= $current->internal_symbol ?>'); return false;">Rate <?= $current->internal_symbol ?> A Sell</a></td>
+                        </tr></table>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center"><textarea name="notes" class="vmfh_expandable_textarea" style="width: 92%;" onblur="if (this.value == '') { this.style.fontStyle='italic';  this.value = default_textarea_text; }" onfocus="if (this.value == default_textarea_text) { this.value = ''; this.style.fontStyle='normal'; }" style="height: 4em; font-style: italic; overflow: auto;">Please explain why you chose your rating and help others learn more about the sentiment of this stock.</textarea></td>
+                </tr>
+                <tr>
+                    <td align="right" style="padding: 1em .25em 0 0;"><input id="stock_rating-form-submit" type="submit" value="Submit Rating" /></td>
+                </tr>
+            </table>
+        </form>
+<?php
+        }
+    }
+    echo '</div>';
+?>
+
+<?php
+if (isset($this->symbol_data->report_url) && $this->symbol_data->report_url) {
+    echo '<div class="more_stuff"><a href="' . $this->symbol_data->report_url . '" class="report">' . $this->current->internal_symbol . ' Research Report</a></div>';
+}
+?>
+
+<hr />
+
+<div class="yui3-g-r">
+    <div class="yui3-u-2-3"><div style="margin-right: .25em;">
+
+<h2><?= $current->exchdisp ?>: <?= $current->internal_symbol ?> Stock Quote</h2>
+<table class="quote_table">
+    <tbody>
+        <tr class="first even">
+            <td class="col1">Last Trade:</td>
+            <td class="col2"><big><?= Zend_Locale_Format::toNumber($this->results[3], array('locale' => $this->internal->locale)) ?></big></td>
+            <td class="col3">&nbsp;</td>
+            <td class="col4">Day's Range:</td>
+            <td class="col5"><?= Zend_Locale_Format::toNumber($this->results[4], array('locale' => $this->internal->locale)) ?> - <?= Zend_Locale_Format::toNumber($this->results[5], array('locale' => $this->internal->locale)) ?></td>
+        </tr>
+        <tr class="odd">
+            <td class="col1">Trade Time:</td>
+            <td class="col2"><?= $this->results[6] ?></td>
+            <td class="col3">&nbsp;</td>
+            <td class="col4">52wk Range:</td>
+            <td class="col5"><?= Zend_Locale_Format::toNumber($this->results[7], array('locale' => $this->internal->locale)) ?> - <?= Zend_Locale_Format::toNumber($this->results[8], array('locale' => $this->internal->locale)) ?></td>
+        </tr>
+        <tr class="even">
+            <td class="col1">Change:</td>
+            <td class="col2"><span<?= ($this->results[9] > 0 ? ' class="uptick"' : ($this->results[9] < 0 ? ' class="downtick"' : '')) ?>><?= Zend_Locale_Format::toNumber($this->results[9], array('locale' => $this->internal->locale)) ?> (<?= $this->results[10] ?>)</span></td>
+            <td class="col3">&nbsp;</td>
+            <td class="col4">Volume:</td>
+            <td class="col5"><?= Zend_Locale_Format::toNumber($this->results[11], array('locale' => $this->internal->locale)) ?></td>
+        </tr>
+        <tr class="odd">
+            <td class="col1">Prev Close:</td>
+            <td class="col2"><?= Zend_Locale_Format::toNumber($this->results[12], array('locale' => $this->internal->locale)) ?></td>
+            <td class="col3">&nbsp;</td>
+            <td class="col4">Avg Vol <span class="small">(3m):</td>
+            <td class="col5"><?= Zend_Locale_Format::toNumber($this->results[13], array('locale' => $this->internal->locale)) ?></td>
+        </tr>
+    </tbody>
+</table>
+
+<hr />
+
+<?php if (isset($this->symbol_data->description) && $this->symbol_data->description) { ?>
+    <p class="description">
+        <h2><?= $current->exchdisp ?>: <?= $current->internal_symbol ?> Overview<?= ($this->symbol_data->website_url ? ' - <a href="' . $this->symbol_data->website_url . '" rel="nofollow" target="_blank">Company Website</a>' : '') ?></h2></p>
+<?php 
+    if ($this->symbol_data->logo_url) {
+        if ($this->symbol_data->website_url) {
+            echo '<a href="' . $this->symbol_data->website_url . '" rel="nofollow" target="_blank">';
+        }
+        echo '<img src="' . $this->symbol_data->logo_url . '" class="company_logo" />';
+        if ($this->symbol_data->website_url) {
+            echo '</a>';
+        }
+    }
+?>
+        <div style="padding-left: 1em;">
+        <?= $this->symbol_data->description ?>
+        </div>
+        <div style="clear: both;"></div>
+    </p>
+<?php } ?>
+
+
+
+<?php
+// Articles
+$tmp_widget = new StdClass;
+$tmp_widget->interactive = true;
+$tmp_widget->widget_hide_summary = false;
+
+echo $this->CM(array(
+    'class' => 'cm decorated widget m_article',
+    'hd' => 'Most Recent Member Articles On ' . $current->internal_symbol,
+    'bd' => $this->partial('widget/index.phtml', 'article', array('module' => 'article', 'objects' => $this->articles, 'widget' => $tmp_widget, 'masked' => false, 'internal' => $this->internal)),
+    'ft' => '<a href="/module/setup/publish/module_name/article/extra_params/symbols%3D' . $current->internal_symbol . '/" rel="nofollow" title="Article"><span class="addicon"></span>Write an article on ' . $current->internal_symbol . '</a>',
+    'ft2' => (count($this->articles) >= 10 ? '<a href="/' . $this->SEO_Urlify($current->name) . '/s/article/p/symbol/' . $this->SEO_Urlify($current->internal_symbol) . '/">More</a>' : ''),
+    'extra' => '<a href="/' . $this->SEO_Urlify($current->name) . '/s/system/widget/symbol/p/symbol/' . $this->SEO_Urlify($current->internal_symbol) . '/mid/15/format/rss/" rel="nofollow" title="' . $current->name . ' Feed" class="feeder">Article</a>'
+));
+?>
+
+
+    </div></div>
+    <div class="yui3-u-1-3"><div style="margin-left: .25em;">
+
+<?php
+if ($db = Zend_Registry::get('db')) {
+    /*
+    if (!isset($this->internal->member)) {
+?>
+        <form onclick="return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/signup_entrance/StockHQ-Rating/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false }); return false;">
+            <table width="100%" class="stock_rating" style="">
+                <tr>
+                    <td style="padding-bottom: .5em;">
+                        <table width="100%"><tr>
+                            <td align="center" style="padding-right: .25em;"><a id="stock_rating-buy" href="/member/login/p/signup_entrance/StockHQ-Rating/" class="fakebutton green" style="display: block; width: 80%; font-size: 14px;" onclick="return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/signup_entrance/StockHQ-Rating/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false });">Rate <?= $current->internal_symbol ?> A Buy</a></td>
+                            <td align="center" style="padding-left: .25em;"><a id="stock_rating-sell" href="/member/login/p/signup_entrance/StockHQ-Rating/" class="fakebutton red" style="display: block; width: 80%; font-size: 14px;" onclick="return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/signup_entrance/StockHQ-Rating/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false });">Rate <?= $current->internal_symbol ?> A Sell</a></td>
+                        </tr></table>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center"><textarea name="notes" class="vmfh_expandable_textarea" style="width: 92%;" disabled="disabled" onclick="return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/signup_entrance/StockHQ-Rating/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false });" style="height: 4em; font-style: italic; overflow: auto;">Please explain why you chose your rating and help others learn more about the sentiment of this stock.</textarea></td>
+                </tr>
+                <tr>
+                    <td align="right" style="padding: 1em .25em 0 0;"><input id="stock_rating-form-submit" type="submit" value="Submit Rating" onclick="return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/signup_entrance/StockHQ-Rating/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false });" /></td>
+                </tr>
+            </table>
+        </form>
+<?php
+    }
+    else {
+        if ($vote = $db->fetchRow('SELECT * FROM pick_picks WHERE close_datestamp ISNULL AND close_temp_price ISNULL AND close_price ISNULL AND profile_id=? AND symbol_id=? ORDER BY creation DESC LIMIT 1', array($this->internal->member->profile->id, $this->symbol_id))) {
+            $close_position_link = '/via/'. $vote->via_id . '/pick/close/p/mid/' . $vote->matrix_counter . '/id/' . $vote->counter . '/allocation/'.$vote->allocation.'/vmpd_fp/1/';
+            if ($vote->position < 0) {
+                if ($vote->open_price) {
+                    echo '<a href="' . $close_position_link . '" class="fakebutton yellow" style="display: block; padding: .5em 0; text-align: center; width: 100%; color: #000; font-weight: normal; font-size: 22px;">Cancel Your Current<br /><strong class="netdown">Sell</strong> Rating On '.$current->internal_symbol.'</a>';
+                }
+                else {
+                    #echo 'Your <strong>Sell Rating</strong> on <strong>'.$current->internal_symbol.'</strong> is being processed.<br />Please check back later.';
+                    echo $this->CM(array(
+                        'class' => 'cm decorated plain successmessage',
+                        'hd' => 'Processing Rating',
+                        'hd2' => 'Your recent sell rating is being processed.',
+                        'bd' => '<p class="success">Processing Your Rating...</p><p>Your <strong>Sell Rating</strong> on <strong>'.$current->internal_symbol.'</strong> is currently being processed. Please check back later for more options, such as closing or changing your rating.</p>'
+                    ));
+                }
+            }
+            else {
+                if ($vote->open_price) {
+                    echo '<a href="' . $close_position_link . '" class="fakebutton yellow" style="display: block; padding: .5em 0; text-align: center; width: 100%; color: #000; font-weight: normal; font-size: 22px;">Cancel Your Current<br /><strong class="netup">Buy</strong> Rating On '.$current->internal_symbol.'</a>';
+                }
+                else {
+                    #echo 'Your <strong>Buy Rating</strong> on <strong>'.$current->internal_symbol.'</strong> is being processed.<br />Please check back later.';
+                    echo $this->CM(array(
+                        'class' => 'cm decorated plain successmessage',
+                        'hd' => 'Processing Rating',
+                        'hd2' => 'Your recent buy rating is being processed.',
+                        'bd' => '<p class="success">Processing Your Rating...</p><p>Your <strong>Buy Rating</strong> on <strong>'.$current->internal_symbol.'</strong> is currently being processed. Please check back later for more options, such as closing or changing your rating.</p>'
+                    ));
+                }
+            }
+        }
+        else {
+?>
+<script type="text/javascript">
+//<![CDATA[
+    var default_textarea_text = 'Please explain why you chose your rating and help others learn more about the sentiment of this stock.';
+    var default_action;
+    function check_stock_rating_form () {
+        //alert('checking form');
+        
+        if (!$('#stock_rating-form input[name=position]').val()) {
+            alert('Please select a rating for <?= $current->internal_symbol ?>\nof either Buy or Sell.');
+            return false;
+        }
+        
+        if ((!($('#stock_rating-form textarea[name=notes]').val()) || $('#stock_rating-form textarea[name=notes]').val() == default_textarea_text) && confirm("Would you like add a comment to your rating?\n\nTo go back and add a comment, click OK.\nTo submit your rating without a comment, click Cancel.")) {
+            $('#stock_rating-form textarea[name=notes]').focus();
+            return false;
+        }
+        
+        if ($('#stock_rating-form textarea[name=notes]').val() == default_textarea_text) {
+            $('#stock_rating-form textarea[name=notes]').val('')
+        }
+        
+        if (!default_action) {
+            default_action = $('#stock_rating-form').attr('action');
+        }
+        
+        var tempAdd = '%26vmpd_fp%3D1';
+        tempAdd += '%26position%3D' + encodeURIComponent($('#stock_rating-form input[name=position]').val());
+        tempAdd += '&notes%3D' + encodeURIComponent(encodeURIComponent(encodeURIComponent($('#stock_rating-form textarea[name=notes]').val())));
+        tempAdd += '/';
+        
+        $('#stock_rating-form').attr('action', default_action + tempAdd)
+        //alert($('#stock_rating-form').attr('action'));
+        
+        return true;
+    }
+//]]>
+</script>
+        <form id="stock_rating-form" action="/module/setup/publish/module_name/pick/extra_params/symbol%3D<?= $current->internal_symbol ?>%26allocation%3D1" onsubmit="return check_stock_rating_form();">
+            <input type="hidden" name="position" />
+            <table width="100%" class="stock_rating" style="">
+                <tr>
+                    <td style="padding-bottom: .5em;">
+                        <table width="100%"><tr>
+                            <td align="center" style="padding-right: .25em;"><a id="stock_rating-buy" href="/module/setup/publish/module_name/pick/extra_params/symbol%3D<?= $current->internal_symbol ?>%26position%3D1%26allocation%3D1%26vmpd_fp%3D1/" class="fakebutton green" style="display: block; width: 80%; font-size: 14px;" onclick="$(this).addClass('green'); $('#stock_rating-sell').removeClass('red'); $('#stock_rating-form input[name=position]').val('1'); $('#stock_rating-form-submit').val('Submit Buy Rating on <?= $current->internal_symbol ?>'); return false;">Rate <?= $current->internal_symbol ?> A Buy</a></td>
+                            <td align="center" style="padding-left: .25em;"><a id="stock_rating-sell" href="/module/setup/publish/module_name/pick/extra_params/symbol%3D<?= $current->internal_symbol ?>%26position%3D-1%26allocation%3D1%26vmpd_fp%3D1/" class="fakebutton red" style="display: block; width: 80%; font-size: 14px;" onclick="$(this).addClass('red'); $('#stock_rating-buy').removeClass('green'); $('#stock_rating-form input[name=position]').val('-1'); $('#stock_rating-form-submit').val('Submit Sell Rating on <?= $current->internal_symbol ?>'); return false;">Rate <?= $current->internal_symbol ?> A Sell</a></td>
+                        </tr></table>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center"><textarea name="notes" class="vmfh_expandable_textarea" style="width: 92%;" onblur="if (this.value == '') { this.style.fontStyle='italic';  this.value = default_textarea_text; }" onfocus="if (this.value == default_textarea_text) { this.value = ''; this.style.fontStyle='normal'; }" style="height: 4em; font-style: italic; overflow: auto;">Please explain why you chose your rating and help others learn more about the sentiment of this stock.</textarea></td>
+                </tr>
+                <tr>
+                    <td align="right" style="padding: 1em .25em 0 0;"><input id="stock_rating-form-submit" type="submit" value="Submit Rating" /></td>
+                </tr>
+            </table>
+        </form>
+<?php
+        }
+    }
+    */
+    
+    $select = clone $this->ratings_select_query_base;
+    $select->where('obj.symbol_id=?', $this->symbol_id);
+    $select->where('obj.partial_close_parent_id ISNULL');
+    
+    $select->limit(5);
+    $select->order('obj.creation DESC');
+    
+    $objects = $db->fetchAll($select);
+    $counter = 0;
+    foreach ($objects as $object) {
+        if (!$counter) { echo '<h2 style="margin-bottom: 3px;">Most Recent Ratings on ' . $current->internal_symbol . '</h2><hr style="margin: 0 0 1em 0;" /><table width="100%" class="stock_rating">'; }
+        
+        $this->module = 'pick';
+        $content_link = $this->ContentLink(array('object' => $object, 'view' => $this));
+        $this->module = 'quote';
+        
+        /*
+        $mid = $object->matrix_counter;
+        $title = (isset($object->x_display) && $object->x_display ? $object->x_display : (isset($object->m_display) && $object->m_display ? $object->m_display : $object->m_name));
+        if ($object->com_id) {
+            $type = 'com';
+            $id = $object->com_id;
+        }
+        elseif ($object->net_id) {
+            $type = 'net';
+            $id = $object->net_id;
+        }
+        elseif ($object->via_id) {
+            $type = 'via';
+            $id = $object->via_id;
+        }
+        
+        $link = 'http://' . $this->internal->vars->host;
+        if ($title) { $link .= '/' . $this->SEO_Urlify($title) . '/s'; }
+        $link .= "/$type/$id/pick/p/mid/$mid/?status=1";
+        */
+?>
+        <tr>
+            <td style="width: 100px; text-align: left; vertical-align: top; overflow: hidden;">
+                <div class="image_area">
+                    <div class="headshot<?= !(isset($object->p_picture_url) && $object->p_picture_url) ? ' VIA_default' : '' ?>">
+                        <a href="<?= $this->ProfileDisplay(array('profile' => $object, 'href_only' => true, 'internal' => $this->internal)) ?>" class="headshot_link">
+            <?php   if (isset($object->p_picture_url) && $object->p_picture_url) { ?>
+                            <img src="<?= (preg_match('#http://#i', $object->p_picture_url) ? '' : $this->internal->config->upload->picture_server . '/') ?><?= $this->escape($object->p_picture_url) ?>" />
+            <?php   } ?>
+                        </a>
+                    </div>
+                </div>
+                <div class="followers"><?= $object->p_total_followers_count ?></div>
+                
+                <div style="clear: both; font-size: 11px;">
+                    <?= $this->ProfileDisplay(array('profile' => $object, 'internal' => $this->internal)) ?>
+                    <a href="/via/<?= $object->p_id ?>/pick/p/mid/<?= $object->matrix_counter ?>/?status=1" style="display: block; margin-top: .25em;">View All Ratings</a>
+                </div>
+            </td>
+            <td style="text-align: left; vertical-align: top;">
+                <div style="margin-bottom: 14px; font-size: 11px;">
+                    <a href="<?= $content_link ?>" class="fakebutton <?= ($object->position == -1 ? 'red' : 'green') ?>" style="margin-right: .5em; padding: 2px 4px; font-size: 11px; font-weight: normal;"><?= ($object->position == -1 ? 'Sell' : 'Buy') ?> Rating</a>
+                    <span>
+<?php
+    $date->set((isset($object->published) && $object->published ? $object->published : $object->creation), Zend_Date::ISO_8601);
+    if (isset($this->internal->member)) {
+        $date->setTimezone($this->internal->member->timezone);
+        echo $date->toString(Zend_Date::DATE_SHORT);
+    }
+    else {
+        $date->setTimezone($this->internal->config->timezone);
+        echo $date->toString(Zend_Date::DATE_SHORT);
+    }
+?>
+                    @
+                    <?php $currency = new ViaMe_Currency(array('currency' => 'USD'));  echo $currency->toCurrency(isset($object->open_price) && $object->open_price ? $object->open_price : $object->open_temp_price); ?>
+                    </span>
+                </div>
+                
+                <div>
+<?php 
+    if (isset($object->content) && $object->content) {
+        echo $this->SEO_Quip(strip_tags($object->content), 128);
+    }
+    elseif (isset($object->notes) && $object->notes) {
+        #echo '<pre style="white-space: pre-wrap; line-height: inherit; font-family: inherit;">' . $this->escape($object->notes) . '</pre>';
+        echo '<pre style="white-space: pre-wrap; line-height: inherit; font-family: inherit;">' . $this->escape($this->SEO_Quip(strip_tags($object->notes), 128)) . '</pre>';
+    }
+    else {
+        echo '<div style="margin: 1em 0;"><i>No Comment</i></div>';
+    }
+?>
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2">
+<?php /*
+                <div class="bottom_links" style="margin-top: 1em; font-size: 10px;">
+                    <?= $this->PrintEmailLink(array('link' => $content_link, 'internal' => $this->internal, 'print_text' => 'Print Rating', 'email_text' => 'Send to a Friend')) ?>
+                    <a href="<?= $content_link ?>" class="the_link_link"><span class="icon"></span><span class="the_link">Link to this Rating</span></a>
+                </div>
+*/ ?>
+                <hr style="margin: 1em 0;" />
+            </td>
+        </tr>
+
+
+<?php
+        #Zend_Debug::Dump($object);
+        $counter++;
+    }
+    if ($counter) {
+        // Close table if necesary
+        echo '</table>';
+        echo '<p align="right"><a href="' . ('/' . $this->SEO_Urlify(((isset($this->symbol_data->name) && $this->symbol_data->name) ? $this->symbol_data->name : ($this->results[1] ? $this->results[1] : 'Quote'))) . '/s/quote/p/s/' . ((isset($current->internal_symbol) && $current->internal_symbol) ? $current->internal_symbol : $this->results[0]) . '/f/rating/') . '">View All Ratings On ' . $current->internal_symbol . '</a></p>';
+    }
+    else {
+        echo '<p>&nbsp;</p>';
+    }
+}
+?>
+
+<?php if ($current->internal_symbol == 'FONU') { ?>
+<p style="text-align: center; z-index: 0;">
+   <object width="100%" height="178" type="application/x-shockwave-flash" data="http://d3v0et01kn35wt.cloudfront.net/static/js/player/player.swf" bgcolor="#000000" id="videoplayer" name="videoplayer" tabindex="0">
+     <param name="allowfullscreen" value="true">
+     <param name="allowscriptaccess" value="always">
+     <param name="seamlesstabbing" value="true">
+     <param name="wmode" value="opaque">
+     <param name="flashvars" value="autostart=true&netstreambasepath=http%3A%2F%2Fsavannahceo.com%2Fshare%2Fvideo%2FJ5a%2F&amp;id=videoplayer&amp;file=https%3A%2F%2Fgeorgiaceo.s3.amazonaws.com%2Fvideo%2Fvideo-files%2Fsavannahceo-2015-03-26-01-shapiro.mp4&amp;image=https%3A%2F%2Fgeorgiaceo.s3.amazonaws.com%2Fvideo%2Fvideo-preview%2Fsavannahceo-2015-03-26-01-shapiro.jpg&amp;stretching=uniform&amp;duration=2%3A36%20&amp;allowfullscreen=true&amp;plugins=http%3A%2F%2Fd3v0et01kn35wt.cloudfront.net%2Fstatic%2Fjs%2Fplayer%2Fova-jw.swf&amp;ova.ads=%5B%5BJSON%5D%5D%7B%22skipAd%22%3A%7B%22enabled%22%3Afalse%7D%2C%22schedule%22%3A%5B%7B%22position%22%3A%22pre-roll%22%2C%22tag%22%3A%22http%3A%2F%2Faj.whattheythink.com%2Fservlet%2Fajrotator%2F1247503%2F0%2Fvast2%3Fz%3Dprintshow%26Vstrm%3D0%26compMode%3Dand%26kw%3Dsavannahceo%26pv%3D354211%22%2C%22notice%22%3A%7B%22type%22%3A%22countdown%22%7D%7D%2C%7B%22position%22%3A%22post-roll%22%2C%22tag%22%3A%22http%3A%2F%2Faj.whattheythink.com%2Fservlet%2Fajrotator%2F1248246%2F0%2Fvast2%3Fz%3Dprintshow%26Vstrm%3D0%26compMode%3Dand%26kw%3Dsavannahceo%26pv%3D354213%22%2C%22notice%22%3A%7B%22message%22%3A%22%20%22%7D%7D%5D%7D&amp;ova.debug=%5B%5BJSON%5D%5D%7B%22levels%22%3A%22fatal%2C%20config%2C%20vast_template%22%7D&amp;ova.pluginmode=HYBRID&amp;controlbar.position=over&amp;display.icons=false">
+   </object>
+   
+</p>
+<?php } elseif ($current->internal_symbol == 'BRFH') { ?>
+<p style="text-align: center; z-index: 0;">
+  <iframe src="https://player.vimeo.com/video/125629789?autoplay=1&title=0&byline=0&portrait=0" width="317" height="178" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+</p>
+<?php } elseif ($current->internal_symbol == 'GIGL') { ?>
+<p style="text-align: center; z-index: 0;">
+  <a href="http://www.gigglesnhugs.com/media/videos/" target="_blank"><img src="//static.viame.com/public_files/GIGL-Videos/2015/10/05/ea02d50eaf287114c6c948cb0002cd63/gigl_videos.jpg" /></a>
+</p>
+<?php } elseif ($current->internal_symbol == 'LTTGF') { ?>
+<p style="text-align: center; z-index: 0;">
+  <iframe width="376" height="211" src="https://www.youtube.com/embed/xRXhFDiLDds?autoplay=1" frameborder="0" allowfullscreen></iframe>
+</p>
+<?php } elseif ($current->internal_symbol == 'ETFM') { ?>
+<p style="text-align: center; z-index: 0;">
+  <iframe width="317" height="178" src="https://www.youtube.com/embed/AbsxBXEMdXg?autoplay=1" frameborder="0" allowfullscreen></iframe>
+</p>
+<?php } elseif ($current->internal_symbol == 'MEDD') { ?>
+<p style="text-align: center; z-index: 0;"><video width="100%" controls="controls" autoplay="autoplay"><source type="video/mp4" src="http://www.medimagingcorp.com/MEDD_video.mp4"></source>Your browser does not support the video tag.</video></p>
+<?php } elseif ($current->internal_symbol == 'SAKL') { ?>
+<div class="carousel" id="sakl-videos" style="width: 320px; margin-bottom: 1em;">
+  <ol>
+    <li><iframe width="100%" src="https://www.youtube.com/embed/HdQpg0I5vIo?autoplay=1" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe></li>
+    <li><iframe width="100%" src="https://www.youtube.com/embed/BJ1PizsirTQ" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe></li>
+    <li><iframe width="100%" src="https://www.youtube.com/embed/bnKzoh3zDEw" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe></li>
+    <li><iframe width="100%" src="https://www.youtube.com/embed/Tfg384SBM0U" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe></li>
+    <li><iframe width="100%" src="https://www.youtube.com/embed/QX6WcnhLmFw" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe></li>
+    <li><iframe width="100%" src="https://www.youtube.com/embed/o_Y8TA04jCo" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe></li>
+  </ol>
+</div>
+<script type="text/javascript">
+YAHOO.widget.Carousel.prototype.CONFIG.MAX_PAGER_BUTTONS = 10;
+var saklvideocontainer = new YAHOO.widget.Carousel("sakl-videos", {
+    isCircular: true,
+    numVisible: 1
+});
+saklvideocontainer.render();
+saklvideocontainer.show();
+</script>
+<style>
+#sakl-videos .yui-carousel .yui-carousel-item-selected,
+  #sakl-videos .yui-carousel-element li {
+    border: none;
+    margin: 0;
+}
+</style>
+<?php } elseif ($current->internal_symbol == 'ICEIF') { ?>
+<p style="text-align: center; z-index: 0;">
+  <iframe width="317" height="178" src="https://www.youtube.com/embed/ziARGl8upjo?autoplay=1" frameborder="0" allowfullscreen></iframe>
+</p>
+<?php } elseif ($current->internal_symbol == 'PBIO') { ?>
+<p style="text-align: center; z-index: 0;">
+  <iframe width="317" height="178" src="https://www.youtube.com/embed/xbO6Lp4VxwU?autoplay=1" frameborder="0" allowfullscreen></iframe>
+</p>
+<?php } elseif ($current->internal_symbol == 'PTOTF' || $current->internal_symbol == 'PAT.V') { ?>
+<p style="text-align: center; z-index: 0;">
+  <iframe width="317" height="178" src="https://player.vimeo.com/video/180135015?autoplay=1" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen="" frameborder="0"></iframe>
+</p>
+<?php } elseif ($current->internal_symbol == 'REPCF' || $current->internal_symbol == 'RP.V') { ?>
+<p style="text-align: center; z-index: 0;">
+  <iframe width="317" height="178" src="https://www.youtube.com/embed/a8rUA3WApL8?autoplay=1" frameborder="0" allowfullscreen></iframe>
+</p>
+<?php } elseif ($current->internal_symbol == 'BCCEF' || $current->internal_symbol == 'BAC.CN') { ?>
+<p style="text-align: center; z-index: 0;">
+  <iframe width="317" height="178" src="https://www.youtube.com/embed/1CDkFsdPRVE?autoplay=1" frameborder="0" allowfullscreen></iframe>  
+  <iframe width="317" height="178" src="https://www.youtube.com/embed/YbZ7vKlj-SQ?autoplay=1" frameborder="0" allowfullscreen></iframe>
+</p>
+<?php } elseif ($current->internal_symbol == 'MGXRCN' || $current->internal_symbol == 'MGXRCN.V') { ?>
+<p style="text-align: center; z-index: 0;">
+  <iframe width="317" height="178" src="https://www.youtube.com/embed/nEk-zrhOoDg?autoplay=1" frameborder="0" allowfullscreen></iframe>  
+  <iframe width="317" height="178" src="https://www.youtube.com/embed/wcRRM2gxSD4?autoplay=1" frameborder="0" allowfullscreen></iframe>
+</p>
+
+<?php } elseif ($current->internal_symbol == 'CMXC') { ?>
+<p style="text-align: center; z-index: 0;">
+  <iframe width="317" height="178" src="https://www.youtube.com/embed/dC_UnMcPiis?autoplay=1" frameborder="0" allowfullscreen></iframe>
+</p>
+<?php } ?>
+
+
+<?php
+// File
+$tmp_widget = new StdClass;
+$tmp_widget->interactive = true;
+$tmp_widget->widget_hide_summary = false;
+
+echo $this->CM(array(
+    'class' => 'cm decorated widget m_file',
+    'hd' => $current->internal_symbol . ' Research Media',
+    'bd' => $this->partial('widget/index.phtml', 'file', array('module' => 'file', 'objects' => $this->files, 'widget' => $tmp_widget, 'masked' => false, 'internal' => $this->internal)),
+    'ft' => '<a href="/module/setup/publish/module_name/file/extra_params/symbols%3D' . $current->internal_symbol . '/" rel="nofollow" title="File"><span class="addicon"></span>Upload media on ' . $current->internal_symbol . '</a>',
+    'ft2' => (count($this->files) >= 10 ? '<a href="/' . $this->SEO_Urlify($current->name) . '/s/file/p/symbol/' . $this->SEO_Urlify($current->internal_symbol) . '/">More</a>' : ''),
+    'extra' => '<a href="/' . $this->SEO_Urlify($current->name) . '/s/system/widget/symbol/p/symbol/' . $this->SEO_Urlify($current->internal_symbol) . '/mid/12/format/rss/" rel="nofollow" title="' . $current->name . ' Feed" class="feeder">File</a>'
+));
+?>
+
+
+<?php
+
+if( $current->internal_symbol != "EV.V")
+{
+	
+echo $this->CM(array(
+    'class' => 'cm decorated widget news',
+    'hd' => 'Recent News On ' . $current->internal_symbol,
+    'bd' => '<div id="quote_other_info_tabs"><div class="yui-content"><div class="hidesummary">
+    <script type="text/javascript"  src="/zfbp/extfeeds/?set=news&format=json&callback=rssCallBack&limit=5&symbol='.$dtick.'"></script></div></div></div>',
+    'ft' => 'More',
+    'ft2' => (count($this->articles) >= 10 ? '<a href="/' . $this->SEO_Urlify($current->name) . '/s/article/p/symbol/' . $this->SEO_Urlify($current->internal_symbol) . '/">More</a>' : '')
+));
+
+}
+?>
+
+
+
+    </div></div>
+</div>
+
+
+
+</div>

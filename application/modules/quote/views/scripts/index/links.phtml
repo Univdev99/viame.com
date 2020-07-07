@@ -1,0 +1,75 @@
+<?php
+#Zend_Debug::Dump($this->results);
+#Zend_Debug::Dump($this->quote_data);
+#Zend_Debug::Dump($this->verification);
+
+reset($this->verification);
+$current = current($this->verification);
+$this->current = $current;
+$tick = $current->symbol;
+$dtick = $current->delayed_symbol;
+
+$date = new Zend_Date();
+?>
+
+<?php require_once 'simple_qf_nav.phtml'; ?>
+
+<h1 style="font-size: 22px;">Other Links For <?= $current->internal_symbol ?></h1>
+<hr />
+<div class="links_table yui3-g-r">
+    <div class="yui3-u-1-3"><div class="col1">
+        <h4>Other Commentary on <?= $current->internal_symbol ?></h4>
+        <p><a target="_blank" href="http://search.cnbc.com/main.do?keywords=<?= $tick ?>">CNBC</a>, <a target="_blank" href="http://www.marketwatch.com/investing/stock/<?= $tick ?>/">Market Watch</a>, <a target="_blank" href="http://www.zacks.com/search/?q=IBM<?= $tick ?>">Zacks</a>, <a target="_blank" href="http://www.thestreet.com/find/results?q=<?= $tick ?>">The Street</a>, <a target="_blank" href="http://www.fool.com/search/solr.aspx?dataSource=article&q=<?=$tick ?>+<?= preg_replace('/\s+.*/', '', $current->name) ?>">Motley Fool</a>, <a target="_blank" href="http://247wallst.com/?s=<?= $tick ?>">24/7 Wall St.</a></p>
+        
+        <h4><?= $tick ?> Profiles</h4>
+        <p><a target="_blank" href="http://www.reuters.com/finance/stocks/companyProfile?symbol=<?= $dtick ?>">Reuters</a>, <a target="_blank" href="http://finance.yahoo.com/q/pr?s=<?= $dtick ?>">Yahoo! Finance</a>, <a target="_blank" href="http://www.otcmarkets.com/stock/<?= $tick ?>/company-info">OTC Markets</a>, <a target="_blank" href="http://www.otcbb.com/asp/Info_Center.asp?symbol=<?= $tick ?>">OTCBB</a></p>
+        <h4><?= $current->internal_symbol ?>'s Competition</h4>
+        <p><a target="_blank" href="http://www.smartmoney.com/quote/<?= $tick ?>/?story=competition">Smart Money</a>, <a target="_blank" href="http://finance.yahoo.com/q/co?s=<?= $dtick ?>">Yahoo! Finance</a>, <a target="_blank" href="http://www.wikinvest.com/stock/<?= $tick ?>#Competition">Wiki Invest</a></p>
+        <h4><?= $current->internal_symbol ?> Financials</h4>
+        <p><a target="_blank" href="http://www.google.com/finance?fstype=ii&amp;q=<?= $tick ?>">Google</a>, <a target="_blank" href="http://investing.businessweek.com/research/stocks/financials/financials.asp?ticker=<?= $tick ?>">Business Week</a>, <a target="_blank" href="http://moneycentral.msn.com/investor/invsub/results/statemnt.aspx?Symbol=<?= $tick ?>">Money Central</a>, <a target="_blank" href="http://www.reuters.com/finance/stocks/incomeStatement?symbol=<?= $dtick ?>">Reuters</a>, <a target="_blank" href="http://data.cnbc.com/quotes/<?= $tick ?>/tab/7">CNBC</a></p>
+        <h4>Transcripts for <?= $current->internal_symbol ?></h4>
+        <p><a target="_blank" href="http://www.morningstar.com/earnings/earnings-call-transcript.aspx?t=<?= $tick ?>&amp;region=USA&amp;culture=en-us">Morning Star</a>, <a target="_blank" href="http://seekingalpha.com/search/transcripts?term=<?= $tick ?>">Seeking Alpha</a></p>
+        <h4>Analysts Covering <?= $current->internal_symbol ?></h4>
+        <p><a target="_blank" href="http://www.briefing.com/Investor/Public/Calendars/UpgradesDowngrades.htm">Briefing</a>, <a target="_blank" href="http://moneycentral.msn.com/investor/invsub/analyst/recomnd.asp?symbol=<?= $tick ?>">Money Central</a>, <a target="_blank" href="http://finance.yahoo.com/q/ao?s=<?= $dtick ?>">Yahoo! Finance</a>, <a target="_blank" href="http://thestockmarketwatch.com/stock-data.aspx?stock=<?= $tick ?>&amp;a=showAnalyst">Stock Market Watch</a></p>
+        <h4><?= $current->internal_symbol ?> Insider Buying or Selling</h4>
+        <p class="last-of-type"><a target="_blank" href="http://www.insidercow.com/history/company.jsp?company=<?= $tick ?>">Insider Cow</a>, <a target="_blank" href="http://moneycentral.msn.com/investor/invsub/insider/trans.asp?Symbol=<?= $tick ?>">Money Central</a>, <a target="_blank" href="http://www.reuters.com/finance/stocks/insiderTrading?symbol=<?= $dtick ?>">Reuters</a>, <a target="_blank" href="http://finance.yahoo.com/q/it?s=<?= $dtick ?>">Yahoo! Finance</a></p>
+    </div></div>
+    <div class="yui3-u-1-3"><div class="col2">
+        <h4>Other Blogs on <?= $current->internal_symbol ?></h4>
+        <p><a target="_blank" href="http://seekingalpha.com/symbol/<?= $tick ?>">Seeking Alpha</a>, <a target="_blank" href="http://www.bloggingstocks.com/search/?q=<?= $tick ?>">Blogging Stocks</a>, <a target="_blank" href="http://www.google.com/search?hl=en&amp;q=<?= $tick ?>&amp;tbm=blg">Google's Blog Search</a>, <a target="_blank" href="http://www.marketminute.com/search?q=<?= $tick ?>">Market Minute</a>, <a target="_blank" href="http://www.fool.com/search/solr.aspx?dataSource=blog&q=<?=$tick ?>+<?= preg_replace('/\s+.*/', '', $current->name) ?>">Motley Fool</a></p>
+        
+        <h4><?= $current->internal_symbol ?>'s Management</h4>
+        <p><a target="_blank" href="http://www.reuters.com/finance/stocks/companyOfficers?symbol=<?= $tick ?>">Reuters</a>, <a target="_blank" href="http://investing.businessweek.com/research/stocks/people/people.asp?ticker=<?= $tick ?>">Business Week</a>, <a target="_blank" href="http://finance.yahoo.com/q/pr?s=<?= $dtick ?>+Profile">Yahoo! Finance</a></p>
+        <h4><?= $current->internal_symbol ?> Share Statistics</h4>
+        <p><a target="_blank" href="http://finance.yahoo.com/q/ks?s=<?= $dtick ?>">Yahoo! Finance</a>, <a target="_blank" href="http://www.smartmoney.com/quote/<?= $tick ?>/?story=keystatistics">Smart Money</a>, <a target="_blank" href="http://eresearch.fidelity.com/eresearch/evaluate/fundamentals/keyStatistics.jhtml?stockspage=keyStatistics&amp;symbols=<?= $tick ?>">Fidelity</a>, <a target="_blank" href="http://quote.barchart.com/profile.php?sym=<?= $tick ?>&amp;view=key_statistics">Bar Chart</a></p>
+        <h4>SEC Filings for <?= $current->internal_symbol ?></h4>
+        <p><a target="_blank" href="http://www.sec.gov/cgi-bin/browse-edgar?company=&amp;match=&amp;CIK=<?= $tick ?>&amp;filenum=&amp;State=&amp;Country=&amp;SIC=&amp;owner=exclude&amp;Find=Find+Companies&amp;action=getcompany">SEC</a>, <a target="_blank" href="http://freeedgar.com/results/default.asp?cx=017929059329229388003%3At0nzbd312ts&amp;cof=FORID%3A11&amp;q=<?= $tick ?>#978">Free Edgar</a>, <a target="_blank" href="http://www.otcbb.com/asp/Info_Center.asp?symbol=<?= $tick ?>&action=showFilingResults">OTCBB</a></p>
+        <h4><?= $current->internal_symbol ?> Earnings</h4>
+        <p><a target="_blank" href="http://www.earningswhispers.com/stocks.asp?symbol=<?= $tick ?>">Earnings Whisper</a>, <a target="_blank" href="http://investing.businessweek.com/research/stocks/earnings/earnings.asp?ticker=<?= $tick ?>">Business Week</a>, <a target="_blank" href="http://eresearch.fidelity.com/eresearch/evaluate/fundamentals/earnings.jhtml?stockspage=earnings&amp;symbols=<?= $tick ?>">Fidelity</a>, <a target="_blank" href="http://www.thestreet.com/quote/<?= $tick ?>/details/earnings-estimates.html">The Street</a>, <a target="_blank" href="http://moneycentral.msn.com/investor/invsub/analyst/earnest.asp?symbol=<?= $tick ?>">MSN Money</a></p>
+        <h4>Trading <?= $current->internal_symbol ?></h4>
+        <p><a target="_blank" href="http://www.tdameritrade.com/welcome3.html">Ameritrade</a>, <a target="_blank" href="http://www.esignal.com/">Trading Software from E Signal</a>, <a target="_blank" href="http://www.tradestation.com/default_2.shtm">Trading Software from Trade Station</a></p>
+        <h4><?= $current->internal_symbol ?> Short Sale Data</h4>
+        <p class="last-of-type"><a target="_blank" href="http://www.shortsqueeze.com/?symbol=<?= $tick ?>">Short Squeeze</a>, <a target="_blank" href="http://www.nasdaq.com/aspxcontent/shortinterests.aspx?symbol=<?= $tick ?>">NASDAQ</a>, <a target="_blank" href="http://www.otcmarkets.com/stock/<?= $tick ?>/short-sales">OTC Markets</a>, <a target="_blank" href="http://www.dailyfinance.com/company/company/<?= $tick ?>/nas/short-interest">Daily Finance</a></p>
+    </div></div>
+    <div class="yui3-u-1-3"><div class="col3">
+        <h4>Other <?= $current->internal_symbol ?> Message Boards</h4>
+        <p><a target="_blank" href="http://messages.finance.yahoo.com/mb/<?= $dtick ?>/">Yahoo!</a>, <a target="_blank" href="http://ragingbull.quote.com/mboard/boards.cgi?board=<?= $tick ?>">Raging Bull</a>, <a target="_blank" href="http://www.fool.com/search/solr.aspx?dataSource=board&q=<?=$tick ?>+<?= preg_replace('/\s+.*/', '', $current->name) ?>">Motley Fool</a>, <a target="_blank" href="http://investorshub.advfn.com/boards/search_results.asp?where=Ticker&SearchStr=<?= $tick ?>">Investor's Hub</a>, <a target="_blank" href="http://www.investorvillage.com//findboard.asp?symbol=<?= $dtick ?>">Investor Village</a>, <a target="_blank" href="http://www.thelion.com/bin/aio_msg.cgi?cmd=search&symbol=<?= $tick ?>">Aggregated Board &amp; Tweet Search at The Lion</a>, <a target="_blank" href="http://boardcentral.com/boards/<?= $tick ?>">Aggregated Board Search at Board Central</a></p>
+        
+        <h4>News on <?= $current->internal_symbol ?></h4>
+        <p><a target="_blank" href="http://news.google.com/news/search?q=<?= $tick ?>">Aggregated News at  Google</a>, <a target="_blank" href="http://news.search.yahoo.com/search/news?p=<?= $tick ?>">Aggregated News at Yahoo!</a>, <a target="_blank" href="http://www.prnewswire.com/search-results/news/<?= $tick ?>-7-days-page-1">PR News Wire</a>, <a target="_blank" href="http://www.marketwire.com/mw/search.do?grpSearch=K&amp;hdLanguage=E1&amp;params=<?= $tick ?>">Market Wire</a>, <a target="_blank" href="http://www.businesswire.com/portal/site/home/news/?ndmHsc=infSearch&amp;vnsId=-2147483648&amp;ndmConfigId=searchNDMConfig&amp;searchHereRadio=false&amp;keywordType=4&amp;keyword=<?= $tick ?>&amp;go=Go">Business Wire</a>, <a target="_blank" href="http://www.reuters.com/search?blob=<?= $tick ?>">Reuters</a>, <a target="_blank" href="http://www.bloomberg.com/apps/quote?ticker=<?= $tick ?>">Bloomberg</a></p>
+        <h4>Charts for <?= $current->internal_symbol ?></h4>
+        <p><a target="_blank" href="http://ycharts.com/companies/<?= $tick ?>">Y Charts</a>, <a target="_blank" href="http://moneycentral.msn.com/investor/charts/chartdl.aspx?symbol=<?= $tick ?>">MSN Money</a>, <a target="_blank" href="http://www.investorguide.com/stock-charts.php?ticker=<?= $tick ?>">Investor Guide</a>, <a target="_blank" href="http://www.google.com/finance?q=<?= $tick ?>">Google</a>, <a target="_blank" href="http://stockcharts.com/h-sc/ui?s=<?= $tick ?>">Technical Analysis at Stock Charts</a>, <a target="_blank" href="http://bigcharts.marketwatch.com/advchart/frames/frames.asp?symb=<?= $tick ?>">Technical Analysis at Big Charts</a>, <a target="_blank" href="http://finviz.com/quote.ashx?t=<?= $tick ?>">Technical Analysis at FinViz</a>, <a target="_blank" href="http://www.stockta.com/cgi-bin/analysis.pl?symb=<?= $tick ?>">Technical Analysis at Stock TA</a>, <a target="_blank" href="http://clearstation.etrade.com/cgi-bin/details?Symbol=<?= $tick ?>">Technical Analysis at Clear Station</a></p>
+        <h4>Scheduled <?= $current->internal_symbol ?> Company Events</h4>
+        <p><a target="_blank" href="http://finance.yahoo.com/q/ce?s=<?= $dtick ?>+Company+Events">Yahoo! Finance</a>, <a target="_blank" href="http://www.dailyfinance.com/event/cisco-systems-inc/<?= $tick ?>/nas">Daily Finance</a></p>
+        <h4>Research Reports on <?= $current->internal_symbol ?></h4>
+        <p><a target="_blank" href="http://finance.yahoo.com/q/rr?s=<?= $dtick ?>">Yahoo! Finance</a>, <a target="_blank" href="http://www.reuters.com/finance/stocks/analystResearch?symbol=<?= $dtick ?>">Reuters</a>, <a target="_blank" href="http://eresearch.fidelity.com/eresearch/goto/evaluate/analystsOpinions.jhtml?symbols=<?= $tick ?>">Fidelity</a>, <a target="_blank" href="http://www.thestreet.com/r/ratings/reports/analysis/<?= $tick ?>.html">The Street</a></p>
+        <h4><?= $current->internal_symbol ?> Share Holders</h4>
+        <p class="last-of-type"><a target="_blank" href="http://investors.morningstar.com/ownership/shareholders-overview.html?t=<?= $tick ?>">Morningstar</a></p>
+    </div></div>
+</div>
+
+<hr />
+
+<p align="center" class="know_more">Do you know of another great research resource for <?= $current->internal_symbol ?> that belongs here? <a href="/Contact-Us/s/page/view/p/mid/1/title/Contact+Us/">Please let us know and provide the URL.</a></p>
+
+</div>

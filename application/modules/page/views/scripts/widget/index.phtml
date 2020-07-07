@@ -1,0 +1,125 @@
+<?php
+$module = 'page';
+
+$counter = 0;
+$refs = $list = array();
+
+foreach ($this->objects as $object) {
+    $thisref = &$refs[ $object->counter ];
+
+    $thisref['data'] = $object;
+    
+    if (!$object->parent_id) {
+        $list[ $object->counter ] = &$thisref;
+    } else {
+        $refs[ $object->parent_id ]['children'][ $object->counter ] = &$thisref;
+    }
+}
+
+
+if (isset($list) && is_array($list) && count($list)) {
+    function _displayLinks3($data, $internal, $view) {
+        if (isset($data) && is_array($data)) {
+            echo '<ul>';
+            foreach ($data as $item) {
+                
+                if ($internal->target->acl->owner ||
+                    $item['data']->allowed === null ||
+                    $item['data']->show_on_fail ||
+                    ($item['data']->allowed && ($item['data']->privilege >= ViaMe_Controller_Action::ACL_READ)) ||
+                    ($internal->target->acl->recursive && ($internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_READ))) {
+                    
+                    // Create the link
+                    /*
+                    $link = '/' . $view->SEO_Urlify($item['data']->title) . '/s';
+                    if ($view->masked) {
+                        $link .= $internal->target->pre . "/" . $view->module . "/view/p/mid/" . $view->masked . '/id/' . $item['data']->counter . '/';
+                    }
+                    else {
+                        if ($item['data']->com_id && ((isset($internal->params->com_id) && $internal->params->com_id) || $item['data']->com_id != $internal->community->id)) { $link .= '/com/' . $item['data']->com_id; }
+                        elseif ($item['data']->net_id) { $link .= '/net/' . $item['data']->net_id; }
+                        elseif ($item['data']->via_id) { $link .= '/via/' . $item['data']->via_id; }
+                        
+                        $link .= "/" . $view->module . "/view/p/mid/" . $item['data']->matrix_counter . '/id/' . $item['data']->counter . '/';
+                    }
+                    */
+                    $link = $view->ContentLink(array('object' => $item['data'], 'view' => $view));
+                    
+                    echo '<li class="page"><a href="' . $link . '">' . $view->escape($item['data']->title) . '</a>';
+                    if (isset($item['children']) && is_array($item['children'])) {
+                        echo '<ul>';
+                        _displayLinks3($item['children'], $internal, $view);
+                        echo '</ul>';
+                    }
+                    echo '</li>';
+                }
+            }
+            echo '</ul>';
+        }
+    }
+    
+    _displayLinks3($list, $this->internal, $this);
+}
+/*
+elseif (!$this->masked && ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_WRITE)) { ?>
+<p class="administer"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/create/p/mid/<?= $this->widget->counter ?>/">Create New Page</a></p>
+<?php } 
+*/
+?>
+
+
+
+
+
+
+<?php
+/*
+if (isset($this->objects) && $this->objects) {
+    foreach ($this->objects as $page) {
+        if ($this->internal->target->acl->owner ||
+            $page->allowed === null ||
+            $page->show_on_fail ||
+            ($page->allowed && ($page->privilege >= ViaMe_Controller_Action::ACL_READ)) ||
+            ($this->internal->target->acl->recursive && ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_READ))) {
+            
+            // Create the link
+            $link = 'http://' . $this->internal->vars->host . '/' . $this->SEO_Urlify($page->title) . '/s';
+            if ($this->masked) {
+                $link .= $this->internal->target->pre . '/page/view/p/mid/' . $this->masked . '/id/' . $page->counter . '/';
+            }
+            else {
+                if ($page->com_id && ((isset($this->internal->params->com_id) && $this->internal->params->com_id) || $page->com_id != $this->internal->community->id)) { $link .= '/com/' . $page->com_id; }
+                elseif ($page->net_id) { $link .= '/net/' . $page->net_id; }
+                elseif ($page->via_id) { $link .= '/via/' . $page->via_id; }
+                
+                $link .= '/page/view/p/mid/' . $page->matrix_counter . '/id/' . $page->counter . '/';
+            }
+?>
+<div class="page">
+    <div class="title"><a href="<?= $link ?>"><?= $this->escape($page->title) ?></a></div>
+<?php if ($this->widget->interactive && ($this->masked ? $this->page->x_interactive : true)) { ?>
+    <div class="interact">
+    <a href="<?= $link ?>#comments_list"><?= $page->total_comments_count ?> Comment(s)</a> - Average Rating : <?= ($page->rating ? $page->rating : 'N/A') ?>
+    </div>
+<?php } ?>
+    <div class="datetime">
+<?php
+        $date = new Zend_Date();
+        $date->set($page->creation, Zend_Date::ISO_8601);
+        if (isset($this->internal->member)) {
+            $date->setTimezone($this->internal->member->timezone);
+        }
+        echo $date->toString('EEEE  MMMM d, YYY h:mm a z');
+?>
+    </div>
+    <div class="author">By <?= $this->ProfileDisplay(array('profile' => $page, 'internal' => $this->internal)) ?></div>
+    <div class="summary"><?= ($object->summary ? $this->escape($object->summary) : $this->SEO_Quip($object->content, 256)) ?></div>
+    
+    <div class="more_link"><a href="<?= $link ?>">&raquo; More</a></div>
+</div>
+<?php
+        }
+    }
+}
+*/
+?>

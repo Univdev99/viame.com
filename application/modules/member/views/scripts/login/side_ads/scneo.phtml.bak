@@ -1,0 +1,34 @@
+<?php /*
+<div align="right"><img src="<?= $this->internal->vars->static_host ?>/pages/SCNEO/v1/inc/img/logo_EO.png" width="294" height="77" align="left" />
+<a href="/via/21066/?vmpd_ckstr[signup_entrance]=SCNEO_Login&vmpd_ckstr[click_track]=SCNEO_Login"><img src="<?= $this->internal->vars->static_host ?>/pages/SCNEO/v1/inc/img/btn_signup_ftwt.jpg" width="242" height="68" /></a></div>
+<hr size="1" noshade="noshade" style="clear: both;" />
+*/ ?>
+<p align="center" style="margin-bottom: 6px; font-size: 24px; font-weight: bold; color: #20457c;">SCN's Elite Opportuntity - Access Restricted!</p>
+<p align="center" style="margin-bottom: 6px; font-size: xx-large; font-weight: bold; color: #a80000;">Member's Only</p>
+
+<p style="font-size: larger; color: #00a800;"><strong>Existing Members, please use the login interface located to the left here.</strong></p>
+
+<p style="font-size: larger;"><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/scneo/small_chart.png" width="288" height="205" align="right" /><strong>SmallCap Network Elite Opportunity (SCN EO)</strong> is a <strong>Member's Only Premium 
+  Service</strong> established to help traders and investors create a better financial 
+  future for themselves and their families. By becoming a <strong>SCN EO Member</strong>, you
+  will have a dedicated and highly experienced Team of individuals working on
+  your behalf every day to keep you up-to-date and well informed on the stock
+market and its winning ways.</p>
+<p style="font-size: larger;">The <strong>SCN EO Analytical Team</strong> has been there and done that. We've made many of
+  the mistakes you may have yet to make. We've learned the hard way that the
+  only way to make money in the markets is to be cleverly opportunistic.
+  Through countless hours of research and analysis, we've come to the
+  conclusion the only way to generate substantial returns from the equity
+  markets is to alienate ourselves from all of the media, dig in, and identify
+  those opportunities before the rest of the investing public that are on the
+verge of yielding tremendous results.</p>
+<p style="font-size: larger;">Whether it's identifying a market turn
+  before the rest of the herd or uncovering an individual stock's next big
+  run, much of our success can be attributed to the simple fact that we don't
+let Wall Street suggest what we do. We do what we do when we want to do it.</p>
+<p style="font-size: larger;">If you're looking for a premium subscription service that's going to be easy
+  to read, easy to understand, is timely, and delivers real ideas with real
+  upside right to your inbox, then considering a subscription to the <strong>SCN EO</strong> is
+a no brainer.</p>
+<?php /* <p align="center" style="color: #EA2A16; font-size: 56px;"><strong>Free Two Week Trial!</strong></p> */ ?>
+<p align="center" style="margin: 3em;"><a href="/?vmpd_ckstr[signup_entrance]=SCNEO_Login&vmpd_ckstr[click_track]=SCNEO_Login&vmpd_ckstr_redirect=/pages/SCNEO/v1/" class="fakebutton green big" style="margin: 0em; padding: 1em 2em;">Click Here To Learn More</a></p>

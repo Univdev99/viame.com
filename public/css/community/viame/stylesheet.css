@@ -1,0 +1,178 @@
+/* SmallCapNetwork Community Stylesheet */
+
+/* @import url(../default/stylesheet.css); */
+
+/* Accomodate Fixed? */
+#page { padding-bottom: 5em; }
+/* Turn On the Logo Area */
+/* #fixed .yuimenubaritem.logo { display: block !important; } */
+#fixed {
+    background: transparent url(../../theme/big_blue/assets/mini_dash_bottom_bg.png) repeat-x;
+}
+#page_header {
+    margin-top: 1em;
+}
+
+#page_header .top > table { width: 974px; margin-bottom: 0; }
+#page_header .top > table td { border: none; }
+#page_header .top > table td.topleft { text-align: left; }
+#page_header .top > table td.topleft img { padding-right: 5px; }
+#page_header .top > table td.topleft span {
+    display: inline-block;
+    position: relative;
+    top: -8px;
+    height: 40px;
+    line-height: 45px;
+    padding: 0 7px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #2CA4E4;
+    border-left: 2px solid #a1e800;
+}
+#page_header .top > table td.topright { text-align: right; }
+#page_header .top > table td.topright > div {
+    float: right;
+    padding: 5px;
+    background-color: #ececec;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+#page_header .top > table td.topright > div input[type="text"] {
+    vertical-align: top;
+    width: 20em;
+    height: 1.5em;
+    margin: 0;
+    padding: 0.3em 0.25em 0 0.2em;
+    border: 1px solid #b5b5b5;
+    font-size: 108%;
+}
+#page_header .top > table td.topright > div input[type="submit"] {
+    vertical-align: top;
+    height: 27.5px;
+    padding: none;
+    border: none;
+    background-color: #48b0e8;
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+    font-size: 108;
+}
+
+#page_header .nav {
+    width: 974px;
+    margin: auto;
+    margin-bottom: 1em;
+    background: none;
+}
+#page_header .nav .signup {
+    text-align: right;
+    padding: 0 20px 5px 0;
+    font-size: 84%;
+}
+#page_header .nav .signup a { font-weight: bold; }
+#page_header .nav #navbar {;
+    background: none;
+}
+.yui-skin-sam #page_header .nav #navbar.yuimenubar {
+	text-transform: uppercase;
+    font-weight: bold;
+    font-size: 80%;
+    border-color: #e0e0e0;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+.yui-skin-sam #page_header .nav #navbar .yuimenubaritem {
+	border: none;
+}
+.yui-skin-sam #page_header .nav #navbar .yuimenubaritemlabel {
+	border: none;
+	border-left: 1px dotted #e0e0e0;
+	margin: .35em 0;
+	color: #888;
+	cursor: pointer;
+}
+.yui-skin-sam #page_header .nav #navbar .yuimenubaritem.first-of-type .yuimenubaritemlabel {
+	border: none;
+}
+.yui-skin-sam #page_header .nav #navbar .yuimenubaritemlabel:hover {
+	color: #48b0e8;
+}
+.yui-skin-sam #page_header .nav #navbar .yuimenubaritem.last-of-type {
+	float: right;
+}
+.yui-skin-sam #page_header .nav #navbar .yuimenubaritem.last-of-type .yuimenubaritemlabel {
+    color: #eb8103;
+}
+
+
+/* Special */
+#specialhome {
+    color: #fff;
+    margin-bottom: 1em;
+}
+#specialhome .yui-content {
+	border: none;
+    padding: 0;
+    height: 230px;
+}
+#specialhome .yui-content > div {
+	position: absolute;
+	width: 100%;
+}
+#specialhome .yui-content table {
+	margin-bottom: 0;
+    width: 974px;
+    height: 230px;
+    text-align: left;
+}
+#specialhome .yui-content table td {
+	border: none;
+    padding: 0;
+   
+}
+#specialhome .yui-content table td h1 {
+    font-weight: normal;
+}
+#specialhome .yui-nav {
+	border: none;
+	width: 974px;
+	margin: auto;
+	text-align: right;
+}
+#specialhome .yui-nav li {
+    padding:0;
+    width: 9px;
+    height: 9px;
+    margin: 10px 0 0 5px;
+    background: transparent url(/js/yui/yui2/build/assets/skins/sam/sprite.png) no-repeat scroll 0 -650px;
+}
+#specialhome .yui-nav li.selected {
+    background-position: 0 -700px;
+}
+#specialhome .yui-nav li a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: none;
+    text-align: left;
+    text-indent: -10000px;
+    overflow: hidden;
+}
+
+
+#page_body {
+    padding-top: 1em;
+}
+
+
+#page_footer {
+	margin: 1em 0;
+}
+#page_footer, #page_footer a, #page_footer p {
+	font-size: 11px;
+    color: #888;
+    text-decoration: none;
+}
+#page_footer ul {
+	margin: 0 0 .3em 0;
+}

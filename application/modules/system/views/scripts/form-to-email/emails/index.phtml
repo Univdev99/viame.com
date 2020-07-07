@@ -1,0 +1,12 @@
+<?php
+
+if (isset($this->internal->member)) {
+    echo '<p><span style="font-size: 120%;"><strong>' . $this->internal->community->display . ' Profile:</strong></span> ' .$this->internal->member->profile->name . ' (' . $this->internal->member->profile->id . ')</p>';
+}
+
+foreach ($this->post as $key => $val) {
+    if (!in_array($key, array('recipient', 'pre_spec', 'realname', 'email', 'subject', 'x', 'y', 'redirect', 'submit')) &&
+        !preg_match('/^vmpd/', $key)) {
+        echo '<p><span style="font-size: 120%;"><strong>' . ucwords($key) . ":</strong></span> $val</p>";
+    }
+}

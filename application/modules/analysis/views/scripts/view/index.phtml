@@ -1,0 +1,375 @@
+<?php $module = 'analysis'; ?>
+
+<div class="cm decorated padded m_<?= $module ?> m-<?= $this->internal->target->currentModule->module_id ?>-<?= $this->internal->target->currentModule->counter ?> id_<?= $this->object->counter ?>">
+<div class="hd">
+    <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div>
+    </div>
+    <div class="con">
+    	<table class="table">
+            <tr>
+                <td class="lt"></td>
+
+                <td class="mn1"><a href="<?= '/' . $this->SEO_Urlify($this->internal->target->currentModule->display ? $this->internal->target->currentModule->display : $this->internal->target->currentModule->m_display) . '/s' . (isset($this->internal->target->pre) ? $this->internal->target->pre : '') . '/' . $this->internal->target->currentModule->m_name . '/p/mid/' . $this->internal->params->mid . '/' ?>"><?= $this->escape(isset($this->internal->target->currentModule->display) && $this->internal->target->currentModule->display ? $this->internal->target->currentModule->display : $this->internal->target->currentModule->m_display) ?></a></td>
+                <td class="sep"></td>
+                <td class="mn2">
+<?php if (!$this->masked && ($this->internal->target->acl->owner || ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_EDIT) || ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_DELETE))) { ?>
+                    <div class="administer">
+                        <?php
+                        // Edit Analysis Link
+                        if ($this->internal->target->acl->owner || ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_EDIT)) {
+                        ?>          
+                        <a href="<?= $this->internal->target->pre ?>/<?= $module ?>/edit/p/mid/<?= $this->object->matrix_counter ?>/id/<?= $this->object->counter ?>/" class="edit">Edit Analysis</a>
+                        <?php
+                        }
+                        ?>
+                        
+                        <?php
+                        // Delete Analysis Link
+                        if ($this->internal->target->acl->owner || ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_DELETE)) {
+                        ?>
+                        <a href="<?= $this->internal->target->pre ?>/<?= $module ?>/delete/p/mid/<?= $this->object->matrix_counter ?>/id/<?= $this->object->counter ?>/" onclick="return confirm('Are you sure you want to delete this analysis?');" class="delete">Delete Analysis</a>
+                        <?php
+                        }
+                        ?>
+                    </div>
+<?php } ?>
+                </td>
+                <td class="rt"></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="bd">
+
+    <div class="info">
+        <?php
+            switch ($this->object->analysis_action) {
+                case 1:
+                    $analysis_action = 'Upgrade';
+                    $analysis_action_image = 'arrows/up';
+                    break;
+                case -1: 
+                    $analysis_action = 'Downgrade';
+                    $analysis_action_image = 'arrows/down';
+                    break;
+                default:
+                    $analysis_action = 'No Action';
+                    $analysis_action_image = 'arrows/neutral';
+                    break;
+            }
+            
+            switch ($this->object->recommendation) {
+                case 4:
+                    $recommendation = 'Strong Buy';
+                    $recommendation_image = 'meters/r2g/9';
+                    break;
+                case 3:
+                    $recommendation = 'Buy';
+                    $recommendation_image = 'meters/r2g/8';
+                    break;
+                case 2:
+                    $recommendation = 'Strong Speculative Buy';
+                    $recommendation_image = 'meters/r2g/7';
+                    break;
+                case 1:
+                    $recommendation = 'Speculative Buy';
+                    $recommendation_image = 'meters/r2g/6';
+                    break;
+                case -1:
+                    $recommendation = 'Speculative Sell';
+                    $recommendation_image = 'meters/r2g/4';
+                    break;
+                case -2:
+                    $recommendation = 'Strong Speculative Sell';
+                    $recommendation_image = 'meters/r2g/3';
+                    break;
+                case -3:
+                    $recommendation = 'Sell';
+                    $recommendation_image = 'meters/r2g/2';
+                    break;
+                case -4:
+                    $recommendation = 'Strong Sell';
+                    $recommendation_image = 'meters/r2g/1';
+                    break;
+                default:
+                    $recommendation = 'Neutral';
+                    $recommendation_image = 'meters/r2g/5';
+                    break;
+            }
+            
+            switch ($this->object->timeframe) {
+                case 1:
+                    $timeframe = 'Long-Term';
+                    $timeframe_image = 'meters/c1/9';
+                    break;
+                case -1:
+                    $timeframe = 'Short-Term';
+                    $timeframe_image = 'meters/c1/2';
+                    break;
+                default:
+                    $timeframe = 'Mid-Term';
+                    $timeframe_image = 'meters/c1/5';
+                    break;
+            }
+            
+            switch ($this->object->risk) {
+                case 1:
+                    $risk = 'High';
+                    $risk_image = 'meters/g2r/9';
+                    break;
+                case -1:
+                    $risk = 'Low';
+                    $risk_image = 'meters/g2r/1';
+                    break;
+                default:
+                    $risk = 'Medium';
+                    $risk_image = 'meters/g2r/5';
+                    break;
+            }
+            
+            $ihost = $this->internal->vars->static_host . "/css/theme/default/assets/modules/$module/";
+        ?>
+        <table class="display">
+        <?php if ($this->object->symbols) {
+            echo '<thead><tr><th class="firstcol symbols" colspan="4">Symbol(s): ';
+            $ids = explode(',', preg_replace('/^\{(.*)\}$/', '${1}', $this->object->symbols));
+            $info = $this->Quote_ConvertIdToSymbol( $ids );
+            $counter = 1;
+            foreach ($ids as $id) {
+                echo $this->Quote_SymbolDisplay(array('id' => $id, 'symbol' => $info[$id]->internal_symbol, 'name' => $info[$id]->name, 'internal' => $this->internal));
+                if ($counter < count($ids)) { echo ', '; }
+                $counter++;
+            }
+            echo '</th></tr></thead>';
+        } ?>
+            <tr class="firstrow headers">
+                <th width="25%" class="firstitem firstcol">Action</th>
+                <th width="25%">Recommendation</th>
+                <th width="25%">Timeframe</th>
+                <th width="25%" class="lastitem lastcol">Risk</th>
+            </tr>
+            <tr>
+                <td class="firstitem firstcol"><span class="action<?= $this->object->analysis_action ?>"><?= $analysis_action ?></span></td>
+                <td><span class="recommendation<?= $this->object->recommendation ?>"><?= $recommendation ?></span></td>
+                <td><span class="timeframe<?= $this->object->timeframe ?>"><?= $timeframe ?></span></td>
+                <td class="lastitem lastcol"><span class="risk<?= $this->object->risk ?>"><?= $risk ?></span></td>
+            </tr>
+                
+            <?php /*
+            <tr>
+                <td class="firstitem"><span class="title">Action</span><br /><span class="action action<?=$this->object->analysis_action ?>"><?= $analysis_action ?><img src="<?= $ihost . $analysis_action_image . '.gif' ?>" align="absmiddle" style="margin-left: 3px;"></span></td>
+                <td><span class="title">Recommendation</span><br /><span class="recommendation recommendation<?=$this->object->recommendation ?>"><?= $recommendation ?><img src="<?= $ihost . $recommendation_image . '.gif' ?>" align="absmiddle" style="margin-left: 3px;"></span></td>
+                <td><span class="title">Timeframe</span><br /><span class="timeframe timeframe<?=$this->object->timeframe ?>"><?= $timeframe ?><img src="<?= $ihost . $timeframe_image . '.gif' ?>" align="absmiddle" style="margin-left: 3px;"></span></td>
+                <td class="lastitem"><span class="title">Risk</span><br /><span class="risk risk<?=$this->object->risk ?>"><?= $risk ?><img src="<?= $ihost . $risk_image . '.gif' ?>" align="absmiddle" style="margin-left: 3px;"></span></td>
+            </tr>
+            */ ?>
+        </table>      
+    </div>
+    
+    
+    <div class="title<?= ($this->object->active == false ? ' draftitem' : '') ?><?= ($this->object->published_display_activated == false ? ' futureitem' : '') ?><?= ($this->object->published_display_expired == true ? ' expireditem' : '') ?>"><h1><?= $this->escape($this->object->title) ?><?= ($this->object->active == false ? ' <span class="drafttype">(Draft)</span>' : '') ?><?= ($this->object->published_display_activated == false ? ' <span class="futuretype">(Future)</span>' : '') ?><?= ($this->object->published_display_expired == true ? ' <span class="expiredtype">(Expired)</span>' : '') ?></h1></div>
+    <?= isset($this->object->heading) && $this->object->heading ? '<div class="heading"><h2>'. $this->escape($this->object->heading) .'</h2></div>' : '' ?>
+
+    <div class="part1">
+        <div class="author">By <?= $this->ProfileDisplay(array('profile' => $this->object, 'internal' => $this->internal)) ?></div>
+        
+        <div class="datetime">Published: 
+        <?php
+            $date = new Zend_Date();
+            $date->set($this->object->published_display_date, Zend_Date::ISO_8601);
+            if (isset($this->internal->member)) {
+                $date->setTimezone($this->internal->member->timezone);
+            }
+            else {
+                $date->setTimezone($this->internal->config->timezone);
+            }
+            echo $date->toString(Zend_Date::DATETIME_LONG);
+        ?>
+        </div>
+        
+        <div class="relay">
+            <?= $this->partial('partials/_AddThis.phtml', 'system', array('internal' => $this->internal)); ?>
+            
+            <?= $this->PrintEmailLink(array('link' => '', 'internal' => $this->internal)) ?>
+        </div>
+    </div>
+    
+    <?php if ($this->internal->target->currentModule->interactive && ($this->masked ? $this->object->x_interactive : true)) { ?>
+        <div class="interact">
+            <div class="comments"><span class="begin_comment_count">&nbsp;</span><a href="#comments_list" class="comment_count"><?= $this->object->total_comments_count ?></a><span class="end_comment_count">&nbsp;</span> <a href="#comments_list">Comment(s)</a>
+            <?php if (($this->internal->target->acl->allowed === null || $this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT) && $this->object->allow_comments) { ?>
+            - <a href="#post_a_comment">Post a Comment</a>
+            <?php } ?>
+            </div>
+            <div class="rating">Rating <span class="count rc<?= floor($this->object->rating * 2) ?>"><?= ($this->object->rating ? $this->object->rating : '') ?></span></div>
+        </div>    
+    <?php } ?>
+    
+    <?php if ($this->internal->community->meta_stocks && isset($this->object->symbols) && !is_null($this->object->symbols)) { echo $this->RelatedQuotes(array('symbols' => $this->object->symbols, 'internal' => $this->internal, 'which_part' => '1')); } ?>
+    
+    <div class="part2">
+        <div id="div-gpt-ad-1391039732374-0" class="advertisement" style="float: right; margin: 0 0 1em 1em; width: 160px; height: 600px;">
+<script type='text/javascript'>
+googletag.pubads().display('/1063461/VM-Platform-Analysis_View_Default-160x600', [160, 600], 'div-gpt-ad-1391039732374-0');
+</script>
+        </div>
+        
+        <div class="content">
+<?php
+$pagers = array(
+    '<(?=p|div).*?>\s*<!-- pagebreak(.*?) -->\s*<\/(?=p|div).*?>',
+    '<(?=p|div).*?>\s*-- pagebreak -- (.*?)\s*<\/(?=p|div).*?>',
+    '<div style="page-break-after: always;">\s*<span style="display: none;">([^<].*?)<\/span>\s*<\/div>'
+);
+$regexp = '(' . implode('|', $pagers) . ')';
+
+if (!(isset($this->internal->params->to_print) && $this->internal->params->to_print) && preg_match_all("/$regexp/i", $this->object->content, $matches, PREG_SET_ORDER)) {
+    $counter = 0;
+    foreach (preg_split("/$regexp/i", $this->object->content) as $temp) {
+        $pages[$counter]['content'] = trim($temp);
+        $counter++;
+    }
+
+    $counter = 0;
+    foreach ($matches as $temp) {
+        $pages[$counter + 1]['title'] = trim($temp[count($temp) - 1]);
+        $counter++;
+    }
+    
+    $which_page = (isset($this->internal->params->page) && $this->internal->params->page ? $this->internal->params->page : 1);
+    $paginator = new Zend_Paginator(new Zend_Paginator_Adapter_Array($pages));
+    $paginator->setCurrentPageNumber($which_page);
+    $paginator->setItemCountPerPage(1);
+    $paginator->setPageRange(11);
+    
+    echo $pages[$which_page - 1]['content'];
+    echo $this->paginationControl($paginator, 'Sliding', 'view/paginator.phtml', array(
+      'internal' => $this->internal,
+      'prev_title' => (isset($pages[$which_page - 2]['title']) ? $pages[$which_page - 2]['title'] : ''),
+      'next_title' => (isset($pages[$which_page]['title']) ? $pages[$which_page]['title'] : '')
+    ));
+}
+else {
+    echo $this->object->content;
+}
+?>
+
+        </div>
+    </div>
+    
+    <div style="clear: both; overflow: auto; background-color: #ecf2e4; margin: 1em 0; padding: .5em;">
+        <div>
+            <span style="font-weight: bold;">Holding:</span>
+<?php
+switch ($this->object->holding) {
+    case 1:
+        echo 'Long Position';
+        break;
+    case -1:
+        echo 'Short Position';
+        break;
+    default:
+        echo 'No Position';
+        break;
+}
+?>
+        </div>
+        
+        <div>
+            <span style="font-weight: bold;">Disclosure:</span>
+            <?= $this->escape($this->object->disclosure) ?>
+        </div>
+        
+    </div>
+    
+    <?= $this->partial('partials/_SocialBookmarks.phtml', 'system', array('internal' => $this->internal)); ?>
+    
+    <?php if ($this->internal->community->meta_stocks && isset($this->object->symbols) && !is_null($this->object->symbols)) { echo $this->RelatedQuotes(array('symbols' => $this->object->symbols, 'internal' => $this->internal, 'which_part' => '2')); } ?>
+    
+    <div class="part3" style="margin-bottom: 3em;">
+    <?php if ($this->internal->target->currentModule->interactive && ($this->masked ? $this->object->x_interactive : true)) { ?>
+        <div class="interact">
+            <div class="comments"><span class="begin_comment_count">&nbsp;</span><a href="#comments_list" class="comment_count"><?= $this->object->total_comments_count ?></a><span class="end_comment_count">&nbsp;</span> <a href="#comments_list">Comment(s)</a>
+            <?php if (($this->internal->target->acl->allowed === null || $this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT) && $this->object->allow_comments) { ?>
+            - <a href="#post_a_comment">Post a Comment</a>
+            <?php } ?>
+            </div>
+            
+            <?php if (($this->internal->target->acl->allowed === null || $this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT) &&
+                $this->object->allow_ratings) { ?>
+            <div class="rateit">Rate It : 
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/1/" rel="nofollow" title="1 Star - Awful">1</a>
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/2/" rel="nofollow" title="2 Stars - Poor">2</a>
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/3/" rel="nofollow" title="3 Stars - Average">3</a>
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/4/" rel="nofollow" title="4 Stars - Good">4</a>
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/5/" rel="nofollow" title="5 Stars - Excellent">5</a>
+                </span></span></span></span></span>
+            </div>
+            <?php } ?>
+            
+        </div>
+    <?php } ?>
+    </div>
+    
+    <div style="clear: both; padding-bottom: 4em;" class="pager">
+        <?php if (isset($this->prev_object)) { ?>
+        <div class="previous" style="display: inline; float: left; margin-bottom: 1em;">
+    <?php
+    $link = '/' . $this->SEO_Urlify($this->prev_object->title) . '/s';
+    if ($this->masked) {
+        $link .= $this->internal->target->pre . "/$module/view/p/mid/" . $this->masked . '/id/' . $this->prev_object->counter . '/';
+    }
+    else {
+        if ($this->prev_object->com_id && ((isset($this->internal->params->com_id) && $this->internal->params->com_id) || $this->prev_object->com_id != $this->internal->community->id)) { $link .= '/com/' . $this->prev_object->com_id; }
+        elseif ($this->prev_object->net_id) { $link .= '/net/' . $this->prev_object->net_id; }
+        elseif ($this->prev_object->via_id) { $link .= '/via/' . $this->prev_object->via_id; }
+        
+        $link .= "/$module/view/p/mid/" . $this->prev_object->matrix_counter . '/id/' . $this->prev_object->counter . '/';
+    }
+    ?>
+            <a href="<?= $link ?>" title="<?= $this->escape($this->prev_object->title) ?>" >&laquo; Previous</a>
+        </div>
+        <?php } ?>
+        
+        <?php if (isset($this->next_object)) { ?>
+        <div class="next" style="display: inline; float: right; margin-bottom: 1em;">
+    <?php
+    $link = '/' . $this->SEO_Urlify($this->next_object->title) . '/s';
+    if ($this->masked) {
+        $link .= $this->internal->target->pre . "/$module/view/p/mid/" . $this->masked . '/id/' . $this->next_object->counter . '/';
+    }
+    else {
+        if ($this->next_object->com_id && ((isset($this->internal->params->com_id) && $this->internal->params->com_id) || $this->next_object->com_id != $this->internal->community->id)) { $link .= '/com/' . $this->next_object->com_id; }
+        elseif ($this->next_object->net_id) { $link .= '/net/' . $this->next_object->net_id; }
+        elseif ($this->next_object->via_id) { $link .= '/via/' . $this->next_object->via_id; }
+        
+        $link .= "/$module/view/p/mid/" . $this->next_object->matrix_counter . '/id/' . $this->next_object->counter . '/';
+    }
+    ?>
+            <a href="<?= $link ?>" title="<?= $this->escape($this->next_object->title) ?>" >Next &raquo;</a>
+        </div>
+        <?php } ?>
+    </div>
+    
+    <div style="clear: both;"></div>
+    
+    <?php if ($this->internal->target->currentModule->interactive && ($this->masked ? $this->object->x_interactive : true)) { ?>
+    <div class="comments">
+    <?php
+        echo $this->action('list', 'comments', 'system', (array) $this->internal->params);
+    ?>
+    </div>
+    <?php } ?>
+    
+</div>
+<div class="ft">
+    <div class="dec">
+        <div class="lt"></div><div class="mn"></div><div class="rt"></div>
+
+    </div>
+</div>
+<span class="icon"></span>
+</div>
+
+
+<?php $this->TextAds(); ?>

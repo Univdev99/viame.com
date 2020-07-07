@@ -1,0 +1,13 @@
+<?php
+if ($this->formErrors) {
+    print '<ul class="errors" style="margin-bottom: 1em;">';
+    foreach ($this->formErrors as $message) {
+        print "<li>$message</li>\n";
+    }
+    print '</ul>';
+}
+?>
+
+<?= $this->form ?>
+
+<?= $this->FormHelper(array('internal' => $this->internal)) ?>

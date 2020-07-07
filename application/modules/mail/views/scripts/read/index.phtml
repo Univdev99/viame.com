@@ -1,0 +1,91 @@
+<h1>Read Mail Message</h1>
+
+<div>
+    <?= $this->render('sidebar.phtml') ?>
+    <div style="margin-left: 176px;">
+    
+
+<h2><?= $this->mail->subject ?></h2>
+
+<div>
+<?php if ($this->mail->template_status !== null) { ?>
+    <a href="<?= $this->internal->target->pre ?>/mail/write/p/pid/<?= $this->mail->profile_id ?>/id/<?= $this->mail->counter ?>/">Use</a>
+<?php } else { ?>
+    <a href="<?= $this->internal->target->pre ?>/mail/write/p/reply/1/pid/<?= $this->mail->profile_id ?>/id/<?= $this->mail->counter ?>/">Reply</a>
+    - <a href="<?= $this->internal->target->pre ?>/mail/write/p/reply/1/replyall/1/pid/<?= $this->mail->profile_id ?>/id/<?= $this->mail->counter ?>/">Reply All</a>
+    - <a href="<?= $this->internal->target->pre ?>/mail/write/p/pid/<?= $this->mail->profile_id ?>/id/<?= $this->mail->counter ?>/">Forward</a>
+<?php } ?>
+
+    - <a href="<?= $this->internal->target->pre ?>/mail/multi/delete/<?= ($this->folder ? 'fid/' . $this->folder . '/' : '') ?>mid/<?= $this->mail->profile_id ?>-<?= $this->mail->counter ?>/nar/1/">Delete</a>
+    
+<?php if ($this->folder == 'R') { ?>
+    - <a href="<?= $this->internal->target->pre ?>/mail/multi/undelete/mid/<?= $this->mail->profile_id ?>-<?= $this->mail->counter ?>/nar/1/">Undelete</a>
+<?php } ?>
+    <br /><br />
+</div>
+
+<table>
+    <tr>
+        <td>From:</td>
+        <td><?= $this->ProfileDisplay(array('profile' => $this->profiles[$this->mail->profile_id], 'internal' => $this->internal)) ?></td>
+    </tr>
+    
+<?php
+    $date = new Zend_Date();
+    $date->set($this->mail->creation, Zend_Date::ISO_8601);
+    if (isset($this->internal->member)) {
+        $date->setTimezone($this->internal->member->timezone);
+    }
+    else {
+        $date->setTimezone($this->internal->config->timezone);
+    }
+?>
+    <tr>
+        <td>Date:</td>
+        <td><?= $date->toString(Zend_Date::DATETIME_LONG); ?></td>
+    </tr>
+
+    <tr>
+        <td>To:</td>
+        <td><?php
+            $VMAH = $this->VMAH();
+            $r = $VMAH->ePgArray($this->mail->to_profile_id);
+            $counter = 0;
+            foreach ($r as $profile_id) {
+                echo $this->ProfileDisplay(array('profile' => $this->profiles[$profile_id], 'internal' => $this->internal));
+                $counter++;
+                if ($counter < count($r)) {
+                    echo ', ';
+                }
+            }
+        ?></td>
+    </tr>
+    
+    <tr>
+        <td>Cc:</td>
+        <td>
+<?php
+    $VMAH = $this->VMAH();
+    $r = $VMAH->ePgArray($this->mail->cc_profile_id);
+    $counter = 0;
+    foreach ($r as $profile_id) {
+        echo $this->ProfileDisplay(array('profile' => $this->profiles[$profile_id], 'internal' => $this->internal));
+        $counter++;
+        if ($counter < count($r)) {
+            echo ', ';
+        }
+    }
+?>
+        </td>
+    </tr>
+</table>
+
+<hr>
+
+<div><?= $this->mail->content ?></div>
+
+
+
+    </div>
+    <div style="clear: both;"></div>
+</div>

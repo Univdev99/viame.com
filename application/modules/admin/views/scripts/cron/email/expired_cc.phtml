@@ -1,0 +1,29 @@
+<?php /*
+<p>Our attempt to charge your credit card (<?= $this->post['x_card_type'] . ' - ' . $this->post['x_account_number'] ?>) for your recurring subscription of <strong><?= $this->member->title ?></strong> has failed.</p>
+
+<?php $reacturl = 'https://' . $this->internal->vars->host . '/acl/access/update_payment/?reactivate=1&identifier=' . $this->post['x_subscription_id']; ?>
+
+<p>To reactivate your subscription, please <a href="<?= $reacturl ?>">click here</a> or go to:</p>
+<p><a href="<?= $reacturl ?>"><?= $reacturl ?></a></p>
+
+<p><strong>Please reactivate your subscription within the next 72 hours to avoid permanent deletion.</strong>  If your subscription expires without reactivation, you can still re-subscribe, but you will simply have to re-enter all of your subscription information.</p>
+*/ ?>
+
+<?php
+
+$reacturl = 'https://' . $this->internal->vars->host . '/profile/switch/?id=' . $this->object->profile_id . '&redirect=' . urlencode('/acl/access/update_payment/?identifier=' . $this->object->identifier);
+
+$renewal_date = new DateTime($this->object->expiration);
+?>
+
+<p>Your subscription to <strong><?= $this->object->x_title ?></strong> is coming up for renewal soon, and it appears that the credit card we have on file will be expiring soon or has already expired.  Don't let your subscription to <strong><?= $this->object->x_title ?></strong> lapse by updating your credit card information on file with us prior to your renewal date (<?= $renewal_date->format('m/d/Y') ?>).</p>
+
+<p>Please do so anytime before your next renewal date by clicking on the following link.</p>
+
+<div style="text-align: center;"><div style="display: inline-block; text-align: center; margin: 1em auto; padding: .5em .8em; background-color: #74BB10;" class="fakebutton green"><a href="<?= $reacturl ?>" style="color: #fff; font-size: 18px; font-weight: normal; text-decoration: none;">Click Here To Update<br />Your Credit Card On File</a></div></div>
+
+<p>If you should have any questions or problems, please contact our customer service team by sending an email to <a href="mailto:<?= $this->internal->community->email ?>"><?= $this->internal->community->email ?></a>. We are committed to providing you with great customer service, so please don't hesitate to contact us at any time.</p>
+
+<p>Sincerely,</p>
+
+<p><strong><?= $this->internal->community->display ?></strong></p>

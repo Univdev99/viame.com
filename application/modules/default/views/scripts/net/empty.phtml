@@ -1,0 +1,23 @@
+<?php $this->placeholder('temp')->captureStart(); ?>
+
+<p class="error">The network does not have any content published to it yet.</p>
+
+<p>Check back often for updates to this space.</p>
+
+<div id="div-gpt-ad-1391040973855-0" class="advertisement" style="margin-top: 2em; text-align: center;">
+<script type='text/javascript'>
+googletag.pubads().display('/1063461/VM-Platform-VIA_Default_Empty-728x90', [728, 90], 'div-gpt-ad-1391040973855-0');
+</script>
+</div>
+
+<?php $this->placeholder('temp')->captureEnd(); ?>
+
+<?php
+echo $this->CM(array(
+    'class' => 'cm decorated plain errormessage',
+    'hd' => 'Empty space',
+    'hd2' => 'This network does not have any content modules',
+    'bd' => $this->placeholder('temp')
+));
+$this->placeholder('temp')->set(null);
+?>

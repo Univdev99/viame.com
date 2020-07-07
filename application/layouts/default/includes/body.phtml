@@ -1,0 +1,315 @@
+<!-- Begin Fixed -->
+<div id="fixed"><div id="toolbar">
+    <?= $this->render('../default/includes/menubar.phtml'); ?>
+</div></div>
+<?php
+$this->inlineScript()->captureStart() ?>
+YAHOO.util.Event.onContentReady("fixed", function () {
+    // Some default undos
+    YAHOO.util.Dom.setStyle('fixed', 'display', 'block');
+    YAHOO.util.Dom.setStyle('fixed', 'position', 'fixed');
+    YAHOO.util.Dom.setY('fixed', -10000);
+    
+    // Fixed at top - Scootch page down
+    //YAHOO.util.Dom.setY('page', YAHOO.util.Dom.get('fixed').offsetHeight);
+    
+    // Fixed at bottom
+    function positionFixedBottom() {
+        YAHOO.util.Dom.setY('fixed', YAHOO.util.Dom.getViewportHeight() - YAHOO.util.Dom.get('fixed').offsetHeight + YAHOO.util.Dom.getDocumentScrollTop());
+        YAHOO.util.Dom.setStyle('fixed', 'visibility', 'visible');
+    }
+
+    //YAHOO.util.Dom.setY('fixed', YAHOO.util.Dom.getViewportHeight() - YAHOO.util.Dom.get('fixed').offsetHeight);
+    YAHOO.util.Event.addListener(window, 'load', positionFixedBottom);
+    YAHOO.util.Event.addListener(window, 'resize', positionFixedBottom);
+});
+<?php $this->inlineScript()->captureEnd() ?>
+<!-- End Fixed -->
+
+
+<!-- Begin Page -->
+<div id="page" class="type_<?= isset($this->internal->target->type) ? $this->internal->target->type : '' ?> id_<?= isset($this->internal->target->id) ? $this->internal->target->id : ''; ?>">
+    
+    
+    <!-- Begin Page Header -->
+    <div id="page_header">
+    
+        <div class="top">
+            <table align="center">
+                <tr>
+                    <td class="topleft">
+                        <img src="<?= $this->internal->vars->static_host ?>/css/community/default/assets/logo/logo_green.png" alt="ViaMe" />
+                        <span>One place.  Endless possibilities.</span>
+                    </td>
+                    <td class="topright">
+                        <div><form><input type="text"><input type="submit" value="Search"></form></div>
+                    </td>
+                </tr>
+
+            </table>
+		</div>
+        
+        <!-- Begin NavBar -->
+        <div class="nav">
+<?php if (isset($this->internal->member)) { ?>
+            <div class="signup" style="color: #EB8103; font-weight: bold;">
+                Welcome, <?= $this->internal->member->first_name ?>!
+            </div>
+<?php } else { ?>
+            <div class="signup">
+                New to ViaMe?  <a href="/member/register/" rel="nofollow">Sign-Up</a>.
+            </div>
+<?php } ?>
+            <div id="navbar" class="yuimenubar yuimenubarnav">
+                <div class="bd">
+            
+                    <ul class="first-of-type">
+                        <li class="yuimenubaritem first-of-type">
+                            <a class="yuimenubaritemlabel" href="/" title="Home">Home</a>
+                        </li>
+                        <li class="yuimenubaritem">
+                            <a class="yuimenubaritemlabel" href="#">News</a>
+                        </li>
+                        <li class="yuimenubaritem">
+                            <a class="yuimenubaritemlabel" href="#">Communities</a>
+                        </li>
+                        <li class="yuimenubaritem">
+                            <a class="yuimenubaritemlabel" href="#">Search</a>
+                        </li>
+<?php if (!isset($this->internal->member)) { ?>
+                        <li class="yuimenubaritem last-of-type">
+                            <a class="yuimenubaritemlabel" href="/member/login/" rel="nofollow">Sign-In</a>
+                        </li>
+<?php } ?>
+                    </ul>
+                             
+                </div>
+            </div>
+        </div>
+		<!-- End NavBar -->
+
+<!-- Begin Special Home -->
+<?php
+    $front = Zend_Controller_Front::getInstance();    
+    if ((!isset($this->internal->member)) &&
+        ($front->getRequest()->getModuleName() == 'default') &&
+        ($front->getRequest()->getControllerName() == 'index') &&
+        ($front->getRequest()->getActionName() == 'index')) {
+?>
+<!-- Begin Special Home -->
+<div id="specialhome" class="yui-navset">
+    <ul class="yui-nav">
+        <li class="one firstitem selected"><a href="javascript:void(0);" rel="nofollow">ONE</a></li>
+        <li class="two"><a href="javascript:void(0);" rel="nofollow">TWO</a></li>
+        <li class="three"><a href="javascript:void(0);" rel="nofollow">THREE</a></li>
+        <li class="four"><a href="javascript:void(0);" rel="nofollow">FOUR</a></li>
+        <li class="five"><a href="javascript:void(0);" rel="nofollow">FIVE</a></li>
+        <li class="six"><a href="javascript:void(0);" rel="nofollow">SIX</a></li>
+        <li class="seven lastitem"><a href="javascript:void(0);" rel="nofollow">SEVEN</a></li>
+    </ul>
+    <div class="yui-content">
+        <div style="background-color: #a1e800;">
+        	<table align="center">
+                <tr>
+                    <td style="font-size: 22px; padding: 0 1em; background: url(<?= $this->internal->vars->static_host ?>/css/community/viame/assets/specialhome/1.png) no-repeat right center;">
+                        <h1>A world of communities<br />to suit all of your interests.</h1>
+                    </td>
+                    <td width="267">&nbsp;</td>
+                </tr>
+            </table>
+        </div>
+        <div style="background-color: #a1e800;">
+        	<table align="center">
+                <tr>
+                    <td style="font-size: 22px; padding: 0 1em 0 5em; background: url(<?= $this->internal->vars->static_host ?>/css/community/viame/assets/specialhome/2.png) no-repeat right center;">
+                        <h1>All in one place.</h1>
+                    </td>
+                    <td width="267">&nbsp;</td>
+                </tr>
+            </table>
+        </div>
+        <div style="background-color: #2da4e4;">
+        	<table align="center">
+                <tr>
+                    <td style="font-size: 22px; padding: 0 1em; background: url(<?= $this->internal->vars->static_host ?>/css/community/viame/assets/specialhome/3.png) no-repeat right center;">
+                        <h1 style="margin-bottom: 0;">Total Control.</h1>
+                        <p style="font-size: 18px;">Create multiple profiles.<br />
+                            Customize your layouts.<br />
+                            Manage contacts, feeds & widgets.</p>
+                        <p><strong>You decide who sees what.</strong></p>
+                    </td>
+                    <td width="267">&nbsp;</td>
+                </tr>
+            </table>
+        </div>
+        <div style="background-color: #ffca00;">
+        	<table align="center">
+                <tr>
+                    <td style="font-size: 22px; padding: 0 1em; background: url(<?= $this->internal->vars->static_host ?>/css/community/viame/assets/specialhome/4.png) no-repeat right center;">
+                        <h1 style="margin-bottom: 0;">Publish anything.</h1>
+                        <p style="font-size: 18px;">Blogs, articles, reports,<br />
+                            newsletters and more...</p>
+                    </td>
+                    <td width="267">&nbsp;</td>
+                </tr>
+            </table>
+        </div>
+        <div style="background-color: #cf60c1;">
+        	<table align="center">
+                <tr>
+                    <td style="font-size: 22px; padding: 0 1em; background: url(<?= $this->internal->vars->static_host ?>/css/community/viame/assets/specialhome/5.png) no-repeat right center;">
+                        <h1 style="margin-bottom: 0;">Interact anytime.</h1>
+                        <p style="font-size: 18px;">Communicate & collaborate<br />
+                            in real-time.</p>
+                    </td>
+                    <td width="267">&nbsp;</td>
+                </tr>
+            </table>
+        </div>
+        <div style="background-color: #eb8103;">
+        	<table align="center">
+                <tr>
+                    <td style="font-size: 22px; padding: 0 1em; background: url(<?= $this->internal->vars->static_host ?>/css/community/viame/assets/specialhome/6.png) no-repeat right center;">
+                        <h1 style="margin-bottom: 0;">Share what you want<br />
+                            when you want.</h1>
+                        <p style="font-size: 18px;">Photos, videos, documents,<br />
+                            contacts and more.</p>
+                    </td>
+                    <td width="267">&nbsp;</td>
+                </tr>
+            </table>
+        </div>
+        <div style="background-color: #a1e800;">
+        	<table align="center">
+                <tr>
+                    <td style="font-size: 22px; padding: 0 1em; background: url(<?= $this->internal->vars->static_host ?>/css/community/viame/assets/specialhome/7.png) no-repeat right center;">
+                        <h1 style="margin-bottom: 0;">What's in your space?
+                            <div style="float: right;">Get Started...</div>
+                        </h1>
+                        <p style="font-size: 18px;">It's all about you and what<br />
+                            you wanna do.</p>
+                    </td>
+                    <td width="267">&nbsp;</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div style="width: 974px; margin: auto; position: relative;">
+        <div style="position: absolute; top: -215px; right: 0; width: 211px; height: 160px; text-align: left; font-size: 14px; padding: 2em;">
+        	<p style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">Sign Up Now!</p>
+            <p>It's <span style="font-weight: bold;">FREE</span> and anyone can join.</p>
+            <form action="/member/register/" onsubmit="if (this.fullname.value == 'Name') { this.fullname.value = '';} if (this.email.value == 'Email') { this.email.value = '';}">
+                <input type="text" name="fullname" value="Name" onfocus="if (this.value == 'Name') { this.value = ''; }" onblur="if (this.value == '') { this.value = 'Name'; }" style="width: 100%; color: #bebebe; padding: .25em; margin-bottom: 5px;" /><br />
+                <input type="text" name="email" value="Email" onfocus="if (this.value == 'Email') { this.value = ''; }" onblur="if (this.value == '') { this.value = 'Email'; }" style="width: 100%; color: #bebebe; padding: .25em; margin-bottom: 1em;" /><br />
+                <div style="text-align: right;"><input type="submit" name="button" id="button" value="Sign Up!" style="background-color: #fff; border: none; text-transform: uppercase; color: #bebebe;" /></div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+(function() {
+    var tabView = new YAHOO.widget.TabView('specialhome', { orientation: "bottom" });
+    var tabs = tabView.get('tabs');
+    var currentTab = 0;
+    var delay = 7000;
+    var runshow = true;
+    
+    tabView.contentTransition = function(newTab, oldTab) {
+        if ( newTab.anim && newTab.anim.isAnimated() ) {
+            newTab.anim.stop(true);
+        }
+        
+        YAHOO.util.Dom.setStyle(newTab.get('contentEl'), 'opacity', 0);
+        newTab.set('contentVisible', true);
+        
+        newTab.anim = newTab.anim || new YAHOO.util.Anim(newTab.get('contentEl'));
+        newTab.anim.attributes.opacity = { to: 1 };
+        
+        var hideContent = function() {
+            oldTab.set('contentVisible', false);
+            oldTab.anim.onComplete.unsubscribe(hideContent);
+        };
+        
+        oldTab.anim = oldTab.anim || new YAHOO.util.Anim(oldTab.get('contentEl'));
+        oldTab.anim.onComplete.subscribe(hideContent, this, true);
+        oldTab.anim.attributes.opacity = { to: 0 };
+        
+        oldTab.anim.animate();
+        newTab.anim.animate();
+    }; 
+    
+    for (var i = 0; i < tabs.length; i++) {
+        tabs[i].subscribe("click", function() {runshow = false;});
+    }
+    
+    var SlideShow = function() {
+        if (runshow) {
+            currentTab = ((currentTab + 1) % tabs.length);
+            tabView.set('activeIndex', currentTab);
+            setTimeout(SlideShow, ((currentTab + 1) == tabs.length ? delay * 3 : delay));
+        }
+    };
+    setTimeout(SlideShow, delay);
+})();
+</script>
+<!-- End Special Home -->
+<?php } ?>
+
+    </div>
+    <!-- End Page Header -->
+        
+    
+    <!-- Begin Page Body -->
+    <div id="page_body" class="<?php $front = Zend_Controller_Front::getInstance(); echo $front->getRequest()->getModuleName() . '_module ' . $front->getRequest()->getControllerName() . '_controller ' . $front->getRequest()->getActionName() . '_action'; ?>">
+
+<?php
+    if (isset($this->internal->vars->sublayout)) {
+        echo $this->render($this->internal->vars->sublayout);
+    }
+    elseif (is_file(dirname(__FILE__) . '/../sublayouts/default.phtml')) {
+        echo $this->render('sublayouts/default.phtml');
+    }
+    else {
+        echo '<div id="doc4" class="page_body_internal"><div id="bd"><div id="yui-main"><div class="yui-b"><div id="content_area">' .
+             $this->layout()->content .
+             '</div></div></div></div></div>';
+    }
+?>
+        
+    </div>
+    <!-- End Page Body -->
+    
+    
+    <!-- Begin Page Footer -->
+    <div id="page_footer">
+        
+        <!--ul class="straight decorated">
+            <li class="first"><a href="http://en.<?= $this->internal->vars->host_name . '.' . $this->internal->vars->domain_name . $this->internal->vars->request_uri?>">English</a></li>
+            <li><a href="http://en_CA.<?= $this->internal->vars->host_name . '.' . $this->internal->vars->domain_name . $this->internal->vars->request_uri?>">Canadian English</a></li>
+            <li><a href="http://es.<?= $this->internal->vars->host_name . '.' . $this->internal->vars->domain_name . $this->internal->vars->request_uri?>">Spanish</a></li>
+            <li class="last"><a href="http://ko.<?= $this->internal->vars->host_name . '.' . $this->internal->vars->domain_name . $this->internal->vars->request_uri?>">Korean</a></li>
+        </ul-->
+        
+        <ul class="straight decorated">
+            <li class="first"><a href="#">Company Info</a></li>
+            <li><a href="/Terms-of-Use/s/page/view/p/mid/1/id/1/">Terms of Use</a></li>
+            <li><a href="/Privacy-Policy/s/page/view/p/mid/1/id/2/">Privacy Policy</a></li>
+            <li><a href="#">Send Feedback</a></li>
+            <li class="last"><a href="#">Advertise with Us</a></li>
+        </ul>
+        
+        <p>Copyright &copy; 2008-2009 Levelogic, Inc. All rights reserved.</p>
+        
+        <?php $this->internal->log->debug('Load Time : ' . sprintf ('%.4f', microtime(true) - $this->internal->vars->timer)); ?>
+        
+    </div>
+    <!-- End Page Footer -->
+        
+        
+</div>
+<!-- End Page -->
+
+
+<!-- Begin Scratch Pad -->
+<div id="scratch_pad"></div>
+<!-- End Scratch Pad -->

@@ -1,0 +1,70 @@
+<!-- Begin Module -->
+<div class="cm decorated">
+    <div class="hd">
+        <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div>
+        </div>
+        <div class="con">
+        	<table class="table">
+                <tr>
+                    <td class="lt"></td>
+                    <td class="mn1">Social Logins</td>
+                    <td class="sep"></td>
+                    <td class="mn2">Manage your social logins</td>
+                    <td class="rt"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="bd padded">
+
+<?php
+// Synchronize this listed of authorized SLIs with Register
+foreach (array(
+            'google' => array('Google', '/member/oauth/login/?provider=google-oauth2', 'google-oauth2'),
+            'facebook' => array('Facebook', '/member/oauth/login/?provider=facebook-oauth2', 'facebook-oauth2'),
+            'yahoo' => array('Yahoo', '/member/openid/login/?provider=yahoo', ''),
+            'linkedin' => array('LinkedIn', '/member/oauth/login/?provider=linkedin-oauth2', 'linkedin-oauth2'),
+            'twitter' => array('Twitter', '/member/oauth/login/?provider=twitter-oauth1', 'twitter-oauth1'),
+        ) as $provider => $params) {
+    echo '<ul class="social_login straight"><li class="'.$provider.'" style="line-height: 38px;"><a href="javascript:void(null);" title="'.$params[0].'" style="cursor: default;">'.$params[0].'</a><span style="margin-left: 1em; font-size: 16px;">';
+    $found = false;
+    foreach ($this->slis as $index => $sli) {
+        if (
+            ($provider == 'yahoo' && ($sli->provider == 'openid' && preg_match('/^https+:\/\/me.yahoo.com/', $sli->id)))
+            ||
+            ($sli->provider != 'openid' && preg_match("/^$provider/", $sli->provider))
+           ) {
+            echo '<a href="/member/sociallogins/delete/?provider='.urlencode($sli->provider).'&id='.urlencode($sli->id).'" class="fakebutton red">Remove '.$params[0].' Social Login</a>';
+            array_splice($this->slis, $index, 1);
+            $found = true;
+            break;
+        }
+    }
+    if (!$found) {
+        echo '<a href="'.$params[1].'" class="fakebutton green">Add '.$params[0].' Social Login</a>';
+    }
+    echo '</span></li></ul>';
+}
+?>
+    <ul class="social_login straight"><li class="openid" style="line-height: 38px;"><a href="javascript:void(null);" title="OpenID" style="cursor: default;">OpenID</a><span style="margin-left: 1em; font-size: 16px;"><a href="/member/openid/login/" class="fakebutton green">Add Another OpenID Provider</a></span>
+<?php
+if (count($this->slis)) {
+    echo '<ul>';
+    foreach ($this->slis as $index => $sli) {
+        if ($sli->provider == 'openid' && !preg_match('/^https+:\/\/me.yahoo.com/', $sli->id)) {
+            echo '<li><div><span style="margin-left: 1em; font-size: 16px;">'.$sli->id.'</span> - <a href="/member/sociallogins/delete/?provider=openid&id='.urlencode($sli->id).'" class="fakebutton red">Remove This OpenID Provider</a></div></li>';
+        }
+    }
+    echo '</ul>';
+}
+?>
+    </li></ul>
+
+    </div>
+    <div class="ft">
+        <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div></div>
+    </div>
+    
+    <span class="icon"></span>
+</div>
+<!-- End Module -->

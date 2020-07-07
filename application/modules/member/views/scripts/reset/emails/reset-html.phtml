@@ -1,0 +1,9 @@
+<p>We are processing your request to reset your password.  To complete the process of resetting your <?= $this->internal->community->display ?> login password, please <a href="<?= 'http://' . $this->internal->vars->host . '/member/reset/verify/email/' . urlencode($this->email) . '/key/' . $this->key . '/' ?>">click here</a>.</p>
+
+<p>If you did not initiate this request, do nothing, and no changes will be made to your account.</p>
+
+<?php /*
+<p>Name : <?=$this->name?></p>
+<p>Email : <?=$this->email?></p>
+<p>Reset Key : <?=$this->key?></p>
+*/ ?>

@@ -1,0 +1,218 @@
+<?php
+#Zend_Debug::Dump($this->results);
+#Zend_Debug::Dump($this->quote_data);
+#Zend_Debug::Dump($this->verification);
+
+reset($this->verification);
+$current = current($this->verification);
+$this->current = $current;
+$tick = $current->symbol;
+$dtick = $current->delayed_symbol;
+
+$date = new Zend_Date();
+?>
+
+<?php require_once 'simple_qf_nav.phtml'; ?>
+
+<h1 style="font-size: 22px;">Content On <?= $current->internal_symbol ?></h1>
+
+<div class="yui3-g-r">
+    
+    <!-- Begin First 1/3 Column -->
+    <div class="yui3-u-1-3"><div style="margin-right: .25em;">
+<?php
+// Comments
+$this->placeholder('temp')->captureStart();
+?>
+<div>
+<?php if (isset($this->internal->member)) { ?>
+<form id="quote_comment_form" enctype="application/x-www-form-urlencoded" method="post" class="form" action="" onsubmit="return (YAHOO.viame.vivin_regula.validate(this, { groups: [regula.Group.quote_comment_form] }) && YAHOO.viame.dubsub.check(this));">
+    <dl class="zend_form">
+        <dt id="comment-label"><label for="comment" class="required">Comment or Rumor</label></dt>
+        <dd id="comment-element" style="margin: 0;">        
+            <textarea name="comment" id="comment" data-constraints='@Required(label="comment", message="The {label} cannot be empty.", groups=[quote_comment_form])' class="regula-validation vmfh_expandable_textarea" onkeyup="YAHOO.viame.textarea_limiter.check(this, 256);" maxheight="64" minheight="32" style="height: 2em;"></textarea>
+            <p class="description">256 character(s) remaining</p>
+        </dd>
+        <dd id="buttons-element">
+            <fieldset id="fieldset-buttons" style="margin: 3px 0 0 0;"><dl>
+                <dt id="submit-label">&nbsp;</dt><dd id="submit-element">
+                <input type="submit" value="Post Comment" id="submit" name="submit" class="red"></dd>
+            </dl></fieldset>
+        </dd>
+    </dl>
+</form>
+
+<?php } else { ?>
+<div style="font-weight: bold; text-align: center;">Please <a href="/member/login/p/signup_entrance/SHQ-Comment/" rel="nofollow" onclick="return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/signup_entrance/SHQ-Comment/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false });">sign-in</a> to post a comment, or <a href="/member/register/p/signup_entrance/SHQ-Comment/" rel="nofollow">register</a> for a free <?= ($this->internal->community->display ? $this->internal->community->display : $this->internal->community->name) ?> account.</div>
+<?php } ?>
+</div>
+<?php
+// List the Comments
+if (isset($this->comments) && $this->comments) {
+    $counter = 0;
+    
+    foreach ($this->comments as $comment) {
+        $counter++;
+?>
+<div class="<?= ($counter % 2) ? 'odd' : 'even' ?><?= ($counter == 1) ? ' firstitem' : (($counter == count($this->comments)) ? ' lastitem' : '') ?>">
+    <div class="comment" style="white-space: pre; white-space: pre-wrap; white-space: pre-line; white-space: -pre-wrap; white-space: -o-pre-wrap; white-space: -moz-pre-wrap; white-space: -hp-pre-wrap; word-wrap: break-word;"><?= $comment->content ?></div>
+    <div class="author" style="border: none; margin-top: .5em;">By <?= $this->ProfileDisplay(array('profile' => $comment, 'internal' => $this->internal)) ?></div>
+    <div class="datetime" style="text-align: right; margin-top: .5em;">[
+<?php
+    $date = new Zend_Date();
+    $date->set($comment->creation, Zend_Date::ISO_8601);
+    
+    if ((time() - $date->get(Zend_Date::TIMESTAMP)) < 3600) {
+        echo sprintf("%d minute(s) ago", ((time() - $date->get(Zend_Date::TIMESTAMP)) / 60));
+    }
+    else {
+        if (isset($this->internal->member)) {
+            $date->setTimezone($this->internal->member->timezone);
+            echo $date->toString(Zend_Date::DATE_SHORT . ' ' . Zend_Date::TIME_SHORT);
+        }
+        else {
+            $date->setTimezone($this->internal->config->timezone);
+            echo $date->toString(Zend_Date::DATE_SHORT . ' ' . Zend_Date::TIME_SHORT . ' z');
+        }
+    }
+?>
+    ]</div>
+</div>
+<?php
+    }
+}
+?>
+<?php
+$this->placeholder('temp')->captureEnd();
+echo $this->CM(array(
+    'class' => 'cm decorated widget m_quote_comment',
+    'hd' => 'Comments &amp; Rumors On ' . $current->internal_symbol,
+    'bd' => $this->placeholder('temp'),
+    'ft' => '<span class="addicon"></span>Have something to say about ' . $current->internal_symbol . '? Just type something in the box above.'
+));
+$this->placeholder('temp')->set(null);
+?>
+
+<?php
+// Analysis
+$tmp_widget = new StdClass;
+$tmp_widget->interactive = true;
+$tmp_widget->widget_hide_summary = true;
+
+echo $this->CM(array(
+    'class' => 'cm decorated widget m_analysis',
+    'hd' => 'Member Analysis Of ' . $current->internal_symbol,
+    'bd' => $this->partial('widget/index.phtml', 'analysis', array('module' => 'analysis', 'objects' => $this->analysis, 'widget' => $tmp_widget, 'masked' => false, 'internal' => $this->internal)),
+    'ft' => '<a href="/module/setup/publish/module_name/analysis/extra_params/symbols%3D' . $current->internal_symbol . '/" rel="nofollow" title="Analysis"><span class="addicon"></span>Publish an analysis on ' . $current->internal_symbol . '</a>',
+    'ft2' => (count($this->analysis) >= 10 ? '<a href="/' . $this->SEO_Urlify($current->name) . '/s/analysis/p/symbol/' . $this->SEO_Urlify($current->internal_symbol) . '/">More</a>' : ''),
+    'extra' => '<a href="/' . $this->SEO_Urlify($current->name) . '/s/system/widget/symbol/p/symbol/' . $this->SEO_Urlify($current->internal_symbol) . '/mid/18/format/rss/" rel="nofollow" title="' . $current->name . ' Feed" class="feeder">Analysis</a>'
+));
+?>
+
+<?php
+// File
+$tmp_widget = new StdClass;
+$tmp_widget->interactive = true;
+$tmp_widget->widget_hide_summary = false;
+
+echo $this->CM(array(
+    'class' => 'cm decorated widget m_file',
+    'hd' => $current->internal_symbol . ' Research Media',
+    'bd' => $this->partial('widget/index.phtml', 'file', array('module' => 'file', 'objects' => $this->files, 'widget' => $tmp_widget, 'masked' => false, 'internal' => $this->internal)),
+    'ft' => '<a href="/module/setup/publish/module_name/file/extra_params/symbols%3D' . $current->internal_symbol . '/" rel="nofollow" title="File"><span class="addicon"></span>Upload media on ' . $current->internal_symbol . '</a>',
+    'ft2' => (count($this->files) >= 10 ? '<a href="/' . $this->SEO_Urlify($current->name) . '/s/file/p/symbol/' . $this->SEO_Urlify($current->internal_symbol) . '/">More</a>' : ''),
+    'extra' => '<a href="/' . $this->SEO_Urlify($current->name) . '/s/system/widget/symbol/p/symbol/' . $this->SEO_Urlify($current->internal_symbol) . '/mid/12/format/rss/" rel="nofollow" title="' . $current->name . ' Feed" class="feeder">File</a>'
+));
+?>
+    </div></div>
+    <!-- End First 1/3 Column -->
+    
+    <!-- Begin Second 1/3 Column -->
+    <div class="yui3-u-1-3"><div style="margin: 0 .25em;">
+<?php
+// Articles
+$tmp_widget = new StdClass;
+$tmp_widget->interactive = true;
+$tmp_widget->widget_hide_summary = true;
+
+echo $this->CM(array(
+    'class' => 'cm decorated widget m_article',
+    'hd' => 'Member Articles On ' . $current->internal_symbol,
+    'bd' => $this->partial('widget/index.phtml', 'article', array('module' => 'article', 'objects' => $this->articles, 'widget' => $tmp_widget, 'masked' => false, 'internal' => $this->internal)),
+    'ft' => '<a href="/module/setup/publish/module_name/article/extra_params/symbols%3D' . $current->internal_symbol . '/" rel="nofollow" title="Article"><span class="addicon"></span>Write an article on ' . $current->internal_symbol . '</a>',
+    'ft2' => (count($this->articles) >= 10 ? '<a href="/' . $this->SEO_Urlify($current->name) . '/s/article/p/symbol/' . $this->SEO_Urlify($current->internal_symbol) . '/">More</a>' : ''),
+    'extra' => '<a href="/' . $this->SEO_Urlify($current->name) . '/s/system/widget/symbol/p/symbol/' . $this->SEO_Urlify($current->internal_symbol) . '/mid/15/format/rss/" rel="nofollow" title="' . $current->name . ' Feed" class="feeder">Article</a>'
+));
+?>
+
+<?php
+// Messages
+$tmp_widget = new StdClass;
+$tmp_widget->interactive = true;
+$tmp_widget->widget_hide_summary = true;
+
+echo $this->CM(array(
+    'class' => 'cm decorated widget m_message',
+    'hd' => 'Message Board Posts On ' . $current->internal_symbol,
+    'bd' => $this->partial('widget/index.phtml', 'message', array('module' => 'message', 'objects' => $this->messages, 'widget' => $tmp_widget, 'masked' => false, 'internal' => $this->internal)),
+    'ft' => '<a href="/module/setup/publish/module_name/message/extra_params/symbols%3D' . $current->internal_symbol . '/" rel="nofollow" title="Board"><span class="addicon"></span>Create a message board post on ' . $current->internal_symbol . '</a>',
+    'ft2' => (count($this->messages) >= 10 ? '<a href="/' . $this->SEO_Urlify($current->name) . '/s/message/p/symbol/' . $this->SEO_Urlify($current->internal_symbol) . '/">More</a>' : ''),
+    'extra' => '<a href="/' . $this->SEO_Urlify($current->name) . '/s/system/widget/symbol/p/symbol/' . $this->SEO_Urlify($current->internal_symbol) . '/mid/21/format/rss/" rel="nofollow" title="' . $current->name . ' Feed" class="feeder">Message</a>'
+));
+?>
+    </div></div>
+    <!-- End Second 1/3 Column -->
+    
+    <!-- Begin Third 1/3 Column -->
+    <div class="yui3-u-1-3"><div style="margin-left: .25em;">
+<?php
+// Blogs
+$tmp_widget = new StdClass;
+$tmp_widget->interactive = true;
+$tmp_widget->widget_hide_summary = true;
+
+echo $this->CM(array(
+    'class' => 'cm decorated widget m_blog',
+    'hd' => 'Member Blog Posts On ' . $current->internal_symbol,
+    'bd' => $this->partial('widget/index.phtml', 'blog', array('module' => 'blog', 'objects' => $this->blogs, 'widget' => $tmp_widget, 'masked' => false, 'internal' => $this->internal)),
+    'ft' => '<a href="/module/setup/publish/module_name/blog/extra_params/symbols%3D' . $current->internal_symbol . '/" rel="nofollow" title="Blog"><span class="addicon"></span>Create a blog post on ' . $current->internal_symbol . '</a>',
+    'ft2' => (count($this->blogs) >= 10 ? '<a href="/' . $this->SEO_Urlify($current->name) . '/s/blog/p/symbol/' . $this->SEO_Urlify($current->internal_symbol) . '/">More</a>' : ''),
+    'extra' => '<a href="/' . $this->SEO_Urlify($current->name) . '/s/system/widget/symbol/p/symbol/' . $this->SEO_Urlify($current->internal_symbol) . '/mid/22/format/rss/" rel="nofollow" title="' . $current->name . ' Feed" class="feeder">Blog</a>'
+));
+?>
+
+<?php
+// Picks
+$remap = array();
+$tmp_widget = new StdClass;
+$tmp_widget->interactive = true;
+$tmp_widget->widget_hide_summary = true;
+
+$pick_bd = '';
+if (count($this->picks)) {
+    $remap[$this->picks[0]->symbol_id] = new StdClass;
+    #$remap[$this->picks[0]->symbol_id]->last = $this->quote_data[$this->picks[0]->qx_internal_symbol][1];
+    $remap[$this->picks[0]->symbol_id]->last = $this->results[3];
+    $remap[$this->picks[0]->symbol_id]->internal_symbol = $this->verification[$this->picks[0]->qx_internal_symbol]->internal_symbol;
+    $remap[$this->picks[0]->symbol_id]->name = $this->verification[$this->picks[0]->qx_internal_symbol]->name;
+
+    $pick_bd = $this->partial('widget/index.phtml', 'pick', array('module' => 'pick', 'objects' => $this->picks, 'quote_data' => $remap, 'symbols_data' => $remap, 'widget' => $tmp_widget, 'masked' => false, 'internal' => $this->internal));
+}
+
+echo $this->CM(array(
+    'class' => 'cm decorated widget m_pick',
+    'hd' => 'Members Picking ' . $current->internal_symbol,
+    'bd' => $pick_bd,
+    'ft' => '<a href="/module/setup/publish/module_name/pick/extra_params/symbols%3D' . $current->internal_symbol . '/" rel="nofollow" title="Pick"><span class="addicon"></span>Pick ' . $current->internal_symbol . '</a>',
+    'ft2' => (count($this->picks) >= 10 ? '<a href="/' . $this->SEO_Urlify($current->name) . '/s/pick/p/symbol/' . $this->SEO_Urlify($current->internal_symbol) . '/">More</a>' : ''),
+    'extra' => '<a href="/' . $this->SEO_Urlify($current->name) . '/s/system/widget/symbol/p/symbol/' . $this->SEO_Urlify($current->internal_symbol) . '/mid/20/format/rss/" rel="nofollow" title="' . $current->name . ' Feed" class="feeder">Pick</a>'
+));
+?>
+    </div></div>
+    <!-- End Third 1/3 Column -->
+    
+</div>
+
+
+
+</div>

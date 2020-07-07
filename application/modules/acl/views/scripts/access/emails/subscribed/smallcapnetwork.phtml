@@ -1,0 +1,75 @@
+<p>Welcome and thank you for becoming a member of <strong><?= $this->title ?></strong>. We are excited to have you on board and look forward to providing you with exceptional service. Your transaction has been successfully processed and you should now have proper access using your <?= $this->internal->community->display ?> account. You can access the Members Only Section
+<?php
+if (isset($this->access_selected->w_member_start) && $this->access_selected->w_member_start && strtotime($this->access_selected->w_member_start) > strtotime(date('Y-m-d'))) {
+    echo ' beginning ';
+    
+    $date = new Zend_Date();
+    $date->set($this->access_selected->w_member_start, Zend_Date::ISO_8601);
+    if (isset($this->internal->member)) {
+        $date->setTimezone($this->internal->member->timezone);
+        echo $date->toString(Zend_Date::DATE_LONG);
+    }
+    else {
+        $date->setTimezone($this->internal->config->timezone);
+        echo $date->toString(Zend_Date::DATE_LONG);
+    }
+    
+    echo ' ';
+}
+?>
+by logging in here:</p>
+<?php
+    $url = 'http://' . $this->internal->vars->host;
+    
+    if ($this->access_selected->net_id) {
+        $url .= '/net/' . $this->access_selected->net_id;
+    }
+    elseif ($this->access_selected->via_id) {
+        $url .= '/via/' . $this->access_selected->via_id;
+    }
+    
+    if ($this->access_selected->module_id) {
+        $url .= '/p/' . $this->internal->module_modules[$this->access_selected->module_id]->name;
+        
+        if ($this->access_selected->matrix_counter) {
+            $url .= '/mid/' . $this->access_selected->matrix_counter;
+            
+            if ($this->access_selected->item_counter) {
+                $url .= '/id/' . $this->access_selected->item_counter;
+            }
+        }
+    }
+    
+    $url .= '/';
+?>
+<p style="text-align: center;"><a href="<?= $url ?>?vmpd_paid=1"><span style="font-size: 116%; font-weight: bold;"><?= ((isset($this->access_selected->title) && $this->access_selected->title) ? $this->access_selected->title : $this->title)?> Members Only Section</span><br /><?= $url ?>?vmpd_paid=1</a></p>
+
+<p>We suggest you bookmark this link for future reference.  Use your <?= $this->internal->community->display ?> credentials to login. If you have trouble signing in or have forgotten your password, <a href="http://<?= $this->internal->vars->host ?>/member/reset/">click here</a> to have your password reset.</p>
+
+<p>The details of your subscription are:</p>
+<table width="100%" cellspacing="2" cellpadding="3">
+    <tr>
+        <th>Product</th>
+        <th>Price</th>
+    </tr>
+    <tr>
+        <td colspan="2"><hr size="1" noshade="noshade" /></td>
+    </tr>
+    <tr>
+        <td><?= (isset($this->access_selected->display) && $this->access_selected->display ? $this->access_selected->display : $this->access_selected->title) ?></td>
+        <td align="right">
+<?php
+$currency = new ViaMe_Currency('USD');
+echo $currency->toCurrency($this->access_selected->w_member_amount);
+echo ' / ' . ($this->access_selected->w_member_quantity > 1 ? $this->access_selected->w_member_quantity . ' ' : '') . $this->access_selected->w_member_interval . ($this->access_selected->w_member_quantity > 1 ? 's' : '');
+if ($this->access_selected->w_member_auto_renew) {
+    echo ' (Recurring)';
+}
+?>
+        </td>
+    </tr>
+</table>
+<p>Thank you again for subscribing. If you should have any questions or problems with your order, please contact our customer service team by sending an email to <a href="mailto:<?= $this->internal->community->email ?>"><?= $this->internal->community->email ?></a>. We are committed to providing you with great customer service, so please don't hesitate to contact us at any time.</p>
+<p>Sincerely,</p>
+<p><strong><?= $this->internal->community->display ?></strong></p>
+<p style="color: #f00;">Note: Charges will appear on your statement as <?= $this->internal->community->display ?>.</p>

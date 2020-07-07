@@ -1,0 +1,267 @@
+<div class="<?= ($this->symbol_data->featured ? 'featured' : '') ?>">
+
+<div class="header_area">
+<div class="header_table">
+    <div class="company_info"><div class="encap yui3-g-r">
+            <div class="ci1 yui3-u-7-12">
+                <?php /* <h1 class="company"><?= $current->name ?> <span class="exch_symb">(<?= $this->results[2] ?>: <?= $current->internal_symbol ?>)</span></h1> */ ?>
+                <h1 class="company"><?= $this->current->internal_symbol ?> - <?= $this->current->name ?></h1>
+                <span style="font-size: 140%;"><?= Zend_Locale_Format::toNumber($this->results[3], array('locale' => $this->internal->locale)) ?></span>
+                <span<?= ($this->results[9] > 0 ? ' class="uptick"' : ($this->results[9] < 0 ? ' class="downtick"' : '')) ?> style="font-size: 110%;"><?= Zend_Locale_Format::toNumber($this->results[9], array('locale' => $this->internal->locale)) ?> (<?= $this->results[10] ?>)</span>
+            </div>
+            <div class="ci2 yui3-u">
+<!-- Begin Rating -->
+<div class="stock_rating" style="text-align: center;">
+<?php
+if ($db = Zend_Registry::get('db')) {
+    #$rating = $db->fetchRow("SELECT COUNT(*) AS total, AVG(position) AS rating FROM pick_picks WHERE creation > ('now'::timestamp - '30 Days'::interval) AND symbol_id=?", $this->symbol_id);
+    $rating = $db->fetchRow("SELECT COUNT(*) AS total, AVG(\"obj\".position) AS rating"
+        .
+        ", COUNT(NULLIF((DATE(obj.creation) >= DATE('now'::timestamp - '7 Days'::interval)), 'f')) AS sd_total,
+        AVG(CASE (DATE(obj.creation) >= DATE('now'::timestamp - '7 Days'::interval)) WHEN 't' THEN obj.position ELSE NULL END) AS sd_rating,
+        COUNT(NULLIF((DATE(obj.creation) >= DATE('now'::timestamp - '1 Month'::interval)), 'f')) AS om_total,
+        AVG(CASE (DATE(obj.creation) >= DATE('now'::timestamp - '1 Month'::interval)) WHEN 't' THEN obj.position ELSE NULL END) AS om_rating,
+        COUNT(NULLIF((DATE(obj.creation) >= DATE('now'::timestamp - '3 Months'::interval)), 'f')) AS tm_total,
+        AVG(CASE (DATE(obj.creation) >= DATE('now'::timestamp - '3 Months'::interval)) WHEN 't' THEN obj.position ELSE NULL END) AS tm_rating,
+        COUNT(NULLIF((DATE(obj.creation) >= DATE('now'::timestamp - '6 Months'::interval)), 'f')) AS sm_total,
+        AVG(CASE (DATE(obj.creation) >= DATE('now'::timestamp - '6 Months'::interval)) WHEN 't' THEN obj.position ELSE NULL END) AS sm_rating,
+        COUNT(NULLIF((DATE(obj.creation) >= DATE('now'::timestamp - '1 Year'::interval)), 'f')) AS oy_total,
+        AVG(CASE (DATE(obj.creation) >= DATE('now'::timestamp - '1 Year'::interval)) WHEN 't' THEN obj.position ELSE NULL END) AS oy_rating"
+        .
+      " FROM \"pick_picks\" AS \"obj\" INNER JOIN \"module_matrix\" AS \"x\" ON obj.com_id=x.com_id AND obj.net_id=x.net_id AND obj.via_id=x.via_id AND obj.module_id=x.module_id AND obj.matrix_counter=x.counter INNER JOIN \"module_modules\" AS \"m\" ON x.module_id=m.id INNER JOIN \"profile_profiles\" AS \"p\" ON obj.profile_id = p.id INNER JOIN \"member_members\" AS \"b\" ON p.member_id = b.id INNER JOIN \"system_communities\" AS \"c\" ON p.community_id = c.id INNER JOIN \"quote_view_symbol_matrix\" AS \"qx\" ON obj.symbol_id=qx.id WHERE (x.active='t') AND (m.active='t') AND (p.active='t') AND (b.active='t') AND (c.active='t') AND ((obj.com_id='2') OR (m.allow_flow='t' AND x.allow_out_flow AND (obj.net_id = 0 OR (ARRAY[obj.via_id, x.counter] :: text ~ E'()' AND x.allow_community_outflow && ARRAY[2] :: bigint[])))) AND (obj.active='t') AND (obj.activation ISNULL OR obj.activation <= now()) AND (obj.expiration ISNULL OR obj.expiration >= now()) AND (obj.partial_close_parent_id ISNULL) AND (obj.symbol_id=?)", $this->symbol_id);
+    if ($rating->total) {
+        $the_rating_value = sprintf("%.1f", (intval(($rating->rating + 1) / 2 * 9) + 1) / 2);
+        echo '<h1 class="rating">Investor Rating: <span id="stock_rating_stars" class="star_rating stars'.preg_replace('/\./', '-', $the_rating_value).'">'.$the_rating_value.'</span></h1>';
+        #echo '# Buy Ratings : ' . ($rating->total - (($rating->total - ($rating->total * $rating->rating)) / 2)) . "<br />\n";
+        #echo '# Sell Ratings : ' . (($rating->total - ($rating->total * $rating->rating)) / 2) . "<br />\n";
+        #echo 'Total # Ratings : ' . $rating->total . "<br />\n";
+        $sr_tooltip = "<strong>Rating: $the_rating_value Stars</strong><br />";
+        $sr_tooltip .= '# Buy Ratings : ' . ($rating->total - (($rating->total - ($rating->total * $rating->rating)) / 2)) . '<br />';
+        $sr_tooltip .= '# Sell Ratings : ' . (($rating->total - ($rating->total * $rating->rating)) / 2) . '<br />';
+        $sr_tooltip .= 'Total # Ratings : ' . $rating->total;
+        #$this->inlineScript()->appendScript("tfs_tt_obj = new YAHOO.widget.Tooltip(\"srtt\", { context: \"stock_rating_stars\", text: \"$sr_tooltip\" });");
+        $this->inlineScript()->appendScript("tfs_tt_obj = new YAHOO.widget.Tooltip(\"srtt\", { context: \"stock_rating_stars\" }); tfs_tt_obj.setBody(\"$sr_tooltip\");");
+        
+        echo '<div style="margin-top: .25em; font-size: 12px; font-weight: normal;">';
+        $counter = 0;
+        foreach (array(
+            '7 Days' => 'sd',
+            '1 Month' => 'om',
+            '3 Months' => 'tm',
+            '6 Months' => 'sm',
+            '1 Year' => 'oy',
+            'All' => ''
+        ) as $tf_display => $tf_data) {
+            $tfs_total = $rating->{($tf_data ? $tf_data . '_' : '') . 'total'};
+            $tfs_rating = $rating->{($tf_data ? $tf_data . '_' : '') . 'rating'};
+            if ($tfs_total) {
+                $tfs_rating_value = sprintf("%.1f", (intval(($tfs_rating + 1) / 2 * 9) + 1) / 2);
+            }
+            else {
+                $tfs_rating_value = 0;
+            }
+            #echo "$tfs_rating - $tfs_rating_value - ";
+            $tfs_total_buy = $tfs_total - (($tfs_total - ($tfs_total * $tfs_rating)) / 2);
+            $tfs_total_sell = ($tfs_total - ($tfs_total * $tfs_rating)) / 2;
+            
+            echo '<a href="javascript: void(null);" class="sr_tf_select" ';
+            echo "onclick=\"$('.sr_tf_select').css('font-weight', 'normal'); $(this).css('font-weight', 'bold'); $('#stock_rating_stars').removeClass(); $('#stock_rating_stars').html('$tfs_rating_value'); $('#stock_rating_stars').addClass('star_rating stars".preg_replace('/\./', '-', $tfs_rating_value)."'); $('#tf_total_num_ratings').html('$tfs_total'); $('#tf_total_num_buy_ratings').html('";
+            echo Zend_Locale_Format::toNumber(($tfs_total - (($tfs_total - ($tfs_total * $tfs_rating)) / 2)), array('locale' => $this->internal->locale)) .
+                ($tfs_total ? ' (' . Zend_Locale_Format::toNumber((($tfs_total - (($tfs_total - ($tfs_total * $tfs_rating)) / 2)) / $tfs_total * 100), array('locale' => $this->internal->locale, 'precision' => 2)) . '%)' : '');
+            echo "'); $('#tf_total_num_sell_ratings').html('";
+            echo Zend_Locale_Format::toNumber((($tfs_total - ($tfs_total * $tfs_rating)) / 2), array('locale' => $this->internal->locale)) .
+                ($tfs_total ? ' (' . Zend_Locale_Format::toNumber(((($tfs_total - ($tfs_total * $tfs_rating)) / 2) / $tfs_total * 100), array('locale' => $this->internal->locale, 'precision' => 2)) . '%)' : '');
+        
+            if ($tfs_total) {
+                $sr_tooltip = "<strong>Rating: $tfs_rating_value Stars</strong><br />";
+                $sr_tooltip .= '# Buy Ratings : ' . ($tfs_total - (($tfs_total - ($tfs_total * $tfs_rating)) / 2)) . '<br />';
+                $sr_tooltip .= '# Sell Ratings : ' . (($tfs_total - ($tfs_total * $tfs_rating)) / 2) . '<br />';
+                $sr_tooltip .= 'Total # Ratings : ' . $tfs_total;
+            }
+            else {
+                $sr_tooltip = 'This stock has no ratings<br />for that time period';
+            }
+            
+            echo "'); tfs_tt_obj.setBody('$sr_tooltip');\"";
+            echo ($counter == 5 ? ' style="font-weight: bold;"' : '') . '>';
+            echo $tf_display;
+            echo '</a>';
+            
+            echo ($counter < 5 ? ' - ' : '');
+            $counter++;
+        }
+        echo '</div>';
+    }
+    else {
+        echo '<h1 class="rating">Investor Rating: <span id="stock_rating_stars" class="star_rating stars0">0</span></h1>'; // No Ratings
+        echo '<div>No ratings on this stock.</div>';
+        #$this->inlineScript()->appendScript("new YAHOO.widget.Tooltip(\"srtt\", { context: \"stock_rating_stars\", text: \"This stock has no ratings<br />for the last 30 days.\" });");
+        $this->inlineScript()->appendScript("new YAHOO.widget.Tooltip(\"srtt\", { context: \"stock_rating_stars\", text: \"This stock currently has no ratings\" });");
+    }
+    
+    /*
+    if (!isset($this->internal->member)) {
+        #echo '<div style="text-align: center;">You must be <a href="/member/register/p/signup_entrance/StockHQ-Rating/">registered</a> and <a href="/member/login/p/signup_entrance/StockHQ-Rating/" rel="nofollow" onclick="return YAHOO.viame.shadowbox.shadowto(' . "'/member/login/p/no_layout/1/simple_content/1/signup_entrance/Comment/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false }" . ');">signed-in</a> to rate this stock.</div>';
+        echo '<a href="/member/login/p/signup_entrance/StockHQ-Rating/" rel="nofollow" onclick="return YAHOO.viame.shadowbox.shadowto(' . "'/member/login/p/no_layout/1/simple_content/1/signup_entrance/StockHQ-Rating/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false }" . ');" class="fakebutton green" style="margin-right: 2em;">Rate '.$current->internal_symbol.' A Buy</a> <a href="/member/login/p/signup_entrance/StockHQ-Rating/" rel="nofollow" onclick="return YAHOO.viame.shadowbox.shadowto(' . "'/member/login/p/no_layout/1/simple_content/1/signup_entrance/StockHQ-Rating/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false }" . ');" class="fakebutton red">Rate '.$current->internal_symbol.' A Sell</a>';
+    }
+    else {
+        if ($vote = $db->fetchRow('SELECT * FROM pick_picks WHERE close_datestamp ISNULL AND close_temp_price ISNULL AND close_price ISNULL AND profile_id=? AND symbol_id=? ORDER BY creation DESC LIMIT 1', array($this->internal->member->profile->id, $this->symbol_id))) {
+            $close_position_link = '/via/'. $vote->via_id . '/pick/close/p/mid/' . $vote->matrix_counter . '/id/' . $vote->counter . '/allocation/'.$vote->allocation.'/vmpd_fp/1/';
+            if ($vote->position < 0) {
+                if ($vote->open_price) {
+                    echo '<a href="' . $close_position_link . '" class="fakebutton yellow" style="color: #000; font-weight: normal;">Cancel Sell Rating On '.$current->internal_symbol.'</a>';
+                }
+                else {
+                    echo 'Your <strong>Sell Rating</strong> on <strong>'.$current->internal_symbol.'</strong> is being processed.<br />Please check back later.';
+                }
+            }
+            else {
+                if ($vote->open_price) {
+                    echo '<a href="' . $close_position_link . '" class="fakebutton yellow" style="color: #000; font-weight: normal;">Cancel Buy Rating On '.$current->internal_symbol.'</a>';
+                }
+                else {
+                    echo 'Your <strong>Buy Rating</strong> on <strong>'.$current->internal_symbol.'</strong> is being processed.<br />Please check back later.';
+                }
+            }
+        }
+        else {
+            echo '<a href="/module/setup/publish/module_name/pick/extra_params/symbol%3D'.$current->internal_symbol.'%26position%3D1%26allocation%3D1%26vmpd_fp%3D1/" class="fakebutton green" style="margin-right: 2em;">Rate '.$current->internal_symbol.' A Buy</a> <a href="/module/setup/publish/module_name/pick/extra_params/symbol%3D'.$current->internal_symbol.'%26position%3D-1%26allocation%3D1%26vmpd_fp%3D1/" class="fakebutton red">Rate '.$current->internal_symbol.' A Sell</a>';
+        }
+    }
+    */
+}
+?>
+</div>
+<!-- End Rating -->
+            </div>
+            
+    </div></div>
+    <?php /*
+    <td align="right" valign="middle" style="padding-left: 3em;">
+        <table class="publish_links"><tr>
+            <td style="min-width: 196px;"><div style="position: relative;">
+                <div class="doit"><div class="text">Publish on <?= $current->internal_symbol ?></div></div>
+                <ul>
+                    <li><a href="/module/setup/publish/module_name/pick/extra_params/symbol%3D<?= $current->internal_symbol ?>/" rel="nofollow" title="Stock Pick" class="pick"><span class="icon"></span>Pick</a></li>
+                    <li><a href="/module/setup/publish/module_name/article/extra_params/symbols%3D<?= $current->internal_symbol ?>/" rel="nofollow" title="Article" class="article"><span class="icon"></span>Article</a></li>
+                    <li><a href="/module/setup/publish/module_name/blog/extra_params/symbols%3D<?= $current->internal_symbol ?>/" rel="nofollow" title="Blog Post" class="blog"><span class="icon"></span>Blog</a></li>
+                    <li><a href="/module/setup/publish/module_name/message/extra_params/symbols%3D<?= $current->internal_symbol ?>/" rel="nofollow" title="Message Board Post" class="message"><span class="icon"></span>Forum</a></li>
+                    <li><a href="/module/setup/publish/module_name/analysis/extra_params/symbols%3D<?= $current->internal_symbol ?>/" rel="nofollow" title="Analysis" class="analysis"><span class="icon"></span>Analysis</a></li>
+                </ul>
+            </div></td>
+        </tr></table>
+        <?= $this->partial('partials/_AddThis.phtml', 'system', array('internal' => $this->internal)); ?>
+    </td>
+    */ ?>
+</div>
+<span class="featured_icon"></span>
+</div>
+
+
+<style>
+div.quote_subnav {
+    margin: 0 -.5em 1.5em -.5em;
+    border-top: 1px solid #dadee5;
+}
+
+#page_body.quote_module div.addthis_toolbox {
+    margin-top: 0px;
+}
+
+ul.simple_qf_nav {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+ul.simple_qf_nav li a {
+	text-decoration: none;
+	color: #fff;
+	
+}
+ul.simple_qf_nav li a:hover {
+	text-decoration: underline;
+}
+ul.simple_qf_nav > li {
+	display: inline-block;
+	margin-left: 5px;
+	padding: 5px;
+	border: 1px solid #071736;
+	border-top: none;
+	background-color: #10244b;
+	color: #fff;
+}
+ul.simple_qf_nav > li:first-child {
+	/* margin-left: 0; */
+}
+ul.simple_qf_nav > li.selected {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+/* Secondary Drop-Down Navigation */
+ul.simple_qf_nav > li > ul {
+	position: absolute;
+	margin: 0;
+	padding: 0;
+	list-style:none;
+	display: none;
+}
+ul.simple_qf_nav > li:hover > ul {
+	display: block;
+}
+
+/* Featured Overrides */
+div.featured div.quote_subnav {
+    border-top: none;
+}
+</style>
+
+<?php /* REMOVED SUBNAV
+<div class="quote_subnav">
+<ul class="simple_qf_nav">
+<?php
+$baseURL = '/' . $this->SEO_Urlify(((isset($this->symbol_data->name) && $this->symbol_data->name) ? $this->symbol_data->name : ($this->results[1] ? $this->results[1] : 'Quote'))) . '/s/quote/p/s/' . ((isset($this->current->internal_symbol) && $this->current->internal_symbol) ? $this->current->internal_symbol : $this->results[0]) . '/';
+
+foreach (array('' => 'StockHQ', 'quote' => 'Detailed Quote', 'rating' => 'Ratings', 'content' => 'Editorial', 'news' => 'News / Social Media', 'links' => 'Research Links') as $key => $display) {
+    echo '<li';
+    if ((isset($this->internal->params->f) && $this->internal->params->f == $key) ||
+        (!isset($this->internal->params->f) && $key == '')) { echo ' class="selected"'; }
+    echo "><a href=\"$baseURL";
+    if ($key) { echo "f/$key/"; }
+    echo "\">$display</a></li>\n";
+}
+?>
+</ul>
+</div>
+*/ ?>
+<div style="height: .5em;"></div>
+
+<?php /*
+if ($this->current->internal_symbol == 'SCQBF') {
+    echo '<div style="position: relative; top: -1em; text-align: center;"><a href="https://play.google.com/store/apps/developer?id=Securecom+Mobile"><img src="https://static.viame.com/public_files/SCQBF-Ad/2015/08/03/c7410839591c7af0d073e46e208558fa/IMG_1102.JPG" /></a></div>';
+}
+*/ ?>
+
+
+
+<?php /*
+<div class="yui3-g-r">
+    <div class="yui3-u-1-2"><div class="more_stuff">
+<?php
+if (isset($this->symbol_data->report_url) && $this->symbol_data->report_url) {
+    echo '<a href="' . $this->symbol_data->report_url . '" class="report">' . $this->current->internal_symbol . ' Research Report</a>';
+}
+        
+if (isset($this->symbol_data->qfm_following) && $this->symbol_data->qfm_following) {
+    echo '<a href="/quote/qfirmc/follow/unfollow/1/s/' . $this->symbol_id . '/" rel="nofollow" class="mailing_list">UnFollow Symbol ' . $this->current->internal_symbol . "</a>";
+}
+else {
+    echo '<a href="/quote/qfirmc/follow/s/' . $this->symbol_id . '/" rel="nofollow" class="mailing_list">Follow Symbol ' . $this->current->internal_symbol . "</a>";
+}
+?>
+    </div></div>
+    <div class="yui3-u-1-2" style="text-align: right;">
+        <?= $this->partial('partials/_AddThis.phtml', 'system', array('internal' => $this->internal)); ?>
+    </div>
+</div>
+*/ ?>

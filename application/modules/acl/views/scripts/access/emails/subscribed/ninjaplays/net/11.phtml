@@ -1,0 +1,89 @@
+<p><strong>Welcome to Ninja Plays!</strong> You are now ready to take advantage of any and all select stocks, horses and sports picks we believe you can <strong>exploit for profits</strong>. When it comes to wagering on anything, as well as investing in the stock market, <strong>it's all about being calculating and selective</strong>.</p>
+    
+<p>Your transaction has been successfully processed and you should now have proper access using your <strong><?= $this->internal->community->display ?></strong> account.  You can access your subscription 
+<?php
+if (isset($this->access_selected->w_member_start) && $this->access_selected->w_member_start && strtotime($this->access_selected->w_member_start) > strtotime(date('Y-m-d'))) {
+    echo ' beginning ';
+    
+    $date = new Zend_Date();
+    $date->set($this->access_selected->w_member_start, Zend_Date::ISO_8601);
+    if (isset($this->internal->member)) {
+        $date->setTimezone($this->internal->member->timezone);
+        echo $date->toString(Zend_Date::DATE_LONG);
+    }
+    else {
+        $date->setTimezone($this->internal->config->timezone);
+        echo $date->toString(Zend_Date::DATE_LONG);
+    }
+    
+    echo ' ';
+}
+?>
+by going to:</p>
+
+<?php
+    $url = 'http://' . $this->internal->vars->host;
+    
+    if ($this->access_selected->net_id) {
+        $url .= '/net/' . $this->access_selected->net_id;
+    }
+    elseif ($this->access_selected->via_id) {
+        $url .= '/via/' . $this->access_selected->via_id;
+    }
+    
+    if ($this->access_selected->module_id) {
+        $url .= '/p/' . $this->internal->module_modules[$this->access_selected->module_id]->name;
+        
+        if ($this->access_selected->matrix_counter) {
+            $url .= '/mid/' . $this->access_selected->matrix_counter;
+            
+            if ($this->access_selected->item_counter) {
+                $url .= '/id/' . $this->access_selected->item_counter;
+            }
+        }
+    }
+    
+    $url .= '/';
+?>
+<p style="text-align: center;"><a href="<?= $url ?>?vmpd_paid=1"><span style="font-size: 116%; font-weight: bold;"><?= ((isset($this->access_selected->title) && $this->access_selected->title) ? $this->access_selected->title : $this->title)?> Members Only Section</span><br /><?= $url ?>?vmpd_paid=1</a></p>
+
+<p>We suggest you bookmark this link for future reference.  Use your <strong><?= $this->internal->community->display ?></strong> credentials to login. If you have trouble signing in or have forgotten your password, <a href="http://<?= $this->internal->vars->host ?>/member/reset/">click here</a> to have your password reset.</p>
+
+<p>The details of your subscription are:</p>
+<table width="100%" cellspacing="2" cellpadding="3">
+    <tr>
+        <th>Product</th>
+        <th>Price</th>
+    </tr>
+    <tr>
+        <td colspan="2"><hr size="1" noshade="noshade" /></td>
+    </tr>
+    <tr>
+        <td><?= (isset($this->access_selected->display) && $this->access_selected->display ? $this->access_selected->display : $this->access_selected->title) ?></td>
+        <td align="right">
+<?php
+$currency = new ViaMe_Currency('USD');
+echo $currency->toCurrency($this->access_selected->w_member_amount);
+echo ' / ' . ($this->access_selected->w_member_quantity > 1 ? $this->access_selected->w_member_quantity . ' ' : '') . $this->access_selected->w_member_interval . ($this->access_selected->w_member_quantity > 1 ? 's' : '');
+if ($this->access_selected->w_member_auto_renew) {
+    echo ' (Recurring)';
+}
+?>
+        </td>
+    </tr>
+</table>
+
+<p>It's been proven throughout the course of history that the most successful speculators <strong>selectively pick their spots</strong>. Meaning, an overly active bettor, trader or investor, is often doomed for failure. However, when one is selective and calculating about their decisions, success is often inevitable, and the <strong>Ninja Plays Team</strong> is <strong>committed to bringing you only our best plays</strong>.</p>
+<p>You will start receiving our best pre-calculated stock picks, horse picks and sports picks via mobile text and email alerts, so <strong>make sure you've accurately provided us with your correct mobile phone number and email address.</strong> If for any reason you think you've incorrectly provided us with the necessary contact information in order to receive our timely alerts, please <a href="http://www.ninjaplays.com/Contact-Us/s/page/view/p/mid/1/id/1/">contact us</a> and let us know.</p>
+<p>You may hear from us at any time on any given day, so <strong>be ready to act when we provide you with a play we're confident about</strong>. You're obviously not obligated to do anything at all, but when you see something you find compelling enough to sink your teeth into, <strong>time is of the essence</strong>.</p>
+<p>With respect to our stocks picks, it's our belief, as a result of years and years of professional experience, the best way to profit from the stock market is to buy good quality companies and hold them. Sure, there's always going to be excellent short-term trading opportunities, however, for most individual investors, the long-term <strong>Warren Buffet</strong> approach has always proven to be the most rewarding, and <strong>more importantly the most profitable</strong>. In other words, <strong>buy good companies at a fair price, hold them for years</strong>, and let the investment passively work for you.</p>
+<p>As a general rule of thumb, when individual stocks or the equity markets in general are at all-time highs, it's important to be less aggressive. Conversely, when an individual stock in question or the markets in general have pulled back and are offering better value, that's the time to step in without fear, get aggressive, and invest for the long haul.</p>
+<p>With respect to the rest of our plays, whether it's a sports pick, horse pick or a stock pick, <strong>we'll always give you our most important reasons why we believe the idea in question is worth your consideration</strong>. In the professional community, this is often referred to as "<em>context</em>". Meaning, <strong>if there aren't enough reasons to put your money to work in an idea, it's probably not worth playing</strong>. Rest assured, we'll continue to educate you along the way, and always provide you with our context for the idea in question, regardless of what is.</p>
+<p>If you should have any questions or problems with your order, please contact our customer service team by sending an email to <a href="mailto:<?= $this->internal->community->email ?>"><?= $this->internal->community->email ?></a>. We are committed to providing you with great customer service, so please don't hesitate to contact us at any time. <strong>We're always here to answer any questions, comments or feedback, so don't be shy!</strong> Reach out to us as often as you'd like, and we'll always get back to you, time permitting.</p>
+<p><strong>Thank you again for subscribing</strong> and once again, welcome to <strong>Ninja Plays</strong>! We look forward to an extremely profitable and prosperous relationship with you.</p>
+<p><strong>Let's kill it!</strong></p>
+
+
+<p>Sincerely,</p>
+<p><strong>The Ninja Plays Team</strong></p>
+<p style="color: #f00;">Note: Charges may appear on your statement as either <?= $this->internal->community->display ?> or Levelogic, Inc.</p>

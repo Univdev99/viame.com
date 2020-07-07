@@ -1,0 +1,266 @@
+<?php
+$VERSION = '20130722';
+
+// Adjust doctype for legacy newsletter archive module - sync with the community stylesheet
+if ($this->internal->target->type == 'COM' &&
+  $this->internal->target->id == 2 &&
+  $this->internal->params->submodule == 'article' &&
+  $this->internal->params->subcontroller == 'view' &&
+  $this->internal->params->subaction == 'index' &&
+  isset($this->internal->params->mid) && $this->internal->params->mid == 7) {
+    $this->doctype('XHTML1_TRANSITIONAL', 'SET');
+}
+
+echo $this->docType();
+?>
+
+<?php
+    // Capture the body first
+    $this->placeholder('body')->set($this->render('includes/body.phtml'));
+    
+    
+    #$this->headTitle('ViaMe');
+    $this->headTitle()->setSeparator(' : ');
+
+    $this->headMeta()->appendHttpEquiv('content-type', 'text/html; charset=UTF-8');
+    //$this->headMeta()->appendHttpEquiv('content-language', 'en-US');
+    //$this->headMeta()->appendHttpEquiv('refresh', '0; URL=http://www.yahoo.com');
+    //$this->headMeta()->appendName('author', 'Author Name');
+    //$this->headMeta()->appendName('copyright', 'Copyright by Author');
+    //$this->headMeta()->appendName('description', 'This is the page meta description.');
+    //$this->headMeta()->appendName('keywords', 'These, are, the, keywords');
+    $this->headMeta()->appendName('cache-control', 'no-cache');
+    $this->headMeta()->appendName('pragma', 'no-cache');
+    $this->headMeta()->appendName('expires', 'Wed, 01 Jan 1997 00:00:00 GMT');
+    #$this->headMeta()->appendName('robots', 'all');
+    
+    $this->headMeta()->appendName('google-site-verification', 'Kw_IAust9ES4n-_pF8nfkQAvCt2e6Sih1xZ4EiUhlEA');
+    $this->headMeta()->appendName('msvalidate.01', 'A616F9628150988274D546584CA6856E');
+    $this->headMeta()->appendName('y_key', 'a0fd6bbee8c05e61');
+    try {
+        // Have to catch exceptions thrown when wrong doctype
+        $this->headMeta()->appendProperty('fb:page_id', '88202206436');
+    } catch (Exception $e) { }
+        
+    $this->headLink(array('rel' => 'icon', 'href' => $this->internal->vars->static_host . '/css/community/smallcapnetwork/assets/favicon.ico'));
+    $this->headLink(array('rel' => 'shortcut icon', 'href' => $this->internal->vars->static_host . '/css/community/smallcapnetwork/assets/favicon.ico'));
+    
+    // Reversed Order to keep print.css last if printing
+    $this->headLink()->prependStylesheet($this->internal->vars->static_host . '/css/community/default/print.css?v=' . $VERSION, 'print');
+    $this->headLink()->prependStylesheet($this->internal->vars->static_host . '/css/community/smallcapnetwork/stylesheet.css?v=' . $VERSION);
+    $this->headLink()->prependStylesheet($this->internal->vars->static_host . '/css/theme/default/stylesheet.css?v=' . $VERSION, 'screen', false, array('title' => 'Default'));
+    $this->headLink()->prependStylesheet($this->internal->vars->static_host . '/css/community/default/stylesheet.css?v=' . $VERSION);
+    
+    /* Yahoo CDN JavaScript Rollup - ADDED YUI 3.0 SEED FILE
+    
+        http://developer.yahoo.com/yui/articles/hosting/?animation&autocomplete&button&calendar&carousel&connection&connectioncore&container&containercore&cookie&datasource&dom&dragdrop&editor&element&event&menu&resize&selector&simpleeditor&tabview&utilities&yahoo&yahoo-dom-event&yuiloader&yuiloader-dom-event&MIN
+        
+        http://yui.yahooapis.com/combo?2.9.0/build/utilities/utilities.js&2.9.0/build/datasource/datasource-min.js&2.9.0/build/autocomplete/autocomplete-min.js&2.9.0/build/container/container-min.js&2.9.0/build/menu/menu-min.js&2.9.0/build/button/button-min.js&2.9.0/build/calendar/calendar-min.js&2.9.0/build/carousel/carousel-min.js&2.9.0/build/cookie/cookie-min.js&2.9.0/build/editor/editor-min.js&2.9.0/build/resize/resize-min.js&2.9.0/build/selector/selector-min.js&2.9.0/build/tabview/tabview-min.js&3.7.3/build/yui/yui-min.js
+        
+        HOLY SHIT - All of the below because Yahoo and yahooapis.com doesn't support https
+        
+        Download the combo file EXCLUDING the yui3 min and place it at /js/yui/yui_combo_local.js
+    */
+    //$this->headScript()->prependFile('http://yui.yahooapis.com/combo?2.9.0/build/utilities/utilities.js&2.9.0/build/datasource/datasource-min.js&2.9.0/build/autocomplete/autocomplete-min.js&2.9.0/build/container/container-min.js&2.9.0/build/menu/menu-min.js&2.9.0/build/button/button-min.js&2.9.0/build/calendar/calendar-min.js&2.9.0/build/carousel/carousel-min.js&2.9.0/build/cookie/cookie-min.js&2.9.0/build/editor/editor-min.js&2.9.0/build/resize/resize-min.js&2.9.0/build/selector/selector-min.js&2.9.0/build/tabview/tabview-min.js&3.7.3/build/yui/yui-min.js');
+    $this->headScript()->prependFile($this->internal->vars->static_host . '/js/yui/yui_combo_local.js');
+    $this->headScript()->prependFile($this->internal->vars->static_host . '/js/yui/yui3/build/yui/yui-min.js');
+    #$this->headScript()->prependFile('http://yui.yahooapis.com/3.11.0/build/yui/yui-min.js');
+    
+    $this->headScript()->prependFile('https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js');
+    $this->headScript()->appendFile($this->internal->vars->static_host . '/js/vm/vm.js');
+    $this->headScript()->appendFile($this->internal->vars->static_host . '/js/vm/yui/viame_form_helper.js');
+    $this->headScript()->appendFile($this->internal->vars->static_host . '/js/vivin/regula.js');
+    
+    
+    // Google Admanager
+    $this->headScript()->appendFile('https://partner.googleadservices.com/gampad/google_service.js');
+    $this->headScript()->appendScript('GS_googleAddAdSenseService("ca-pub-3297144036592508"); GS_googleEnableAllServices();');
+    //$this->headScript()->appendScript('GA_googleUseIframeRendering();');
+    $this->headScript()->appendScript('GA_googleAddAttr("community", "' . $this->internal->community->name . '");');
+    $this->headScript()->appendScript('GA_googleAddAttr("member", "' . (isset($this->internal->member) ? 'true' : 'false') . '");');
+    $this->headScript()->appendScript('GA_googleAddAttr("https", "' . (isset($this->internal->vars->ssl) && $this->internal->vars->ssl ? 'on' : 'off') . '");');
+    
+    // Customize Google Ads
+    /*
+        * Border: param = google_color_border
+        * Title: param = google_color_link
+        * Background: param = google_color_bg
+        * Text: param = google_color_text
+        * URL: param = google_color_url
+        * Alternate ad URL: param = google_alternate_ad_url
+        * Ad type (text, image, text/image): param = google_ad_type
+        * Corner style: param = google_ui_features
+        * Channel: param = google_ad_channel
+    */
+    $this->headScript()->appendScript('
+        GA_googleAddAdSensePageAttr("google_color_border", "dadee5");
+        GA_googleAddAdSensePageAttr("google_color_bg", "ffffff");
+        GA_googleAddAdSensePageAttr("google_color_link", "30344b");
+        GA_googleAddAdSensePageAttr("google_color_text", "000000");
+        GA_googleAddAdSensePageAttr("google_color_url", "008000");
+        GA_googleAddAdSensePageAttr("google_ui_features", "rc:10");
+    ');
+    
+    // New Google GPT Asynchronous
+    /*
+        <!-- SCN-Site-Header-728x90 -->
+        <div id='div-gpt-ad-1335892349635-4' style='width:728px; height:90px;'>
+        <script type='text/javascript'>
+            googletag.cmd.push(function() {
+                googletag.defineUnit('/1063461/SCN-Site-Header-728x90', [728, 90], 'div-gpt-ad-1335892349635-4').addService(googletag.pubads());
+                googletag.display('div-gpt-ad-1335892349635-4');
+            });
+        </script>
+        </div>
+    */
+    /*
+    $this->headScript()->appendScript("
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+        (function() {
+        var gads = document.createElement('script');
+        gads.async = true;
+        gads.type = 'text/javascript';
+        var useSSL = 'https:' == document.location.protocol;
+        gads.src = (useSSL ? 'https:' : 'http:') + 
+        '//www.googletagservices.com/tag/js/gpt.js';
+        var node = document.getElementsByTagName('script')[0];
+        node.parentNode.insertBefore(gads, node);
+        })();
+    ");
+    */
+    // Customize Google GPT Ads
+    /*
+        * Border: param = adsense_border_color
+        * Title: param = adsense_link_color
+        * Background: param = adsense_background_color
+        * Text: param = adsense_text_color
+        * URL: param = adsense_url_color
+        * Ad format: param = adsense_ad_format
+        * Ad type (text, image, text/image): param = adsense_ad_types
+        * Corner style: param = adsense_ui_features
+        * Channel: param = adsense_channel_ids
+    */
+    /*
+    $this->headScript()->appendScript('
+        googletag.cmd.push(function() {
+        googletag.pubads().enableSingleRequest();
+        
+        googletag.pubads().collapseEmptyDivs();
+        googletag.pubads().set("adsense_border_color", "dadee5");
+        googletag.pubads().set("adsense_background_color", "ffffff");
+        googletag.pubads().set("adsense_link_color", "30344B");
+        googletag.pubads().set("adsense_text_color", "000000");
+        googletag.pubads().set("adsense_url_color", "008000");
+        googletag.pubads().set("adsense_ui_features", "rc:10");
+        googletag.pubads().setTargeting("community", "' . $this->internal->community->name . '");
+        
+        googletag.enableServices();
+        });
+    ');
+    */
+    
+    // New Google GPT Synchronous
+    /*
+        <!-- SCN-Site-Header-728x90 -->
+        <div id='div-gpt-ad-1336195451378-0' style='width:728px; height:90px;'>
+        <script type='text/javascript'>
+            googletag.pubads().display('/1063461/SCN-Site-Header-728x90', [728, 90], 'div-gpt-ad-1336195451378-0');
+        </script>
+        </div>
+    */
+    $this->headScript()->appendScript("
+        (function() {
+        var useSSL = 'https:' == document.location.protocol;
+        var src = (useSSL ? 'https:' : 'http:') +
+        '//www.googletagservices.com/tag/js/gpt.js';
+        document.write('<scr' + 'ipt src=\"' + src + '\"></scr' + 'ipt>');
+        })();
+    ");
+    // Customize Google GPT Ads
+    /*
+        * Border: param = adsense_border_color
+        * Title: param = adsense_link_color
+        * Background: param = adsense_background_color
+        * Text: param = adsense_text_color
+        * URL: param = adsense_url_color
+        * Ad format: param = adsense_ad_format
+        * Ad type (text, image, text/image): param = adsense_ad_types
+        * Corner style: param = adsense_ui_features
+        * Channel: param = adsense_channel_ids
+    */
+    $this->headScript()->appendScript('
+        googletag.pubads().enableSyncRendering();
+        
+        googletag.pubads().collapseEmptyDivs();
+        googletag.pubads().set("adsense_border_color", "dadee5");
+        googletag.pubads().set("adsense_background_color", "ffffff");
+        googletag.pubads().set("adsense_link_color", "30344B");
+        googletag.pubads().set("adsense_text_color", "000000");
+        googletag.pubads().set("adsense_url_color", "008000");
+        googletag.pubads().set("adsense_ui_features", "rc:10");
+        googletag.pubads().setTargeting("community", "' . $this->internal->community->name . '");
+        googletag.pubads().setTargeting("member", "' . (isset($this->internal->member) ? 'true' : 'false') . '");
+        googletag.pubads().setTargeting("https", "' . (isset($this->internal->vars->ssl) && $this->internal->vars->ssl ? 'on' : 'off') . '");
+        
+        googletag.enableServices();
+    ');
+?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<?= $this->render('../default/includes/header.phtml'); ?>
+</head>
+
+<body class="yui-skin-sam yui3-skin-sam">
+
+<?php echo $this->placeholder('body'); ?>
+
+<?= $this->inlineScript() ?>
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-1218496-6']);
+  _gaq.push(['_setDomainName', 'smallcapnetwork.com']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+<!-- Start Quantcast tag -->
+<script type="text/javascript">
+_qoptions={
+qacct:"p-c8_asQOOYxhUo"
+};
+</script>
+<script type="text/javascript" src="https://edge.quantserve.com/quant.js"></script>
+<noscript>
+<img src="https://pixel.quantserve.com/pixel/p-c8_asQOOYxhUo.gif" style="display: none;" border="0" height="1" width="1" alt="Quantcast" />
+</noscript>
+<!-- End Quantcast tag -->
+
+<?php /*
+<!-- Begin comScore Tag -->
+<script>
+  var _comscore = _comscore || [];
+  _comscore.push({ c1: "2", c2: "16807273" });
+  (function() {
+    var s = document.createElement("script"), el = document.getElementsByTagName("script")[0]; s.async = true;
+    s.src = (document.location.protocol == "https:" ? "https://sb" : "http://b") + ".scorecardresearch.com/beacon.js";
+    el.parentNode.insertBefore(s, el);
+  })();
+</script>
+<noscript>
+  <img src="http://b.scorecardresearch.com/p?c1=2&c2=16807273&cv=2.0&cj=1" />
+</noscript>
+<!-- End comScore Tag -->
+*/ ?>
+
+<?php // Bad Bot Honey Pot // ?>
+<p style="display: none;"><a href="/zfbp/bbhp/" style="visibility: hidden;">This link should not be clicked.</a></p>
+
+</body>
+</html>

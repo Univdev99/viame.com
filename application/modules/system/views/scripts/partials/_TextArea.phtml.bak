@@ -1,0 +1,140 @@
+<?php
+/*
+ *
+ * TextArea Partial
+ *
+ * Just set class to vmfh_textarea
+ *
+ */
+
+//$this->headScript()->appendFile($this->internal->vars->static_host . '/js/vm/yui/viame_form_helper.js');
+
+if (isset($this->internal->member->profile->editor_preference) && ($this->internal->member->profile->editor_preference == 2)) {
+    // FCK Editor
+    
+    $this->headLink()->appendStylesheet($this->internal->vars->static_host . '/js/yui/yui2/build/resize/assets/skins/sam/resize.css');
+    
+    $this->headScript()->appendFile($this->internal->vars->static_host . '/js/yui/yui2/build/yahoo-dom-event/yahoo-dom-event.js');
+    $this->headScript()->appendFile($this->internal->vars->static_host . '/js/yui/yui2/build/element/element-min.js');
+    $this->headScript()->appendFile($this->internal->vars->static_host . '/js/yui/yui2/build/dragdrop/dragdrop-min.js');
+    $this->headScript()->appendFile($this->internal->vars->static_host . '/js/yui/yui2/build/resize/resize-min.js');
+    
+    $this->headScript()->appendFile($this->internal->vars->static_host . '/js/fckeditor/fckeditor.js');
+    
+    $this->inlineScript()->captureStart(); ?>
+    
+    YAHOO.util.Event.onDOMReady(function() {
+        var ta = YAHOO.util.Dom.getElementsByClassName('vmfh_textarea');
+        for (var i = 0; i < ta.length; i++) {
+            var oFCKeditor = new FCKeditor(ta[i].id);
+        	oFCKeditor.BasePath	= '/js/fckeditor/';
+        	oFCKeditor.Height = 500;
+        	oFCKeditor.Config.DocType = '<?= $this->docType() ?>';
+        	oFCKeditor.Config.EditorAreaCSS = "<?= $this->internal->vars->static_host ?>/css/default/stylesheet.css";
+        	oFCKeditor.ReplaceTextarea();
+        	
+        	var resize = new YAHOO.util.Resize(ta[i].id + '___Frame', {
+                handles: ['br']
+            }); 
+        }
+    });
+    
+    <?php $this->inlineScript()->captureEnd();
+}
+elseif (isset($this->internal->member->profile->editor_preference) && ($this->internal->member->profile->editor_preference == 1)) {
+    // Tiny MCE
+    
+    // Had to make nginx mod to allow loading of /js/ from same host/domain
+    $this->headScript()->appendFile('/js/tiny_mce/tiny_mce.js');
+    
+    $this->inlineScript()->captureStart(); ?>
+    
+    tinyMCE.init({
+    	mode : "textareas",
+    	convert_urls : false,
+    	relative_urls : false,
+    	height: 500,
+    	convert_fonts_to_spans : false,
+        // Example content CSS (should be your site CSS)
+    	content_css : "<?= $this->internal->vars->static_host ?>/css/default/stylesheet.css",
+    	doctype: '<?= $this->docType() ?>',
+    	convert_fonts_to_spans : true,
+    	theme : "advanced",
+    	plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,imagemanager,filemanager",
+        editor_selector : "vmfh_textarea",
+        
+    	// Theme options
+    	theme_advanced_buttons1 : "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect",
+    	theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,preview,|,forecolor,backcolor",
+    	theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,emotions,iespell,media,advhr,|,print,|,ltr,rtl,|,fullscreen",
+    	theme_advanced_buttons4 : "insertlayer,moveforward,movebackward,absolute,|,styleprops,spellchecker,|,cite,abbr,acronym,del,ins,attribs,|,visualchars,nonbreaking,template,blockquote,pagebreak,|,insertfile,insertimage",
+    	theme_advanced_toolbar_location : "top",
+    	theme_advanced_toolbar_align : "left",
+    	theme_advanced_statusbar_location : "bottom",
+    	theme_advanced_resizing : true
+    });
+    
+    <?php $this->inlineScript()->captureEnd();
+}
+else {
+    $this->headLink()->appendStylesheet($this->internal->vars->static_host . '/js/yui/yui2/build/menu/assets/skins/sam/menu.css');
+    $this->headLink()->appendStylesheet($this->internal->vars->static_host . '/js/yui/yui2/build/button/assets/skins/sam/button.css');
+    $this->headLink()->appendStylesheet($this->internal->vars->static_host . '/js/yui/yui2/build/container/assets/skins/sam/container.css');
+    $this->headLink()->appendStylesheet($this->internal->vars->static_host . '/js/yui/yui2/build/resize/assets/skins/sam/resize.css');
+    $this->headLink()->appendStylesheet($this->internal->vars->static_host . '/js/yui/yui2/build/editor/assets/skins/sam/editor.css');
+    
+    
+    $this->headScript()->appendFile($this->internal->vars->static_host . '/js/yui/yui2/build/yahoo-dom-event/yahoo-dom-event.js');
+    $this->headScript()->appendFile($this->internal->vars->static_host . '/js/yui/yui2/build/element/element-min.js');
+    $this->headScript()->appendFile($this->internal->vars->static_host . '/js/yui/yui2/build/container/container-min.js');
+    $this->headScript()->appendFile($this->internal->vars->static_host . '/js/yui/yui2/build/menu/menu-min.js');         # Advanced Buttons
+    $this->headScript()->appendFile($this->internal->vars->static_host . '/js/yui/yui2/build/button/button-min.js');     # Advanced Buttons
+    $this->headScript()->appendFile($this->internal->vars->static_host . '/js/yui/yui2/build/dragdrop/dragdrop-min.js');
+    $this->headScript()->appendFile($this->internal->vars->static_host . '/js/yui/yui2/build/resize/resize-min.js');
+    $this->headScript()->appendFile($this->internal->vars->static_host . '/js/yui/yui2/build/editor/editor-min.js');
+    
+    $this->inlineScript()->captureStart(); ?>
+    
+    YAHOO.util.Event.onDOMReady(function() {
+        var ta = YAHOO.util.Dom.getElementsByClassName('vmfh_textarea');
+        for (var i = 0; i < ta.length; i++) {
+            var editor = new YAHOO.widget.Editor(ta[i].id, {
+                width: '100%',
+                height: '300px',
+                animate: false,
+                dompath: true,
+                focusAtStart: false,
+                handleSubmit: true
+            });
+            editor.buttonType = 'advanced';
+            editor.on('editorContentLoaded', function() {
+                resize = new YAHOO.util.Resize(editor.get('element_cont').get('element'), {
+                    handles: ['br'],
+                    autoRatio: true,
+                    status: true,
+                    proxy: true,
+                    setSize: false //This is where the magic happens
+                });
+                
+                resize.on('startResize', function() {
+                    this.hide();
+                    this.set('disabled', true);
+                }, editor, true);
+                resize.on('resize', function(args) {
+                    var h = args.height;
+                    var th = (this.toolbar.get('element').clientHeight + 2); //It has a 1px border..
+                    var dh = (this.dompath.clientHeight + 1); //It has a 1px top border..
+                    var newH = (h - th - dh);
+                    this.set('width', args.width + 'px');
+                    this.set('height', newH + 'px');
+                    this.set('disabled', false);
+                    this.show();
+                }, editor, true);
+            });
+    	    editor.render();
+        }
+    });
+    
+    <?php $this->inlineScript()->captureEnd();
+}
+?>

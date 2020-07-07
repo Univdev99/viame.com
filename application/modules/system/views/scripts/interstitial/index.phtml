@@ -1,0 +1,65 @@
+<div class="interstitial_ad_wrapper">
+	<div class="header">
+		<div class="continue">
+			<p><a class="continue" href="javascript:goBack();" >Continue to Site &raquo;</a></p>
+			<p><span class="time_remaining">Site will load in <span id="countdown">15</span> second(s)</span></p>
+		</div>
+		
+		<div class="clear"></div>
+	</div>
+    
+	<div class="ad_wrapper">
+		<p class="advertisement">ADVERTISEMENT</p>
+        <div class="interstitial_ad">
+
+<div id='div-gpt-ad-1349460345213-0' style='text-align: center;'><script type='text/javascript'>
+googletag.pubads().display('/1063461/VM-Platform-System_Interstitial_Default', [[800, 600], [336, 280], [300, 250], [728, 90], [160, 600]], 'div-gpt-ad-1349460345213-0');
+</script></div>
+
+        </div>
+	</div>
+</div>
+
+
+<?php $this->inlineScript()->captureStart() ?>
+var timer = 15000;
+var count = timer / 1000;
+var dest = '<?= isset($this->internal->params->dest) && $this->internal->params->dest ? $this->internal->params->dest : ''?>';
+
+var backtriggered = <?= isset($this->internal->params->nogo) && $this->internal->params->nogo ? 'true' : 'false'?>;
+setTimeout('goBack()', timer);
+function goBack() {
+    if (!backtriggered) {
+        backtriggered = true;
+        if (dest) {
+            location.href = dest;
+        }
+        else if (YAHOO.util.Cookie.get('interstitial_dest')) {
+            location.href = YAHOO.util.Cookie.get('interstitial_dest');
+        }
+        else if (document.referrer) {
+            location.href = document.referrer;
+        }
+        else if (location.hostname) {
+            location.href = 'http://' + location.hostname;
+        }
+        else if (history.length > 1) {
+            history.back();
+        }
+        else {
+            location.href = 'http://<?= $this->internal->vars->host ?>';
+        }
+    }
+}
+
+var counter = setInterval("countdown()", 1000);
+function countdown() {
+	count = count - 1;
+	if (count <= 0)	{
+		clearInterval(counter);
+		//counter ended, do something here
+		return;
+	}
+	document.getElementById("countdown").innerHTML=count;
+}
+<?php $this->inlineScript()->captureEnd() ?>

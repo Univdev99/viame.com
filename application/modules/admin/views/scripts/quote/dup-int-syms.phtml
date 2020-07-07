@@ -1,0 +1,82 @@
+<?php $module = 'admin'; ?>
+
+<!-- Begin Module -->
+<div class="cm decorated padded m_<?= $module ?>">
+    <div class="hd">
+        <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div>
+        </div>
+        <div class="con">
+        	<table class="table">
+                <tr>
+                    <td class="lt"></td>
+
+                    <td class="mn1"><?= $this->escape($this->internal->module_modules[$module]->display) ?></td>
+                    <td class="sep"></td>
+                    <td class="mn2"></td>
+                    <td class="rt"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="bd">
+    
+<?php
+if (count($this->paginator)) {
+?>
+
+<table style="width: 100%;">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Internal Symbol</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Exchange</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+<?php
+    $counter = 0;
+    $holder = '';
+    foreach ($this->paginator as $object) {
+        if ($holder != $object->internal_symbol) {
+            $holder = $object->internal_symbol;
+            $counter++;
+        }
+        
+        echo '<tr bgcolor="';
+        echo ($counter % 2 ? '#dddddd' : '#ffffff');
+        echo '"><td>' . $object->id . '</td>';
+        echo '<td><a href="/quote/p/s/'.$object->internal_symbol.'/" target="quote" title="'.$object->delayed_symbol.'">' . $object->internal_symbol . '</a> : ';
+        echo '<a href="http://finance.yahoo.com/q?s='.$object->delayed_symbol.'" target="yquote">Y</a> ';
+        echo "<a onclick=\"return YAHOO.viame.shadowbox.shadowto('/quote/feed/p/emulate/pcquote/?HIDEPACKAGE=1&PACKAGE=CUSTOM&FIELDS=TICK,EXCHANGE&TICKER=".$object->delayed_symbol."', { width: '360px', fixedcenter: true, close: true, draggable: true, modal: true, visible: false });\" href=\"javascript:void(null);\">D</a> ";
+        echo '<a href="https://static.viame.com/yfacp/autoc?region=US&lang=en-US&callback=YAHOO.Finance.SymbolSuggest.ssCallback&query='.$object->name.'" target="lookup">L</a>';
+        echo '</td>';
+        echo '<td>' . $object->name . '</td>';
+        echo '<td>' . $object->typedisp . ' (' . $object->type . ')</td>';
+        echo '<td>' . $object->exchdisp . ' (' . $object->exch . ')</td>';
+        echo '<td><a href="/admin/quote/symbolEdit/id/' . $object->id . '/">Edit</a> - <a href="/admin/quote/symbolMerge/id/' . $object->id . '/">Merge</a> - <a href="/admin/quote/symbolDeactivate/id/' . $object->id . '/">Deactivate</a> - <a href="/admin/quote/symbolDelete/id/' . $object->id . "/\" onclick=\"return confirm('Are your sure you want to delete this symbol?');\">Delete</a>" . "</td></tr>\n";
+    }
+?>
+
+</table>
+
+<?php
+    echo $this->paginationControl($this->paginator, 'Sliding', 'index/paginator.phtml', array('internal' => $this->internal));
+}
+?>
+
+
+    </div>
+    
+    <div class="ft">
+        <div class="dec">
+            <div class="lt"></div><div class="mn"></div><div class="rt"></div>
+
+        </div>
+    </div>
+    <span class="icon"></span>
+</div>
+<!-- End Module -->

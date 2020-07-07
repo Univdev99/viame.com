@@ -1,0 +1,44 @@
+<h1>Mail Folder Manager</h1>
+
+<div>
+    <?= $this->render('sidebar.phtml') ?>
+    <div style="margin-left: 176px;">
+    
+    
+<table width="100%" class="decorated">
+    <tr>
+        <th>Folder Name</th>
+        <th>Description</th>
+        <th>Active</th>
+        <th>Delete</th>
+    </tr>
+<?php
+    foreach ($this->folders as $folder) {
+        $folder = (array) $folder;
+?>
+    <tr<?=(!$folder['active'] ? " bgcolor='#666666'" : '')?>>
+        <td><span style="margin-left: <?= (substr_count($folder['sort_order'], '-') * 1) ?>em;"><?= ((substr_count($folder['sort_order'], '-')) ? '- ' : '') ?><?=($folder['active'] ? '<a href="' . $this->internal->target->pre . '/mail/folder/edit/id/'.$folder['counter'].'/">'.$folder['name'].'</a>' : $folder['name'])?></span></td>
+        <td><?= $folder['description'] ?></td>
+        
+        <td style="text-align: center;"><a title="Toggle Active Status" class="check_link toggle<?= ($folder['active'] ? '' : ' inactive') ?>" href="<?= $this->internal->target->pre ?>/mail/folder/active/id/<?= $folder['counter'] ?>/"><?= ($folder['active'] ? 'Make Inactive' : 'Make Active') ?></a></td>
+        <td style="text-align: center;"><a title="Delete Folder" onclick="return (confirm('Are you sure you want to delete the folder <?= $folder['name'] ?>?'));" class="delete_link inactive toggle" href="<?= $this->internal->target->pre ?>/mail/folder/delete/id/<?= $folder['counter'] ?>/">Delete</a></td>
+        
+        <?php /*
+        <td><a href="<?= $this->internal->target->pre ?>/mail/folder/active/id/<?= $folder['counter'] ?>/"><?= ($folder['active'] ? 'Make Inactive' : 'Make Active') ?></a></td>
+        <td><a href="<?= $this->internal->target->pre ?>/mail/folder/delete/id/<?= $folder['counter'] ?>/" OnClick="return (confirm('Are you sure you want to delete the folder <?= $folder['name'] ?>?'));">Delete</a></td>
+        */ ?>
+    </tr>
+<?php
+    }
+?>
+</table>
+
+<form action="<?= $this->internal->target->pre ?>/mail/folder/create/">
+    <input type="submit" value="Create New Folder" name="create" />
+</form>
+
+
+
+    </div>
+    <div style="clear: both;"></div>
+</div>

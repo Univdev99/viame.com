@@ -1,0 +1,122 @@
+/* Yahoo CDN with Rollup */
+
+/* BROKE THE COMBO DOWN INTO LOCAL BECAUSE YAHOOAPIS DOESNT SUPPORT HTTPS
+@import url(http://yui.yahooapis.com/combo?3.11.0/build/cssreset/cssreset-min.css&3.11.0/build/cssfonts/cssfonts-min.css&3.11.0/build/cssbase/cssbase-min.css&3.11.0/build/cssgrids/cssgrids-min.css&2.9.0/build/grids/grids-min.css&2.9.0/build/assets/skins/sam/skin.css&3.7.3/build/assets/skins/sam/skin.css);
+
+@import url(http://yui.yahooapis.com/combo?3.11.0/build/cssreset/cssreset-min.css&3.11.0/build/cssfonts/cssfonts-min.css&3.11.0/build/cssbase/cssbase-min.css&3.11.0/build/cssgrids/cssgrids-min.css&2.9.0/build/grids/grids-min.css&2.9.0/build/assets/skins/sam/skin.css&3.11.0/build/assets/skin/sam/skin.css);
+
+HOLY SHIT - All of the below because Yahoo and yahooapis.com doesn't support https
+  Have to import them individually because if we just concatenate them, relative paths to images and assets will all break
+*/
+@import url(/js/yui/yui3/build/cssreset/cssreset-min.css);
+@import url(/js/yui/yui3/build/cssfonts/cssfonts-min.css);
+@import url(/js/yui/yui3/build/cssbase/cssbase-min.css);
+@import url(/js/yui/yui3/build/cssgrids-responsive/cssgrids-responsive-min.css);
+@import url(/js/yui/yui2/build/grids/grids-min.css);
+@import url(/js/yui/yui2/build/assets/skins/sam/skin.css);
+@import url(/js/yui/yui3/build/assets/skin/sam/skin.css);
+
+
+/* Some immediate undos */
+table {
+    /*width: auto;*/
+    margin-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+th, td {
+    border: none;
+    padding: 0;
+}
+#hd:after,#bd:after,#ft:after,.yui-g:after,.yui-gb:after,.yui-gc:after,.yui-gd:after,.yui-ge:after,.yui-gf:after{content:".";display:block;height:0;clear:both;visibility:hidden;}
+
+/*
+th,td{margin:0;padding:0;}                          - Removed from cssreset
+table{border-collapse:collapse;border-spacing:0;}   - Removed from cssreset
+th,td{border:1px solid #000;padding:.5em;}          - Removed from cssbase
+table{margin-bottom:1em;}                           - Removed from cssbase
+*/
+
+
+
+
+
+
+/* YUI3 Accordion in Options Column */
+body.yui3-skin-sam .yui3-accordion { 
+    position: relative;
+    zoom: 1;
+    _zoom: 1;
+    background:#fff;
+    padding:0;
+    text-align:left;
+    border: none;
+    border-bottom: 1px #A3A3A3 solid;
+}
+body.yui3-skin-sam .yui3-accordion .yui3-accordion-item { 
+	display: block;
+	border-bottom: none;
+}
+body.yui3-skin-sam .yui3-accordion .yui3-accordion-item .yui3-accordion-item-hd {
+    display: block;
+	border: 1px #A3A3A3 solid;
+	border-bottom: none;
+	padding-left: 0.5em;
+	font-weight: bold;
+	color: #000;
+	text-decoration: none;
+	background: url(../../../js/yui/build/assets/skins/sam/sprite.png) repeat-x;
+	background-position: 0 -1500px;
+	position: relative;
+	cursor: pointer;
+}
+body.yui3-skin-sam .yui3-accordion .yui3-accordion-item .yui3-accordion-item-hd:hover {
+    background-position: 0 -1300px;
+}
+body.yui3-skin-sam .yui3-accordion .yui3-accordion-item-active .yui3-accordion-item-hd {
+    background-position: 0 -1400px;
+	border-color: #243356;
+	border-bottom: 1px #243356 solid;
+	color: #fff;
+}
+body.yui3-skin-sam .yui3-accordion .yui3-accordion-item-active .yui3-accordion-item-hd:hover {
+    background-position: 0 -1400px;
+}
+body.yui3-skin-sam .yui3-accordion .yui3-accordion-item .yui3-accordion-item-bd { 
+    height: 0;
+    _height: 1px;
+    *height: 1px;
+    overflow: hidden;
+    zoom: 1;
+    _zoom: 1;
+    border-left: 1px #A3A3A3 solid;
+	border-right: 1px #A3A3A3 solid;
+	background: #EDF5FF;
+}
+body.yui3-skin-sam .yui3-accordion .yui3-accordion-item-active .yui3-accordion-item-bd { 
+	height: auto;
+}
+body.yui3-skin-sam .yui3-accordion .yui3-accordion-item-hd a.yui3-accordion-item-trigger {
+    display: block;
+    width: auto;
+    color: #000;
+    text-decoration: none;
+    background: url(assets/accordion/closed.png) no-repeat right center;
+    padding: 0;
+	line-height: normal;
+	cursor: pointer;
+}
+body.yui3-skin-sam .yui3-accordion .yui3-accordion-item-active .yui3-accordion-item-hd a.yui3-accordion-item-trigger { 
+	background: url(assets/accordion/open.png) no-repeat right center;
+	color: #fff;
+}
+body.yui3-skin-sam .yui3-accordion-hidden { 
+    border: 0;
+    height: 0;
+    width: 0;
+    padding: 0;
+    position: absolute;
+    left: -999999px;
+    overflow: hidden;
+    visibility: hidden;
+}

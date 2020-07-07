@@ -1,0 +1,41 @@
+<h1>Manage Modules</h1>
+
+<table width="100%" class="decorated">
+    <tr>
+        <th rowspan="2">Module Type</th>
+        <th rowspan="2">Display Title</th>
+        <th width="10%" rowspan="2">Display On Home</th>
+        <th width="20%" colspan="2">Interactive</th>
+        <th width="10%" rowspan="2">Publicly Searchable</th>
+        <th width="10%" rowspan="2">Active</th>
+        <th width="10%" rowspan="2">Delete</th>
+    </tr>
+    <tr>
+        <th width="10%">Allow</th>
+        <th width="10%">Moderate</th>
+    </tr>
+<?php
+    foreach ($this->modules as $module) {
+        $module = (array) $module;
+?>
+    <tr<?=(!$module['active'] ? " bgcolor='#666666'" : "")?>>
+        <td><?=($module['active'] ? '<a href="' . $this->internal->target->pre . '/module/edit/p/mid/'.$module['id'].'/id/'.$module['counter'].'/" title="'.$module['m_description'].'">'.$module['m_display'].'</a>' : $module['m_display'])?></td>
+        <td><?=$module['display']?></td>
+        
+        
+        <td style="text-align: center;"><a href="<?= $this->internal->target->pre ?>/module/edit/p/mid/<?=$module['id']?>/id/<?=$module['counter']?>/vmpd_fp/1/override/1/widget/<?= $module['widget'] ? '0' : '1' ?>/" class="check_link toggle<?= ($module['widget'] ? '' : ' inactive') ?>" title="Toggle Widget On Home"><?= $module['widget'] ? 'Visible' : 'Hidden' ?></a></td>
+        <td style="text-align: center;"><a href="<?= $this->internal->target->pre ?>/module/edit/p/mid/<?=$module['id']?>/id/<?=$module['counter']?>/vmpd_fp/1/override/1/interactive/<?= $module['interactive'] ? '0' : '1' ?>/" class="check_link toggle<?= ($module['interactive'] ? '' : ' inactive') ?>" title="Toggle Comments and Ratings"><?= $module['interactive'] ? 'Allow Comments and Ratings' : 'Disallow Comments and Ratings' ?></a></td>
+        <td style="text-align: center;"><a href="<?= $this->internal->target->pre ?>/module/edit/p/mid/<?=$module['id']?>/id/<?=$module['counter']?>/vmpd_fp/1/override/1/moderated/<?= $module['moderated'] ? '0' : '1' ?>/" class="check_link toggle<?= ($module['moderated'] ? '' : ' inactive') ?>" title="Toggle Comment Moderation"><?= $module['interactive'] ? 'Comments Are Moderated' : 'Comments Are Not Moderated' ?></a></td>
+        <td style="text-align: center;"><a href="<?= $this->internal->target->pre ?>/module/edit/p/mid/<?=$module['id']?>/id/<?=$module['counter']?>/vmpd_fp/1/override/1/publicly_searchable/<?= $module['publicly_searchable'] ? '0' : '1' ?>/" class="check_link toggle<?= ($module['publicly_searchable'] ? '' : ' inactive') ?>" title="Toggle Publicly Searchable"><?= $module['publicly_searchable'] ? 'Publicly Searchable' : 'Not Publicly Searchable' ?></a></td>
+        
+        <td style="text-align: center;"><a href="<?= $this->internal->target->pre ?>/module/active/p/mid/<?=$module['id']?>/id/<?=$module['counter']?>/" class="check_link toggle<?= ($module['active'] ? '' : ' inactive') ?>" title="Toggle Active Status"><?= $module['active'] ? 'Active' : 'Inactive' ?></a></td>
+        <td style="text-align: center;"><a href="<?= $this->internal->target->pre ?>/module/delete/p/mid/<?=$module['id']?>/id/<?=$module['counter']?>/" class="delete_link inactive toggle" onclick="return (confirm('Are you sure you want to delete the module <?=$module['m_display']?>?'));" title="Delete Module">Delete</a></td>
+    </tr>
+<?php
+    }
+?>
+</table>
+
+<form action="<?= $this->internal->target->pre ?>/module/add/">
+    <input type="submit" value="Add New Module" name="create" />
+</form>

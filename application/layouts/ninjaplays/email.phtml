@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link href="<?= $this->internal->vars->static_host ?>/css/theme/default/stylesheet.css" media="screen" rel="stylesheet" type="text/css" title="Default" />
+<link href="<?= $this->internal->vars->static_host ?>/css/community/ninjaplays/stylesheet.css" media="screen" rel="stylesheet" type="text/css" />
+<style type="text/css" media="screen">
+<!--
+body {
+    padding: 1em !important;
+    background-color: #2a2a2a;
+}
+-->
+</style>
+</head>
+
+<body bgcolor="#2a2a2a" style="background-color: #2a2a2a;">
+
+<center>
+<!--Start Email-->
+<table border="0" cellspacing="0" cellpadding="18" align="center" class="email" style="width: 700px; border: 1px solid #000; font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #333;">
+    <tr>
+    	<td class="header" style="padding: 18px; background-color: #ffffff;"><table width="100%" style="width: 100%;"><tr>
+        	<td class="first" align="left" valign="middle" style="text-align: left; vertical-align: middle;">
+            	<a href="http://www.ninjaplays.com" title="Ninja Plays"><img src="<?= $this->internal->vars->static_host ?>/css/community/ninjaplays/assets/email/logo.png" alt="Ninja Plays" /></a>
+            </td>
+            <td class="second" align="right" valign="middle" style="text-align: right; vertical-align: middle;">
+            	<img src="<?= $this->internal->vars->static_host ?>/css/community/ninjaplays/assets/email/medals.png" alt="Sports, Stocks, Horses" />
+            </td>
+        </tr></table></td>
+    </tr>
+    <tr>
+        <td class="subject" style="padding: 18px; border: 1px solid #cacaca; border-left: 0; border-right: 0; background-color: #f6f6f6; font-size: 16px; font-weight: bold;"><?= $this->layout()->subject ?></td>
+    </tr>
+    <tr>
+        <td class="bd" style="padding: 18px; background-color: #ffffff;">
+
+<?= $this->layout()->content ?>
+        
+        </td>
+    </tr>
+    <tr>
+    	<td class="footer" style="padding: 36px 18px; background-color: #000;"><table width="100%" style="width: 100%;">
+            <tr>
+                <td class="first" align="left" valign="middle" style="text-align: left; vertical-align: middle; color: #fff;">
+                    <a href="https://www.facebook.com/ninjaplayz" style="margin: 0 8px;"><img src="<?= $this->internal->vars->static_host ?>/css/community/ninjaplays/assets/email/facebook.png" alt="Facebook" /></a>
+                    <a href="https://instagram.com/ninja.plays/" style="margin: 0 8px;"><img src="<?= $this->internal->vars->static_host ?>/css/community/ninjaplays/assets/email/instagram.png" alt="Instagram" /></a>
+                    <a href="https://twitter.com/ninjaplayers" style="margin: 0 8px;"><img src="<?= $this->internal->vars->static_host ?>/css/community/ninjaplays/assets/email/twitter.png" alt="Twitter" /></a>
+                </td>
+                <td class="second" align="right" valign="middle" style="text-align: right; vertical-align: middle; color: #fff; font-size: 12px;">
+                    <div style="margin-bottom: 8px;"><span style="white-space: nowrap;"><nobr>Copyright &copy; 2015 <a href="http://www.ninjaplays.com" title="Ninja Plays" style="color: #fff;">NinjaPlays.com</a>.</nobr></span> <span style="white-space: nowrap;"><nobr>All Rights Reserved.</nobr></span></div>
+                    <div><span style="white-space: nowrap;"><nobr><a href="http://www.ninjaplays.com/Contact-Us/s/page/view/p/mid/1/id/1/" title="Contact Us" style="color: #fff;">Contact Us</a> : <a href="http://www.ninjaplays.com/Privacy-Policy/s/page/view/p/mid/1/id/2/" title="Privacy Policy" style="color: #fff;">Privacy Policy</a></nobr></span></div>
+                </td>
+            </tr>
+        </table></td>
+    </tr>
+</table>
+<!--End Email-->
+</center>
+
+</body>
+</html>

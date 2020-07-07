@@ -1,0 +1,81 @@
+<?php echo $this->render('access/subscribesuccess.phtml'); ?>
+
+<?php $this->headScript()->captureStart(); ?>
+
+window.dataLayer = window.dataLayer || [];
+dataLayer.push({
+    'adwordsConversion_id': '<?= (isset($this->internal->cookie->gawci) && $this->internal->cookie->gawci ? $this->internal->cookie->gawci : '1071423029') ?>',
+    'adwordsConversion_label': '<?= (isset($this->internal->cookie->gawcl) && $this->internal->cookie->gawcl ? $this->internal->cookie->gawcl : 'PhMUCNLYv18Qtbzy_gM') ?>',
+    'adwordsConversion_value': '<?= (isset($this->conversion_value) && $this->conversion_value ? $this->conversion_value : 0) ?>',
+    
+    'ecommerce': {
+        'purchase': {
+            'actionField': {
+                'id': '<?= isset($this->initial_invoice_number) ? $this->initial_invoice_number : 'Default' ?>',
+                'affiliation': '<?= isset($this->internal->community->display) && $this->internal->community->display ? $this->internal->community->display : $this->internal->community->name ?>',
+                'revenue': '<?= (isset($this->conversion_value) && $this->conversion_value ? $this->conversion_value : 0) ?>',
+                'tax': '0',
+                'shipping': '0'
+                <?php if (isset($this->promo) && isset($this->promo->code) && $this->promo->code) { ?>
+                , 'coupon': '<?= $this->promo->code ?>'
+                <?php } ?>
+            },
+            'products': [
+                {
+                    'name': '<?= (isset($this->access_selected->display) && $this->access_selected->display ? $this->access_selected->display : $this->access_selected->title) ?>',
+                    'id': '<?= $this->internal->params->access_selection ?>',
+                    'price': '<?= (isset($this->conversion_value) && $this->conversion_value ? $this->conversion_value : 0) ?>',
+                    'quantity': 1
+                }
+            ]
+        }
+    }
+});
+
+<?php $this->headScript()->captureEnd(); ?>
+
+
+<!-- Facebook Conversion Code for Checkouts -->
+<script type="text/javascript">(function() {
+var _fbq = window._fbq || (window._fbq = []);
+if (!_fbq.loaded) {
+var fbds = document.createElement('script');
+fbds.async = true;
+fbds.src = '//connect.facebook.net/en_US/fbds.js';
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(fbds, s);
+_fbq.loaded = true;
+}
+})();
+window._fbq = window._fbq || [];
+window._fbq.push(['track', '6032399546709', {'value':'<?= (isset($this->conversion_value) && $this->conversion_value ? $this->conversion_value : 0) ?>','currency':'USD'}]);
+</script>
+<noscript><img height="1" width="1" alt="" style="display:none" src="https://www.facebook.com/tr?ev=6032399546709&amp;cd[value]=<?= (isset($this->conversion_value) && $this->conversion_value ? $this->conversion_value : 0) ?>&amp;cd[currency]=USD&amp;noscript=1" /></noscript>
+
+
+
+
+<?php /* MOVED TO GTM
+
+<!-- Begin Google Analytics Ecommerce Tracking -->
+<script type="text/javascript">
+ga('require', 'ecommerce');
+ga('ecommerce:addTransaction', {
+  'id': '<?= $this->initial_invoice_number ?>',                  // Transaction ID. Required.
+  'affiliation': '<?= $this->internal->community->display ?>',   // Affiliation or store name.
+  'revenue': '<?= $this->conversion_value ?>',                   // Grand Total.
+  'shipping': '0',                                               // Shipping.
+  'tax': '0'                                                     // Tax.
+});
+ga('ecommerce:addItem', {
+  'id': '<?= $this->initial_invoice_number ?>',                  // Transaction ID. Required.
+  'name': '<?= (isset($this->access_selected->display) && $this->access_selected->display ? $this->access_selected->display : $this->access_selected->title) ?>', // Product name. Required.
+  'sku': '<?= $this->internal->params->access_selection ?>',                                              // SKU/code.
+  'price': '<?= $this->conversion_value ?>',                     // Unit price.
+  'quantity': '1'                                                // Quantity.
+});
+ga('ecommerce:send');
+</script>
+<!-- End Google Analytics Ecommerce Tracking -->
+
+*/ ?>

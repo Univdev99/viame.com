@@ -1,0 +1,210 @@
+<?xml version="1.0"?>
+<configdata>
+    <!-- Production Environment -->
+    <production>
+        <phpSettings>
+            <display_startup_errors>0</display_startup_errors>
+            <display_errors>0</display_errors>
+        </phpSettings>
+        <bootstrap>/opt/websites/viame.com/application/bootstrap/bootstrap.php</bootstrap>
+        <includePaths>
+            <modules>/opt/websites/viame.com/application/modules/</modules>
+            <PayPal>/opt/websites/viame.com/application/library/Other/PayPal/lib/</PayPal>
+            <!--library2>/opt/websites/viame.com/application/library2</library-->
+        </includePaths>
+        <autoloaderNamespaces>
+            <viame>ViaMe</viame>
+        </autoloaderNamespaces>
+        <resources>
+            <frontController>
+                <moduleDirectory>/opt/websites/viame.com/application/modules</moduleDirectory>
+                <plugins>
+                    <PostData>ViaMe_Controller_Action_Plugin_PostData</PostData>
+                    <SetUp>ViaMe_Controller_Action_Plugin_SetUp</SetUp>
+                    <Auth>ViaMe_Controller_Action_Plugin_Auth</Auth>
+                    <Cache>ViaMe_Controller_Action_Plugin_Cache</Cache>
+                    <Community>ViaMe_Controller_Action_Plugin_Community</Community>
+                    <MetaInfo>ViaMe_Controller_Action_Plugin_MetaInfo</MetaInfo>
+                </plugins>
+            </frontController>
+            <layout>
+                <layout>layout</layout>
+                <layoutPath>/opt/websites/viame.com/application/layouts/default</layoutPath>
+                <mvcSuccessfulActionOnly>1</mvcSuccessfulActionOnly>
+            </layout>
+            <db>
+                <adapter>pdo_pgsql</adapter>
+                <params>
+                    <host>localhost</host>
+                    <!--<port></port>-->
+                    <dbname>viame</dbname>
+                    <username>vmdbuser</username>
+                    <password>vmdbpassword</password>
+                    <profiler>
+                        <enabled>0</enabled>
+                    </profiler>
+                </params>
+                <log>
+                    <table>log_logs</table>
+                    <mapping>
+                        <timestamp>creation</timestamp>
+                        <priorityName>priority_name</priorityName>
+                    </mapping>
+                </log>
+            </db>
+            <session>
+                <cookie_path>/</cookie_path>
+                <cookie_domain></cookie_domain>
+                <saveHandler>
+                    <class>Zend_Session_SaveHandler_DbTable</class>
+                    <options>
+                        <name>system_sessions</name>
+                        <primary>id</primary>
+                        <modifiedColumn>modified</modifiedColumn>
+                        <dataColumn>data</dataColumn>
+                        <lifetimeColumn>lifetime</lifetimeColumn>
+                    </options>
+                </saveHandler>
+            </session>
+            <view>
+                <encoding>UTF-8</encoding>
+                <lfiProtectionOn>0</lfiProtectionOn>
+            </view>
+            <!--navigation>
+                <storage>
+                    <registry>1</registry>
+                </storage>
+            </navigation-->
+        </resources>
+        
+        <autoload>
+            <includeFileCache>/tmp/pluginLoaderCache.php</includeFileCache>
+            <FallbackAutoloader>1</FallbackAutoloader>
+        </autoload>
+        
+        
+        <!-- Debug Level Should Be Set to Valid Zend_Log Priority (0-7) -->
+        <debug>0</debug>
+        <loglevel>5</loglevel>
+        <layouts>1</layouts>
+        <delimiter>!~!</delimiter>
+        <cache>
+            <enable>1</enable>
+            <enable_page_cache>0</enable_page_cache>
+            <lifetime>900</lifetime>
+        </cache>
+        <maxdos>6</maxdos>
+        <use_ssl>1</use_ssl>
+        <doctype>XHTML1_RDFA</doctype>
+        <enable_firebug>0</enable_firebug>
+        <timezone>America/Los_Angeles</timezone>
+        <smtp>
+            <hostname>smtp.emailsrvr.com</hostname>
+            <auth>plain</auth>
+            <username>levelogic-levelogic-inc@levelogic-inc.com</username>
+            <password>kangmang</password>
+            <ssl></ssl>
+            <port>25</port>
+        </smtp>
+        <static_host>static.viame.com</static_host>
+        <default_domain>viame.com</default_domain>
+        <encoding>UTF-8</encoding>
+        <admin>
+            <name>ViaMe Site Administrator</name>
+            <email>webmaster@levelogic.com</email>
+        </admin>
+        <email>
+            <from_email>noreply@viame.com</from_email>
+            <from_name>ViaMe System</from_name>
+        </email>
+        <auth>
+            <namespace>Auth</namespace>
+            <failedattemptmax>5</failedattemptmax>
+            <failedattempttimeout>7200</failedattempttimeout>
+            <cookie_name>
+                <login>login</login>
+                <password>password</password>
+                <profile>profile</profile>
+                <community_referrer_id>community_referrer_id</community_referrer_id>
+                <profile_referrer_id>profile_referrer_id</profile_referrer_id>
+            </cookie_name>
+            <cookie_lifetime>
+                <login>315360000</login>
+                <password>1209600</password>
+            </cookie_lifetime>
+        </auth>
+        <recaptcha>
+            <pubkey>6LedmwUAAAAAAO2wkHs_b69tKPGt6VVTmyfaAvIY</pubkey>
+            <privkey>6LedmwUAAAAAAAYGtu6fRpCpixSx44KFltmvHiN5</privkey>
+        </recaptcha>
+        <upload>
+            <max_num>8</max_num>
+            <max_filesize>8388608</max_filesize>
+            <directory>/opt/websites/viame.com/files/private</directory>
+            <public_directory>/opt/websites/viame.com/files/public</public_directory>
+            <relative_public_to_private_path>../../../../private</relative_public_to_private_path>
+            <public_server>https://static.viame.com/public_files</public_server>
+            <picture_directory>/opt/websites/viame.com/files/pictures</picture_directory>
+            <picture_server>https://static.viame.com/pictures</picture_server>
+        </upload>
+        <encrypt>
+            <!-- Don't Change Below Key Without Searching Out vmep_ Parameters -->
+            <key>EncKeyDontChange</key>
+        </encrypt>
+        <quote>
+            <data_refresh>900</data_refresh>
+        </quote>
+    </production>
+    
+    <!-- Staging Environment : Overrides Production Values -->
+    <staging extends="production">
+        <debug>3</debug>
+        <loglevel>6</loglevel>
+        <maxdos>6</maxdos>
+        <use_ssl>0</use_ssl>
+        <cache>
+            <enable_page_cache>1</enable_page_cache>
+        </cache>
+    </staging>
+    
+    <!-- Testing Environment : Overrides Staging Values -->
+    <testing extends="staging">
+        <phpSettings>
+            <display_startup_errors>1</display_startup_errors>
+            <display_errors>1</display_errors>
+        </phpSettings>
+        <resources>
+            <db>
+                <params>
+                    <profiler>
+                        <enabled>1</enabled>
+                    </profiler>
+                </params>
+            </db>
+        </resources>
+        
+        <debug>5</debug>
+        <loglevel>7</loglevel>
+        <maxdos>6</maxdos>
+        <static_host>static.viame.com</static_host>
+        <enable_firebug>0</enable_firebug>
+    </testing>
+    
+    <!-- Development Environment : Overrides Testing Values -->
+    <development extends="testing">
+        <resources>
+            <db>
+                <params>
+                    <host>localhost</host>
+                </params>
+            </db>
+        </resources>
+        
+        <debug>7</debug>
+        <loglevel>7</loglevel>
+        <maxdos>10</maxdos>
+        <quote>
+            <data_refresh>300</data_refresh>
+        </quote>
+    </development>
+</configdata>

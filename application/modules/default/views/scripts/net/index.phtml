@@ -1,0 +1,20 @@
+<?php /*
+
+<?php $this->placeholder('space_header')->captureStart('SET'); ?>
+
+<table class="space_header_display">
+    <tr>
+        <td class="name">
+            <?= $this->ProfileDisplay(array('profile' => $this->internal->via, 'internal' => $this->internal)) ?>
+            <a href="/mail/write/p/cid/<?= $this->internal->via->id ?>/" class="mailme" title="Send <?= $this->internal->via->name ?> A Message">Send <?= $this->internal->via->name ?> A Message</a>
+<?php if (!(isset($this->profile->vc_status) && $this->profile->vc_status)) { ?>
+            <a href="/contact/create/p/id/<?= $this->internal->via->id ?>/" class="contact" title="Add <?= $this->internal->via->name ?> To Contacts">Add <?= $this->internal->via->name ?> To Contacts</a>
+<?php } ?>
+        </td>
+        <?php #<td valign="middle" class="follow"><a href="javascript:void(0);">Follow This Space<span class="icon"></span></a></td> ?>
+    </tr>
+</table>
+
+<?php $this->placeholder('space_header')->captureEnd(); ?>
+
+*/ ?>

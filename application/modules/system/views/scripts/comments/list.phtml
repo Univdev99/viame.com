@@ -1,0 +1,135 @@
+<div class="comments_list"><a name="comments_list"></a>
+        <div class="partc1">
+            <div class="info">
+                <div class="count">Comments <span class="numeral">(<?= $this->paginator->getPages('Sliding')->totalItemCount ?> Total)</span></div>
+                <?php if (
+                    ($this->internal->target->acl->allowed || $this->internal->target->acl->allowed === null || $this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT) &&
+                    $this->internal->subModule->_modObject->allow_ratings
+                ) { ?>
+                    <div class="postit"><a href="#post_a_comment">Add Your Comment</a></div>
+                <?php } ?>
+                <?php /* <a href="/<?= $this->SEO_Urlify($this->article->title) ?>/s<?= $this->internal->target->pre ?>/article/comments/post/mid/<?= $this->article->matrix_counter ?>/id/<?= $this->article->counter ?>/">Post a Comment</a> */ ?>
+            </div>
+            
+            <?php echo $this->paginationControl($this->paginator, 'Sliding', '../../../system/views/scripts/comments/paginator.phtml', array('internal' => $this->internal)); ?>
+        </div>
+        
+<?php foreach ($this->paginator as $comment) { ?>
+        <div class="comment">
+            <div class="partheader">
+                <div class="profile_picture">
+                <?=
+                    (
+                        (isset($comment->p_picture_url) && $comment->p_picture_url)
+                        ?
+                        '<img src="'.(preg_match('#http://#i', $comment->p_picture_url) ? '' : $this->internal->config->upload->picture_server . '/') . $this->escape($comment->p_picture_url).'" />'
+                        :
+                        ''
+                    )
+                ?>
+                </div>
+                <div class="author">
+                    <?php /* Comment #<?= $comment->counter ?> Posted by */ ?><?= $this->ProfileDisplay(array('profile' => $comment, 'internal' => $this->internal)) ?>
+                </div>
+                <div class="datetime">
+<?php
+    $date = new Zend_Date();
+    $date->set($comment->creation, Zend_Date::ISO_8601);
+    
+    if ((time() - $date->get(Zend_Date::TIMESTAMP)) < 3600) {
+        echo sprintf("%d minute(s) ago", ((time() - $date->get(Zend_Date::TIMESTAMP)) / 60));
+    }
+    else {
+        if (isset($this->internal->member)) {
+            $date->setTimezone($this->internal->member->timezone);
+            echo $date->toString(Zend_Date::DATE_LONG) . ' <span class="time">' . $date->toString(Zend_Date::TIME_SHORT) . '</span>';
+        }
+        else {
+            $date->setTimezone($this->internal->config->timezone);
+            echo $date->toString(Zend_Date::DATE_MEDIUM) . ' <span class="time">' . $date->toString(Zend_Date::TIME_SHORT . ' z') . '</span>';
+        }
+    }
+?>
+                </div>
+            </div>
+            
+            <div class="partc2">
+                <h2 class="title"><?= ($comment->title ? $this->escape($comment->title) : '') ?></h2>
+            <?php
+                $tempContent = $comment->content;
+                
+                $tempContent = preg_replace("/<a /", '<a rel="nofollow" ', $tempContent);
+        
+                echo $tempContent;
+            
+            ?>
+            </div>
+            
+            <?php /* No replies for now until we can figure out how to query with connectby or with recursive
+            <div class="replies"><?= $comment->total_comments_count ?> Replies
+            <?php if (
+                    ($this->internal->target->acl->allowed || $this->internal->target->acl->allowed === null || $this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT) &&
+                    $this->internal->subModule->_modObject->allow_ratings
+                ) { ?>
+                - <a href="<?= $this->internal->target->pre ?>/<?= $this->internal->module_modules[$this->internal->subModule->module_id]->name ?>/comments/post/mid/<?= $this->internal->params->mid ?>/id/<?= $this->internal->params->id ?>/conc/<?= $comment->counter ?>/">Post a Reply</a>
+            <?php } ?>
+            </div>
+            */ ?>
+            
+            <div class="interact">
+                <div class="rating">Rating : <span class="count rc<?= floor($comment->rating * 2) ?>"><?= ($comment->rating ? $comment->rating : 'N/A') ?></span></div>
+                
+                <?php if (
+                    ($this->internal->target->acl->allowed || $this->internal->target->acl->allowed === null || $this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT) &&
+                    $this->internal->subModule->_modObject->allow_ratings
+                ) { ?>
+                <div class="rateit">Rate It : 
+                    <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $this->internal->module_modules[$this->internal->subModule->module_id]->name ?>/ratings/rate/mid/<?= $this->internal->params->mid ?>/id/<?= $this->internal->params->id ?>/ronc/<?= $comment->counter ?>/rating/1/" title="1 Star - Awful">1</a>
+                    <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $this->internal->module_modules[$this->internal->subModule->module_id]->name ?>/ratings/rate/mid/<?= $this->internal->params->mid ?>/id/<?= $this->internal->params->id ?>/ronc/<?= $comment->counter ?>/rating/2/" title="2 Stars - Poor">2</a>
+                    <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $this->internal->module_modules[$this->internal->subModule->module_id]->name ?>/ratings/rate/mid/<?= $this->internal->params->mid ?>/id/<?= $this->internal->params->id ?>/ronc/<?= $comment->counter ?>/rating/3/" title="3 Stars - Average">3</a>
+                    <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $this->internal->module_modules[$this->internal->subModule->module_id]->name ?>/ratings/rate/mid/<?= $this->internal->params->mid ?>/id/<?= $this->internal->params->id ?>/ronc/<?= $comment->counter ?>/rating/4/" title="4 Stars - Good">4</a>
+                    <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $this->internal->module_modules[$this->internal->subModule->module_id]->name ?>/ratings/rate/mid/<?= $this->internal->params->mid ?>/id/<?= $this->internal->params->id ?>/ronc/<?= $comment->counter ?>/rating/5/" title="5 Stars - Excellent">5</a>
+                    </span></span></span></span></span>
+                </div>
+                <?php } ?>
+            </div>
+            
+
+            
+            <div class="administer">
+    <?php if (!$comment->active && ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_MODERATE)) { ?>
+            <a href="<?= $this->internal->target->pre ?>/<?= $this->internal->subModule->name ?>/comments/moderate/mid/<?= $this->internal->params->mid ?>/id/<?= $this->internal->params->id ?>/cid/<?= $comment->counter ?>/status/approve/" class="approve">Approve</a>
+            <a href="<?= $this->internal->target->pre ?>/<?= $this->internal->subModule->name ?>/comments/moderate/mid/<?= $this->internal->params->mid ?>/id/<?= $this->internal->params->id ?>/cid/<?= $comment->counter ?>/status/reject/" class="reject">Reject</a>
+    <?php } elseif ($comment->active && ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_MODERATE)) { ?>
+            <a href="<?= $this->internal->target->pre ?>/<?= $this->internal->subModule->name ?>/comments/delete/mid/<?= $this->internal->params->mid ?>/id/<?= $this->internal->params->id ?>/cid/<?= $comment->counter ?>/" class="delete red" onclick="return confirm('Are you sure you want to delete this comment?');">Delete</a>
+            <?php if (isset($this->internal->member) && ($this->internal->member->site_admin || $this->internal->member->profile->site_admin)) { ?>
+                <a href="<?= $this->internal->target->pre ?>/<?= $this->internal->subModule->name ?>/comments/edit/mid/<?= $this->internal->params->mid ?>/id/<?= $this->internal->params->id ?>/cid/<?= $comment->counter ?>/" class="edit">Edit</a>
+            <?php } ?>
+    <?php } ?>
+            </div>
+            
+        </div>
+<?php } ?>
+        
+        <div class="partc3">
+            <?php echo $this->paginationControl($this->paginator, 'Sliding', '../../../system/views/scripts/comments/paginator.phtml', array('internal' => $this->internal)); ?>
+        </div>
+        
+        <a name="post_a_comment"></a>
+        <hr size="1" noshade="noshade" />
+
+<?php
+if ($this->internal->subModule->_modObject->allow_comments) {
+    if (isset($this->internal->member)) {
+        echo $this->form;
+        echo $this->FormHelper(array('internal' => $this->internal));
+    }
+    else {
+?>
+        <div class="signin">Please <a href="/member/login/p/signup_entrance/Comment/" rel="nofollow" onclick="return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/signup_entrance/Comment/', { width: '360px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false });">sign-in</a> to post a comment, or <a href="/member/register/p/signup_entrance/Comment/" rel="nofollow">register</a> for a free <?= ($this->internal->community->display ? $this->internal->community->display : $this->internal->community->name) ?> account.</div>
+<?php
+    }
+}
+?>
+
+</div>

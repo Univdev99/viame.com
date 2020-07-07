@@ -1,0 +1,47 @@
+<h1>Contact Groups Manager</h1>
+
+<div>
+    <?= $this->render('sidebar.phtml') ?>
+    <div style="margin-left: 176px;">
+    
+<table width="100%" class="decorated">
+    <tr>
+        <th>Group Name</th>
+        <th>Description</th>
+        <?php /* <th>Parent</th> */ ?>
+        <th>Total Contacts</th>
+        <?php /* <th>Add</th>
+        <th>Remove</th> */ ?>
+        <th>Active</th>
+        <th>Delete</th>
+    </tr>
+<?php
+    foreach ($this->groups as $group) {
+        $group = (array) $group;
+?>
+    <tr<?=(!$group['active'] ? " bgcolor='#666666'" : '')?>>
+        <td><span style="margin-left: <?= (substr_count($group['sort_order'], '-') * 1) ?>em;"><?= ((substr_count($group['sort_order'], '-')) ? '- ' : '') ?><?=($group['active'] ? '<a href="' . $this->internal->target->pre . '/contact/group/edit/id/'.$group['counter'].'/">'.$group['name'].'</a>' : $group['name'])?></span></td>
+        <td><?= $group['description'] ?></td>
+        <?php /* <td><?= $group['parent_id'] ?></td> */ ?>
+        <td style="text-align: center;"><?= $group['total_member_count'] ?></td>
+        
+        <?php /* 
+        <td><a href="<?= $this->internal->target->pre ?>/contact/group/add/id/<?= $group['counter'] ?>/">Add Contacts</a></td>
+        <td><a href="<?= $this->internal->target->pre ?>/contact/group/remove/id/<?= $group['counter'] ?>/">Remove Contacts</a></td>
+        */ ?>
+        
+        <td style="text-align: center;"><a title="Toggle Active Status" class="check_link toggle<?= ($group['active'] ? '' : ' inactive') ?>" href="<?= $this->internal->target->pre ?>/contact/group/active/id/<?= $group['counter'] ?>/"><?= ($group['active'] ? 'Make Inactive' : 'Make Active') ?></a></td>
+        <td style="text-align: center;"><a title="Delete Group" onclick="return (confirm('Are you sure you want to delete the group <?= $group['name'] ?>?'));" class="delete_link inactive toggle" href="<?= $this->internal->target->pre ?>/contact/group/delete/id/<?= $group['counter'] ?>/">Delete</a></td>
+    </tr>
+<?php
+    }
+?>
+</table>
+
+<form action="<?= $this->internal->target->pre ?>/contact/group/create/">
+    <input type="submit" value="Create New Group" name="create" />
+</form>
+
+    </div>
+    <div style="clear: both;"></div>
+</div>

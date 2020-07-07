@@ -1,0 +1,158 @@
+<div class="multistep_header">
+    <table><tr>
+        <td align="left" class="header">
+            Sign-Up Now...Free!
+        </td>
+        <td align="right" class="steps">
+            <table class="ind_steps"><tr>
+                <td>
+                    <div class="step firstitem selected"><span class="stepnumber">1</span>Enter Info</div>
+                </td>
+                <td>
+                    <div class="step"><span class="stepnumber">2</span>Check Email</div>
+                </td>
+                <td>
+                    <div class="step lastitem"><span class="stepnumber">3</span>Confirmation</div>
+                </td>
+            </tr></table>
+        </td>
+    </tr></table>
+</div>
+
+<table style="width: 100%;">
+    <tr>
+        <td style="vertical-align: top;"><div style="margin-right: 1em;">
+ 						
+<!-- Begin Module -->
+<div class="cm decorated">
+    <div class="hd">
+        <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div>
+        </div>
+        <div class="con">
+        	<table class="table">
+                <tr>
+                    <td class="lt"></td>
+                    <td class="mn1"><?= $this->internal->community->display ?> Registration!</td>
+                    <td class="sep"></td>
+                    <td class="mn2">Welcome<?= $this->fnwelcome ? ', ' . $this->escape($this->fnwelcome) : '' ?>!</td>
+                    <td class="rt"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="bd padded">
+
+
+<?php
+$this->headStyle()->appendStyle('#member_form dl.zend_form input[type="text"], #member_form dl.zend_form p.description { width: 20em; }');
+
+if ($this->formErrors) {
+    print '<ul class="errors" style="margin-bottom: 1em;">';
+    foreach ($this->formErrors as $message) {
+        print "<li>$message</li>\n";
+    }
+    print '</ul>';
+}
+?>
+
+<?= $this->form ?>
+
+
+    </div>
+    <div class="ft">
+        <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div></div>
+    </div>
+    
+    <span class="icon"></span>
+</div>
+<!-- End Module -->
+ 						
+        </div></td>
+        
+        <td style="width: 400px; vertical-align: top;">
+
+<p style="margin-bottom: .5em; font-size: 20px;"><strong>Get Free access to the SmallCap Network Community and Newsletter, all in a few short steps.</strong></p>
+
+<blockquote style="margin: 0 1.5em;">
+	<p style="font-size: 14px; margin-bottom: 6px;">"Keep up the great work, your reports are refreshingly honest, and your "vision" far exceeds nearly everyone else!"</p>
+    <p style="margin-top: 6px;">&mdash; <i>M. Clarkson</i></p>
+</blockquote>
+
+<div style="padding-top: 1em; padding-bottom: 1em; margin-bottom: 1em; border-top: 1px dotted #a5afbe; border-bottom: 1px dotted #a5afbe;">
+    <p style="color: #193764; font-size: 15px; text-transform: uppercase; font-weight: bold;">You will have immediate access to...</p>
+    <div style="margin: 5px 0 5px 1em; font-size: 13px; font-weight: bold; padding-left: 29px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/check.png) top left no-repeat;">Valuable Research & Opinions Via SCN's Stock HQ</div>
+    <div style="margin: 5px 0 5px 1em; font-size: 13px; font-weight: bold; padding-left: 29px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/check.png) top left no-repeat;">Undiscovered Small Stocks Before They Become Big</div>
+    <div style="margin: 5px 0 5px 1em; font-size: 13px; font-weight: bold; padding-left: 29px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/check.png) top left no-repeat;">SCN's Proprietary Financial Publishing Platform</div>
+    <div style="margin: 5px 0 5px 1em; font-size: 13px; font-weight: bold; padding-left: 29px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/check.png) top left no-repeat;">Retail & Professional Investor Networking</div>
+    <div style="margin: 5px 0 5px 1em; font-size: 13px; font-weight: bold; padding-left: 29px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/check.png) top left no-repeat;">SCN's Timely Trading Alert Newsletter</div>
+    <div style="margin: 5px 0 0 1em; font-size: 13px; font-weight: bold; padding-left: 29px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/check.png) top left no-repeat;">And Much More!</div>
+</div>
+
+<blockquote style="margin: 0 1.5em;">
+	<p style="font-size: 14px; margin-bottom: 6px;">"Another thanks to you on your great call on REED. I bought in the low 5's and am very happy with the gain."</p>
+    <p style="margin-top: 6px;">&mdash; <i>K. Chhotani</i></p>
+</blockquote>
+
+<p>SCN does the research and leverages our network of <strong><em>elite</em> traders</strong> to bring YOU undiscovered gems before anyone else. Share your expertise with the SCN Community by publishing your own stock picks, analysis, and trading tips.</p>
+<p>And, as an <strong>added bonus</strong> for becoming a member, you'l have free and immediate access to our <strong>Member's Only Special Reports</strong>!</p>
+<table align="center"><tr>
+	<td style="padding-right: 1em;">
+    	<img src="<?= $this->internal->vars->static_host ?>/css/community/default/assets/free_report.gif" />
+    </td>
+    <td align="center"><strong>
+    	<div style="font-size: 16px;">"The Two Most Important<br />Rules to Investing"</div>
+        <div style="margin: .5em 0;">This report reveals valuable information for successful investing.</div>
+    </strong></td>
+</tr></table>
+<p><div style="color: #193764; font-weight: bold; font-size: 24px; text-align: center;">Create your FREE account now!</div></p>
+
+
+<?php /*
+<!-- Begin Module -->
+<div class="cm decorated">
+    <div class="hd">
+        <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div>
+        </div>
+        <div class="con">
+        	<table class="table">
+                <tr>
+                    <td class="lt"></td>
+                    <td class="mn1">Already a Member?</td>
+                    <td class="sep"></td>
+                    <td class="mn2"></td>
+                    <td class="rt"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="bd">
+
+<form action="<?= $this->internal->target->pre ?>/member/login/p/vmpd_nar/1/" style="text-align: center; padding: 1em;"><input type="submit" class="big" value="Sign In" /></form>
+<p style="font-style: italic;">If you have already registered, but are having issues with the verification process, <a href="/member/register/verify/">click here</a>.</p>
+
+    </div>
+    <div class="ft">
+    	<div class="con">
+        	<table class="table">
+                <tr>
+                    <td class="lt"></td>
+                    <td class="mn1"></td>
+                    <td class="sep"></td>
+                    <td class="mn2"></td>
+                    <td class="rt"></td>
+                </tr>
+            </table>
+        </div>
+        <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div></div>
+    </div>
+    
+    <span class="icon"></span>
+</div>
+<!-- End Module -->
+*/ ?>
+
+        </td>
+    </tr>
+</table>
+
+<?= $this->FormHelper(array('internal' => $this->internal)) ?>

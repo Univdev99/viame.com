@@ -1,0 +1,330 @@
+/* SmallCapNetwork Community Mobile Stylesheet */
+
+.yui3-g-r img {
+    max-width: 100%;
+    height: auto;
+}
+
+@media (max-width: 767px) {
+    .yui3-g-r > .yui3-u,
+    .yui3-g-r > [class *= "yui3-u-"] {
+        width: 100%;
+    }
+    
+    /* Login Popup Overrides */
+    #shadowbox_popup .login-social,
+      #shadowbox_popup .login-signup,
+      #shadowbox_popup .login-problems
+      { display: none; }
+    #shadowbox_popup #fieldset-buttons { padding-bottom: 0; }
+    #shadowbox_popup #fieldset-buttons #submit-element { margin-bottom: 0; }
+    #shadowbox_popup #persistent-element { top: -1.65em; }
+
+    
+    .scroll-top {
+        bottom: 15px;
+        height: 44px;
+        opacity: 0;
+        position: fixed;
+        right: 15px;
+        width: 44px;
+        border-radius: 3px;
+    }
+    .scroll-top.off {
+        opacity: 0;
+    }
+    .scroll-top.on {
+        opacity: 1;
+    }
+    .scroll-top::before {
+        background-image: url("data:image/svg+xml,%3Csvg%20version=%221.1%22%20xmlns=%22http://www.w3.org/2000/svg%22%20xmlns:xlink=%22http://www.w3.org/1999/xlink%22%20x=%220px%22%20y=%220px%22%20width=%2244px%22%20height=%2244px%22%20viewBox=%220%200%2044%2044%22%20enable-background=%22new%200%200%2044%2044%22%20xml:space=%22preserve%22%3E%3Cpath%20fill=%22white%22%20d=%22M29.121,19.55l-6.29-6.196c-0.025-0.025-0.053-0.049-0.082-0.071c-0.012-0.011-0.024-0.02-0.038-0.03c-0.016-0.011-0.031-0.024-0.048-0.034c-0.017-0.011-0.032-0.02-0.048-0.03c-0.015-0.009-0.029-0.018-0.044-0.025c-0.017-0.009-0.034-0.017-0.051-0.024c-0.016-0.008-0.031-0.015-0.047-0.022c-0.016-0.006-0.033-0.012-0.049-0.018c-0.018-0.005-0.035-0.014-0.053-0.019c-0.017-0.005-0.034-0.008-0.05-0.013c-0.018-0.005-0.036-0.009-0.054-0.013c-0.02-0.003-0.039-0.006-0.059-0.008c-0.016-0.003-0.032-0.005-0.049-0.007c-0.073-0.007-0.146-0.007-0.218,0c-0.017,0.002-0.033,0.005-0.05,0.008c-0.02,0.002-0.038,0.005-0.058,0.009c-0.019,0.003-0.037,0.009-0.055,0.013c-0.016,0.005-0.033,0.008-0.05,0.013c-0.017,0.005-0.035,0.012-0.052,0.018c-0.017,0.006-0.033,0.012-0.049,0.019c-0.017,0.006-0.032,0.014-0.048,0.021c-0.017,0.008-0.034,0.016-0.051,0.024c-0.015,0.008-0.029,0.018-0.044,0.026c-0.015,0.008-0.031,0.018-0.048,0.029c-0.016,0.01-0.031,0.022-0.047,0.034c-0.014,0.01-0.027,0.019-0.04,0.028c-0.042,0.035-0.08,0.073-0.117,0.113c-0.013,0.011-0.026,0.021-0.037,0.033l-6.313,6.219c-0.433,0.428-0.434,1.12-0.003,1.544c0.432,0.426,1.131,0.424,1.564-0.002l4.495-4.426l-0.023,14.11c-0.001,0.603,0.493,1.092,1.104,1.09s1.107-0.49,1.109-1.095l0.023-14.108l4.403,4.334c0.432,0.426,1.133,0.424,1.565-0.003S29.553,19.975,29.121,19.55%22/%3E%3C/svg%3E");
+        background-position: center center;
+        background-repeat: no-repeat;
+        content: "";
+        display: block;
+        height: 44px;
+        width: 44px;
+    }
+    .scroll-top {
+        background-color: rgba(0, 0, 0, 0.2);
+    }
+    .scroll-top:hover {
+        background-color: rgba(0, 0, 0, 0.5);
+        cursor: pointer;
+    }
+    
+    
+
+    
+    #doc, #doc2, #doc3, #doc4,
+    #page.type_COM.id_2 #yui-main .yui-b .yui-gd #c1,
+    #page.type_COM.id_2 #yui-main .yui-b .yui-gd #c2,
+    #page.type_COM.id_2 #yui-main .yui-b .yui-gd #c3,
+    #page.type_COM.id_2 #yui-main .yui-b .yui-gd #c4
+    {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    #doc, #doc2, #doc3, #doc4 { box-sizing: border-box; }
+    
+    #Mobile_Nav {
+        display: block;
+        position: relative;
+    }
+    #Mobile_Nav #mobile_navbar {
+        text-align: right;
+        border-bottom: 3px solid #193869;
+    }
+    #Mobile_Nav #mobile_navbar button {
+        border-radius: 4px;
+        margin: 5px 15px 5px 0;
+        padding: 4px 10px;
+        background-color: #193869;
+        border: none;
+        cursor: pointer;
+    }
+    #Mobile_Nav #mobile_navbar button .icon-bar {
+        display: block;
+        margin: 4px 0;
+        border-radius: 1px;
+        height: 2px;
+        width: 22px;
+        background-color: #fff !important;
+    }
+    #Mobile_Nav #mobile_navmenu {
+        background-color: #fff;
+        width: 100%;
+        position: absolute;
+        z-index: 3;
+        display: none;
+        border-bottom: 3px solid #193869;
+    }
+    #Mobile_Nav #mobile_navmenu ul {
+        margin: 0;
+        padding: 0 10px;
+        text-align: left;
+        text-transform: uppercase;
+    }
+    #Mobile_Nav #mobile_navmenu ul li {
+        display: block;
+        line-height: 2.5em;
+        font-size: 1.8em;
+        border-bottom: 1px solid #c6c6c6;
+        padding: 0;
+        margin: 0;
+    }
+    /* Secondary List */
+    #Mobile_Nav #mobile_navmenu ul li ul {
+        border-top: 1px solid #c6c6c6;
+    }
+    #Mobile_Nav #mobile_navmenu ul li ul li {
+        font-size: inherit;
+        text-transform: none;
+    }
+    #Mobile_Nav #mobile_navmenu ul li:nth-last-of-type(1) {
+        border-bottom: none;
+    }
+    /* Site Wide Header Adjust */
+    #MinNavHead_outside, #mainnav_outside #mainnav, #menubar2, #top2,
+      #toolbar #menubar .yuimenubaritem, #toolbar #menubar2 .yuimenubaritem
+    {
+        display: none;
+    }
+    #mainnav_outside .mainnav_interior { width: auto; }
+    #mainnav_outside #mainnav { display: none !important; }
+    #mainnav_outside table td.first,
+      #mainnav_outside table td.third {
+        width: 0;
+        padding: 0 .5em;
+    }
+    #mainnav_outside table td.second input[type="text"] {
+        width: 130px;
+        font-size: 14px;
+    }
+    .quote_symbol_ac_container.yui-ac-container { display: none; }
+    
+    #toolbar {
+        width: auto; 
+        text-align: center;
+        display: flex;
+        justify-content: center;
+    }
+    #toolbar #menubar {
+        order: 1;
+    }
+    #toolbar .header_elite_opportunity {
+        display: inline-block;
+        position: static;
+        margin-left: 20px;
+        text-align: center;
+        font-size: 11px;
+        order: 2;
+    }
+    /* Icon On Non-Member Menubar */
+    #toolbar #menubar.nonmember .yuimenubaritem.home.header_elite_opportunity.padded {
+        display: table-cell;
+        width: 80px;
+        height: 82px;
+        overflow: hidden;
+        margin: 0;
+        padding: 0 0 0 20px;
+    }
+    #toolbar #menubar.nonmember .yuimenubaritem.home.header_elite_opportunity.padded a:nth-child(3) {
+        display: none;
+    }
+    #toolbar #menubar.nonmember .yuimenubaritem.home.header_elite_opportunity.padded a:nth-child(1) {
+        background: url(/css/community/smallcapnetwork/assets/premium/premium_medal-3.png) top center no-repeat;
+        background-size: contain;
+        width: 75px;
+        height: 75px;
+        display: block;
+        margin: 0;
+        padding: 0;
+    }
+    #toolbar #menubar.nonmember .yuimenubaritem.home.header_elite_opportunity.padded a:nth-child(1) img {
+        width: 75px;
+        height: 75px;
+        visibility: hidden;
+    }
+    #toolbar #menubar.nonmember .yuimenubaritem.home.header_elite_opportunity.padded a:nth-child(1) span {
+        display: block;
+        margin-top: -6px;
+    }
+    #toolbar #menubar.nonmember .yuimenubaritem.home.header_elite_opportunity.padded a:nth-child(1) span::after {
+        content: "Elite Opportunity";
+    }
+    #toolbar #menubar .yuimenubaritem.first-of-type.logo {
+        position: static;
+        left: auto;
+        display: table-cell;
+    }
+    
+    /* Homepage */
+    
+    /* Reverse order of columns */
+    /*
+    #page.type_COM #yui-main .yui-b .yui-gd { display: flex; flex-wrap: wrap; }
+    #page.type_COM #yui-main .yui-b .yui-gd  > #c1 { clear: both; order: 2; }
+    #page.type_COM #yui-main .yui-b .yui-gd  > #c2 { order: 1; }
+    */
+    /* Reorder some of the items in the columns */
+    #page.type_COM #yui-main .yui-b .yui-gd  > #c1,
+      #page.type_COM #yui-main .yui-b .yui-gd  > #c2 {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    #page.type_COM #yui-main .yui-b .yui-gd  > #c1 #w-3-21 { order: 1; width: 100%; }
+    #page.type_COM #yui-main .yui-b .yui-gd  > #c1 #w-13-3 { order: 2; width: 100%; }
+    #page.type_COM #yui-main .yui-b .yui-gd  > #c1 #w-13-1 { order: 3; width: 100%; }
+    #page.type_COM #yui-main .yui-b .yui-gd  > #c1 #w-3-23 { order: 4; width: 100%; }
+    #page.type_COM #yui-main .yui-b .yui-gd  > #c1 #w-9-1 { order: 5; width: 100%; }
+    #page.type_COM #yui-main .yui-b .yui-gd  > #c2 #m-15-11 { order: 1; width: 100%; }
+    #page.type_COM #yui-main .yui-b .yui-gd  > #c2 #w-13-2 { order: 2; width: 100%; }
+    #page.type_COM #yui-main .yui-b .yui-gd  > #c2 #w-10-1 { order: 3; width: 100%; }
+    
+    /* Top Rated Stocks Homepage Widget */
+    #page.type_COM #w-13-2 .yui3-u-1-4 {
+        width: 50%;
+    }
+    #page.type_COM #w-13-2 .yui3-u-1-4:nth-child(1), #page.type_COM #w-13-2 .yui3-u-1-4:nth-child(2) {
+        margin-bottom: 2em;
+    } 
+
+    /* Two Columns On Homepage Widgets Back to 1 */
+    #page.type_COM #m-15-11 div.bd > div.even,
+      #page.type_COM #w-10-1 div.bd div.yui-content div.cm.decorated.widget div.bd > div.odd,
+      #page.type_COM #w-10-2 div.bd div.yui-content div.cm.decorated.widget div.bd > div.odd,
+      #page.type_COM #w-10-3 div.bd div.yui-content div.cm.decorated.widget div.bd > div.odd,
+      #page.type_COM #w-10-4 div.bd div.yui-content div.cm.decorated.widget div.bd > div.odd,
+    #page.type_COM #m-15-11 div.bd > div.odd,
+      #page.type_COM #w-10-1 div.bd div.yui-content div.cm.decorated.widget div.bd > div.even,
+      #page.type_COM #w-10-2 div.bd div.yui-content div.cm.decorated.widget div.bd > div.even,
+      #page.type_COM #w-10-3 div.bd div.yui-content div.cm.decorated.widget div.bd > div.even,
+      #page.type_COM #w-10-4 div.bd div.yui-content div.cm.decorated.widget div.bd > div.even
+       {
+        width: auto;
+        float: none;
+        margin-right: 0;
+        margin-left: 1em;
+    }
+    
+    
+    
+    /* Via Space */
+    /*
+    #page_body.default_module.via_controller #cx,
+    #page_body.default_module.via_controller #yui-main,
+    #page_body.default_module.via_controller #yui-main .yui-b,
+    #page_body.default_module.via_controller #yui-main .yui-b #c1,
+    #page_body.default_module.via_controller #yui-main .yui-b #c2,
+    #page_body.default_module.via_controller #yui-main .yui-b #c3,
+    #page_body.default_module.via_controller #yui-main .yui-b #c4
+    */
+    #page_body #cx,
+    #page_body #yui-main,
+    #page_body #yui-main .yui-b,
+    #page_body #yui-main .yui-b #c1,
+    #page_body #yui-main .yui-b #c2,
+    #page_body #yui-main .yui-b #c3,
+    #page_body #yui-main .yui-b #c4
+    {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    
+    
+    /* Couple of General Items */
+    #content_area .relay { display: none; }
+    #content_area #social_bookmarks { display: none !important; }
+    
+    /* Articles */
+    #page_body.article_module #content_area img { max-width: 100%; height: auto; }
+    #page_body.article_module #content_area .yui3-g { padding-right: 0; }
+    #page_body.article_module #content_area .yui3-g #side_column { width: 100%; margin: 0; }
+    #page_body.article_module #content_area .part2 #profile_content_menu { display: none; }
+    
+    #page_body.article_module #content_area .advertisement { display: none; }
+    #page_body.article_module #content_area #TopOfArticleStockAd { display: none; }
+    #page_body.article_module #content_area .administer { display: none; }
+    #page_body.article_module #content_area .rateit { display: none !important; }
+    #page_body.article_module #content_area #tabooladiv { display: none; }
+    #page_body.article_module #content_area #BottomOfArticleStockAd { display: none; }
+    #page_body.article_module #content_area .related_quotes .stockhqsignup { display: none; }
+    
+    
+    /* Quotes */
+    #page_body.quote_module #content_area div.header_area .header_table .company_info .ci1 {
+        text-align: center;
+    }
+    #page_body.quote_module #content_area div.header_area .header_table .company_info .ci2 {
+        position: static;
+    }
+    #page_body.quote_module #content_area div.featured div.header_area .header_table .company_info .ci1 {
+        width: 100%;
+    }
+    #page_body.quote_module #content_area .addthis_toolbox {
+        display: none;
+    }
+    #page_body.quote_module #content_area div.featured div.header_area .header_table .company_info { padding-left: 0; }
+    #page_body.quote_module #content_area div.featured div.header_area .featured_icon { display: none; }
+    #page_body.quote_module #content_area img.company_logo {
+        float: none;
+        display: block;
+        text-align: center;
+        margin: 1em auto;
+    }
+    #page_body.quote_module #content_area #quote_other_info_tabs .yui-nav a em {
+        padding: .25em .5em;
+    }
+    #page_body.quote_module #content_area .links_table .col1,
+      #page_body.quote_module #content_area .links_table .col2,
+      #page_body.quote_module #content_area .links_table .col3 {
+        padding: 0;
+        border: none;
+    }
+    
+    /* Via 21066 - Elite Opportunity */
+    #page.type_VIA.id_21066 #page_header #toolbar .header_elite_opportunity { margin-left: 0; }
+}

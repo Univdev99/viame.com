@@ -1,0 +1,87 @@
+<div class="sidebar" style="float: left; width: 160px; margin-right: 1em;">
+
+    <form action="<?= $this->internal->target->pre ?>/contact/create/" style="margin-bottom: 1em;"><input type="submit" value="Create New Contact" /></form>
+    
+<?php
+// Display Groups
+if (Zend_Registry::isRegistered('db')) {
+    $db = Zend_Registry::get('db');
+    
+    // Load up the counters
+    $counters = array();
+    $counters['incoming'] = $counters['outgoing'] = 0;
+    foreach ($db->fetchAll("SELECT COALESCE(status::text, 'null') || '-' || COALESCE(active::text, 'null') AS statustext, COUNT(*) AS count FROM contact_contacts WHERE profile_id=? GROUP BY statustext", array($this->internal->target->id)) as $row) {
+        $counters[$row->statustext] = $row->count;
+        if (in_array($row->statustext, array('null-true', 'true-false', 'false-false'))) { $counters['outgoing'] += $row->count; }
+    }
+    $counters['incoming'] = $db->fetchOne("SELECT count(*) AS count FROM contact_contacts WHERE contact_profile_id=? AND status ISNULL AND active='t'", array($this->internal->target->id));
+?>
+<ul class="groups first-of-type"><li><a href="<?= $this->internal->target->pre ?>/contact/"<?= (!(isset($this->internal->params->gid)) ? ' class="bold"' : '') ?>>All<?= (isset($counters['true-true']) && $counters['true-true'] ? ' ('.$counters['true-true'].')' : '') ?><span class="icon"></span></a></li>
+<?php
+    $select = $db->select()
+        ->from(array('g' => 'contact_group_groups'),
+            array(
+                '*',
+                'sort_order' => "array_to_string(array_reverse((SELECT array_accum(a) FROM recursive_find('contact_group_groups', 'parent_id', 'counter', counter, 't') AS a)), '-') AS sort_order"
+            )
+        )
+        #->where('g.active=?', 't')
+        ->where('g.profile_id=?', $this->internal->target->id)
+        ->order(array('sort_order', 'g.name', 'g.counter'));
+    
+    $temp_groups = $temp_sorted_groups = array();
+    foreach ($db->fetchAll($select) as $group) {
+        $temp_groups[$group->sort_order] = $group;
+    }
+    
+    if (count($temp_groups)) {
+        $temp_sorted_keys = array_keys( $temp_groups );
+        natsort( $temp_sorted_keys );
+        
+        // Display
+        $level = $counter = 0;
+        foreach ($temp_sorted_keys as $key) {
+            $temp_sorted_groups[$temp_groups[$key]->counter] = $temp_groups[$key];
+            $group = $temp_groups[$key];
+            
+            if (substr_count($group->sort_order, '-') > $level) {
+                for ( ; $level < substr_count($group->sort_order, '-'); $level++) {
+                    echo '<ul>';
+                }
+            } elseif (substr_count($group->sort_order, '-') < $level) {
+                for ( ; $level > substr_count($group->sort_order, '-'); $level--) {
+                    echo '</ul>';
+                }
+            }
+            
+            echo '<li';
+            if (isset($this->internal->params->gid) && ($this->internal->params->gid == $group->counter)) {
+                echo ' class="bold"';
+            }
+            echo '><a href="' . $this->internal->target->pre . '/contact/p/gid/' . $group->counter . '/">' . $group->name . ($group->total_member_count ? ' ('.$group->total_member_count.')' : '') . '</a><span class="icon"></span></li>';
+            $counter++;
+        }
+        $this->groups = $temp_sorted_groups;
+        for ( ; $level--; $level >= 0) {
+            echo '</ul>';
+        }
+    }
+}
+?>
+    </ul>
+    
+    <div><a href="<?= $this->internal->target->pre ?>/contact/group/create/">Create A New Group</a></div>
+    <div><a href="<?= $this->internal->target->pre ?>/contact/group/">Manage Groups</a></div>
+    
+    <hr size="1" noshade="noshade" />
+    
+    <ul class="types">
+		<li class="incoming"><a href="<?= $this->internal->target->pre ?>/contact/p/gid/I/"<?= ((isset($this->internal->params->gid) && $this->internal->params->gid == 'I') ? ' class="bold"' : '') ?>>Incoming Requests<?= (isset($counters['incoming']) && $counters['incoming'] ? ' ('.$counters['incoming'].')' : '') ?><span class="icon"></span></a></li>
+		<li class="requested"><a href="<?= $this->internal->target->pre ?>/contact/p/gid/R/"<?= ((isset($this->internal->params->gid) && $this->internal->params->gid == 'R') ? ' class="bold"' : '') ?>>Outgoing Requests<?= (isset($counters['outgoing']) && $counters['outgoing'] ? ' ('.$counters['outgoing'].')' : '') ?><span class="icon"></span></a></li>
+		<ul class="subtypes">
+		    <li class="pending"><a href="<?= $this->internal->target->pre ?>/contact/p/gid/P/"<?= ((isset($this->internal->params->gid) && $this->internal->params->gid == 'P') ? ' class="bold"' : '') ?>>Pending<?= (isset($counters['null-true']) && $counters['null-true'] ? ' ('.$counters['null-true'].')' : '') ?><span class="icon"></span></a></li>
+    		<li class="denied"><a href="<?= $this->internal->target->pre ?>/contact/p/gid/D/"<?= ((isset($this->internal->params->gid) && $this->internal->params->gid == 'D') ? ' class="bold"' : '') ?>>Denied<?= (isset($counters['true-false']) && $counters['true-false'] ? ' ('.$counters['true-false'].')' : '') ?><span class="icon"></span></a></li>
+    		<li class="deniedforever"><a href="<?= $this->internal->target->pre ?>/contact/p/gid/F/"<?= ((isset($this->internal->params->gid) && $this->internal->params->gid == 'F') ? ' class="bold"' : '') ?>>Denied Forever<?= (isset($counters['false-false']) && $counters['false-false'] ? ' ('.$counters['false-false'].')' : '') ?><span class="icon"></span></a></li>
+		</ul>
+	</ul>
+</div>

@@ -1,0 +1,103 @@
+<?php
+$this->headScript()->appendFile($this->internal->vars->static_host . '/js/yui/yui2/build/yuiloader/yuiloader.js');
+$this->inlineScript()->captureStart() ?>
+var loader = new YAHOO.util.YUILoader();
+loader.insert({
+    require: ['tabview'],
+    base: '<?= $this->internal->vars->static_host ?>/js/yui/yui2/build/',
+    //filter: 'DEBUG',
+    loadOptional: false
+});
+<?php $this->inlineScript()->captureEnd() ?>
+
+<h1>You are in the <u><?= $this->internal->network->name ?></u> Network 
+
+<?php
+
+    if (isset($this->internal->network->nm_active) && $this->internal->network->nm_active) {
+        if (isset($this->internal->network->nm_status) && $this->internal->network->nm_status) {
+            echo '- <a href="' . $this->internal->target->pre . '/network/leave/">Leave</a>';
+        }
+        elseif ($this->internal->network->nm_status === null) {
+            echo '- <a href="' . $this->internal->target->pre . '/network/leave/">Membership Pending Approval - Remove Join Request</a>';
+        }
+    }
+    else {
+        if ($this->internal->network->open) {
+            echo '- <a href="' . $this->internal->target->pre . '/network/join/">Join</a>';
+        }
+        else {
+            if ($this->internal->network->password) {
+                echo '- <a href="' . $this->internal->target->pre . '/network/join/password/">Join With Password</a>';
+            }
+            if ($this->internal->network->allow_requests) {
+                echo '- <a href="' . $this->internal->target->pre . '/network/join/request/">Request to Join</a>';
+            }
+        }
+    }
+?>
+
+</h1>
+
+
+<?= (isset($this->internal->network->long_category) ? '<p>'.$this->internal->network->long_category.'</p>' : '') ?>
+
+<div id="demo" class="yui-navset">
+    <ul class="yui-nav">
+        <li<?= (!$this->internal->params->submodule ? ' class="selected"' : '') ?>><a href="<?= $this->internal->target->pre ?>/"><em>Home</em></a></li>
+<?php
+if (isset($this->internal->target->modules)) {
+    foreach ($this->internal->target->modules as $module) {
+        if ($this->internal->target->acl->owner ||
+            $module->allowed === null ||
+            $module->show_on_fail ||
+            ($module->allowed && ($module->privilege > 0)) ||
+            ($this->internal->target->acl->recursive && ($this->internal->target->acl->privilege > 0))) {
+?>
+        <li<?= ($this->internal->params->submodule == $module->m_name ? ' class="selected"' : '') ?>><a href="<?= $this->internal->target->pre ?>/<?= $module->m_name ?>/p/mid/<?= $module->counter ?>/"><em><?= ($module->display ? $module->display : $module->m_display) ?></em></a></li>
+<?php
+        }
+    }
+}
+?>
+        <li><a href="<?= $this->internal->target->pre ?>/module/add/"><em><b>+ Add A New Module</b></em></a></li>
+    </ul>            
+    <div class="yui-content">
+<?php
+    if (isset($this->internal->params->submodule)
+        && array_key_exists($this->internal->params->submodule, $this->module_modules)) {
+        #$front = Zend_Controller_Front::getInstance();
+        #$default_module = $front->getDefaultModule();
+        
+        #echo $this->action(
+        #    (isset($this->internal->params->subaction) ? $this->internal->params->subaction : 'index'),
+        #    (isset($this->internal->params->subcontroller) ? $this->internal->params->subcontroller : 'index'),
+        #    ($this->internal->params->submodule),
+        #    (array) $this->internal->params
+        #);
+    }
+    else {
+?>
+<b>Network Members:</b>
+<ul>
+<?php foreach ($this->members as $member) { if ($member->status) { ?>
+    
+        <li><?= $member->p_name ?></li>
+<?php } } ?>
+</ul>
+
+<?php if (isset($this->internal->network->nm_status) && $this->internal->network->nm_status) { ?>
+<b>Join Requests:</b>
+<ul>
+<?php foreach ($this->members as $member) { if ($member->status == null) { ?>
+    
+        <li><?= $member->p_name ?> - <?= $member->request_message ?> <a href="<?= $this->internal->target->pre ?>/network/join/requests/status/t/id/<?= $member->member_profile_id ?>/">Approve</a> : <a href="<?= $this->internal->target->pre ?>/network/join/requests/status/f/id/<?= $member->member_profile_id ?>/">Deny</a></li>
+<?php } } ?>
+</ul>
+<?php } ?>
+
+<?php
+    }
+?>
+    </div>
+</div>

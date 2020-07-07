@@ -1,0 +1,86 @@
+<div style="float: right; margin: 3px 3px 0 0; width: 14px; height: 14px;"><a href="javascript:slideFixedOut();" title="Close"><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_toolbar/close.png" alt="Close" /></a></div>
+<table width="974" border="0" align="center" cellpadding="0" cellspacing="0">
+    <tr>
+    	<td align="left" style="text-align: left; border-right: 1px solid #323c52;">
+        	<div style="width: 200px; height: 44px; font-size: 28px; font-weight: bold; text-indent: -10000em; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/logo/logo2.png) top left no-repeat;">SmallCap Network</div>
+        </td>
+        <td align="center" style="text-align: left; padding: 0 1em; border-left: 1px solid #000; border-right: 1px solid #323c52;">
+        	<div style="font-size: 22px; font-weight: bold; color: #f1f1f3;">Our Members See <span style="color: #7dd3e9;">BIG</span> Returns From Small Stocks.</div>
+            <div style="color: #9cb0c4; font-size: 14px;">Start receiving great trading ideas and much more!</div>
+        </td>
+        <td align="right" style="text-align: left; padding-left: 1em; border-left: 1px solid #000;">
+<?php /*
+        	<form method="post" action="http://craqer.levelogic.com/lyrisrelay.cgi" onsubmit="return (YAHOO.viame.vivin_regula.validate(this, { simple: true, groups: [regula.Group.newsletter_signup_form] }) && YAHOO.viame.dubsub.check(this));">
+        	<input type="hidden" value="Subscribe" name="function">
+        	<input type="hidden" value="smallcapnetwork" name="listname">
+        	<input type="hidden" value="lyris.smallcapnetwork.com" name="server">
+        	<input type="hidden" value="1" name="reatem2">
+        	<input type="hidden" value="https://www.smallcapnetwork.com/Newsletter/s/member/register/" name="redirect">
+        	<table>
+        	    <tr>
+        	        <td align="left"><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_toolbar/its_free.png" alt="It's Free!" vspace="3" /></td>
+        	        <td align="right">
+        	            <table>
+                    	    <tr>
+                    	        <td style="padding-bottom: 5px; padding-right: 3px;">Name</td>
+                    	        <td style="padding-bottom: 5px; padding-right: 3px;"><input type="text" id="newsletter_signup_form_name" name="name" tabindex="1" /></td>
+                    	        <td rowspan="2" style="padding-left: .5em;"><input type="submit" value="Sign Up!" tabindex="3" class="red" /></td>
+                    	    </tr>
+                    	    <tr>
+                    	        <td style="padding-top: 5px;">Email</td>
+                    	        <td style="padding-top: 5px;"><input type="text" id="newsletter_signup_form_email" name="email" tabindex="2" class="regula-validation" data-constraints='@Email(label="email address", message="The {label} was not formatted properly.", groups=[newsletter_signup_form])' /></td>
+                    	    </tr>
+                    	</table>
+        	        </td>
+        	    </tr>
+        	</table>
+        	</form>
+        	
+        	YAHOO.util.Cookie.set("hide_newsletter_toolbar", "1", { path: "/" });
+        	
+        	<form method="post" action="http://lm.levelogic.com/ss/form.php?form=3" >
+*/ ?>
+
+<?php /*
+            <form method="post" action="http://lm.levelogic.com/ss/form.php?form=3" onsubmit="return (YAHOO.viame.vivin_regula.validate(this, { simple: true, groups: [regula.Group.newsletter_signup_form] }) && (YAHOO.util.Cookie.set('signup_fullname', YAHOO.util.Dom.get('newsletter_signup_form_name').value, { path: '/' }) && YAHOO.util.Cookie.set('signup_email', YAHOO.util.Dom.get('newsletter_signup_form_email').value, { path: '/' }) && YAHOO.util.Cookie.set('hide_newsletter_toolbar', '1', { path: '/' })) && YAHOO.viame.dubsub.check(this));">
+            <input type="hidden" name="format" value="h">
+        	<table>
+        	    <tr>
+        	        <td align="left"><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_toolbar/its_free.png" alt="It's Free!" vspace="3" /></td>
+        	        <td align="right">
+        	            <table>
+                    	    <tr>
+                    	        <td style="padding-bottom: 5px; padding-right: 3px;">Name</td>
+                    	        <td style="padding-bottom: 5px; padding-right: 3px;"><input type="text" name="CustomFields[1]" id="newsletter_signup_form_name" tabindex="1" /></td>
+                    	        <td rowspan="2" style="padding-left: .5em;"><input type="submit" value="Sign Up!" tabindex="3" class="red" /></td>
+                    	    </tr>
+                    	    <tr>
+                    	        <td style="padding-top: 5px;">Email</td>
+                    	        <td style="padding-top: 5px;"><input type="text" id="newsletter_signup_form_email" name="email" tabindex="2" class="regula-validation" data-constraints='@Email(label="email address", message="The {label} was not formatted properly.", groups=[newsletter_signup_form])' /></td>
+                    	    </tr>
+                    	</table>
+        	        </td>
+        	    </tr>
+        	</table>
+        	</form>
+*/ ?>
+
+            <form action="/Toolbar/s/member/register/p/shortform/1/" onsubmit="return (YAHOO.viame.vivin_regula.validate(this, { simple: true, groups: [regula.Group.newsletter_signup_form] }) && (YAHOO.util.Cookie.set('hide_newsletter_toolbar', '1', { path: '/' })) && YAHOO.viame.dubsub.check(this));">
+        	<table>
+        	    <tr>
+        	        <td align="left"><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_toolbar/its_free.png" alt="It's Free!" vspace="3" /></td>
+        	        <td align="right">
+        	            <table>
+                    	    <tr>
+                    	        <td style="padding-left: 5px;"><strong>Enter Your Email Address:</strong><br /><input type="text" id="newsletter_signup_form_email" name="email" tabindex="2" class="regula-validation" data-constraints='@Email(label="email address", message="The {label} was not formatted properly.", groups=[newsletter_signup_form])' /></td>
+                    	        <td style="padding-left: .5em;"><input type="submit" value="Sign Up!" tabindex="3" class="red" /></td>
+                    	    </tr>
+                    	</table>
+        	        </td>
+        	    </tr>
+        	</table>
+        	</form>
+        	
+        </td>
+    </tr>
+</table>

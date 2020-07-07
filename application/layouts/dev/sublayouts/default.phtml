@@ -1,0 +1,10 @@
+            <!-- Begin SubLayout -->
+            <div id="doc4" class="page_body_internal">
+                <?php if ($this->placeholder('space_header')) { echo '<div id="space_header">' . $this->placeholder('space_header') . '</div>'; } ?>
+            	<div id="hd"><?php if (isset($this->internal->sublayout_with_header) && $this->internal->sublayout_with_header) { foreach ($this->grid['hd'] as $id => $widget) { echo $this->DisplayWidget($id, $widget); } } ?></div>
+            	<div id="bd"><div id="yui-main"><div class="yui-b">
+            		<div id="content_area"><?= $this->layout()->content ?></div>
+            	</div></div></div>
+            	<div id="ft"><?php if (isset($this->internal->sublayout_with_footer) && $this->internal->sublayout_with_footer) { foreach ($this->grid['ft'] as $id => $widget) { echo $this->DisplayWidget($id, $widget); } } ?></div>
+            </div>
+            <!-- End SubLayout -->

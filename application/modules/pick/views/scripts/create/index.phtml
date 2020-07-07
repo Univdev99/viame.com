@@ -1,0 +1,195 @@
+<h1><?= isset($this->page_title) && $this->page_title ? $this->page_title : 'Create A New Pick' ?></h1>
+
+<form id="pick_form" enctype="application/x-www-form-urlencoded" method="post" class="form" action="?" onsubmit="return (YAHOO.viame.vivin_regula.validate(this, { groups: [regula.Group.pick_form] }) && YAHOO.viame.dubsub.check(this));"><dl class="zend_form">
+<?= $this->form->getDisplayGroup('hidden') ?>
+
+<table style="width: 100%;">
+    <tr>
+        <td style="width: 230px; min-width: 230px; vertical-align: top;">
+
+<!-- Begin Options -->
+<div class="cm decorated options">
+    <div class="hd">
+        <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div>
+        </div>
+        <div class="con">
+        	<table class="table">
+
+                <tr>
+
+                    <td class="lt"></td>
+                    <td class="mn1">Options</td>
+                    <td class="sep"></td>
+                    <td class="mn2"></td>
+                    <td class="rt"></td>
+                </tr>
+            </table>
+
+        </div>
+
+    </div>
+    <div class="bd">
+
+
+<!-- Begin Accordion -->
+        <div id="options_accordion" class="yui3-accordion">
+<?php
+    $counter = 0;
+    foreach ($this->form->getDisplayGroups() as $group) {
+        if (!preg_match('/^options/', $group->getName())) { continue; }
+?>
+            <div class="yui3-accordion-item yui3-accordion-item-active<?= (!$counter ? ' first-of-type' : '') ?>">
+                <div class="yui3-accordion-item-hd">
+                    <a href="javascript:void(null);" class="yui3-accordion-item-trigger"><?= $group->getAttrib('legend') ?></a>
+                </div>
+                <div class="yui3-accordion-item-bd">
+                    <p><?php $group->removeAttrib('legend'); echo $group; ?></p>
+                </div>
+            </div>
+<?php
+        $counter++;
+    }
+?>
+        </div>
+<!-- End Accordion -->
+
+
+    </div>
+    <div class="ft">
+        <div class="dec">
+            <div class="lt"></div><div class="mn"></div><div class="rt"></div>
+        </div>
+    </div>
+</div>
+<!-- End Options -->
+
+        </td>
+        <td style="vertical-align: top;"><div style="margin-left: 1em;">
+
+<?php
+if ($this->formErrors) {
+    print '<div class="errors"><ul>';
+    foreach ($this->formErrors as $message) {
+        print "<li>$message</li>\n";
+    }
+    print '</ul></div>';
+}
+?>
+
+<?= $this->form->getElement('title') ?>
+
+<?php
+#Zend_Debug::Dump($this->form->getElement('risk')->getDecorators());
+
+$modify_elements = array('timeframe', 'risk', 'target_date', 'target_price', 'suggested_stop_loss', 'live_stop_loss', 'holding', 'disclosure', 'notes');
+
+if (Zend_Controller_Front::getInstance()->getRequest()->getControllerName() != 'edit') {
+    array_unshift($modify_elements, 'symbol', 'position', 'allocation');
+}
+
+foreach ($modify_elements as $element) {
+    #$this->form->getElement($element)->removeDecorator('Label');
+    #$this->form->getElement($element)->getDecorator('HtmlTag')->setOption('tag', null);
+    
+    $this->form->getElement($element)->setDecorators(array(
+        'ViewHelper',
+        array('HtmlTag', array('tag' => 'div', 'class' => 'calign')),
+        'Errors',
+        array('Description', array('tag' => 'p', 'class' => 'description'))
+    ));
+}
+foreach (array('trailing_stop_loss', 'trailing_stop_loss_type') as $element) {
+    $this->form->getElement($element)->setDecorators(array(
+        'ViewHelper',
+        array('HtmlTag', array('tag' => 'span')),
+        'Errors',
+        array('Description', array('tag' => 'p', 'class' => 'description'))
+    ));
+}
+
+#Zend_Debug::Dump($this->form->getElement('risk')->getDecorators());
+?>
+
+<?php if (Zend_Controller_Front::getInstance()->getRequest()->getControllerName() != 'edit') { ?>
+<table class="params" style="width: 100%; margin-bottom: .5em;">
+    <thead>
+    	<tr>
+            <th scope="col" style="width: 33%;"><?= $this->form->getElement('symbol')->getLabel() ?></th>
+            <th scope="col" style="width: 33%;"><?= $this->form->getElement('position')->getLabel() ?></th>
+            <th scope="col" style="width: 33%;"><?= $this->form->getElement('allocation')->getLabel() ?></th>
+        </tr>
+    </thead>
+    <tr style="background-color: #ecf3fb;">
+        <td><?= $this->form->getElement('symbol') ?></td>
+        <td><?= $this->form->getElement('position') ?></td>
+        <td><?= $this->form->getElement('allocation') ?></td>
+    </tr>
+</table>
+<?php } ?>
+
+<table class="params" style="width: 100%;">
+    <thead>
+    	<tr>
+            <th scope="col"><?= $this->form->getElement('target_date')->getLabel() ?></th>
+            <th scope="col"><?= $this->form->getElement('target_price')->getLabel() ?></th>
+            <th scope="col"><?= $this->form->getElement('suggested_stop_loss')->getLabel() ?></th>
+            <th scope="col"><?= $this->form->getElement('trailing_stop_loss')->getLabel() ?></th>
+            <th scope="col"><?= $this->form->getElement('live_stop_loss')->getLabel() ?></th>
+        </tr>
+    </thead>
+    <tr style="background-color: #f1f1f1;">
+        <td><?= $this->form->getElement('target_date') ?></td>
+        <td><?= $this->form->getElement('target_price') ?></td>
+        <td><?= $this->form->getElement('suggested_stop_loss') ?></td>
+        <td class="calign"><?= $this->form->getElement('trailing_stop_loss') ?> <?= $this->form->getElement('trailing_stop_loss_type') ?></td>
+        <td><?= $this->form->getElement('live_stop_loss') ?></td>
+    </tr>
+</table>
+<table class="params" style="width: 100%;">
+    <thead>
+    	<tr>
+            <th scope="col"><?= $this->form->getElement('timeframe')->getLabel() ?></th>
+            <th scope="col"><?= $this->form->getElement('risk')->getLabel() ?></th>
+            <th scope="col"><?= $this->form->getElement('holding')->getLabel() ?></th>
+        </tr>
+    </thead>
+    <tr style="background-color: #f1f1f1;">
+        <td><?= $this->form->getElement('timeframe') ?></td>
+        <td><?= $this->form->getElement('risk') ?></td>
+        <td><?= $this->form->getElement('holding') ?></td>
+    </tr>
+</table>
+
+<table class="params" style="width: 100%; margin-bottom: .5em;">
+    <thead>
+    	<tr>
+            <th scope="col" style="width: 50%;"><?= $this->form->getElement('disclosure')->getLabel() ?></th>
+            <th scope="col" style="width: 50%;"><?= $this->form->getElement('notes')->getLabel() ?> </th>
+        </tr>
+    </thead>
+    <tr style="background-color: #f1f1f1;">
+        <td><?= $this->form->getElement('disclosure') ?></td>
+        <td><?= $this->form->getElement('notes') ?></td>
+    </tr>
+</table>
+
+<?php
+echo $this->form->getDisplayGroup('main');
+echo $this->form->getDisplayGroup('buttons');
+?>
+
+        </div></td>
+    </tr>
+</table>
+</dl></form>
+
+<?php $this->inlineScript()->captureStart(); ?>
+YUI({
+}).use('anim', 'gallery-node-accordion', function (Y) {
+	Y.one("#options_accordion").plug(Y.Plugin.NodeAccordion, {
+	    anim: Y.Easing.easeBothStrong
+	});	
+});
+<?php $this->inlineScript()->captureEnd(); ?>
+
+<?= $this->FormHelper(array('internal' => $this->internal)) ?>

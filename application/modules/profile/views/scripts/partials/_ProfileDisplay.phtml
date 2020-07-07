@@ -1,0 +1,54 @@
+<?php
+/*
+ * Profile Display Partial
+ *
+ * NOTE: Careful, this partial may get called from widgets and links should
+ *   possibly include full hostname and language specifications!
+ *
+ *  p_id                id of profile
+ *  p_name              name of profile
+ *  p_picture_url       url of profile picture
+ *  p_site_admin        is profile site admin
+ *  p_active            is profile active
+ *
+ *  b_site_admin        is member site admin
+ *  b_active            is member active
+ *
+ *  c_id                community id
+ *  c_name              community name
+ *  c_hostname          community hostname
+ *
+ *  vc_status           in contacts
+ *  vc_display          contacts display
+ */
+
+
+ /*
+<a href="http://<?= (isset($this->internal->vars->language) ? $this->internal->vars->language . '.' : '') ?><?= ($this->profile->c_hostname ? $this->profile->c_hostname : ($this->profile->c_name != 'default' ? $this->profile->c_name : 'www') . '.' . $this->internal->config->default_domain) ?>/<?= $this->SEO_Urlify($this->profile->name) ?>/s/via/<?= $this->profile->id ?>/"><span class="vpd<?= ((isset($this->profile->vc_status) && $this->profile->vc_status) ? ' vcc' : '') ?><?= ((isset($this->profile->b_site_admin) && $this->profile->b_site_admin) ? ' sa' : '') ?>"><?= ((isset($this->profile->vc_display) && $this->profile->vc_display) ? $this->escape($this->profile->vc_display) : $this->escape($this->profile->name)) ?></span></a>
+
+<?php if (isset($this->internal->member) && !(isset($this->profile->vc_status) && $this->profile->vc_status)) { ?>
+(<a href="/via/<?= $this->internal->member->profile->id ?>/contact/create/p/id/<?= $this->profile->id ?>/">+</a>)
+<?php } ?>
+
+<a href="/via/<?= $this->internal->member->profile->id ?>/mail/write/p/tid/<?= $this->profile->id ?>/"><img src="http://www.swingwire.com/mimages/email.gif"></a>
+*/ 
+
+
+ /* <?= ((isset($this->profile->vc_display) && $this->profile->vc_display) ? $this->escape($this->profile->vc_display) : $this->escape($this->profile->p_name)) ?> */
+
+
+if ($this->profile->b_active && $this->profile->p_active) {
+    $link = 'http://' . (isset($this->internal->vars->language) ? $this->internal->vars->language . '.' : '') . ($this->profile->c_hostname ? $this->profile->c_hostname : ($this->profile->c_name != 'default' ? $this->profile->c_name : 'www') . '.' . $this->internal->config->default_domain) . '/' . $this->SEO_Urlify($this->profile->p_name) . '/s/via/' .  $this->profile->p_id . '/';
+    
+    if (isset($this->href_only) && $this->href_only) { echo $link; }
+    else {
+?>
+
+<a href="<?= $link ?>" via_id="<?= $this->profile->p_id ?>" class="vpd<?= ((isset($this->profile->base) && $this->profile->base) ? ' base' : '') ?><?= ((isset($this->profile->vc_status) && $this->profile->vc_status) ? ' vcc' : '') ?><?= ((isset($this->profile->pfm_following) && $this->profile->pfm_following) ? ' vfp' : '') ?><?= (((isset($this->profile->b_site_admin) && $this->profile->b_site_admin) || (isset($this->profile->p_site_admin) && $this->profile->p_site_admin)) ? ' sa' : '') ?>" title="Right-Click For More Options"><?= ((isset($this->profile->vc_display) && $this->profile->vc_display) ? $this->escape($this->profile->vc_display) : $this->escape($this->profile->p_name)) ?></a>
+    
+<?php
+    }
+} else {
+    echo '<span class="vpd inactive">' . ((isset($this->profile->vc_display) && $this->profile->vc_display) ? $this->escape($this->profile->vc_display) : $this->escape($this->profile->p_name)) . '</span>';
+}
+?>

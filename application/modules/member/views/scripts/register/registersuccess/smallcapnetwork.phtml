@@ -1,0 +1,87 @@
+<div class="multistep_header">
+    <table><tr>
+        <td align="left" class="header">
+            Check Email
+        </td>
+        <td align="right" class="steps">
+            <table class="ind_steps"><tr>
+                <td>
+                    <div class="step firstitem"><span class="stepnumber">1</span>Enter Info</div>
+                </td>
+                <td>
+                    <div class="step selected"><span class="stepnumber">2</span>Check Email</div>
+                </td>
+                <td>
+                    <div class="step lastitem"><span class="stepnumber">3</span>Confirmation</div>
+                </td>
+            </tr></table>
+        </td>
+    </tr></table>
+</div>
+
+<?php $this->placeholder('temp')->captureStart(); ?>
+
+<p class="success">Your registration was successful and your account has been created.  The first step toward establishing your free account is done.  You're almost there!  Just a few more steps to ensure delivery of our free email newsletter and mobile text alerts...</p>
+<div style="padding: 0 1em 1em 1em; font-size: 14px; line-height: 140%;">
+	<?php /* <a href="http://www.otcjournal.com/newsletter/?email=<?= $this->temp_email ?>" target="_blank"><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/modules/member/register/otc_coreg/large.png" align="right" style="margin-left: 1em; float: right;" /></a> */ ?>
+    <p><strong>Thank You for Becoming A <?= $this->internal->community->display ?> Member...</strong></p>
+    <div>To complete your registration, <strong>you must verify your email address</strong>. Don't worry, it's quick and easy!</div>
+    <div style="margin: 12px 0 5px 15px; padding-left: 29px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/check.png) top left no-repeat;">Go to your inbox now.</div>
+    <div style="margin: 5px 0 5px 15px; padding-left: 29px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/check.png) top left no-repeat;">Find the verification email from <?= $this->internal->community->display ?> <i>(you might need to check your spam folder)</i>.</div>
+    <div style="margin: 5px 0 5px 15px; padding-left: 29px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/check.png) top left no-repeat;"><strong>Click on the verification link</strong> provided in the email.</div>
+    <div style="margin: 5px 0 12px 15px; padding-left: 29px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/check.png) top left no-repeat;"><strong>Start reaping the benefits of your free <?= $this->internal->community->display ?> Membership!</strong></div>
+    
+    <p>Once you verify your email address, you will have immediate login access to the <?= $this->internal->community->display ?> Community and will automatically be added to our priority list of Members who receive our Newsletter before anyone else.</p>
+
+    <p>Also, <strong>make sure to add our email address to your contact list</strong> to ensure delivery of our Newsletter in the mornings straight to your inbox.</p>
+    
+    <p>Have a Twitter account? Follow <a href="http://twitter.com/#!/SmallCapNetwork/">@SmallCapNetwork</a> on Twitter. It's the fastest way to get our daily updates via SMS alerts on your mobile device.</p>
+    <p>Let's Make Money Together!</p>
+    <p>Sincerely,</p>
+    <p><strong>SmallCap Network</strong></p>
+
+    <p>If you fail to receive the verification email, <a href="<?= $this->internal->target->pre ?>/member/register/verify/vmpd_nar/1/vmpd_fp/1/?email=<?= $this->temp_email ?>">click here</a> to have the verification email resent.</p>
+    <p>If you have any problems registering or confirming this registration, please contact us at <a href="mailto:<?= ($this->internal->community->email ? $this->internal->community->email : $this->internal->config->admin->email) ?>"><?= ($this->internal->community->email ? $this->internal->community->email : $this->internal->config->admin->email) ?></a>.</p>
+</div>
+
+
+<?php /*
+    <p>&nbsp;</p>
+    <p style="color: #173565; font-size: larger; font-weight: bold;"><strong>P.S. Below are some free offers you might be interested in. Please understand that they are completely optional and don't require a credit card.</strong></p>
+</div>
+
+<hr size="1" />
+<table style="margin: 1em 0;"><tr>
+	<td width="1"><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/modules/member/register/otc_coreg/small.png" style="padding-right: 1em;" /></td>
+	<td>
+		<p style="font-size: 18px; font-weight: bold;">SmallCap Network Members Now Receive a Free Subscription to the OTC Journal!</p>
+		<p>If You're An Avid Penny Stock Trader or Investor, the <strong>OTC Journal</strong> is a Must Have Email Newsletter Publication. The <strong>OTC Journal</strong> is in its 15th Year of Publication, the <strong>Longest Standing Penny Stock Newsletter Online</strong>! Check the Box and Start Receiving Today... <strong>Free of Charge. No Credit Card Required.</strong></p>
+	</td>
+</tr></table>
+<hr size="1" />
+<div style="margin-top: 2em; text-align: center;"><a href="http://www.otcjournal.com/newsletter/?email=<?= $this->temp_email ?>" target="_blank" style="text-decoration: none;"><span class="fakebutton blue" style="font-size: 24px; border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;">Submit &amp; Continue</span></a></div>
+*/ ?>
+
+<?php /*
+<script type="text/javascript"
+src="http://ldsapi.tmginteractive.com/generateplacementscript.aspx?placement=209691&publisher=711&redirect=http://<?= $this->internal->vars->host ?>&email=<?= $this->temp_email ?>"></script>
+<div style="margin-top: 1em; text-align: center;"><a href="/" style="text-decoration: none;" onclick="javascript:return TMG_CheckForClick();"><span class="fakebutton blue" style="font-size: 24px; border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;">Submit &amp; Continue</span></a></div>
+*/ ?>
+
+<?php /*
+<script type="text/javascript" src=" http://dm.tmginteractive.com/JSCoReg/InvestingMediaSolutions/imsmultioffer.aspx?id=209691&redirect=http://<?= $this->internal->vars->host ?>&Email=<?= $this->temp_email ?>"></script>
+<div style="text-align: center;"><a href="/" style="text-decoration: none;" onclick="javascript: return CheckForClick();"><span class="fakebutton blue" style="font-size: 24px; border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;">Submit &amp; Continue</span></a></div>
+*/ ?>
+
+<?php
+$this->placeholder('temp')->captureEnd();
+
+echo $this->CM(array(
+    'class' => 'cm decorated plain successmessage',
+    'hd' => 'Registration Successful',
+    'hd2' => 'Thank you for signing up',
+    'bd' => $this->placeholder('temp')
+));
+
+$this->placeholder('temp')->set(null);
+?>

@@ -1,0 +1,52 @@
+<?php
+if (!preg_match("/\/(member|acl)\//i", $this->internal->vars->request_uri)) {
+    $now = new DateTime('now');
+    $schedule = array(
+        ''  => array (
+            'start' => '2013-10-14 02:00:00',
+            'end'   => '2013-10-14 15:00:00'
+        ),
+        '1' => array (
+            'start' => '2015-07-12 15:00:00',
+            'end'   => '2015-07-15 11:00:00'
+        ),
+        '2' => array (
+            'start' => '2012-11-15 00:00:00',
+            'end'   => '2012-11-15 23:59:59'
+        )
+    );
+    
+    $interstitial_key = null;
+    
+    foreach ($schedule as $key => $times) {
+        if ($now >= new DateTime($times['start']) && $now <= new DateTime($times['end'])) {
+            $interstitial_key = $key;
+            break;
+        }
+    }
+    
+    if (!is_null($interstitial_key)) {
+$this->headScript()->captureStart() ?>
+var processing_interstitial = false;
+var ua = navigator && navigator.userAgent;
+var href = window && window.location && window.location.href;
+
+YAHOO.util.Cookie.set("cookies_enabled", 1, { path: "/" });
+if (
+    YAHOO.util.Cookie.get("cookies_enabled") &&
+    (!(/(Googlebot|Mediapartners-Google|Google Web Preview)/).test(ua)) &&
+    (!YAHOO.util.Cookie.get("interstitial")) &&
+    (!(/\/system\/interstitial\//).test(href))
+   ) {
+    
+    processing_interstitial = true;
+	// Redirect to interstitial and set cookie
+	YAHOO.util.Cookie.set("interstitial", 1, { path: "/" });
+	//YAHOO.util.Cookie.set("interstitial_dest", href, { path: "/" });
+	window.location.href = '/system/interstitial/<?= (isset($interstitial_key) && $interstitial_key ? 'p/id/'.$interstitial_key.'/' : '') ?>';
+	
+}
+<?php $this->headScript()->captureEnd();
+    }
+}
+?>

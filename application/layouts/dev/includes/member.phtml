@@ -1,0 +1,411 @@
+<?php
+$pre = '/' . $this->SEO_Urlify($this->internal->member->profile->name) . '/s/via/' . $this->internal->member->profile->id;
+?>
+
+<div id="menubar" class="member yuimenubar yuimenubarnav">
+    <div class="bd">
+        
+        <ul class="first-of-type">
+            <li class="yuimenubaritem logo first-of-type"><a class="yuimenubaritemlabel" href="/"><span class="icon"></span><?= $this->internal->community->display ?></a></li>
+            
+            <li class="yuimenubaritem home"><a class="yuimenubaritemlabel" href="/"><span class="icon"></span>Home</a></li>
+
+<?php /*                
+            <li class="yuimenubaritem explorer">
+                <a class="yuimenubaritemlabel" href="/"><span class="icon"></span>Explore</a>
+
+                <div class="yuimenu">
+                    <div class="bd">
+                        <ul class="first-of-type">
+                            <li class="yuimenuitem first-of-type"><a class="yuimenuitemlabel" href="/"><span class="icon"></span><?= $this->internal->community->display ?> Home</a></li>
+                        </ul>
+
+
+<?php
+if ($this->internal->member->profile->community_id != $this->internal->community->id) {
+    echo '<ul>';
+    echo '<li class="yuimenuitem first-of-type"><a class="yuimenuitemlabel" href="/profile/community/switch/" rel="nofollow"><span class="icon"></span>Switch This Profile To This Community</a></li>';
+    
+    $coms = explode(',', preg_replace('/^\{(.*)\}$/', '${1}', $this->internal->member->profile->community_ids));
+    
+    if (in_array($this->internal->community->id, $coms)) {
+        echo '<li class="yuimenuitem"><a class="yuimenuitemlabel" href="/profile/community/remove/" rel="nofollow">Unsubscribe From This Community</a></li>';
+    }
+    else {
+        echo '<li class="yuimenuitem"><a class="yuimenuitemlabel" href="/profile/community/add/" rel="nofollow">Subscribe To This Community</a></li>';
+    }
+    echo '</ul><ul>';
+}
+else {
+    echo '<ul>';
+}
+?>
+
+                            <li class="yuimenuitem first-of-type">
+                                <span class="yuimenuitemlabel"><span class="icon"></span>Community Membership</span>
+                                
+                                <div class="yuimenu">
+                                    <div class="bd">
+                
+                                        <ul class="first-of-type">
+<?php
+$counter = 0;
+foreach ($this->internal->member->profile->communities as $community) {
+    echo '<li class="yuimenuitem' . (!$counter ? ' first-of-type' : '') . '">';
+    echo '<a class="yuimenuitemlabel" href="/' . $this->SEO_Urlify($community->display) . '/s/com/' . $community->id . '/"><span class="icon"></span>' . $community->display . '</a>';
+    echo "</li>\n";
+    $counter++;
+}
+if (!$counter) {
+    echo '<li class="yuimenuitem first-of-type"><span class="yuimenuitemlabel-disabled"><span class="icon"></span>None</span></li>';
+}
+?>
+                                        </ul>
+                                        
+                                    </div>
+                                </div>  
+                            </li>
+                        </ul>
+
+                    </div>
+                </div>
+
+            </li>
+*/ ?>
+
+<?php /*
+            <li class="yuimenubaritem networks">
+                <span class="yuimenubaritemlabel" href="javascript:void(null);"><span class="icon"></span>Networks</span>
+                
+                <div class="yuimenu">
+                    <div class="bd">
+                        <ul class="first-of-type">
+                            <li class="yuimenuitem first-of-type">
+                                <span class="yuimenuitemlabel"><span class="icon"></span>Networks You've Created</span>
+                                
+                                <div class="yuimenu">
+                                    <div class="bd">
+                
+                                        <ul class="first-of-type">
+<?php
+$counter = 0;
+foreach ($this->internal->member->profile->networks as $network) {
+    if ($network->profile_id == $this->internal->member->profile->id) {
+        echo '<li class="yuimenuitem' . (!$counter ? ' first-of-type' : '') . '">';
+        echo '<a class="yuimenuitemlabel" href="/' . $this->SEO_Urlify($network->name) . '/s/net/' . $network->id . '/"><span class="icon"></span>' . $network->name . '</a>';
+        echo "</li>\n";
+        $counter++;
+    }
+}
+if (!$counter) {
+    echo '<li class="yuimenuitem first-of-type"><span class="yuimenuitemlabel-disabled"><span class="icon"></span>None</span></li>';
+}
+?>
+                                        </ul>
+                                        
+                                    </div>
+                                </div>  
+                            </li>
+                            <li class="yuimenuitem">
+                                <span class="yuimenuitemlabel"><span class="icon"></span>Networks You've Joined</span>
+                                
+                                <div class="yuimenu">
+                                    <div class="bd">
+                
+                                        <ul class="first-of-type">
+<?php
+$counter = 0;
+foreach ($this->internal->member->profile->networks as $network) {
+    if ($network->profile_id != $this->internal->member->profile->id) {
+        echo '<li class="yuimenuitem' . (!$counter ? ' first-of-type' : '') . '">';
+        echo '<a class="yuimenuitemlabel" href="/' . $this->SEO_Urlify($network->name) . '/net/' . $network->id . '/"><span class="icon"></span>' . $network->name . '</a>';
+        echo "</li>\n";
+        $counter++;
+    }
+}
+if (!$counter) {
+    echo '<li class="yuimenuitem first-of-type"><span class="yuimenuitemlabel-disabled"><span class="icon"></span>None</span></li>';
+}
+?>
+                                        </ul>
+                                        
+                                    </div>
+                                </div> 
+                            </li>
+                        </ul>
+                        
+                        <ul>
+                            <li class="yuimenuitem first-of-type"><a class="yuimenuitemlabel" href="<?= $pre ?>/network/" rel="nofollow"><span class="icon"></span>Manage Your Networks</a></li>
+                            <li class="yuimenuitem"><a class="yuimenuitemlabel" href="<?= $pre ?>/network/create/" rel="nofollow"><span class="icon"></span>Create A New Network</a></li>
+                        </ul>
+                        
+                    </div>
+                </div>
+            </li>
+*/ ?>
+
+<?php /*
+            <li class="yuimenubaritem profiles"><a class="yuimenubaritemlabel" href="javascript:void(null);" rel="nofollow"><span class="icon"></span>Profiles</a></li>
+*/ ?>
+
+
+            <li class="yuimenubaritem contacts">
+                <a class="yuimenubaritemlabel" href="/contact/" rel="nofollow"><span class="icon"></span>Contacts<?php if ($this->internal->member->profile->total_contact_requests_count) { echo '<span class="notification">' . $this->internal->member->profile->total_contact_requests_count . '</span>'; } ?></a>
+                
+                <div class="yuimenu">
+                    <div class="bd">                    
+                        <ul class="first-of-type">
+                            <li class="yuimenuitem first-of-type"><a class="yuimenuitemlabel" href="/contact/create/" rel="nofollow"><span class="icon"></span>Search For A Contact</a></li>
+                            <?php if ($this->internal->member->profile->total_contact_requests_count) { echo '<li class="yuimenuitem"><a class="yuimenuitemlabel" href="/contact/p/gid/I/" rel="nofollow"><span class="icon"></span>View Incoming Requests</a></li>'; } ?>
+                        </ul>
+                    </div>
+                </div>
+            </li>
+
+            <li class="yuimenubaritem inbox">
+                <a class="yuimenubaritemlabel inbox" href="/mail/" rel="nofollow"><span class="icon"></span>Mail<?php if ($this->internal->member->profile->total_new_mail_count) { echo '<span class="notification">' . $this->internal->member->profile->total_new_mail_count . '</span>'; } ?></a>
+                
+                <div class="yuimenu">
+                    <div class="bd">                    
+                        <ul class="first-of-type">
+                            <li class="yuimenuitem first-of-type"><a class="yuimenuitemlabel" href="/mail/write/" rel="nofollow"><span class="icon"></span>Compose New Message</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </li>
+            
+            <li class="yuimenubaritem publish">
+                <span class="yuimenubaritemlabel"><span class="icon"></span>Publish</span>
+                
+                <div class="yuimenu">
+                    <div class="bd">                    
+                        <ul class="first-of-type">
+<?php
+if (isset($this->internal->member->profile->modules)) {
+    $which = $defaults = array();
+    foreach (explode(',', preg_replace('/^\{(.*)\}$/', '${1}', $this->internal->community->default_modules)) as $key) {
+        $defaults[$key] = true;
+    }
+    foreach ($this->internal->member->profile->modules as $module) {
+        if (!isset($which[$module->m_name])) { $which[$module->m_name] = array(); }
+        $which[$module->m_name][] = $module->counter . $this->internal->config->delimiter . ($module->display ? $module->display : $module->m_display . ' (#' . $module->counter . ')');
+    }
+    
+    $counter = 0;
+    $titles = array(
+        'analysis' => 'Create A New Stock Analysis',
+        'article' => 'Publish A New Article',
+        'blog' => 'Create A New Blog Post',
+        'file' => 'Upload A New File',
+        'info' => 'Create A New Information Entry',
+        'message' => 'Create A New Message Board Post',
+        'page' => 'Create A New Page',
+        'pick' => 'Create A New Stock Pick',
+        'portfolio' => 'Create A New Stock Portfolio'
+    );
+    foreach ($which as $m_name => $m_matrix) {
+        if (count($m_matrix) > 1) {
+            $counter2 = 0;
+            echo '<li class="yuimenuitem mod_' . $m_name . (!$counter ? ' first-of-type' : '') . '"><span class="yuimenuitemlabel"><span class="icon"></span>' . $this->translate($titles[$m_name]) . '</span><div class="yuimenu"><div class="bd"><ul class="first-of-type">';
+            foreach ($m_matrix as $temp) {
+                list($mid, $title) = explode($this->internal->config->delimiter, $temp);
+                echo '<li class="yuimenuitem mod_' . $m_name . (!$counter2 ? ' first-of-type' : '') . '"><a class="yuimenuitemlabel" href="' . $pre . '/' . $m_name . '/create/p/mid/' . $mid . '/" rel="nofollow"><span class="icon"></span>' . $title . '</a></li>';
+                $counter2++;
+            }
+            echo '</ul></div></div></li>';
+        }
+        else {
+            list($mid, $title) = explode($this->internal->config->delimiter, $m_matrix[0]);
+            echo '<li class="yuimenuitem mod_' . $m_name . (!$counter ? ' first-of-type' : '') . '"><a class="yuimenuitemlabel" href="' . $pre . '/' . $m_name . '/create/p/mid/' . $mid . '/" rel="nofollow"><span class="icon"></span>' . $this->translate($titles[$m_name]) . '</a></li>';
+        }
+        
+        unset($defaults[$m_name]);
+        $counter++;
+    }
+    
+    $at_least_one_module = $counter;
+    
+    foreach ($defaults as $temp => $val) {
+        #echo '<li class="yuimenuitem mod_' . $temp . (!$counter ? ' first-of-type' : '') . '"><a class="yuimenuitemlabel" href="' . $pre . '/module/add/p/vmpd_fp/1/next_action/publish/module_id/' . $this->internal->module_modules[$temp]->id . '/" rel="nofollow"><span class="icon"></span>' . $this->translate($titles[$temp]) . '</a></li>';
+        echo '<li class="yuimenuitem mod_' . $temp . (!$counter ? ' first-of-type' : '') . '"><a class="yuimenuitemlabel" href="' . $pre . '/module/setup/publish/module_name/' . $temp . '/" rel="nofollow"><span class="icon"></span>' . $this->translate($titles[$temp]) . '</a></li>';
+        $counter++;
+    }
+}
+?>
+
+<?php /*
+                            <li class="yuimenuitem mod_article first-of-type"><a class="yuimenuitemlabel" href="/module/setup/publish/" rel="nofollow"><span class="icon"></span><?= $this->translate('Publish A New Article') ?></a></li>
+                            <li class="yuimenuitem mod_blog"><a class="yuimenuitemlabel" href="/module/setup/publish/" rel="nofollow"><span class="icon"></span><?= $this->translate('Create A New Blog Post') ?></a></li>
+                            <li class="yuimenuitem mod_file"><a class="yuimenuitemlabel" href="/module/setup/publish/" rel="nofollow"><span class="icon"></span><?= $this->translate('Upload A New Multimedia File') ?></a></li>
+                            <li class="yuimenuitem mod_message"><a class="yuimenuitemlabel" href="/module/setup/publish/" rel="nofollow"><span class="icon"></span><?= $this->translate('Create A New Message Board Post') ?></a></li>
+                            <li class="yuimenuitem mod_page"><a class="yuimenuitemlabel" href="/module/setup/publish/" rel="nofollow"><span class="icon"></span><?= $this->translate('Create A New Page') ?></a></li>
+                            <li class="yuimenuitem mod_info"><a class="yuimenuitemlabel" href="/module/setup/publish/" rel="nofollow"><span class="icon"></span><?= $this->translate('Create A New Information Entry') ?></a></li>
+                            <li class="yuimenuitem mod_pick"><a class="yuimenuitemlabel" href="/module/setup/publish/" rel="nofollow"><span class="icon"></span><?= $this->translate('Create A New Stock Pick') ?></a></li>
+                            <li class="yuimenuitem mod_analysis"><a class="yuimenuitemlabel" href="/module/setup/publish/" rel="nofollow"><span class="icon"></span><?= $this->translate('Create A New Stock Analysis') ?></a></li>
+                            <li class="yuimenuitem mod_portfolio last-of-type"><a class="yuimenuitemlabel" href="/module/setup/publish/" rel="nofollow"><span class="icon"></span><?= $this->translate('Create A New Stock Portfolio') ?></a></li>
+*/ ?>
+                        </ul>
+                        
+                            
+<?php
+if (!$at_least_one_module) {
+    echo '<ul class="last-of-type"><li class="yuimenuitem mod_adv_setup last-of-type"><a class="yuimenuitemlabel" href="' . $pre . '/module/setup/" rel="nofollow"><span class="icon"></span>' . $this->translate('Default Space Setup') . '</a></li></ul>';
+}
+?>
+                        
+                        
+                    </div>
+                </div>
+            </li>
+            
+            <li class="yuimenubaritem viame last-of-type">
+
+                <a class="yuimenubaritemlabel" href="<?= $pre ?>/"><span class="icon"></span><?= $this->internal->member->profile->name ?></a>
+                
+                <div class="yuimenu">
+                    <div class="bd">
+                        
+                        <ul class="first-of-type">
+                            
+                            <li class="yuimenuitem first-of-type">
+                                <span class="yuimenuitemlabel"><span class="icon"></span>Change Active Profile</span>
+                                <div class="yuimenu">
+                                    <div class="bd">
+                                        <ul class="first-of-type">
+                <?php
+                    $counter = 0;
+                    foreach ($this->internal->member->profiles as $profile) {
+                        echo '<li class="yuimenuitem' . (!$counter ? ' first-of-type' : '') . '">';
+                        if ($profile->id == $this->internal->member->profile->id) {
+                            echo '<span class="yuimenuitemlabel yuimenuitemlabel-disabled"><span class="icon"></span>' . $profile->name . '</span>';
+                        }
+                        else {
+                            echo '<a class="yuimenuitemlabel" href="/profile/switch/p/id/' . $profile->id . '/" rel="nofollow"><span class="icon"></span>' . $profile->name . '</a>';
+                        }
+                        
+                        echo "</li>\n";
+                        $counter++;
+                    }
+                ?>
+                                        </ul>
+                
+                                    </div>
+                                </div>
+                            </li>
+                            
+                            <li class="yuimenuitem last-of-type"><a class="yuimenuitemlabel" href="<?= $pre ?>/"><span class="icon"></span>View Active Profile</a></li>
+                        </ul>
+                        
+                        <ul class="last-of-type">
+                            <li class="yuimenuitem first-of-type">
+                                <span class="yuimenuitemlabel"><span class="icon"></span>Active Profile Settings</span>
+                                <div class="yuimenu">
+                                    <div class="bd">
+                                        <ul class="first-of-type">
+                                            <li class="yuimenuitem first-of-type"><a class="yuimenuitemlabel" href="<?= $pre ?>/module/" rel="nofollow"><span class="icon"></span><?= $this->translate('Module Manager') ?></a></li>
+                                            <li class="yuimenuitem last-of-type"><a class="yuimenuitemlabel" href="<?= $pre ?>/widget/" rel="nofollow"><span class="icon"></span><?= $this->translate('Widget Manager') ?></a></li>
+                                        </ul>
+                                        <ul class="last-of-type">
+                                            <li class="yuimenuitem"><a class="yuimenuitemlabel" href="/profile/edit/p/id/<?= $this->internal->member->profile->id ?>/" rel="nofollow"><span class="icon"></span>Preferences</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        
+                    </div>
+                </div>
+<?php /*
+                <div class="yuimenu">
+                    <div class="bd">
+
+<?php if (count($this->internal->member->profiles) > 1) { ?>
+                        <ul class="first-of-type">
+<?php
+    $counter = 0;
+    foreach ($this->internal->member->profiles as $profile) {
+        echo '<li class="yuimenuitem' . (!$counter ? ' first-of-type' : '') . '">';
+        if ($profile->id == $this->internal->member->profile->id) {
+            echo '<span class="yuimenuitemlabel yuimenuitemlabel-disabled"><span class="icon"></span>' . $profile->name . '</span>';
+        }
+        else {
+            echo '<a class="yuimenuitemlabel" href="/profile/switch/p/id/' . $profile->id . '/" rel="nofollow"><span class="icon"></span>' . $profile->name . '</a>';
+        }
+        
+        echo "</li>\n";
+        $counter++;
+    }
+?>
+                        </ul>
+<?php } ?>
+                    </div>
+                </div>
+*/ ?>
+            </li>
+            
+        </ul>
+                 
+    </div>
+</div>
+
+
+<div id="menubar2" class="member yuimenubar yuimenubarnav">
+    <div class="bd">
+
+        <ul class="first-of-type">
+<?php /*
+            <li class="yuimenubaritem first-of-type dashboard"><a class="yuimenubaritemlabel" href="/via/me/" rel="nofollow"><span class="icon"></span>Dashboard</a></li>
+*/ ?>
+            <li class="yuimenubaritem first-of-type last-of-type account">
+                <span class="yuimenubaritemlabel"><span class="icon"></span>Account</span>
+                
+                <div class="yuimenu">
+                    <div class="bd">
+                        
+                        <ul class="first-of-type">
+                            <li class="yuimenuitem first-of-type"><a class="yuimenuitemlabel" href="/profile/" rel="nofollow"><span class="icon"></span>Manage Profiles</a></li>
+                            <li class="yuimenuitem last-of-type"><a class="yuimenuitemlabel" href="/profile/create/" rel="nofollow"><span class="icon"></span>Create New Profile</a></li>
+                        </ul>
+                        
+                        <ul>
+                            <li class="yuimenuitem first-of-type"><a class="yuimenuitemlabel" href="/member/update/" rel="nofollow"><span class="icon"></span>Account Settings</a></li>
+                        </ul>
+                        
+                        <ul class="last-of-type">
+
+                            <li class="yuimenuitem help first-of-type">
+                                <span class="yuimenuitemlabel"><span class="icon"></span>Help</span>
+                                <div class="yuimenu">
+                                    <div class="bd">
+                                        <ul class="first-of-type">
+<?php /*
+                                            <li class="yuimenuitem first-of-type"><a class="yuimenuitemlabel" href="javascript:void(null);"><span class="icon"></span>Index</a></li>
+                                            <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:void(null);"><span class="icon"></span>Using Help</a></li>
+                                            <li class="yuimenuitem last-of-type"><a class="yuimenuitemlabel" href="javascript:void(null);"><span class="icon"></span>Quick Start Guide</a></li>
+                                        </ul>
+                                        
+                                        <ul class="last-of-type">
+*/ ?>
+                                            <li class="yuimenuitem about first-of-type"><a class="yuimenuitemlabel" href="/About-Us/s/page/view/p/mid/1/title/About+Us/"><span class="icon"></span>About Us</a></li>
+                                        </ul>
+                                        
+                                        <ul class="last-of-type">
+                                            <li class="yuimenuitem livechat first-of-type"><a class="yuimenuitemlabel" href="javascript:void(null);" rel="nofollow" onclick="return YAHOO.viame.livechat.chat();"><span class="icon"></span>Live Chat</a></li>
+                                            <li class="yuimenuitem contact last-of-type"><a class="yuimenuitemlabel" href="/Contact-Us/s/page/view/p/mid/1/title/Contact+Us/"><span class="icon"></span>Contact Us</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li class="yuimenuitem first-of-type last-of-type logout"><a class="yuimenuitemlabel" href="/member/logout/p/vmpd_far/1/" rel="nofollow"><span class="icon"></span>Logout</a></li>
+                            
+                        </ul>
+
+                    </div>
+                </div>
+            </li>
+
+        </ul>
+                 
+    </div>
+</div>

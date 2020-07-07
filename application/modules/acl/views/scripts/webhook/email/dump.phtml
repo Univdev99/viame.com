@@ -1,0 +1,17 @@
+<?php
+
+echo '<h1>' . $this->title . '</h1>';
+
+echo '<h2>POST</h2>';
+Zend_Debug::Dump($this->post);
+
+echo '<h2>GET</h2>';
+Zend_Debug::Dump($this->get);
+
+#echo '<h2>PARAMS</h2>';
+#Zend_Debug::Dump($this->params);
+
+echo '<h2>RESULT</h2>';
+Zend_Debug::Dump($this->result);
+
+?>

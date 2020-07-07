@@ -1,0 +1,83 @@
+<div style="margin: 0 auto; padding: 26px 0 12px 0; width: 1015px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_toolbar/background.png) top center no-repeat;">
+<div style="float: right; position: relative; top: -12px; right: 15px; width: 20px; height: 21px;"><a href="javascript:slideFixedOut();" rel="nofollow" title="Close"><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_toolbar/close.png" alt="Close" /></a></div>
+
+<table width="954" border="0" align="center" cellpadding="0" cellspacing="0"><tr>
+    <td width="1" style="padding-left: 15px;">
+        <img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/logo/logo3.png" />
+    </td>
+    <td width="1" style="padding-left: 25px;">
+        <img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_toolbar/double_arrow.png" />
+    </td>
+    <td align="left" style="padding-left: 20px; font-size: 13px;">
+        <img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_toolbar/free.png" />
+        <div style="margin: 5px 0;"><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_toolbar/check.png" /> Small Cap Stocks Before they Breakout</div>
+        <div style="margin: 5px 0;"><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_toolbar/check.png" /> Small Cap Stock Traders Who Consistently Knock it Out of the Park</div>
+        <div style="margin: 5px 0;"><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_toolbar/check.png" /> SCN's Trading Alert Newsletter and Much More!</div>
+    </td>
+    <td width="1" align="left">
+        <a href="/SignUp-ToolBar/s/member/register/p/shortform/1/signup_entrance/BB-Big-1/" rel="nofollow" onclick="YAHOO.util.Cookie.set('hide_newsletter_toolbar', '1', { path: '/' });"><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_toolbar/button.png" /></a>
+    </td>
+</tr></table>
+
+</div>
+
+<?php $this->inlineScript()->captureStart() ?>
+YAHOO.util.Event.onContentReady("fixed2", function () {
+    YAHOO.util.Dom.setY('fixed2', -10000);
+    
+    // Fixed at bottom
+    function positionFixedBottom() {
+        YAHOO.util.Dom.setY('fixed2', YAHOO.util.Dom.getViewportHeight() - YAHOO.util.Dom.get('fixed2').offsetHeight + YAHOO.util.Dom.getDocumentScrollTop());
+        YAHOO.util.Dom.setStyle('fixed2', 'visibility', 'visible');
+    }
+    YAHOO.util.Event.addListener(window, 'resize', positionFixedBottom);
+    
+    function slideFixedIn() {
+        YAHOO.util.Dom.setStyle('fixed2', 'visibility', 'visible');
+        var attributes = {
+            points: { from: [0, YAHOO.util.Dom.getViewportHeight() + YAHOO.util.Dom.getDocumentScrollTop()], to: [0, YAHOO.util.Dom.getViewportHeight() - YAHOO.util.Dom.get('fixed2').offsetHeight + YAHOO.util.Dom.getDocumentScrollTop()] }
+        };
+        var anim = new YAHOO.util.Motion('fixed2', attributes, 1, YAHOO.util.Easing.easeOut);
+        anim.animate();
+    }
+    //YAHOO.util.Event.addListener(window, 'load', slideFixedIn); // IE Error
+    if (!YAHOO.util.Cookie.get("hide_newsletter_toolbar")) {
+        //YAHOO.util.Dom.setStyle('fixed2', 'background-image', 'url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_toolbar/toolbar_bg.png)');
+        YAHOO.util.Dom.setStyle('fixed2', 'padding-top', '8px');
+        YAHOO.util.Dom.setStyle('fixed2', 'color', '#fff');
+        YAHOO.util.Dom.setStyle('page', 'margin-bottom', '8em');
+        slideFixedIn();
+        
+        if (YAHOO.env.ua.mobile) {
+            window.onscroll = function() {
+                document.getElementById('fixed2').style.top = (window.innerHeight + window.scrollY - YAHOO.util.Dom.get('fixed2').offsetHeight) + 'px';
+            };
+        }
+    }
+    else {
+        YAHOO.util.Dom.setStyle('fixed2', 'display', 'none');
+    }
+<?php /*
+    // Some default undos
+    //YAHOO.util.Dom.setStyle('fixed2', 'display', 'block');
+    //YAHOO.util.Dom.setStyle('fixed2', 'position', 'fixed');
+    
+    
+    // Fixed at top - Scootch page down
+    //YAHOO.util.Dom.setY('page', YAHOO.util.Dom.get('fixed2').offsetHeight);
+    
+    
+    //YAHOO.util.Dom.setY('fixed2', YAHOO.util.Dom.getViewportHeight() - YAHOO.util.Dom.get('fixed2').offsetHeight);
+*/ ?>
+});
+
+function slideFixedOut() {
+    var attributes = {
+        points: { from: [0, YAHOO.util.Dom.getViewportHeight() - YAHOO.util.Dom.get('fixed2').offsetHeight + YAHOO.util.Dom.getDocumentScrollTop()], to: [0, YAHOO.util.Dom.getViewportHeight() + YAHOO.util.Dom.getDocumentScrollTop()] }
+    };
+    var anim = new YAHOO.util.Motion('fixed2', attributes, 1, YAHOO.util.Easing.easeOut);
+    anim.animate();
+    anim.onComplete.subscribe(function() { YAHOO.util.Dom.setStyle('page', 'margin-bottom', '0em'); YAHOO.util.Dom.setStyle('fixed2', 'display', 'none'); });
+    YAHOO.util.Cookie.set("hide_newsletter_toolbar", "1", { path: "/" });
+}
+<?php $this->inlineScript()->captureEnd() ?>

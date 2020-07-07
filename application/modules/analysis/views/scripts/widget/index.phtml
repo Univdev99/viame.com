@@ -1,0 +1,205 @@
+<?php
+$module = 'analysis';
+
+/*
+if (!$this->masked && ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_WRITE)) {
+?>
+<p class="administer"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/create/p/mid/<?= $this->widget->counter ?>/">Create New Analysis</a></p>
+<?php
+}
+*/
+
+if (isset($this->objects) && $this->objects) {
+    $counter = 0;
+    
+    foreach ($this->objects as $object) {
+        $counter++;
+        if ($this->internal->target->acl->owner ||
+            $object->allowed === null ||
+            $object->show_on_fail ||
+            ($object->allowed && ($object->privilege >= ViaMe_Controller_Action::ACL_READ)) ||
+            ($this->internal->target->acl->recursive && ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_READ))) {
+            
+            // Create the link
+            /*
+            $link = 'http://' . $this->internal->vars->host . '/' . $this->SEO_Urlify($object->title) . '/s';
+            if ($this->masked) {
+                $link .= $this->internal->target->pre . "/$module/view/p/mid/" . $this->masked . '/id/' . $object->counter . '/';
+            }
+            else {
+                if ($object->com_id && ((isset($this->internal->params->com_id) && $this->internal->params->com_id) || $object->com_id != $this->internal->community->id)) { $link .= '/com/' . $object->com_id; }
+                elseif ($object->net_id) { $link .= '/net/' . $object->net_id; }
+                elseif ($object->via_id) { $link .= '/via/' . $object->via_id; }
+                
+                $link .= "/$module/view/p/mid/" . $object->matrix_counter . '/id/' . $object->counter . '/';
+            }
+            */
+            $link = $this->ContentLink(array('object' => $object, 'view' => $this));
+?>
+<div class="<?= $module ?> <?= ($counter % 2) ? 'odd' : 'even' ?><?= (isset($this->widget->widget_hide_summary) && $this->widget->widget_hide_summary) ? ' hide_summary' : '' ?><?= ($counter == 1) ? ' firstitem' : (($counter == count($this->objects)) ? ' lastitem' : '') ?><?= ($object->active == false ? ' draftitem' : '') ?><?= ($object->published_display_activated == false ? ' futureitem' : '') ?><?= ($object->published_display_expired == true ? ' expireditem' : '') ?>">
+    <div class="title"><a href="<?= $link ?>"><?= $this->escape($object->title) ?></a><?= ($object->active == false ? ' <span class="drafttype">(Draft)</span>' : '') ?><?= ($object->published_display_activated == false ? ' <span class="futuretype">(Future)</span>' : '') ?><?= ($object->published_display_expired == true ? ' <span class="expiredtype">(Expired)</span>' : '') ?></div>
+    <?php if ($object->symbols) { ?>
+        <div class="symbols">Symbol(s): 
+    <?php
+        $ids = explode(',', preg_replace('/^\{(.*)\}$/', '${1}', $object->symbols));
+        $info = $this->Quote_ConvertIdToSymbol( $ids );
+        $symbol_counter = 1;
+        foreach ($ids as $id) {
+            echo $this->Quote_SymbolDisplay(array('id' => $id, 'symbol' => $info[$id]->internal_symbol, 'name' => $info[$id]->name, 'internal' => $this->internal));
+            if ($symbol_counter < count($ids)) { echo ', '; }
+            $symbol_counter++;
+        }
+    ?>    
+        </div>
+    <?php } ?>
+    
+    <div class="author">By <?= $this->ProfileDisplay(array('profile' => $object, 'internal' => $this->internal)) ?></div>
+    <div class="datetime">
+<?php
+        $date = new Zend_Date();
+        $date->set($object->published_display_date, Zend_Date::ISO_8601);
+        if (isset($this->internal->member)) {
+            $date->setTimezone($this->internal->member->timezone);
+            echo $date->toString(Zend_Date::DATE_MEDIUM) . ' <span class="time">' . $date->toString(Zend_Date::TIME_SHORT) . '</span>';
+        }
+        else {
+            $date->setTimezone($this->internal->config->timezone);
+            echo $date->toString(Zend_Date::DATE_MEDIUM) . ' <span class="time">' . $date->toString(Zend_Date::TIME_SHORT . ' z') . '</span>';
+        }
+?>
+    </div>
+
+<?php if (!(isset($this->widget->widget_hide_summary) && $this->widget->widget_hide_summary)) { ?>
+    <div class="summary"><?= ($object->summary ? $this->escape($object->summary) : $this->SEO_Quip($object->content, 256)) ?></div>
+<?php } ?>
+
+    <div class="info">
+        <?php
+            switch ($object->analysis_action) {
+                case 1:
+                    $analysis_action = 'Upgrade';
+                    $analysis_action_image = 'arrows/up';
+                    break;
+                case -1: 
+                    $analysis_action = 'Downgrade';
+                    $analysis_action_image = 'arrows/down';
+                    break;
+                default:
+                    $analysis_action = 'No Action';
+                    $analysis_action_image = 'arrows/neutral';
+                    break;
+            }
+            
+            switch ($object->recommendation) {
+                case 4:
+                    $recommendation = 'Strong Buy';
+                    $recommendation_image = 'meters/r2g/9';
+                    break;
+                case 3:
+                    $recommendation = 'Buy';
+                    $recommendation_image = 'meters/r2g/8';
+                    break;
+                case 2:
+                    $recommendation = 'Strong Speculative Buy';
+                    $recommendation_image = 'meters/r2g/7';
+                    break;
+                case 1:
+                    $recommendation = 'Speculative Buy';
+                    $recommendation_image = 'meters/r2g/6';
+                    break;
+                case -1:
+                    $recommendation = 'Speculative Sell';
+                    $recommendation_image = 'meters/r2g/4';
+                    break;
+                case -2:
+                    $recommendation = 'Strong Speculative Sell';
+                    $recommendation_image = 'meters/r2g/3';
+                    break;
+                case -3:
+                    $recommendation = 'Sell';
+                    $recommendation_image = 'meters/r2g/2';
+                    break;
+                case -4:
+                    $recommendation = 'Strong Sell';
+                    $recommendation_image = 'meters/r2g/1';
+                    break;
+                default:
+                    $recommendation = 'Neutral';
+                    $recommendation_image = 'meters/r2g/5';
+                    break;
+            }
+            
+            switch ($object->timeframe) {
+                case 1:
+                    $timeframe = 'Long-Term';
+                    $timeframe_image = 'meters/c1/9';
+                    break;
+                case -1:
+                    $timeframe = 'Short-Term';
+                    $timeframe_image = 'meters/c1/2';
+                    break;
+                default:
+                    $timeframe = 'Mid-Term';
+                    $timeframe_image = 'meters/c1/5';
+                    break;
+            }
+            
+            switch ($object->risk) {
+                case 1:
+                    $risk = 'High';
+                    $risk_image = 'meters/g2r/9';
+                    break;
+                case -1:
+                    $risk = 'Low';
+                    $risk_image = 'meters/g2r/1';
+                    break;
+                default:
+                    $risk = 'Medium';
+                    $risk_image = 'meters/g2r/5';
+                    break;
+            }
+            
+            $ihost = $this->internal->vars->static_host . "/css/theme/default/assets/modules/$module/";
+        ?>
+        <table class="display">
+            <tr class="firstrow headers">
+                <th width="50%" class="firstitem firstcol">Action</th>
+                <th width="50%" class="lastitem lastcol">Recommendation</th>
+            </tr>
+            <tr>
+                <td class="firstitem firstcol"><span class="action<?= $object->analysis_action ?>"><?= $analysis_action ?><?php /*<img src="<?= $ihost . $analysis_action_image . '.gif' ?>" align="absmiddle" style="margin-left: 3px;">*/ ?></span></td>
+                <td class="lastitem lastcol"><span class="recommendation<?= $object->recommendation ?>"><?= $recommendation ?><?php /*<img src="<?= $ihost . $recommendation_image . '.gif' ?>" align="absmiddle" style="margin-left: 3px;">*/ ?></span></td>
+            </tr>
+            <tr class="headers">
+                <th class="firstitem firstcol">Timeframe</th>
+                <th class="lastitem lastcol">Risk</th>
+            </tr>
+            <tr class="lastrow">
+                <td class="firstitem firstcol"><span class="timeframe<?= $object->timeframe ?>"><?= $timeframe ?><?php /*<img src="<?= $ihost . $timeframe_image . '.gif' ?>" align="absmiddle" style="margin-left: 3px;">*/ ?></span></td>
+                <td class="lastitem lastcol"><span class="risk<?= $object->risk ?>"><?= $risk ?><?php /*<img src="<?= $ihost . $risk_image . '.gif' ?>" align="absmiddle" style="margin-left: 3px;">*/ ?></span></td>
+            </tr>
+        </table>      
+    </div>
+
+<?php if (!(isset($this->widget->widget_hide_summary) && $this->widget->widget_hide_summary)) { ?>
+    
+<?php if (isset($object->more_link) && $object->more_link && strtolower(trim($object->more_link)) != 'more') { ?>
+    <div class="more_link"><a href="<?= $link ?>">&raquo; <?= $this->escape($object->more_link ? $object->more_link : 'More') ?></a></div>
+<?php } ?>
+
+<?php if ($this->widget->interactive && ($this->masked ? $object->x_interactive : true)) { ?>
+    <div class="interact">
+         <div class="comments"><span class="begin_comment_count">&nbsp;</span><a href="<?=$link?>#comments_list" class="comment_count"><?= $object->total_comments_count ?></a><span class="end_comment_count">&nbsp;</span> <a href="<?=$link?>#comments_list">Comment(s)</a></div>
+        <div class="rating">Rating <span class="count rc<?= floor($object->rating * 2) ?>"><?= ($object->rating ? $object->rating : 'N/A') ?></span></div>
+    </div>
+<?php } ?>
+
+<?php } ?>
+
+</div>
+
+<?php
+        }
+    }
+}
+?>

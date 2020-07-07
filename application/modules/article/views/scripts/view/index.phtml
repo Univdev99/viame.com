@@ -1,0 +1,671 @@
+<?php $module = 'article'; ?>
+
+<?php
+/*
+$this->inlineScript()->captureStart(); ?>
+YUI().use('node', 'event', 'plugin', 'stickyElement', function (Y) {
+    Y.on('domready', function () {
+		//Y.one('#article_view_sticky_1').plug(Y.Plugin.StickyElement, { container: '#main_column', curb: '#fixed' });
+		Y.one('#article_view_sticky_3').plug(Y.Plugin.StickyElement, { container: '#main_column', curb: '.curb' });
+	});
+});
+<?php $this->inlineScript()->captureEnd();
+*/
+
+// Put All images into a div so they don't clear the float
+$this->inlineScript()->captureStart(); ?>
+//$('#main_column .part2 .content img').wrap( '<div style="display: block; overflow: auto;"></div>' );
+<?php $this->inlineScript()->captureEnd(); ?>
+
+<div class="yui3-g">
+    <!-- Start Left Column -->
+    <div id="main_column" class="yui3-u"><div class="content" style="margin-right: 1em;">
+
+<div class="cm decorated padded m_<?= $module ?> m-<?= $this->internal->target->currentModule->module_id ?>-<?= $this->internal->target->currentModule->counter ?> id_<?= $this->object->counter ?>" style="border: none;">
+<div class="bd" style="padding: 0;">
+
+<?php if (!$this->masked && ($this->internal->target->acl->owner || ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_EDIT) || ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_DELETE))) { ?>
+    <div class="administer" style="text-align: right;">
+        <?php
+        // Edit Article Link
+        if ($this->internal->target->acl->owner || ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_EDIT)) {
+        ?>          
+        <a href="<?= $this->internal->target->pre ?>/<?= $module ?>/edit/p/mid/<?= $this->object->matrix_counter ?>/id/<?= $this->object->counter ?>/" class="edit">Edit Article</a>
+        <?php
+        }
+        ?>
+        
+        <?php
+        // Delete Article Link
+        if ($this->internal->target->acl->owner || ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_DELETE)) {
+        ?>
+        <a href="<?= $this->internal->target->pre ?>/<?= $module ?>/delete/p/mid/<?= $this->object->matrix_counter ?>/id/<?= $this->object->counter ?>/" onclick="return confirm('Are you sure you want to delete this article?');" class="delete">Delete Article</a>
+        <?php
+        }
+        ?>
+    </div>
+<?php } ?>
+
+<?php
+// Get any RATINGS DATA for use later
+$ratings_data = null;
+if (
+        (isset($this->object->symbols) && $this->object->symbols) &&
+        ((isset($db) && $db) || $db = Zend_Registry::get('db'))
+    ) {
+    $query = "SELECT qx.id, qx.internal_symbol AS qx_internal_symbol, qx.name AS qx_name, qx.type AS qx_type, qx.exch AS qx_exch, qx.internal_symbol AS qx_internal_symbol, qx.delayed_symbol AS qx_delayed_symbol, qx.realtime_symbol AS qx_realtime_symbol, COUNT(obj.position) AS rating_total, AVG(obj.position) AS rating_rating, MAX(COALESCE(obj.published, obj.creation)) AS rating_max_creation FROM 
+                (
+                    SELECT pp.* FROM pick_picks AS pp
+                    INNER JOIN module_matrix AS x ON pp.com_id=x.com_id AND pp.net_id=x.net_id AND pp.via_id=x.via_id AND pp.module_id=x.module_id AND pp.matrix_counter=x.counter
+                    INNER JOIN module_modules AS m ON x.module_id=m.id
+                    INNER JOIN profile_profiles AS p ON pp.profile_id=p.id
+                    INNER JOIN member_members AS b ON p.member_id=b.id
+                    INNER JOIN system_communities AS c ON p.community_id=c.id
+                    WHERE 
+                    (x.active='t') AND (m.active='t') AND (p.active='t') AND (b.active='t') AND (c.active='t') AND ((pp.com_id=" . $this->internal->community->id . ") OR (m.allow_flow='t' AND x.allow_out_flow AND (pp.net_id=0 OR (ARRAY[pp.via_id, x.counter] :: text ~ E'()' AND x.allow_community_outflow && ARRAY[" . $this->internal->community->id . "] :: bigint[])))) AND (pp.active NOTNULL AND ((pp.active='t' AND (pp.activation ISNULL OR pp.activation <= now()) AND (pp.expiration ISNULL OR pp.expiration >= now())))) AND pp.partial_close_parent_id ISNULL AND (ARRAY[pp.symbol_id] :: bigint[] <@ '" . $this->object->symbols . "')
+                ) AS obj
+                RIGHT OUTER JOIN
+                (
+                    SELECT * FROM quote_view_symbol_matrix WHERE ARRAY[id] :: bigint[] <@ '" . $this->object->symbols . "'
+                ) AS qx
+                ON (obj.symbol_id=qx.id)
+            GROUP BY qx.id, qx.internal_symbol, qx.name, qx.type, qx.exch, qx.internal_symbol, qx.delayed_symbol, qx.realtime_symbol
+            LIMIT 5";
+    #echo $query;
+    
+    $ratings_data = $db->fetchAll($query);
+    #Zend_Debug::Dump($ratings_data);
+}
+?>
+
+<?php if (!isset($this->internal->member)) { ?>
+<div style="padding-bottom: 30px; margin-bottom: 30px; border-bottom: 5px solid #053255;">
+    <div style="padding: 40px; color: #fff; background: #84c733; background: -moz-linear-gradient(left,  #84c733 0%, #4daa74 100%); background: -webkit-linear-gradient(left,  #84c733 0%,#4daa74 100%); background: linear-gradient(to right,  #84c733 0%,#4daa74 100%); filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#84c733', endColorstr='#4daa74',GradientType=1 );">
+        <p style="font-size: 24px; margin-bottom: 12px;"><strong><?= ($this->internal->community->display ? $this->internal->community->display : $this->internal->community->name) ?> Community</strong></p>
+        <p style="margin-bottom: 0; font-size: 18px;">Join the 200,000+ other members who take full advantage of all that <?= ($this->internal->community->display ? $this->internal->community->display : $this->internal->community->name) ?> has to offer.  <a href="/member/login/" style="color: #fff; text-decoration: none; border-bottom: 4px solid #ffc62b; padding-bottom: 1px;">Sign-in</a> or <a href="/member/register/" style="color: #fff; text-decoration: none; border-bottom: 4px solid #ffc62b; padding-bottom: 1px;">join the community today</a> &mdash; <strong>FREE!</strong></p>
+    </div>
+</div>
+<?php } ?>
+
+<!-- Begin Top of Article Ad -->
+<div id="TopOfArticleStockAd">
+<?php
+if (!isset($this->internal->member) && $this->internal->community->meta_stocks && isset($this->object->symbols) && !is_null($this->object->symbols) && (!preg_match("/Google/i", $_SERVER['HTTP_USER_AGENT']))) {
+    echo $this->RelatedQuotes(array('symbols' => $this->object->symbols, 'internal' => $this->internal, 'which_part' => '3', 'int_location' => 'TOP'));
+} elseif (isset($this->internal->member) && $this->internal->community->meta_stocks && isset($ratings_data) && $ratings_data) { ?>
+    <div style="padding: .5em; border: 1px solid #000;">
+        <div style="margin-bottom: 12px; text-align: center; font-size: 30px; color: #005790; font-weight: bold;"><?= ($this->internal->community->display ? $this->internal->community->display : $this->internal->community->name) ?> Stock Ratings</div>
+<style>
+#stocker td { text-align: center; vertical-align: middle; padding-bottom: 6px; }
+#stocker td.symbol a {
+    padding: .3em;
+    font-size: 30px;
+    color: #005790;
+    font-weight: bold;
+    text-decoration: none;
+}
+#stocker td.symbol a:hover {
+    text-decoration: underline;
+}
+</style>
+        <table width="100%" id="stocker" class="stock_rating">
+<?php
+foreach ($ratings_data as $trd) {
+    if (!is_null($trd->rating_rating)) {
+        $the_rating_value = sprintf("%.1f", (intval(($trd->rating_rating + 1) / 2 * 9) + 1) / 2);
+    }
+    else {
+        $the_rating_value = 0;
+    }
+?>
+    <tr>
+        <td class="symbol"><?= $this->Quote_SymbolDisplay(array('id' => $trd->id, 'symbol' => $trd->qx_internal_symbol, 'name' => $trd->qx_name, 'internal' => $this->internal)); ?></td>
+        <td><a href="<?= '/' . $this->SEO_Urlify($trd->qx_name) . '/s/quote/p/s/' . $trd->qx_internal_symbol . '/f/rating/' ?>"><span title="<?= ($the_rating_value ? $the_rating_value . ' Stars' : 'No Ratings.  Be the first to rate it!') ?>" class="star_rating stars<?= preg_replace('/\./', '-', $the_rating_value) ?>"><?= $the_rating_value ?></span></a></td>
+        <td><a style="display: block; font-size: 14px; width: 80%;" class="fakebutton green" href="/module/setup/publish/signup_entrance/Article-Top_Rating/module_name/pick/extra_params/symbol%3D<?= $trd->qx_internal_symbol ?>%26position%3D1%26allocation%3D1%26vmpd_fp%3D1/" id="stock_rating-buy">Rate <?= $trd->qx_internal_symbol ?> A Buy</a></td>
+        <td><a style="display: block; font-size: 14px; width: 80%;" class="fakebutton red" href="/module/setup/publish/signup_entrance/Article-Top_Rating/module_name/pick/extra_params/symbol%3D<?= $trd->qx_internal_symbol ?>%26position%3D-1%26allocation%3D1%26vmpd_fp%3D1/" id="stock_rating-sell">Rate <?= $trd->qx_internal_symbol ?> A Sell</a></td>
+    </tr>
+<?php
+}
+?>
+        </table>
+    </div>
+<?php } else { ?>
+    <div class="advertisement">
+	<div id="div-gpt-ad-1360793638595-0" style="text-align: center;"><script type='text/javascript'>
+	//googletag.pubads().display('/1063461/VM-Platform-Article_View_Default-648x296', [[648, 296], [648, 222], [648, 166]], 'div-gpt-ad-1360793638595-0');
+	googletag.pubads().display('/1063461/VM-Platform-Article_View_Default-648x296', [648, 296], 'div-gpt-ad-1360793638595-0');
+	</script></div>
+	</div>
+<?php } ?>
+</div>
+<!-- End Top of Article Ad -->
+
+    <div class="title<?= ($this->object->active == false ? ' draftitem' : '') ?><?= ($this->object->published_display_activated == false ? ' futureitem' : '') ?><?= ($this->object->published_display_expired == true ? ' expireditem' : '') ?>">
+        <h1><?= $this->escape($this->object->title) ?><?= ($this->object->active == false ? ' <span class="drafttype">(Draft)</span>' : '') ?><?= ($this->object->published_display_activated == false ? ' <span class="futuretype">(Future)</span>' : '') ?><?= ($this->object->published_display_expired == true ? ' <span class="expiredtype">(Expired)</span>' : '') ?></h1>
+    </div>
+    <?= isset($this->object->heading) && $this->object->heading ? '<div class="heading"><h2>'. $this->escape($this->object->heading) .'</h2></div>' : '' ?>
+
+    <div class="part1" style="margin-bottom: 0; padding-bottom: .25em;">
+        <div class="author">By <?= $this->ProfileDisplay(array('profile' => $this->object, 'internal' => $this->internal)) ?></div>
+        
+        <span class="datetime">
+        <?php
+            $date = new Zend_Date();
+            #$date->set((isset($this->object->published) && $this->object->published ? $this->object->published : $this->object->creation), Zend_Date::ISO_8601);
+            $date->set($this->object->published_display_date, Zend_Date::ISO_8601);
+            if (isset($this->internal->member)) {
+                $date->setTimezone($this->internal->member->timezone);
+                echo $date->toString(Zend_Date::DATETIME_MEDIUM);
+            }
+            else {
+                $date->setTimezone($this->internal->config->timezone);
+                echo $date->toString(Zend_Date::DATETIME_MEDIUM. ' z');
+            }
+        ?>
+        </span>
+        
+        <?php /*
+        |
+        <span class="view_counter datetime">
+            <?= Zend_Locale_Format::toNumber($this->object->total_views_count, array('locale' => $this->internal->locale)) ?> View(s)
+        </span>
+        */ ?>
+        
+        
+            <span class="interact">
+                <?php /*
+                |
+                <span class="views"><span class="view_count"><?= $this->object->total_views_count ? $this->object->total_views_count : 'No'?></span> View(s)</a></span>
+                */ ?>
+<?php if ($this->internal->target->currentModule->interactive && ($this->masked ? $this->object->x_interactive : true)) { ?>
+                |
+                <span class="comments"><a href="#comments_list"><span class="comment_count"><?= $this->object->total_comments_count ? $this->object->total_comments_count : 'No'?></span> Comment(s)</a>
+                <?php if (($this->internal->target->acl->allowed === null || $this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT) && $this->object->allow_comments) { ?>
+                - <a href="#post_a_comment">Post a Comment</a>
+                <?php } ?>
+                </span>
+<?php } ?>
+            </span>
+            <span class="interact rateit" style="display: inline-block; float: right;">
+                <span class="rating" style="">Rating <span class="count rc<?= floor($this->object->rating * 2) ?>"><?= ($this->object->rating ? $this->object->rating : '') ?></span></span>
+            </span>
+        
+        <div class="relay">
+            <?= $this->partial('partials/_AddThis.phtml', 'system', array('internal' => $this->internal)); ?>
+            
+            <?= $this->PrintEmailLink(array('link' => '', 'internal' => $this->internal)) ?>
+        </div>
+    </div>
+    
+    <?php if ($this->internal->community->meta_stocks && isset($this->object->symbols) && !is_null($this->object->symbols)) { echo $this->RelatedQuotes(array('symbols' => $this->object->symbols, 'internal' => $this->internal, 'which_part' => '1')); } ?>
+
+    <div class="part2" style="margin-top: 1em;">
+        <div id="profile_content_menu" style="float: left; margin: 0 1em 0 0; width: 160px;">
+<?php
+/*
+echo  $this->CM(array(
+    'class' => 'cm widget w_vmodulemenu',
+    'bd' => $this->action('index', 'widgets_vmodulemenu', 'widget', (array) $this->internal->params)
+));    
+*/
+
+#echo $this->action('profile', 'widgets_vmodulemenu', 'widget', array('profile_id' => $this->object->p_id));
+?>
+        </div>
+        
+        <div class="content">
+
+<?php
+#<p>	PAGER -- Title of Pager One Next</p>
+$pagers = array(
+    '<(?=p|div)[^>]*?>\s*<!-- pagebreak (.*?)-->\s*<\/(?=p|div).*?>',
+    '<(?=p|div)[^>]*?>\s*-- pagebreak --([^<]*?)<\/(?=p|div).*?>',
+    '<div style="page-break-after: always;">\s*<span style="display: none;">([^<].*?)<\/span>\s*<\/div>'
+);
+$regexp = '(' . implode('|', $pagers) . ')';
+
+if (!(isset($this->internal->params->to_print) && $this->internal->params->to_print) && preg_match_all("/$regexp/i", $this->object->content, $matches, PREG_SET_ORDER)) {
+    $counter = 0;
+    foreach (preg_split("/$regexp/i", $this->object->content) as $temp) {
+        $pages[$counter]['content'] = trim($temp);
+        $counter++;
+    }
+
+    $counter = 0;
+    $pages[$counter]['title'] = 'Start';
+    foreach ($matches as $temp) {
+        $pages[$counter + 1]['title'] = trim($temp[count($temp) - 1]);
+        $counter++;
+    }
+    
+    $which_page = (isset($this->internal->params->page) && $this->internal->params->page ? $this->internal->params->page : 1);
+    $paginator = new Zend_Paginator(new Zend_Paginator_Adapter_Array($pages));
+    $paginator->setCurrentPageNumber($which_page);
+    $paginator->setItemCountPerPage(1);
+    $paginator->setPageRange(11);
+    
+    echo $pages[$which_page - 1]['content'];
+    echo '<br />';
+    echo $this->paginationControl($paginator, 'Sliding', 'view/paginator.phtml', array(
+      'internal' => $this->internal,
+      'prev_title' => (isset($pages[$which_page - 2]['title']) ? $pages[$which_page - 2]['title'] : ''),
+      'next_title' => (isset($pages[$which_page]['title']) ? $pages[$which_page]['title'] : '')
+    ));
+}
+else {
+   // echo $this->object->content;    
+    
+   echo  str_replace('<a href=','<a target="_blank" href=',$this->object->content);
+}
+?>
+   
+        </div>
+    </div>
+    
+<?php
+// Contributors
+if (
+    $this->internal->community->id == 2 && (
+        $this->object->p_id == 754   || // SmallCap Network
+        $this->object->p_id == 10    || // James Brumley
+        $this->object->p_id == 1789  || // Bryan Murphy
+        $this->object->p_id == 6540  || // Matthew Briar
+        $this->object->p_id == 3414  || // John Udovich
+        $this->object->p_id == 52883 || // Jim Robertson
+        $this->object->p_id == 21051 || // Peter Graham
+        $this->object->p_id == 55305 || // Michael McCarthy
+        $this->object->p_id == 55359 || // Darren Williams
+        $this->object->p_id == 55383 || // Sara Cornell
+        $this->object->p_id == 55390 || // Phil Saunders
+        $this->object->p_id == 55398 || // Robert Smith 
+        $this->object->p_id == 55421 || // Jared Kimball
+        $this->object->p_id == 55460    // Azam Zariff
+    )
+   ) {
+?>
+    <hr size="1" /><p style="font-size: 14px; font-style: italic; color: #333;">
+<?php if ($this->object->p_id != 754) { ?>
+    <?= $this->object->p_name ?> is a paid contributor of the SmallCap Network. <?= $this->object->p_name ?>'s personal holdings should be disclosed above. You can also 
+<?php } else { ?>
+    Please
+<?php } ?>
+    view SmallCap Network's complete <a href="/Disclaimer/s/page/view/p/mid/1/id/2/">Disclaimer</a> and <a href="/SEC-Rule-17b-Disclosure/s/page/view/p/mid/1/id/4/">SEC Rule 17b Disclosure</a>.
+    </p>
+<?php 
+}
+?>
+
+
+<!-- Begin Bottom of Article Ad -->
+<style>
+#BottomOfArticleStockAd a { color: #fff; }
+#BottomOfArticleStockAd a.taglink:hover { border-bottom: 4px solid #ffc62b; }
+</style>
+<div id="BottomOfArticleStockAd" style="margin: 1em 0 2em 0;">
+    <table width="100%" style="padding: 12px 24px; color: #fff; background-color: #053255;"><tr>
+        <td style="font-size: 18px; line-height: 28px;">
+            <?php if ($this->internal->community->id ==2 && isset($this->object->meta_keywords) && $this->object->meta_keywords) { ?>
+            <strong>Tags:</strong>
+                <?php foreach (array_unique(explode(',', $this->object->meta_keywords)) as $tag) { $tag = trim($tag); ?>
+                <a href="/Google-Search-Results/s/page/view/p/mid/1/id/6/?cx=partner-pub-3297144036592508%3A3fsnf8-a1xo&cof=FORID%3A10&ie=UTF-8&q=<?= urlencode($tag) ?>" class="taglink" style="margin-left: 6px; padding-bottom: 1px; color: #fff; text-decoration: none; white-space: nowrap;"><?= $tag ?></a>
+                <?php } ?>
+            <?php } ?>
+        </td>
+        <td align="right" valign="top" style="padding-left: 24px; white-space: nowrap;">
+            <?php if ($this->internal->community->id ==2) { ?>
+            <a href="http://www.facebook.com/pages/SmallCap-Network/88202206436" class="fa-stack fa-lg">
+              <i class="fa fa-circle fa-stack-2x" style="color: #ffc62b;"></i>
+              <i class="fa fa-facebook fa-stack-1x fa-inverse" style="color: #053255;"></i>
+            </a>
+            <a href="https://twitter.com/SmallCapNetwork" class="fa-stack fa-lg">
+              <i class="fa fa-circle fa-stack-2x" style="color: #ffc62b;"></i>
+              <i class="fa fa-twitter fa-stack-1x fa-inverse" style="color: #053255;"></i>
+            </a>
+            <?php } ?>
+            <a href="?to_email=1" class="fa-stack fa-lg">
+              <i class="fa fa-circle fa-stack-2x" style="color: #ffc62b;"></i>
+              <i class="fa fa-envelope fa-stack-1x fa-inverse" style="color: #053255;"></i>
+            </a>
+            <a href="?to_print=1" class="fa-stack fa-lg">
+              <i class="fa fa-circle fa-stack-2x" style="color: #ffc62b;"></i>
+              <i class="fa fa-print fa-stack-1x fa-inverse" style="color: #053255;"></i>
+            </a>
+        </td>
+    </tr></table>
+<?php
+if (isset($ratings_data) && $ratings_data) {
+    echo '<table width="100%" style="margin-top: 2px; padding: 12px 24px; color: #fff; font-size: 14px; background-color: #053255;">';
+    foreach ($ratings_data as $trd) {
+        if (!is_null($trd->rating_rating)) {
+            $the_rating_value = sprintf("%.1f", (intval(($trd->rating_rating + 1) / 2 * 9) + 1) / 2);
+        }
+        else {
+            $the_rating_value = 0;
+        }
+        $temp_link = '/' . $this->SEO_Urlify($trd->qx_name) . '/s/quote/p/s/' . $trd->qx_internal_symbol . '/';
+?>
+        <tr>
+            <td align="left" valign="top" style="text-align: left; padding: .5em; font-weight: bold;"><?= $trd->qx_name ?> (<?= $this->Quote_SymbolDisplay(array('id' => $trd->id, 'symbol' => $trd->qx_internal_symbol, 'name' => $trd->qx_name, 'internal' => $this->internal)); ?>)</td>
+            <td align="center" valign="top" class="stock_rating" style="padding: .5em;"><a href="<?= $temp_link ?>f/rating/"><span class="star_rating small stars<?= preg_replace('/\./', '-', $the_rating_value) ?>"><?= $the_rating_value ?></span></a></td>
+            <td align="right" valign="top" style="padding: .5em; white-space: nowrap;">
+                <a href="<?= $temp_link ?>" style="margin-left: 4px; color: #fff;">StockHQ</a>
+                <a href="<?= $temp_link ?>f/quote/" style="margin-left: 4px; color: #fff;">Quote</a>
+                <a href="<?= $temp_link ?>f/rating/" style="margin-left: 4px; color: #fff;">Ratings</a>
+                <a href="<?= $temp_link ?>f/content/" style="margin-left: 4px; color: #fff;">Editorial</a>
+                <a href="<?= $temp_link ?>f/news/" style="margin-left: 4px; color: #fff;">News</a>
+                <a href="<?= $temp_link ?>f/links/" style="margin-left: 4px; color: #fff;">Links</a></td>
+        </tr>
+<?php
+    }
+    echo '</table>';
+}
+?>
+</div>
+<!-- End Bottom of Article Ad -->
+    
+    <?= $this->partial('partials/_SocialBookmarks.phtml', 'system', array('internal' => $this->internal)); ?>
+    
+    <?php if (!isset($this->internal->member) && $this->internal->community->meta_stocks && isset($this->object->symbols) && !is_null($this->object->symbols) && (!preg_match("/Google/i", $_SERVER['HTTP_USER_AGENT']))) { echo $this->RelatedQuotes(array('symbols' => $this->object->symbols, 'internal' => $this->internal, 'which_part' => '3', 'int_location' => 'BOT')); } ?>
+    <?php # if ($this->internal->community->meta_stocks && isset($this->object->symbols) && !is_null($this->object->symbols)) { echo $this->RelatedQuotes(array('symbols' => $this->object->symbols, 'internal' => $this->internal, 'which_part' => '2')); } ?>
+    
+    <div class="relay">
+        <?= $this->partial('partials/_AddThis.phtml', 'system', array('internal' => $this->internal)); ?>
+        
+        <?= $this->PrintEmailLink(array('link' => '', 'internal' => $this->internal)) ?>
+    </div>
+    
+    <div class="part3">
+    <?php if ($this->internal->target->currentModule->interactive && ($this->masked ? $this->object->x_interactive : true)) { ?>
+        <div class="interact">
+            <div class="comments"><span class="begin_comment_count">&nbsp;</span><a href="#comments_list" class="comment_count"><?= $this->object->total_comments_count ?></a><span class="end_comment_count">&nbsp;</span> <a href="#comments_list">Comment(s)</a>
+            <?php if (($this->internal->target->acl->allowed === null || $this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT) && $this->object->allow_comments) { ?>
+            - <a href="#post_a_comment">Post a Comment</a>
+            <?php } ?>
+            </div>
+            
+            <?php if (($this->internal->target->acl->allowed === null || $this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT) &&
+                $this->object->allow_ratings) { ?>
+            <div class="rateit">Rate It : 
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/1/" title="1 Star - Awful">1</a>
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/2/" title="2 Stars - Poor">2</a>
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/3/" title="3 Stars - Average">3</a>
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/4/" title="4 Stars - Good">4</a>
+                <span class="star"><a href="<?= $this->internal->target->pre ?>/<?= $module ?>/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/5/" title="5 Stars - Excellent">5</a>
+                </span></span></span></span></span>
+            </div>
+            <?php } ?>
+            
+        </div>
+    <?php } ?>
+    </div>    
+    
+    <div style="clear: both; padding-bottom: 4em;" class="pager">
+        <?php if (isset($this->prev_object)) { ?>
+        <div class="previous" style="display: inline; float: left; margin-bottom: 1em;">
+    <?php
+    $link = '/' . $this->SEO_Urlify($this->prev_object->title) . '/s';
+    if ($this->masked) {
+        $link .= $this->internal->target->pre . "/$module/view/p/mid/" . $this->masked . '/id/' . $this->prev_object->counter . '/';
+    }
+    else {
+        if ($this->prev_object->com_id && ((isset($this->internal->params->com_id) && $this->internal->params->com_id) || $this->prev_object->com_id != $this->internal->community->id)) { $link .= '/com/' . $this->prev_object->com_id; }
+        elseif ($this->prev_object->net_id) { $link .= '/net/' . $this->prev_object->net_id; }
+        elseif ($this->prev_object->via_id) { $link .= '/via/' . $this->prev_object->via_id; }
+        
+        $link .= "/$module/view/p/mid/" . $this->prev_object->matrix_counter . '/id/' . $this->prev_object->counter . '/';
+    }
+    ?>
+            <a href="<?= $link ?>" title="<?= $this->escape($this->prev_object->title) ?>" >&laquo; Previous <?= $this->internal->target->currentModule->m_display ?></a>
+        </div>
+        <?php } ?>
+        
+        <?php if (isset($this->next_object)) { ?>
+        <div class="next" style="display: inline; float: right; margin-bottom: 1em;">
+    <?php
+    $link = '/' . $this->SEO_Urlify($this->next_object->title) . '/s';
+    if ($this->masked) {
+        $link .= $this->internal->target->pre . "/$module/view/p/mid/" . $this->masked . '/id/' . $this->next_object->counter . '/';
+    }
+    else {
+        if ($this->next_object->com_id && ((isset($this->internal->params->com_id) && $this->internal->params->com_id) || $this->next_object->com_id != $this->internal->community->id)) { $link .= '/com/' . $this->next_object->com_id; }
+        elseif ($this->next_object->net_id) { $link .= '/net/' . $this->next_object->net_id; }
+        elseif ($this->next_object->via_id) { $link .= '/via/' . $this->next_object->via_id; }
+        
+        $link .= "/$module/view/p/mid/" . $this->next_object->matrix_counter . '/id/' . $this->next_object->counter . '/';
+    }
+    ?>
+            <a href="<?= $link ?>" title="<?= $this->escape($this->next_object->title) ?>" >Next <?= $this->internal->target->currentModule->m_display ?> &raquo;</a>
+        </div>
+        <?php } ?>
+    </div>
+    
+    <div style="clear: both;"></div>
+    
+    <?php if ($this->internal->target->currentModule->interactive && ($this->masked ? $this->object->x_interactive : true)) { ?>
+    <div class="comments">
+    <?php
+        echo $this->action('list', 'comments', 'system', (array) $this->internal->params);
+    ?>
+    </div>
+    <?php } ?>
+    
+</div>
+<div class="ft">
+    <div class="dec">
+        <div class="lt"></div><div class="mn"></div><div class="rt"></div>
+
+    </div>
+</div>
+</div>
+    
+    </div></div>
+    <!-- End Left Column -->
+    
+    <!-- Start Right Column -->
+    <div id="side_column" class="yui3-u"><div class="content">
+	
+<div id="article_view_sticky_2" style="margin: 0 0 1.5em 0; width: 300px; height: 250px; overflow: hidden;" class="advertisement">
+<div id='div-gpt-ad-1336196133591-0' style='width:300px; height:250px;'><script type='text/javascript'>
+googletag.pubads().display('/1063461/VM-Platform-Article_View_Default-300x250', [300, 250], 'div-gpt-ad-1336196133591-0');
+</script></div>
+</div>
+
+<?php # if (!isset($this->internal->member) && $this->internal->community->meta_stocks && isset($this->object->symbols) && !is_null($this->object->symbols) && (!preg_match("/Google/i", $_SERVER['HTTP_USER_AGENT']))) { echo $this->RelatedQuotes(array('symbols' => $this->object->symbols, 'internal' => $this->internal, 'which_part' => '4', 'int_location' => 'SIDE')); } ?>
+
+<div class="cm salt">
+<div class="hd">
+    <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div>
+    </div>
+    <div class="con">
+    	<table class="table">
+            <tr>
+                <td class="lt"></td>
+                <td class="mn1">Other Similar <?= $this->internal->target->currentModule->m_display ?>s</td>
+                <td class="sep"></td>
+                <td class="mn2"></td>
+                <td class="rt"></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="bd">
+<ol>
+<?php
+$counter = 0;
+
+if (isset($this->similar_content) && count($this->similar_content)) {
+    foreach ($this->similar_content as $object) {
+        $counter++;
+        if ($counter > 4) { break; }
+        if ($this->internal->target->acl->owner ||
+            $object->allowed === null ||
+            $object->show_on_fail ||
+            ($object->allowed && ($object->privilege >= ViaMe_Controller_Action::ACL_READ)) ||
+            ($this->internal->target->acl->recursive && ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_READ))) {
+                
+            // Create the link
+            if (!isset($temp_view)) {
+                $temp_view = $this;
+                // Have to unset any masked flags!
+                if (isset($temp_view->masked)) { unset($temp_view->masked); }
+            }
+            
+            $link = $this->ContentLink(array('object' => $object, 'view' => $temp_view));
+?>
+
+<li class="<?= $module ?> <?= ($counter % 2) ? 'odd' : 'even' ?><?= ($counter == 1) ? ' firstitem' : (($counter == count($this->objects)) ? ' lastitem' : '') ?><?= ($object->active == false ? ' draftitem' : '') ?><?= ($object->published_display_activated == false ? ' futureitem' : '') ?><?= ($object->published_display_expired == true ? ' expireditem' : '') ?>"><a href="<?= $link ?>"><?= $this->escape($object->title) ?></a><?= ($object->active == false ? ' <span class="drafttype">(Draft)</span>' : '') ?><?= ($object->published_display_activated == false ? ' <span class="futuretype">(Future)</span>' : '') ?><?= ($object->published_display_expired == true ? ' <span class="expiredtype">(Expired)</span>' : '') ?>
+<span class="by"> <nobr>By <a href=""><?= $this->ProfileDisplay(array('profile' => $object, 'internal' => $this->internal)) ?></a></nobr></span>
+</li>
+
+<?php
+        }
+    }
+}
+?>
+</ol>
+</div>
+<div class="ft">
+    <div class="dec">
+        <div class="lt"></div><div class="mn"></div><div class="rt"></div>
+
+    </div>
+</div>
+</div>
+
+<div class="cm salt" style="margin-top: 2em;">
+<div class="hd">
+    <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div>
+    </div>
+    <div class="con">
+    	<table class="table">
+            <tr>
+                <td class="lt"></td>
+                <td class="mn1">Additional <?= $this->internal->target->currentModule->m_display ?>s By <?= $this->ProfileDisplay(array('profile' => $this->object, 'internal' => $this->internal)) ?></td>
+                <td class="sep"></td>
+                <td class="mn2"></td>
+                <td class="rt"></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="bd">
+<ol>
+<?php
+$counter = 0;
+
+if (isset($this->author_content) && count($this->author_content)) {
+    foreach ($this->author_content as $object) {
+        $counter++;
+        if ($counter > 4) { break; }
+        if ($this->internal->target->acl->owner ||
+            $object->allowed === null ||
+            $object->show_on_fail ||
+            ($object->allowed && ($object->privilege >= ViaMe_Controller_Action::ACL_READ)) ||
+            ($this->internal->target->acl->recursive && ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_READ))) {
+                
+            // Create the link
+            if (!isset($temp_view)) {
+                $temp_view = $this;
+                // Have to unset any masked flags!
+                if (isset($temp_view->masked)) { unset($temp_view->masked); }
+            }
+            
+            $link = $this->ContentLink(array('object' => $object, 'view' => $temp_view));
+?>
+
+<li class="<?= $module ?> <?= ($counter % 2) ? 'odd' : 'even' ?><?= ($counter == 1) ? ' firstitem' : (($counter == count($this->objects)) ? ' lastitem' : '') ?><?= ($object->active == false ? ' draftitem' : '') ?><?= ($object->published_display_activated == false ? ' futureitem' : '') ?><?= ($object->published_display_expired == true ? ' expireditem' : '') ?>"><a href="<?= $link ?>"><?= $this->escape($object->title) ?></a><?= ($object->active == false ? ' <span class="drafttype">(Draft)</span>' : '') ?><?= ($object->published_display_activated == false ? ' <span class="futuretype">(Future)</span>' : '') ?><?= ($object->published_display_expired == true ? ' <span class="expiredtype">(Expired)</span>' : '') ?>
+<span class="by"> <nobr><?php
+    $date->set($object->published_display_date, Zend_Date::ISO_8601);
+    if (isset($this->internal->member)) {
+        $date->setTimezone($this->internal->member->timezone);
+    }
+    echo $date->toString('MMM d, Y | H:mm a z');
+?></nobr></span>
+</li>
+
+<?php
+        }
+    }
+}
+?>
+</ol>
+</div>
+<div class="ft">
+    <div class="dec">
+        <div class="lt"></div><div class="mn"></div><div class="rt"></div>
+
+    </div>
+</div>
+</div>
+
+<?php
+if ((isset($db) && $db) || $db = Zend_Registry::get('db')) {
+    /* This query is same as on ratings page, but does not include the exception to the currently display symbol */
+    $query = 'SELECT "obj".symbol_id, "qx"."internal_symbol" AS "qx_internal_symbol", "qx"."name" AS "qx_name", "qx"."type" AS "qx_type", "qx"."exch" AS "qx_exch", "qx"."internal_symbol" AS "qx_internal_symbol", "qx"."delayed_symbol" AS "qx_delayed_symbol", "qx"."realtime_symbol" AS "qx_realtime_symbol", COUNT(*) AS rating_total, AVG("obj".position) AS rating_rating, MAX(COALESCE("obj".published, "obj".creation)) AS rating_max_creation, '.
+        "COUNT(NULLIF('f', obj.creation > ('now'::timestamp - '7 Days'::interval))) AS ".
+        '"rating_count_recent" FROM "pick_picks" AS "obj" INNER JOIN "module_matrix" AS "x" ON obj.com_id=x.com_id AND obj.net_id=x.net_id AND obj.via_id=x.via_id AND obj.module_id=x.module_id AND obj.matrix_counter=x.counter INNER JOIN "module_modules" AS "m" ON x.module_id=m.id INNER JOIN "profile_profiles" AS "p" ON obj.profile_id = p.id INNER JOIN "member_members" AS "b" ON p.member_id = b.id INNER JOIN "system_communities" AS "c" ON p.community_id = c.id INNER JOIN "quote_view_symbol_matrix" AS "qx" ON obj.symbol_id=qx.id WHERE ' .
+        "(x.active='t') AND (m.active='t') AND (p.active='t') AND (b.active='t') AND (c.active='t') AND ((obj.com_id='" . $this->internal->community->id . "') OR (m.allow_flow='t' AND x.allow_out_flow AND (obj.net_id = 0 OR (ARRAY[obj.via_id, x.counter] :: text ~ E'()' AND x.allow_community_outflow && ARRAY[" . $this->internal->community->id . "] :: bigint[])))) AND (obj.active NOTNULL AND ((obj.active='t' AND (obj.activation ISNULL OR obj.activation <= now()) AND (obj.expiration ISNULL OR obj.expiration >= now())))) AND obj.partial_close_parent_id ISNULL GROUP BY " .
+        '"obj".symbol_id, "qx"."symbol", "qx"."name", "qx"."type", "qx"."exch", "qx"."internal_symbol", "qx"."delayed_symbol", "qx"."realtime_symbol" HAVING '.
+        "COUNT(NULLIF('f', obj.creation > ('now'::timestamp - '7 Days'::interval))) > 0 ORDER BY rating_count_recent DESC, rating_max_creation DESC LIMIT 10";
+    
+    // Cached Results
+    if (Zend_Registry::isRegistered('cache') && ($cache = Zend_Registry::get('cache'))) {
+        if ( ($others = $cache->core->load('quote_results_rating_trending_7days_top_10')) === false ) {
+            $others = $db->fetchAll($query);
+            $cache->core->save($others); // Default to 1 Hour
+        }
+    }
+    else {
+        $others = $db->fetchAll($query);
+    }
+    
+    if (count($others)) {
+        $counter = 0;
+        echo '<div class="cm decorated"><div class="bd" style=""><p><strong>Stocks Trending Up In Ratings Activity...</strong></p>';
+        foreach ($others as $other) {
+            $other_link = 'http://' . $this->internal->vars->host . '/' . ($other->qx_name ? $this->SEO_Urlify($other->qx_name) . '/s/' : '' ) . 'quote/p/s/' . urlencode($other->qx_internal_symbol) . '/';
+            $the_rating_value = sprintf("%.1f", (intval(($other->rating_rating + 1) / 2 * 9) + 1) / 2);
+        
+            echo "<div style=\"margin: 0 1em;\"><a href=\"$other_link\" class=\"quote_symbol\">" . $other->qx_name . ' (' . $this->escape($other->qx_internal_symbol) . ')</a></div>';
+            #rating_total, rating_rating, rating_max_creation
+            echo '<div style="margin: 0 1em 1em 1.5em; text-align: left; font-size: 11px; line-height: 16px;" class="stock_rating">';
+            echo '<span class="star_rating small stars'.preg_replace('/\./', '-', $the_rating_value).'" style="margin-right: 3px;">'.$the_rating_value.'</span>';
+            echo $other->rating_total . ' Rating(s)';
+            if (isset($other->rating_max_creation) && $other->rating_max_creation) {
+                echo '<span style="float: right;">Last Rated: ';
+                $date->set($other->rating_max_creation, Zend_Date::ISO_8601);
+                echo $date->toString(Zend_Date::DATE_SHORT);
+            }
+            echo '</div>';
+            $counter++;
+        }
+        echo '</div></div>';
+    }
+}
+?>
+
+<div id="article_view_sticky_3" style="margin: 1em 0; width: 300px;" class="advertisement">
+<div id='div-gpt-ad-1336196133591-1' style='width:300px; text-align: center;'><script type='text/javascript'>
+googletag.pubads().display('/1063461/VM-Platform-Article_View_Default-300x600', [[300, 250], [300, 600], [160, 600]], 'div-gpt-ad-1336196133591-1');
+</script></div>
+</div>
+
+<?php /*
+<div id="article_view_insticator" style="margin: 1em 0; width: 300px;" class="advertisement">
+<!-- Header Tag Code -->
+<script data-cfasync='false' type='text/javascript'>(function (a, c, s, u){'Insticator'in a || (a.Insticator={ad:{loadAd: function (b){Insticator.ad.q.push(b)}, q: []}, helper:{}, embed:{}, version: "2.0", q: [], load: function (t, o){Insticator.q.push({t: t, o: o})}}); var b=c.createElement(s); b.src=u + new Date(Math.floor(new Date().getTime() / 6e5) * 6e5).getTime(); b.async=!0; var d=c.getElementsByTagName(s)[0]; d.parentNode.insertBefore(b, d)})(window, document, 'script', '//embed.insticator.com/embeds/script?sid=55aa7ba1-bb1c-417f-b5fe-86428e61923a&cbt=');</script>
+<!-- End Header Tag Code -->
+<!-- Insticator API Embed Code -->
+<div id="insticator-container"><div id="div-insticator-ad-1"></div><div id="insticator-embed"></div><div id="div-insticator-ad-2"></div><script data-cfasync='false' type="text/javascript">Insticator.ad.loadAd("div-insticator-ad-1");Insticator.ad.loadAd("div-insticator-ad-2");Insticator.load("em",{id : "874c011e-ff9d-4382-8092-3f0964c36674"})</script></div>
+<!-- End Insticator API Embed Code -->
+</div>
+*/ ?>
+
+
+    </div></div>
+    <!-- End Right Column -->
+</div>
+
+
+
+<?php $this->TextAds(); ?>

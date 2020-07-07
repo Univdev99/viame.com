@@ -1,0 +1,19 @@
+<?php
+/*
+ * Symbol Display Partial
+ *
+ * NOTE: Careful, this partial may get called from widgets and links should
+ *   possibly include full hostname and language specifications!
+ *
+ *  id              symbol id
+ *  symbol          symbol
+ *  name            symbol name
+ *  active          
+ *
+ */
+
+if (isset($this->active) && !$this->active) {
+?><span class="quote_symbol"><?= $this->escape($this->symbol) ?></span><?php
+}
+else
+{ ?><a href="http://<?= $this->internal->vars->host ?>/<?= ($this->name ? $this->SEO_Urlify($this->name) . '/s/' : '' ) ?>quote/p/s/<?= urlencode($this->symbol) ?>/" class="quote_symbol" title="<?= $this->escape($this->name) ?>"><?= $this->escape($this->symbol) ?></a><?php } ?>

@@ -1,0 +1,84 @@
+<div class="multistep_header">
+    <table><tr>
+        <td align="left" class="header">
+            Check Email
+        </td>
+        <td align="right" class="steps">
+            <table class="ind_steps"><tr>
+                <td>
+                    <div class="step firstitem"><span class="stepnumber">1</span>Enter Info</div>
+                </td>
+                <td>
+                    <div class="step selected"><span class="stepnumber">2</span>Check Email</div>
+                </td>
+                <td>
+                    <div class="step lastitem"><span class="stepnumber">3</span>Confirmation</div>
+                </td>
+            </tr></table>
+        </td>
+    </tr></table>
+</div>
+
+<?php $this->placeholder('temp')->captureStart(); ?>
+
+<p class="success">Your registration was successful. The first step toward establishing your free account is done. You're almost there! Just a few more steps to ensure delivery of our free mobile text and email alerts...</p>
+<div style="padding: 0 1em 1em 1em; font-size: 14px; line-height: 140%;">
+	<p><strong>Thank You for Becoming A SmallCap Network Elite Opportunity Free Alerts Member...</strong></p>
+    <p>First, to complete your registration, <strong>you must verify your email address</strong>. Don't worry, it's quick and easy!</p>
+    <p>Check your inbox now. Once you verify your email address, you will be automatically added to our priority list of Members who receive our <strong>SmallCap Network Elite Opportunity Free Alerts</strong>.</p>
+    <p>Also, <strong>make sure to add our email address to your contact list</strong> to ensure delivery of our email newsletter straight to your inbox.</p>
+    
+    <p>Sincerely,</p>
+    <p><strong>Staff at SmallCap Network Elite Opportunity</strong></p>
+
+    <p>If you fail to receive the verification email, <a href="<?= $this->internal->target->pre ?>/member/scneol/">click here</a> and try your request again.</p>
+    <p>If you have any problems registering or confirming this registration, please contact us at <a href="mailto:<?= ($this->internal->community->email ? $this->internal->community->email : $this->internal->config->admin->email) ?>"><?= ($this->internal->community->email ? $this->internal->community->email : $this->internal->config->admin->email) ?></a>.</p>
+</div>
+
+
+
+<?php
+$this->placeholder('temp')->captureEnd();
+
+echo $this->CM(array(
+    'class' => 'cm decorated plain successmessage',
+    'hd' => 'Registration Successful',
+    'hd2' => 'Thank you for signing up',
+    'bd' => $this->placeholder('temp')
+));
+
+$this->placeholder('temp')->set(null);
+?>
+
+
+
+
+<?php $this->headScript()->captureStart(); ?>
+
+window.dataLayer = window.dataLayer || [];
+dataLayer.push({
+    'adwordsConversion_id': '1071423029',
+    'adwordsConversion_label': 'RYkZCKXev1kQtbzy_gM'
+});
+
+<?php $this->headScript()->captureEnd(); ?>
+
+
+<?php /* MOVED TO GTM
+<!-- Google Code for SCNEO Free Alerts Conversion Page -->
+<script type="text/javascript">
+var google_conversion_id = 1071423029;
+var google_conversion_language = "en";
+var google_conversion_format = "3";
+var google_conversion_color = "ffffff";
+var google_conversion_label = "RYkZCKXev1kQtbzy_gM";
+var google_remarketing_only = false;
+</script>
+<script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js">
+</script>
+<noscript>
+<div style="display:inline;">
+<img height="1" width="1" style="border-style:none;" alt="" src="//www.googleadservices.com/pagead/conversion/1071423029/?label=RYkZCKXev1kQtbzy_gM&amp;guid=ON&amp;script=0"/>
+</div>
+</noscript>
+*/ ?>

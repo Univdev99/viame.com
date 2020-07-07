@@ -1,0 +1,61 @@
+<div id="content_area">
+
+    <!-- Begin Module -->
+    <div class="cm decorated">
+        <div class="hd">
+            <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div>
+            </div>
+            <div class="con">
+            	<table class="table">
+                    <tr>
+                        <td class="lt"></td>
+                        <td class="mn1">Sign In to <?= $this->internal->community->display ?></td>
+                        <td class="sep"></td>
+                        <td class="mn2"></td>
+                        <td class="rt"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="bd padded">
+            
+            <?= $this->render('form.phtml') ?>
+            
+            <div style="margin-top: -2em;" class="login-social">
+                <strong>Login or Sign Up Using:</strong>
+                <ul class="social_login straight">
+                    <li class="openid"><a href="/member/openid/login/" title="OpenID">OpenID</a></li>
+                    <li class="facebook"><a href="/member/oauth/login/?provider=facebook-oauth2" title="Facebook">Facebook</a></li>
+                    <li class="google"><a href="/member/oauth/login/?provider=google-oauth2" title="Google">Google</a></li>
+                    <li class="yahoo"><a href="/member/openid/login/?provider=yahoo" title="Yahoo">Yahoo</a></li>
+                    <li class="linkedin"><a href="/member/oauth/login/?provider=linkedin-oauth2" title="LinkedIn">LinkedIn</a></li>
+                    <li class="twitter"><a href="/member/oauth/login/?provider=twitter-oauth1" title="Twitter">Twitter</a></li>
+                </ul>
+            </div>
+            
+            <div style="border-top: 1px dotted #000; margin-top: 1em;" class="login-signup">
+                <div style="margin-top: 1em; font-size: larger; font-weight: bold;">Don't have an account?</div>
+                <div>Signing up is easy.</div>
+                <div style="font-size: 110%; font-weight: bold; text-align: right;"><a href="<?= $this->signup_link ?>" class="fakebutton green">Sign Up</a></div>
+            </div>
+            
+            <div style="margin-top: 1em; border-top: 1px dotted #000;" class="login-problems">
+                <div style="margin-top: 1em; font-size: larger; font-weight: bold;">Problems accessing your account?</div>
+                <ul style="margin-bottom: 0;">
+                	<li><a href="/member/reset/">Forgot your password</a></li>
+                	<li><a href="/member/register/verify/">Verify your account</a></li>
+                    <li><a href="/member/register/verify/">Resend verification email</a></li>
+                </ul>
+            </div>
+            
+            
+        </div>
+        <div class="ft">
+            <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div></div>
+        </div>
+        
+        <span class="icon"></span>
+    </div>
+    <!-- End Module -->
+
+</div>

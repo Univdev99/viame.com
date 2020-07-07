@@ -1,0 +1,12 @@
+<?= '<?xml version="1.0"?>' ?>
+
+<!DOCTYPE lookup_results SYSTEM "http://199.175.179.160/xml/quotexmltoolsearch.dtd">
+<lookup_results>
+<?php foreach ($this->results as $item) { ?>
+    <equitysearch symbol="<?=$item['symbol']?>">
+        <name><?=$item['name']?></name>
+        <exchange><?=$item['exch']?></exchange>
+        <marketid>N/A</marketid>
+    </equitysearch>
+<?php } ?>
+</lookup_results>

@@ -1,0 +1,491 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <script type="text/javascript">
+    //<![CDATA[
+        if (window.location.protocol == "http:" && !window.location.href.substr(7).match(/^internal/)) {
+            window.location = "https:" + window.location.href.substr(5);
+        }
+    //]]>
+    </script>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>The Future Investor</title>
+    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" />
+    <link href="images/favicon.ico" rel="shortcut icon" />
+    <link href="images/favicon.ico" rel="icon" />
+    
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|PT+Serif:700,400,700italic,400italic' rel='stylesheet' type='text/css' />
+    <link href="https://static.viame.com/css/community/default/stylesheet.css?v=20130129" media="screen" rel="stylesheet" type="text/css" />
+    <link href="https://static.viame.com/css/theme/default/stylesheet.css?v=20130129" media="screen" rel="stylesheet" type="text/css" title="Default" />
+    <link href="https://static.viame.com/css/community/smallcapnetwork/stylesheet.css?v=20130129" media="screen" rel="stylesheet" type="text/css" />
+    <link href="https://static.viame.com/css/community/default/print.css?v=20130129" media="print" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    
+    <script type="text/javascript" src="//static.viame.com/js/yui/yui3/build/yui/yui-min.js"></script>
+    <script type="text/javascript" src="//static.viame.com/js/yui/yui_combo_local.js"></script>
+    <!--[if lt IE 9]> <script type="text/javascript" src="//ie7-js.googlecode.com/svn/version/2.1(beta4)/IE9.js"></script><![endif]-->
+    <script type="text/javascript" src="//static.viame.com/js/vm/vm.js"></script>
+    <script type="text/javascript" src="//static.viame.com/js/vm/yui/viame_form_helper.js"></script>
+    <script type="text/javascript" src="//static.viame.com/js/vivin/regula.js"></script>
+<style>
+body {
+    text-align: left;
+    font-size: 16px;
+}
+a:link, a:visited {
+    color: #337ab7;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+a.fakebutton {
+    color: #fff;
+}
+a.fakebutton:hover {
+    text-decoration: none;
+}
+ul.ul-checkbox,
+  ul.ul-small_checkbox {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+ul.ul-checkbox li {
+    background-image: url("images/li-check.gif");
+    background-repeat: no-repeat;
+    background-position: 0 5px;
+    padding: 0 20px 15px 30px;
+}
+.header .quote {
+    color: #275496;
+    font-weight: bold;
+    font-size: 40px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.header ul {
+    color: #1d1d1d;
+    font-size: 24px;
+    line-height: 25px;
+    margin: 24px 0 0 30px;
+    padding-left: 40px;
+}
+.header .tagline {
+    background: #e6f2f8;
+    background: -moz-linear-gradient(top,  #e6f2f8 0%, #207cca 100%, #207cca 100%, #38b5f4 100%);
+    background: -webkit-linear-gradient(top,  #e6f2f8 0%,#207cca 100%,#207cca 100%,#38b5f4 100%);
+    background: linear-gradient(to bottom,  #e6f2f8 0%,#207cca 100%,#207cca 100%,#38b5f4 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e6f2f8', endColorstr='#38b5f4',GradientType=0 );
+    color: #fff;
+    font-weight: bold;
+}
+.mainbody ul.ul-small_checkbox {
+    margin-top: 20px;
+    margin-left: 20px;
+}
+.mainbody ul.ul-small_checkbox li {
+    background-image: url("images/li-check-black-box.gif");
+    background-repeat: no-repeat;
+    background-position: 0 3px;
+    color: #1d1d1d;
+    padding: 2px 0 15px 40px;
+}
+div.whatyouget ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+div.whatyouget ul li {
+    background-image: url("images/li-check-box.gif");
+    background-repeat: no-repeat;
+    color: #1d1d1d;
+    margin-bottom: 10px;
+    padding: 0 0 10px 50px;
+}
+div.about {
+    background-color: #e8e8e8;
+    border: 1px solid #1d1d1d;
+}
+div.about blockquote {
+    border: none;
+    font-size: 14px;
+}
+div.testimonials div.testimonial {
+    background-image: url("images/quotes.gif");
+    background-repeat: no-repeat;
+    padding-left: 30px;
+    font-style: italic;
+}
+div.testimonials div.testimonial .author {
+    color: #275496;
+    font-style: normal;
+    font-weight: bold;
+}
+div.sidebar {
+    float: right;
+    margin: 0 0 20px 20px;
+    max-width: 360px;
+}
+@media (max-width: 992px) {
+    .header img.limited {
+        display: none;
+    }
+    div.sidebar {
+        float: none;
+        max-width: none;
+        margin-left: 0;
+    }
+}
+@media (max-width: 768px) {
+    .header ul {
+        margin-left: 0;
+        padding-left: 20px;
+    }
+}
+div.nofreebooks {
+    position: relative;
+    margin: 50px;
+    padding: 20px 350px 20px 20px;
+    border: 1px solid #333;
+    border-radius: 10px;
+    background-color: #f1f1f1;
+}
+div.nofreebooks img {
+     position: absolute;
+     top: -50px;
+     right: 0;
+}
+@media (max-width: 1200px) {
+    div.nofreebooks img {
+         top: -35px;
+    }
+}
+@media (max-width: 992px) {
+    div.nofreebooks img {
+         top: 10px;
+    }
+}
+@media (max-width: 768px) {
+    div.nofreebooks {
+        margin-left: 0;
+        margin-right: 0;
+        padding: 20px;
+    }
+    div.nofreebooks img {
+         position: static;
+         display: block;
+         top: auto;
+         right: auto;
+         margin: 10px auto;
+    }
+}
+</style>
+<style>
+.yui-skin-sam .yui-panel {
+    font: 13px/1.231 arial,helvetica,clean,sans-serif;
+}
+h1:first-child, h2:first-child, h3:first-child, h4:first-child, h5:first-child, h6:first-child {
+    margin-top: 20px;
+}
+#page_body .page_body_internal {
+    border: none;
+}
+#page_body.acl_module #member_form dl.zend_form {
+    font-size: 14px;
+}
+#page_body.acl_module #member_form dl.zend_form fieldset legend {
+    border: none;
+}
+#page_body.acl_module #member_form dl.zend_form fieldset dt label {
+    font-weight: normal !important;
+}
+#page_body.acl_module #member_form dl.zend_form #access_selection {
+    line-height: 1.231;
+}
+#page_body.acl_module #member_form dl.zend_form #country {
+    font-size: 12px;
+}
+@media (max-width: 1200px) {
+    #vivin_regula_error_dialog div.bd {
+        font-size: 12px !important;
+    }
+    #page_body.acl_module #member_form {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 650px;
+        width: auto;
+    }
+    #page_body.acl_module #member_form dl.zend_form .yui3-u-1-2 {
+        display: block;
+        width: 100%;
+    }
+    #page_body.acl_module #member_form dl.zend_form #access_selection {
+        padding: 10px !important;
+    }
+    #page_body.acl_module #member_form dl.zend_form fieldset legend {
+        background-color: #ccc;
+        box-sizing: border-box;
+        display: block;
+        margin: 0 0 1em;
+        padding: 0.5em;
+        width: 100%;
+        border: none;
+    }
+    #page_body.acl_module #member_form dl.zend_form input[type="text"],
+      #page_body.acl_module #member_form dl.zend_form input[type="email"],
+      #page_body.acl_module #member_form dl.zend_form input[type="tel"],
+      #page_body.acl_module #member_form dl.zend_form input[type="password"] {
+        width: 100%;
+    }
+    #page_body.acl_module #member_form dl.zend_form fieldset dt {
+        width: 100%;
+        float: none;
+        text-align: left;
+    }
+    #page_body.acl_module #member_form dl.zend_form fieldset dt label {
+        margin-bottom: 0 !important;
+        font-weight: normal !important;
+    }
+    #page_body.acl_module #member_form dl.zend_form fieldset dd {
+        width: 100%;
+        float: none;
+    }
+    #page_body.acl_module #member_form dl.zend_form dd#cc_exp_month-element, #page_body.acl_module #member_form dl.zend_form dd#cc_exp_year-element {
+        width: auto;
+        float: left;
+    }
+    #page_body.default_module #member_form dl.zend_form fieldset #cancel-element {
+        display: none;
+    }
+    #page_body.default_module #member_form dl.zend_form dd#buttons-element fieldset#fieldset-buttons > dl {
+        text-align: center;
+    }
+    #page_body.default_module #member_form dl.zend_form dd#buttons-element fieldset#fieldset-buttons > dl > dd {
+        float: none;
+        margin: 0;
+    }
+    #page_body.default_module #member_form dl.zend_form dd#buttons-element fieldset#fieldset-buttons > dl > dd#submit-element input#submit {
+        font-size: 22px;
+    }
+    
+    #page_body.acl_module #member_form dl.zend_form dt#tos-label,
+      #page_body.acl_module #member_form dl.zend_form dt#billing_agreement-label {
+        display: none;
+    }
+    #page_body.acl_module #member_form dl.zend_form dd#tos-element input,
+      #page_body.acl_module #member_form dl.zend_form dd#billing_agreement-element input {
+        position: static;
+        left: 0;
+    }
+    #page_body.acl_module #member_form dl.zend_form dd#tos-element p.description,
+      #page_body.acl_module #member_form dl.zend_form dd#billing_agreement-element p.description {
+        margin: -1.11em 0 0 2em;
+    }
+    #page_body.acl_module #member_form dl.zend_form dd#billing_agreement-element p.netdown {
+        margin-left: 2em;
+    }
+    #page_body.acl_module #member_form dl.zend_form #country {
+        max-width: 100%;
+    }
+    #page_body.acl_module #member_form dl.zend_form dt#apply_promo_button-label {
+        display: none;
+    }
+}
+@media (max-width: 992px) {
+    .topbar .container .row div {
+        text-align: center;
+    }
+}
+</style>
+
+</head>
+
+<body class="yui-skin-sam yui3-skin-sam">
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-MB98R3"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-MB98R3');</script>
+<!-- End Google Tag Manager -->
+
+<div class="container-fluid topbar" style="background-color: #f4f4f4; border-bottom: 1px solid #adacac; padding: 3px 0;">
+    <div class="container">
+        
+        <div class="row">
+            <div class="col-md-6"><strong>Get started now! Got a question? Call <span style="white-space: nowrap;"><nobr>+1 (619) 492-3225</nobr></span>.</strong></div>
+            <div class="col-md-6 text-right">Already subscribed? <a rel="nofollow" href="https://www.smallcapnetwork.com/net/14/?vmpd_paid=1" target="_blank">Member's Only Area</a></div>
+        </div>
+        
+    </div>
+</div>
+
+
+<div class="container-fluid" style="background-color: #444;">
+    <div class="container" style="background-color: #fff; margin: 1em auto;">
+        
+        <div class="row" style="border-bottom: 3px solid #303030;">
+            <div class="col-xs-12"><h1><strong>The Future Investor</strong></h1></div>
+        </div>
+        
+        <div class="row header" style="background-color: #e6f2f8;">
+            <img src="images/limited.gif" class="limited" style="position: absolute;" />
+            <div class="container"><div class="row">
+                <div class="col-xs-12 text-center"><h2 class="quote">&ldquo;It's far better to buy a wonderful company at a fair price than a fair company at a wonderful price.&rdquo;<br />&mdash; Warren Buffet</h2></div>
+            </div></div>
+            
+            <div class="container"><div class="row">
+                <div class="col-md-6">
+                    <div style="padding-left: 40px; color: #1a3764;">
+                        <p style="font-style: italic;">"If you don't have the time to actively manage your portfolio, no worries. It could very well be a blessing in disguise. It's only those incredibly dedicated traders who can profit from the markets' hyperactivity. For the rest, it's best to take the <strong>Warren Buffett approach</strong>. Slow and steady always wins the race."</p>
+                        <p><strong>- James Brumley</strong></p>
+                    </div>
+                    
+                    <div class="text-center" style="margin-top: 20px;"><a href="#sign-up-form" class="fakebutton green xlarge" style="display: inline-block;">Try The Future Investor</a></div>
+                </div>
+                <div class="col-md-6">
+                    <img src="images/tfi_icon.jpg" class="img-responsive center-block" style="max-height: 250px; margin-top: 1em;" />
+                </div>
+            </div></div>
+            
+            <div class="container text-center tagline">
+                <h2 style="margin: 20px 0; padding: 20px 0;"><strong>The Future Investor</strong> offers people of all ages the opportunity to grow and profit from long-term investing in the stock market.</h2>
+            </div>
+        </div>
+        
+        <div class="row mainbody">
+            <div class="col-xs-12">
+                <h3 class="text-center" style="width: 80%; margin: 20px auto; color: #275496;">Discover which companies are worth multi-year investment holds, new growth stocks for the future and dividend paying stocks you should own for the long haul. All while we keep you abreast of what's taking place in the market and the economy every trading day of the week.</h3>
+                
+                <p><strong>Here's what you'll start receiving by signing up for The Future Investor today...</strong></p>
+            </div>
+        </div>
+        
+        <div class="row mainbody">
+            <div class="col-sm-6">
+                <ul class="ul-small_checkbox">
+                    <li><strong>Safe and sound investing strategies</strong> for the current state of the stock market and its future.</li>
+                    <li><strong>Fundamental investment teachings</strong> of what to look for and how to identify the right investing ideas.</li>
+                    <li><strong>Daily short and long-term technical analysis</strong> of the major indices.</li>
+                    <li><strong>Daily macro domestic and global economic analysis</strong> to help you identify the best time to invest aggressively.</li>
+                </ul>
+            </div>
+            <div class="col-sm-6">
+                <ul class="ul-small_checkbox">
+                    <li>Which sectors are ripe for a <strong>long-term turnaround</strong> and which ones have gotten overly extended.</li>
+                    <li><strong>Experienced investing advice</strong> for <strong>retirees</strong> and investors new to the stock market.</li>
+                    <li><strong>24/7 password protected access</strong> to our complete newsletter archives and updated long-term investing list.</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="row mainbody">
+            <div class="col-xs-12">
+                <p class="text-center"><strong>Don't miss out - this is a limited time offer!</strong></p>
+                
+                <div class="text-center" style="margin:20px 0;"><a href="#sign-up-form" class="fakebutton green xlarge" style="display: inline-block;">Click here to get started today!</a></div>
+                
+                <hr />
+                
+                <p><strong>The Future Investor</strong> was designed to accommodate those individuals looking to successfully take advantage of the tremendous returns the stock market can offer when investors are participating in the right ideas  over the course of their lifetime. We've seen, spoken with and continue to hear of so many investors these days who've gotten fed up with investing in underperforming mutual funds, hedge funds, robot investing  services, and various other creative instruments <strong>Wall Street</strong> loves to create.</p>
+                
+                <p>Their returns have been anemic at best in many stock market environments that should have yielded tremendous returns over the last several years.  Maybe you're one of them, maybe not. The truth is, however, is that it really shouldn't be that complicated, no matter who you are, and we'll  show you just how easy it really can be.</p>
+                
+                <p>Wall Street continues to prove over and over again they don't always have your best interest in mind. This is where we come in. For a low monthly fee every investor can afford, no matter how much or how little you have to invest, <strong>we'll not only teach you sound investing strategies for the long haul</strong>, we'll bring you individual stocks you can feel comfortable owning for a lifetime, much like what <strong>Warren Buffett</strong> has done to amass his massive wealth throughout his long investing career.</p>
+                
+                
+                <div class="nofreebooks">
+                    <img src="images/no_books.png" class="img-responsive" />
+                    <p>There are <strong style="font-style: underline; color: #f00;">NO FREE BOOKS</strong> or gimmicks associated with this offer. Why? First, <strong>good things aren't free and free things aren't good</strong>. Rather than spending the majority of our time trying to come up with worthless gimmicks of no value to you like so many other financial advisory services try to do, <strong>we're going to provide with an ongoing lifetime of stock market education</strong> you won't find anywhere else. Not only that, you're not a dummy, so we're not going to treat you like one!</p>
+                </div>
+
+                <hr />
+                
+                <h3 class="text-center">The most successful investors know and trust their information provider.</h3>
+                
+                <h4 class="text-center" style="width: 80%; margin: 20px auto; color: #275496; font-weight: bold;">Meet James Brumley - Portfolio Manager of The Future Investor</h4>
+                
+                <p><img src="//static.viame.com/pictures/2012/0508/via-10/jb-waist-small.jpg" align="left" width="150" hspace="10" />Written daily and managed by long-time independent advisor and stock market  advocate, <strong>James Brumley</strong>, you can now start receiving all of the  necessary information and individual company ideas to start building a  profitable nest egg for the future, no matter how young or old you are.</p>
+                
+                <p><strong>James Brumley</strong> began his investment career as a broker with a prominent <strong>Wall Street</strong> firm. The core principles behind the advice he was dispensing as  an adviser were diversifying, buying stocks with good fundamentals, and  thinking long-term. Though the principles were sound, he soon realized they were incomplete in terms of generating and preserving his clients' wealth. He then moved on to become an analyst - and now the director of  research - for <strong>The Future Investor</strong>. <strong>Brumley</strong> now follows both schools of  thought in complimentary ways. His philosophy is simply that fundamentals tell you which stocks to buy or sell and technical analysis tells you when to buy or sell them over an extended period of time.</p>
+                
+                <blockquote style="border: none; font-size: 14px; font-style: italic;">
+                    <p>It's important for every investor to understand who they are, know how long their timeframes are, and just how much risk they're willing to accept.  If they know that, I can help them build wealth through the stock  market. It's all about knowing which companies are worth holding forever, and which ones aren't. It's about knowing when to get aggressive and when to nibble. I can help any investor with that, and teach them along the way.</p>
+                </blockquote>
+                            
+                <p>If you're looking to take your investing future into your own hands, and do it with proven sound strategies for the long haul, <strong>The Future Investor</strong> is the right service for you.</p>
+                
+                <div class="text-center" style="margin-top: 20px;"><a href="#sign-up-form" class="fakebutton green xlarge" style="display: inline-block;">Start receiving The Future Investor today!</a></div>
+            </div>
+        </div>
+        
+        <div id="sign-up-form" class="row"><div class="col-xs-12">
+            
+
+
+            <!-- Begin Page -->
+            <div id="page">
+            <!-- Begin Page Body -->
+            <div id="page_body" class="acl_module access_controller index_action">
+            
+                <!-- Begin SubLayout -->
+                <div class="page_body_internal">
+                	<div id="bd"><div id="yui-main"><div class="yui-b">
+                		<div id="content_area">
+                		    
+            
+                <!--# include virtual="/acl/access/p/stype/NET/sid/14/mod/0/mid/0/iid/0/priv/10/?vmpd_self=/pages/TFI/v1/&vmpd_rqsv=vmpd_nar,vmpd_nsslr,vmcd_ncr,no_layout,tos,billing_agreement,access_selection,redirect&vmpd_nar=1&vmpd_nsslr=0&vmcd_ncr=1&no_layout=1&tos=1&billing_agreement=1&redirect=/net/14/&$query_string" -->
+            
+                        
+                        </div>
+                    </div></div></div>
+                </div>
+            </div>
+            </div>
+
+
+            
+        </div></div>
+        
+    </div>
+</div>
+
+
+<div class="container-fluid" style="background-color: #f3f3f3; padding: 25px 0;">
+    <div class="container">
+        
+        <div class="row">
+            <div class="col-xs-12 text-center">Copyright &copy; <!--# config timefmt="%Y" --><!--# echo var="$date_local" default="2016" --> SmallCapNetwork.com. <span style="white-space: nowrap;"><nobr>All Rights Reserved.</nobr></span></div>
+        </div>
+        
+    </div>
+</div>
+
+
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+var $_Tawk_API={},$_Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/54b80245eebdcbe3571d44e5/default';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+<!--End of Tawk.to Script-->
+
+</body>
+</html>

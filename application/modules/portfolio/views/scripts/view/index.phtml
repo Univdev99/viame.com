@@ -1,0 +1,257 @@
+<div id="page_module">
+    <div class="title<?= ($this->object->active == false ? ' draftitem' : '') ?><?= ($this->object->published_display_activated == false ? ' futureitem' : '') ?><?= ($this->object->published_display_expired == true ? ' expireditem' : '') ?>"><h1><?= $this->escape($this->object->title) ?><?= ($this->object->active == false ? ' <span class="drafttype">(Draft)</span>' : '') ?><?= ($this->object->published_display_activated == false ? ' <span class="futuretype">(Future)</span>' : '') ?><?= ($this->object->published_display_expired == true ? ' <span class="expiredtype">(Expired)</span>' : '') ?></h1></div>
+    
+    <?= isset($this->object->heading) && $this->object->heading ? '<h2>'. $this->escape($this->object->heading) .'</h2>' : '' ?>
+
+    
+    <?php if ($this->internal->target->currentModule->interactive && ($this->masked ? $this->object->x_interactive : true)) { ?>
+    <div>
+        <p style="display: inline; float: left; margin-top: 0;"><a href="#comments_list"><strong><?= $this->object->total_comments_count ?> Comment(s)</a></strong>
+        <?php if ($this->internal->target->acl->allowed === null || $this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT) { ?>
+         - <a href="#post_a_comment">Post a Comment</a>
+        <?php } ?>
+        <?php /* <a href="/<?= $this->SEO_Urlify($this->object->title) ?>/s<?= $this->internal->target->pre ?>/portfolio/comments/post/mid/<?= $this->object->matrix_counter ?>/id/<?= $this->object->counter ?>/">Post a Comment</a> */ ?>
+        </p>
+        
+        <p style="display: inline; float: right; margin-top: 0;"># / Rating : <strong><?= $this->object->total_ratings_count ?> / <?= sprintf ("%.2f", $this->object->rating) ?></strong>
+        <?php if ($this->internal->target->acl->allowed === null || $this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_INTERACT) { ?>
+        -
+        <a href="<?= $this->internal->target->pre ?>/portfolio/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/1/" rel="nofollow">1</a> : 
+        <a href="<?= $this->internal->target->pre ?>/portfolio/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/2/" rel="nofollow">2</a> : 
+        <a href="<?= $this->internal->target->pre ?>/portfolio/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/3/" rel="nofollow">3</a> : 
+        <a href="<?= $this->internal->target->pre ?>/portfolio/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/4/" rel="nofollow">4</a> : 
+        <a href="<?= $this->internal->target->pre ?>/portfolio/ratings/rate/mid/<?= (isset($this->masked) ? $this->masked : $this->object->matrix_counter) ?>/id/<?= $this->object->counter ?>/rating/5/" rel="nofollow">5</a>
+        <?php } ?>
+        </p>
+    </div>
+    <?php } ?>
+    
+    <p style="clear: both;">
+    <?php
+    // Edit Portfolio Link
+    if (!$this->masked && ($this->internal->target->acl->owner ||
+        ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_EDIT))) {
+    ?>          
+    <a href="<?= $this->internal->target->pre ?>/portfolio/edit/p/mid/<?= $this->object->matrix_counter ?>/id/<?= $this->object->counter ?>/">Edit Portfolio</a>
+    <?php
+    }
+    ?>
+    
+    <?php
+    // Delete Portfolio Link
+    if (!$this->masked && ($this->internal->target->acl->owner ||
+        ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_DELETE))) {
+    ?>
+    : <a href="<?= $this->internal->target->pre ?>/portfolio/delete/p/mid/<?= $this->object->matrix_counter ?>/id/<?= $this->object->counter ?>/" onclick="return confirm('Are you sure you want to delete this portfolio?');">Delete Portfolio</a>
+    <?php
+    }
+    ?>
+    </p>
+
+    <p class="datetime">
+<?php
+    $date = new Zend_Date();
+    $date->set($this->object->published_display_date, Zend_Date::ISO_8601);
+    if (isset($this->internal->member)) {
+        $date->setTimezone($this->internal->member->timezone);
+    }
+    echo $date->toString('EEEE  MMMM d, YYY h:mm a z');
+?>
+    </p>
+    
+    <p class="author">By <?= $this->ProfileDisplay(array('profile' => $this->object, 'internal' => $this->internal)) ?></p>
+    
+    <p><?= $this->form ?></p>
+
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tbody>
+        <tr>
+            <th scope="col" colspan="7">Position</th>
+            <th scope="col" colspan="3">Last</th>
+            <th scope="col" colspan="2">Total Gain/Loss</th>
+        </tr>
+        <tr>
+            <th scope="col">Symbol</th>
+            <th scope="col">L/S</th>
+            <th scope="col">Date</th>
+            <th scope="col">Shares</th>
+            <th scope="col">Price</th>
+            <th scope="col">Value</th>
+            <th scope="col">% of Portfolio</th>
+            <th scope="col">Trade</th>
+            <th scope="col">Value</th>
+            <th scope="col">% of Portfolio</th>
+            <th scope="col">Value</th>
+            <th scope="col">%</th>
+        </tr>
+        
+<?php $currency = new ViaMe_Currency($this->form->getElement('currency_code')->getValue()); ?>
+<?php
+    foreach ($this->positions as $position) {
+        $position->i_pct_total = (
+            ($position->shares * $position->price) /
+            $this->initial_portfolio_total_value * 100
+        );
+                
+        $position->c_pct_total = (
+            (
+                ($position->shares * $position->price) +
+                ($position->shares * ($this->data[$position->q_internal_symbol][1] * $this->currency_conversion_us_to_default - $position->price) * $position->position)
+            ) / 
+            $this->current_portfolio_total_value * 100
+        );
+                        
+        $this->data[$position->q_internal_symbol][1] = $this->data[$position->q_internal_symbol][1] * $this->currency_conversion_us_to_default * $this->currency_conversion_default_to_selected;
+        
+        $position->price = $position->price * $this->currency_conversion_us_to_default * $this->currency_conversion_default_to_selected;
+        
+        $position->shares = $position->i_pct_total / 100 * $this->initial_portfolio_value * $this->currency_conversion_default_to_selected / $position->price;
+?>
+        <tr>
+            <td><a href="/<?= $this->SEO_Urlify($position->q_name) ?>/s/quote/p/s/<?= $position->q_internal_symbol ?>/" title="<?= $this->escape($position->q_name) ?>"><?= $position->q_internal_symbol ?></a><?php
+        // Edit Portfolio Link
+        if (!$this->masked && ($this->internal->target->acl->owner ||
+            ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_EDIT))) {
+        ?>-<a href="<?= $this->internal->target->pre ?>/portfolio/modify/delete/p/mid/<?= $this->object->matrix_counter ?>/id/<?= $this->object->counter ?>/pid/<?= $position->counter ?>/" title="Delete Position">X</a></p><?php } ?>
+            </td>
+            <td><?= ($position->position == -1) ? 'Short' : 'Long' ?></td>
+            <td>
+<?php
+    if ($position->purchase_date) {
+        $date = new Zend_Date();
+        $date->set($position->purchase_date, Zend_Date::ISO_8601);
+        if (isset($this->internal->member)) {
+            $date->setTimezone($this->internal->member->timezone);
+        }
+        echo $date->toString('FF');
+    }
+    else {
+        echo '&nbsp;';
+    }
+?>
+            </td>
+            <td><?= sprintf("%.2f", $position->shares) ?></td>
+            <td><?= $currency->toCurrency($position->price) ?></td>
+            <td><?= $currency->toCurrency($position->shares * $position->price) ?></td>
+            <td><?= sprintf("%.2f%%", $position->i_pct_total) ?></td>
+            <td><?= $currency->toCurrency($this->data[$position->q_internal_symbol][1]) ?></td>
+            <td><?= $currency->toCurrency(
+                (($position->shares * $position->price) +
+                ($position->shares * ($this->data[$position->q_internal_symbol][1] - $position->price) * $position->position))
+            ) ?></td>
+            <td><?= sprintf("%.2f%%", $position->c_pct_total) ?></td>
+            <td><?= $currency->toCurrency((($position->shares * $this->data[$position->q_internal_symbol][1]) - ($position->shares * $position->price)) * $position->position) ?></td>
+            <td><?= sprintf("%.2f%%", (($position->shares * $this->data[$position->q_internal_symbol][1]) - ($position->shares * $position->price)) * $position->position / ($position->shares * $position->price) * 100) ?></td>
+        </tr>
+<?php 
+        if ($position->notes) {
+?>
+        <tr>
+            <td colspan="12">Notes: <?= $position->notes ?></td>
+        </tr>
+<?php   
+        }
+    }
+?>
+
+        <tr>
+            <td>CASH</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td><?= sprintf("%.2f", ($this->initial_portfolio_total_value ? $this->object->cash * $this->currency_conversion_default_to_selected / $this->initial_portfolio_total_value * $this->initial_portfolio_value : 0)) ?></td>
+            <td>&nbsp;</td>
+            <td><?= $currency->toCurrency(($this->initial_portfolio_total_value ? $this->object->cash * $this->currency_conversion_default_to_selected / $this->initial_portfolio_total_value * $this->initial_portfolio_value : 0)) ?></td>
+            <td><?= sprintf("%.2f%%", ($this->initial_portfolio_total_value ? $this->object->cash / $this->initial_portfolio_total_value * 100 : 0)) ?></td>
+            <td>&nbsp;</td>
+            <td><?= $currency->toCurrency(($this->initial_portfolio_total_value ? $this->object->cash * $this->currency_conversion_default_to_selected / $this->initial_portfolio_total_value * $this->initial_portfolio_value : 0)) ?></td>
+            <td><?= sprintf("%.2f%%", ($this->initial_portfolio_total_value ? $this->object->cash / $this->current_portfolio_total_value * 100 : 0)) ?></td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>Total</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td><?= $currency->toCurrency($this->initial_portfolio_value * $this->currency_conversion_default_to_selected) ?></td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td><?= $currency->toCurrency(($this->initial_portfolio_total_value ? $this->current_portfolio_total_value * $this->currency_conversion_default_to_selected * ($this->initial_portfolio_value / $this->initial_portfolio_total_value) : 0)) ?></td>
+            <td>&nbsp;</td>
+            <td><?= $currency->toCurrency(($this->initial_portfolio_total_value ? $this->current_portfolio_total_value * $this->currency_conversion_default_to_selected * ($this->initial_portfolio_value / $this->initial_portfolio_total_value) - ($this->initial_portfolio_value * $this->currency_conversion_default_to_selected) : 0)) ?></td>
+            <td><?= sprintf("%.2f%%", ($this->initial_portfolio_total_value ? ($this->current_portfolio_total_value * $this->currency_conversion_default_to_selected * ($this->initial_portfolio_value / $this->initial_portfolio_total_value) - ($this->initial_portfolio_value * $this->currency_conversion_default_to_selected)) / ($this->initial_portfolio_value * $this->currency_conversion_default_to_selected) * 100 : 0)) ?></td>
+        </tr>
+    </tbody>
+</table>
+
+
+    <?php
+    // Edit Portfolio Link
+    if (!$this->masked && ($this->internal->target->acl->owner ||
+        ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_EDIT))) {
+    ?>          
+    <p><a href="<?= $this->internal->target->pre ?>/portfolio/modify/add/p/mid/<?= $this->object->matrix_counter ?>/id/<?= $this->object->counter ?>/">Add New Position</a></p>
+    <?php
+    }
+    ?>
+    
+    
+    <div id="div-gpt-ad-1391042410374-0" class="advertisement" style="text-align: center;">
+<script type='text/javascript'>
+googletag.pubads().display('/1063461/VM-Platform-Portfolio_View_Default-728x90', [728, 90], 'div-gpt-ad-1391042410374-0');
+</script>
+    </div>
+    
+    <div style="clear: both; margin: 1em 0;">
+        <?php if (isset($this->prev_object)) { ?>
+        <div class="previous" style="display: inline; float: left; margin-bottom: 1em;">
+    <?php
+    $link = '/' . $this->SEO_Urlify($this->prev_object->title) . '/s';
+    if ($this->masked) {
+        $link .= $this->internal->target->pre . '/portfolio/view/p/mid/' . $this->masked . '/id/' . $this->prev_object->counter . '/';
+    }
+    else {
+        if ($this->prev_object->com_id && ((isset($this->internal->params->com_id) && $this->internal->params->com_id) || $this->prev_object->com_id != $this->internal->community->id)) { $link .= '/com/' . $this->prev_object->com_id; }
+        elseif ($this->prev_object->net_id) { $link .= '/net/' . $this->prev_object->net_id; }
+        elseif ($this->prev_object->via_id) { $link .= '/via/' . $this->prev_object->via_id; }
+        
+        $link .= '/portfolio/view/p/mid/' . $this->prev_object->matrix_counter . '/id/' . $this->prev_object->counter . '/';
+    }
+    ?>
+            <a href="<?= $link ?>" title="<?= $this->escape($this->prev_object->title) ?>" >Previous</a>
+        </div>
+        <?php } ?>
+        
+        <?php if (isset($this->next_object)) { ?>
+        <div class="next" style="display: inline; float: right; margin-bottom: 1em;">
+    <?php
+    $link = '/' . $this->SEO_Urlify($this->next_object->title) . '/s';
+    if ($this->masked) {
+        $link .= $this->internal->target->pre . '/portfolio/view/p/mid/' . $this->masked . '/id/' . $this->next_object->counter . '/';
+    }
+    else {
+        if ($this->next_object->com_id && ((isset($this->internal->params->com_id) && $this->internal->params->com_id) || $this->next_object->com_id != $this->internal->community->id)) { $link .= '/com/' . $this->next_object->com_id; }
+        elseif ($this->next_object->net_id) { $link .= '/net/' . $this->next_object->net_id; }
+        elseif ($this->next_object->via_id) { $link .= '/via/' . $this->next_object->via_id; }
+        
+        $link .= '/portfolio/view/p/mid/' . $this->next_object->matrix_counter . '/id/' . $this->next_object->counter . '/';
+    }
+    ?>
+            <a href="<?= $link ?>" title="<?= $this->escape($this->next_object->title) ?>" >Next</a>
+        </div>
+        <?php } ?>
+    </div>
+    
+    <div style="clear: both;"></div>
+    
+    <?php if ($this->internal->target->currentModule->interactive && ($this->masked ? $this->object->x_interactive : true)) { ?>
+    <div class="comments">
+    <?php
+        echo $this->action('list', 'comments', 'system', (array) $this->internal->params);
+    ?>
+    </div>
+    <?php } ?>
+    
+</div>

@@ -1,0 +1,116 @@
+<?php $module = 'quote'; ?>
+
+<!-- Begin Module -->
+<div class="cm decorated padded m_<?= $module ?>">
+    <div class="hd">
+        <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div>
+        </div>
+        <div class="con">
+        	<table class="table">
+                <tr>
+                    <td class="lt"></td>
+
+                    <td class="mn1">Symbol Lookup</td>
+                    <td class="sep"></td>
+                    <td class="mn2"><?= isset($this->internal->params->s) ? $this->internal->params->s : '' ?></td>
+                    <td class="rt"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="bd">
+
+<?php $this->headStyle()->captureStart() ?>
+.lookup thead {
+    font-weight: bold;
+}
+.lookup td {
+    padding: .25em;
+    font-size: small;
+}
+<?php $this->headStyle()->captureEnd() ?>
+
+
+        <div style="width: 100%; margin: 1em auto;" class="yui3-g-r">
+            <div class="yui3-u-4-5">
+                <p style="background: url(<?= $this->internal->vars->static_host ?>/css/theme/default/assets/modules/quote/mag.png) no-repeat; height: 49px; color: #868686; font-size: 146.5%; padding-top: 8px; padding-left: 70px; margin-bottom: .5em;"><?= $this->internal->community->display ?> Stock Research</p>
+                
+                <p style="font-size: 108%;">Enter a search term to lookup matching company names or symbols.</p>
+                
+                <div style="margin: 1em; padding: 1em; background-color: #f3f3f3; -moz-border-radius: 8px; -webkit-border-radius: 8px;">
+<form class="quote_form" method="get" action="/quote/lookup/"><dl class="zend_form">
+<dd id="s-element" style="margin: 0;">
+<input type="text" name="s" id="quote_symbol" value="Search Term" onfocus="if (this.value == 'Search Term') { this.value = ''; }" onblur="if (this.value == '') { this.value = 'Search Term'; }" style="height: 26px; line-height: 26px; color: #868686; font-size: 108%; width: 70%;" /><input type="submit" value="Search" style="-moz-border-radius:0 0 0 0; border:medium none; height:33px; padding:0.25em 0.5em 0.4em; text-transform:uppercase;" />
+<p class="description">Enter a full or partial search term for the symbol, company, or name of the index or fund.</p></dd></dl></form>
+                </div>
+                
+<?php if (isset($this->paginator)) { ?>
+    <div class="lookup lalign" style="margin-top: 2em;">
+        <table class="lookup_table" align="center" style="font-size: 108%;">
+            <thead>
+                <tr class="first even">
+                    <td class="col1">Symbol</td>
+                    <td class="col2">Name</td>
+                    <td class="col3">Type</td>
+                    <td class="col4">Exchange</td>
+                </tr>
+            </thead>
+            <tbody>
+<?php
+$counter = 0;
+foreach ($this->paginator as $line) {
+    $counter++;
+?>
+                <tr>
+                    <td class="col1"><a href="/<?= $this->SEO_Urlify($line->name) ?>/s/quote/p/s/<?= $line->internal_symbol ?>/"><?= $line->internal_symbol ?></a></td>
+                    <td class="col2"><?= $line->name ?></td>
+                    <td class="col3"><?= isset($line->typedisp) ? $line->typedisp : $line->type ?></td>
+                    <td class="col4"><?= isset($line->exchdisp) ? $line->exchdisp : $line->exch ?></td>
+                </tr>
+<?php
+}
+
+if (!$counter) { echo '<tr><td colspan="4" class="errors calign">No results found for that term.</td></tr>'; }
+?>
+            </tbody>
+        </table>
+    </div>
+    
+    <?php echo $this->paginationControl($this->paginator, 'Sliding', 'lookup/paginator.phtml', array('internal' => $this->internal)); ?>
+    
+<?php } ?>
+
+            </div>
+            <div class="yui3-u-1-5">
+                    <p style="background: url(<?= $this->internal->vars->static_host ?>/css/theme/default/assets/modules/quote/index.png) no-repeat; padding-left: 17px; font-size: 108%; color: #868686; margin-bottom: 5px;">Symbol Index</p>
+<?php
+    $start_chars = array_merge(range('A', 'Z'), range(0, 9));
+    
+    #foreach (array(range('A', 'M'), range('N', 'Z'), range(0, 9)) as $set) {
+        #echo '<p style="margin-bottom: 0;">';
+        foreach ($start_chars as $char) {
+            echo "<span style=\"padding: .25em; font-size: 116%; font-weight: bold;";
+            if (isset($this->internal->params->start_char) && (string) $char == $this->internal->params->start_char) {
+                echo ' background-color: #ccc;';
+            }
+            echo "\"><a href=\"" . $this->internal->target->pre . "/quote/lookup/p/start_char/$char/\" style=\"font-family: Courier; \">$char</a></span> ";
+        }
+        #echo '</p>';
+    #}
+?>
+            </div>
+        </div>
+        
+
+    </div>
+    
+    <div class="ft">
+        <div class="dec">
+            <div class="lt"></div><div class="mn"></div><div class="rt"></div>
+
+        </div>
+    </div>
+    <span class="icon"></span>
+</div>
+<!-- End Module -->

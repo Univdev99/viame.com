@@ -1,0 +1,211 @@
+<div id="signup_popup" style="display: none; border: none; text-align: left;">
+    <div class="bd" style="padding: 2em; border: 3px solid #000; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/background.png) top center no-repeat; border-radius: 10px; -moz-border-radius: 10px; -webkit-border-radius: 10px;">
+        <a href="javascript:void(null);" rel="nofollow" onclick="YAHOO.viame.modal.signup_popup_handleCancel();" style="color: #f00; display: block; position: absolute; top: 10px; right: 10px;"><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/close.png" alt="Close" /></a>
+        <table width="100%"><tr>
+        	<td width="50%" valign="top" style="padding-right: 2em; font-weight: bold;">
+        	
+        	    <?php /*
+            	<div style="color: #193764; font-size: 25px;">Attention Small Cap Investors!</div>
+                
+                <div style="font-size: 21px; line-height: 24px; padding-bottom: 16px; margin-bottom: 16px; border-bottom: 1px dotted #a5afbe;">Find Out What Traders In the Know Are Saying About 
+                <?php
+                    if (isset($this->placeholder('related_quotes')->symbols)) {
+                        $symbols = $this->placeholder('related_quotes')->symbols;
+                        if (count($symbols) < 3) {
+                            echo implode(' and ', $symbols);
+                        }
+                        else {
+                            $holder = array_pop($symbols);
+                            echo implode(', ', $symbols) . ', and ' . $holder;
+                        }
+                    }
+                    else {
+                        echo " Stocks You Own";
+                    }
+                ?>
+                </div>
+                
+                <div style="color: #193764; font-size: 18px;">GET FREE ACCESS TO:</div>
+                
+                <div style="margin: 7px 0; font-size: 14px; font-weight: normal; padding-left: 29px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/check.png) top left no-repeat;">Small Cap Stocks Before They Breakout!</div>
+                <div style="margin: 7px 0; font-size: 14px; font-weight: normal; padding-left: 29px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/check.png) top left no-repeat;">Small Cap Stock Traders Who Consistently Kill It For Huge Gains!</div>
+                <div style="margin: 7px 0; font-size: 14px; font-weight: normal; padding-left: 29px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/check.png) top left no-repeat; padding-bottom: 16px; margin-bottom: 16px; border-bottom: 1px dotted #a5afbe;">SCN's Hot Trading Alert Newsletter and Much More!</div>
+                
+                <div style="color: #193764; font-size: 20px;">It's ALL FREE to<br />SmallCap Network Members</div>
+                */ ?>
+                
+                <div style="color: #193764; font-size: 25px;">Attention Small Cap Investors!</div>
+                
+                <div style="margin-top: .5em; margin-bottom: 1em; border-bottom: 1px dotted #a5afbe;">
+                    <p style="font-size: 16px; margin-bottom: 16px;">If you invest or trade small cap stocks or penny stocks, our site and daily newsletter is an absolute must.</p>
+                    <ul>
+                        <li>Uncover the hidden value of select small cap stocks</li>
+                        <li>Discover the secrets to playing penny stocks</li>
+                    </ul>
+                </div>
+
+                <div style="color: #193764; font-size: 16px;">Here's Just a Few of Our Most Recent Winners!</div>
+                
+                <div align="center" style="margin: 6px 0 13px 0; padding-bottom: 6px; border-bottom: 1px dotted #a5afbe; font-size: 18px;">
+                <table align="center">
+                    <tr>
+                        <td align="center" valign="middle" style="padding: 3px 10px;">LUXR<br /><span class="uptick">+187%</span></td>
+                        <td align="center" valign="middle" style="padding: 3px 10px;">STVF<br /><span class="uptick">+296%</span></td>
+                        <td align="center" valign="middle" style="padding: 3px 10px;">RAD<br /><span class="uptick">+98%</span></td>
+                    </tr>
+                    <tr>
+                        <td align="center" valign="middle" style="padding: 3px 10px;">CALL<br /><span class="uptick">+90%</span></td>
+                        <td align="center" valign="middle" style="padding: 3px 10px;">USPR<br /><span class="uptick">+308%</span></td>
+                        <td align="center" valign="middle" style="padding: 3px 10px;">CDXC<br /><span class="uptick">+103%</span></td>
+                    </tr>
+                </table>
+                </div>
+                
+                <div style="color: #193764; font-size: 20px;">Do Yourself a Favor and Become an<br />SCN Member Today. It's FREE!</div>
+            </td>
+            <td width="50%" valign="top" style="padding-left: 2em;">
+                <img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/header.png" alt="Register Now" style="margin-bottom: 2em;" />
+                <form id="member_form" enctype="application/x-www-form-urlencoded" class="form regula-validation shortform" data-constraints="@PasswordsMatch(field1=&quot;password&quot;, field2=&quot;password_confirm&quot;, message=&quot;Your passwords do not match.&quot;, groups=[member_form])" method="post" action="/member/register/">
+                <input type="hidden" name="vmpd_npr" value="1" />
+                <input type="hidden" name="signup_entrance" value="FT-NU-Modal" />
+                <table width="100%">
+                	<tr>
+                    	<td style="color: #fff; font-weight: bold;">Desired Username:</td>
+                        <td style="padding: 6px 0;">
+                        	<input type="text" name="username" id="username" value="" maxlength="98" class="regula-validation" data-constraints="@Required(label=&quot;username&quot;, message=&quot;The {label} field cannot be empty.&quot;, groups=[member_form])" style="height: 22px; width: 97%; padding: .4em; border: 1px solid #cfcfcf;" />
+                        </td>
+                    </tr>
+                    <tr>
+                    	<td style="color: #fff; font-weight: bold;">Email Address:</td>
+                        <td style="padding: 6px 0;">
+                        	<input type="text" name="email" id="email" value="" maxlength="256" class="regula-validation" data-constraints="@Email(label=&quot;email address&quot;, message=&quot;The {label} was not formatted properly.&quot;, groups=[member_form, login_form])" style="height: 22px; width: 97%; padding: .4em; border: 1px solid #cfcfcf;" />
+                        </td>
+                    </tr>
+                    <tr>
+                    	<td style="color: #fff; font-weight: bold;">Password:</td>
+                        <td style="padding: 6px 0;">
+                        	<input type="password" name="password" id="password" value="" maxlength="64" class="regula-validation" data-constraints="@Required(label=&quot;password&quot;, message=&quot;The {label} field cannot be empty.&quot;, groups=[member_form, login_form])" style="height: 22px; width: 97%; padding: .4em; border: 1px solid #cfcfcf;" />
+                        </td>
+                    </tr>
+                    <tr>
+                    	<td style="color: #fff; font-weight: bold;">Retype Password:</td>
+                        <td style="padding: 6px 0;">
+                        	<input type="password" name="password_confirm" id="password_confirm" value="" maxlength="64" class="regula-validation" data-constraints="@Required(label=&quot;password confirm&quot;, message=&quot;The {label} field cannot be empty.&quot;, groups=[member_form])" style="height: 22px; width: 97%; padding: .4em; border: 1px solid #cfcfcf;" />
+                        </td>
+                    </tr>
+                    <tr>
+                    	<td>&nbsp;</td>
+                        <td style="padding: 6px 0; color: #fff; height: 42px;">
+                        	<input type="hidden" name="tos" value="0" /><input type="checkbox" name="tos" id="tos" value="1" class="regula-validation" data-constraints="@Required(message=&quot;You must agree to the Terms of Use.&quot;, groups=[member_form])" />&nbsp;&nbsp;&nbsp;I Agree to the <a href="/page/view/p/mid/1/title/Terms+of+Use/" rel="nofollow" style="color: #fff;" target="_blank">Terms of Use</a>
+                        </td>
+                    </tr>
+                    <tr>
+                    	<td>&nbsp;</td>
+                        <td style="padding: 6px 0;">
+                        	<a href="javascript:void(null);" rel="nofollow" onclick="YAHOO.viame.modal.signup_popup_handleSubmit();"><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/submit_button.png" alt="Submit" /></a>
+                        </td>
+                    </tr>
+                </table>
+                </form>
+            </td>
+        </tr></table>
+    </div>
+</div>
+
+<div id="signup_popup_success" style="display: none; border: none; text-align: left;">
+    <div class="bd" style="padding: 0; border: 3px solid #000; background-color: #fff; border-radius: 10px; -moz-border-radius: 10px; -webkit-border-radius: 10px;">
+        <a href="javascript:void(null);" rel="nofollow" onclick="YAHOO.viame.modal.signup_popup_success_handleCancel();" style="color: #f00; display: block; position: absolute; top: 10px; right: 10px;"><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/close.png" alt="Close" /></a>
+        <div style="padding: 1em; margin-bottom: 1em; background: #f0efef url(<?= $this->internal->vars->static_host ?>/css/theme/default/assets/stockhq/header_bg.png) center center repeat-x; border-top-left-radius: 10px; -moz-border-radius-topleft: 10px; -webkit-border-topleft-radius: 10px; border-top-right-radius: 10px; -moz-border-radius-topright: 10px; -webkit-border-topright-radius: 10px;"><span style="color: #193764; font-size: 30px;">Check Your Email</span></div>
+        <div style="padding: 0 1em 1em 1em; font-size: 120%; line-height: 140%;">
+            <div><strong>To complete your registration, <span style="color: #193764;">you must verify your email address</span>. Don't worry, it's quick and easy!</strong></div>
+            <div style="margin: 12px 0 5px 15px; font-size: 14px; font-weight: normal; padding-left: 29px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/check.png) top left no-repeat;">Go to your inbox now.</div>
+            <div style="margin: 5px 0 5px 15px; font-size: 14px; font-weight: normal; padding-left: 29px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/check.png) top left no-repeat;">Find the verification email from SmallCap Network (you might need to check your spam folder).</div>
+            <div style="margin: 5px 0 5px 15px; font-size: 14px; font-weight: normal; padding-left: 29px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/check.png) top left no-repeat;"><strong>Click on the verification link</strong> provided in the email.</div>
+            <div style="margin: 5px 0 12px 15px; font-size: 14px; font-weight: normal; padding-left: 29px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/check.png) top left no-repeat;">Start reaping the benefits of your free SCN Membership!</div>
+            
+            <div style="font-size: 14px; line-height: 120%; margin-bottom: 1em;">Once you verify your email address, you will have immediate login access to the SmallCap Network Community and will automatically be added to our priority list of Members who receive our Newsletter before anyone else.</div>
+
+            <div style="font-size: 14px; line-height: 120%;">Also, <strong>make sure to add our email address to your contact list</strong> to ensure delivery of our Newsletter in the mornings straight to your inbox.</div>
+        </div>
+    </div>
+</div>
+
+<?php $this->inlineScript()->captureStart() ?>
+YAHOO.util.Event.onDOMReady(function () {
+	YAHOO.namespace("viame.modal");
+	
+	var pagesToSkip = 0;
+	var timesToDisplay = 1;
+	var displayDelay = 2000;
+	
+	YAHOO.viame.modal.loadupModalSignup = (function() {
+		// Define various event handlers for Dialog
+		YAHOO.viame.modal.signup_popup_handleSubmit = (function() {
+		    if ((YAHOO.viame.vivin_regula.validate(YAHOO.util.Dom.get('member_form'), { groups: [regula.Group.member_form] }) && YAHOO.viame.dubsub.check(YAHOO.util.Dom.get('member_form')))) {
+    			YAHOO.viame.modal.signup_popup.hide();
+		        YAHOO.viame.modal.signup_popup.submit();
+		        
+		        YAHOO.util.Cookie.set("modal_signed_up", 1, { path: "/" });
+		        
+		        YAHOO.viame.modal.signup_popup_success_handleCancel = (function() {
+		            YAHOO.viame.modal.signup_popup_success.cancel();
+		            slideFixedOut();
+		        });
+		        
+		        YAHOO.util.Dom.setStyle('signup_popup_success', 'display', 'block');
+		        YAHOO.viame.modal.signup_popup_success = new YAHOO.widget.Dialog("signup_popup_success", {
+        			width : "40em",
+        			fixedcenter : true,
+        			draggable: false, 
+                    zindex: 10,
+                    modal: true,
+        			close: false,
+        			underlay: 'none',
+        			visible : false,
+        			constraintoviewport : true,
+        			effect: { effect: YAHOO.widget.ContainerEffect.FADE, duration: 0.5 }
+        		} );
+        		YAHOO.viame.modal.signup_popup_success.render();
+		        YAHOO.viame.modal.signup_popup_success.show();
+    		}
+		});
+		YAHOO.viame.modal.signup_popup_handleCancel = (function() { YAHOO.viame.modal.signup_popup.cancel(); });
+		
+		YAHOO.viame.modal.signup_popup_handleSuccess = (function(o) { });
+		YAHOO.viame.modal.signup_popup_handleFailure = (function(o) { });
+	
+		YAHOO.util.Dom.setStyle('signup_popup', 'display', 'block');
+	
+		// Instantiate the Dialog
+		YAHOO.viame.modal.signup_popup = new YAHOO.widget.Dialog("signup_popup", {
+			width : "66em",
+			fixedcenter : true,
+			draggable: false, 
+            zindex: 10,
+            modal: true,
+			close: false,
+			underlay: 'none',
+			visible : false,
+			constraintoviewport : true,
+			effect: { effect: YAHOO.widget.ContainerEffect.FADE, duration: 0.5 }
+		} );
+		    	
+		// Wire up the success and failure handlers
+		YAHOO.viame.modal.signup_popup.callback = { success: YAHOO.viame.modal.signup_popup_handleSuccess, failure: YAHOO.viame.modal.signup_popup_handleFailure };
+		
+		// Render the Dialog
+		YAHOO.viame.modal.signup_popup.render();
+		YAHOO.viame.modal.signup_popup.show();
+	});
+	
+	
+	if (
+	    (!YAHOO.util.Cookie.get("modal_signed_up")) && 
+	    (!pagesToSkip || parseInt(YAHOO.util.Cookie.get("modal_signup")) >= pagesToSkip) &&
+	    (!timesToDisplay || !YAHOO.util.Cookie.get("modal_signup") || (parseInt(YAHOO.util.Cookie.get("modal_signup")) < (pagesToSkip + timesToDisplay)))
+	   ) {    
+    	setTimeout("YAHOO.viame.modal.loadupModalSignup()", displayDelay);
+    }
+    YAHOO.util.Cookie.set("modal_signup", ((YAHOO.util.Cookie.get("modal_signup") ? parseInt(YAHOO.util.Cookie.get("modal_signup")) : 0) + 1), { path: "/" });
+});
+<?php $this->inlineScript()->captureEnd() ?>

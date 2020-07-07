@@ -1,0 +1,256 @@
+<!-- Begin Fixed -->
+<div id="fixed"><div id="toolbar">
+    <?= $this->render('../default/includes/menubar.phtml'); ?>
+</div></div>
+<?php
+$this->inlineScript()->captureStart() ?>
+YAHOO.util.Event.onContentReady("fixed", function () {
+    // Some default undos
+    YAHOO.util.Dom.setStyle('fixed', 'display', 'block');
+    YAHOO.util.Dom.setStyle('fixed', 'position', 'fixed');
+    YAHOO.util.Dom.setY('fixed', -10000);
+    
+    // Fixed at top - Scootch page down
+    //YAHOO.util.Dom.setY('page', YAHOO.util.Dom.get('fixed').offsetHeight);
+    
+    // Fixed at bottom
+    function positionFixedBottom() {
+        YAHOO.util.Dom.setY('fixed', YAHOO.util.Dom.getViewportHeight() - YAHOO.util.Dom.get('fixed').offsetHeight + YAHOO.util.Dom.getDocumentScrollTop());
+        YAHOO.util.Dom.setStyle('fixed', 'visibility', 'visible');
+    }
+
+    //YAHOO.util.Dom.setY('fixed', YAHOO.util.Dom.getViewportHeight() - YAHOO.util.Dom.get('fixed').offsetHeight);
+    YAHOO.util.Event.addListener(window, 'load', positionFixedBottom);
+    YAHOO.util.Event.addListener(window, 'resize', positionFixedBottom);
+});
+<?php $this->inlineScript()->captureEnd() ?>
+<!-- End Fixed -->
+
+
+<!-- Begin Page -->
+<div id="page" class="type_<?= $this->internal->target->type ?> id_<?= $this->internal->target->id; ?>">
+    
+    
+    <!-- Begin Page Header -->
+    <div id="page_header">
+
+        <!-- Begin Top -->
+        <div class="top">
+        	<div class="slider"><div class="centerblock"><div class="dec right"></div>
+            	<div class="contentarea">
+					<div style="background-color: #9d9d9d; padding: 4px 8px;">
+<?php
+if (isset($this->internal->member)) {
+    echo 'Welcome, ' . $this->internal->member->first_name . '!';
+}
+else {
+    echo "<a href=\"/member/login/\" rel=\"nofollow\"onclick=\"return YAHOO.viame.shadowbox.shadowto('/member/login/p/no_layout/1/simple_content/1/', { width: '380px', fixedcenter: true, close: true, draggable: false, modal: true, visible: false });\">Login</a> <span style=\"margin: 0 5px;\">|</span> <a href=\"/member/register/\" rel=\"nofollow\">Sign Up!</a>";
+}
+?>					
+					</div>
+				</div>
+            <div class="dec left"></div></div></div>
+            <table width="974" border="0" align="center" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td align="left" width="450" height="90"><img src="<?= $this->internal->vars->static_host ?>/css/community/scn-china/assets/logo/logo.png" alt="SmallCap Network China" /></td>
+                    <td align="left">
+                        <form action="/quote/">
+
+                            <input type="text" name="s" value="Enter Symbol" class="vmfh_acss autogo" onfocus="if (this.value == 'Enter Symbol') { this.value = ''; }" onblur="if (this.value == '') { this.value = 'Enter Symbol'; }" />
+                        </form>
+                        </td>
+                    <td align="right" width="250">
+<div class="advertisement">
+<script type="text/javascript">// <![CDATA[
+GA_googleFillSlotWithSize("ca-pub-3297144036592508", "SCN_C-Site-Header-234x60", 234, 60);
+// ]]></script>
+</div>
+                    </td>
+                </tr>
+
+            </table>
+		</div>
+        <!-- End Top -->
+        
+        <!-- Begin NavBar -->
+        <div class="nav">
+            <div id="navbar" class="yuimenubar yuimenubarnav">
+                <div class="bd">
+            
+                    <ul class="first-of-type">
+                        <li class="yuimenubaritem first-of-type">
+                            <a class="yuimenubaritemlabel" href="/" title "home">Home</a>
+                        </li>
+                        <li class="yuimenubaritem">
+                            <a class="yuimenubaritemlabel" href="#">Companies List</a>
+                        </li>
+                        <li class="yuimenubaritem">
+                            <a class="yuimenubaritemlabel" href="#">Articles</a>
+                        </li>
+                        <li class="yuimenubaritem">
+                            <a class="yuimenubaritemlabel" href="#">Metals & Minerals</a>
+                        </li>
+                        <li class="yuimenubaritem">
+                            <a class="yuimenubaritemlabel" href="#">Energy & Environmental</a>
+                        </li>
+                        <li class="yuimenubaritem">
+                            <a class="yuimenubaritemlabel" href="#">Tech & Medical</a>
+                        </li>
+                        <li class="yuimenubaritem">
+                            <a class="yuimenubaritemlabel" href="#">Brick & Mortar</a>
+                        </li>
+                        <li class="yuimenubaritem">
+                            <a class="yuimenubaritemlabel" href="#">For Public Companies</a>
+                        </li>
+                    </ul>
+                             
+                </div>
+            </div>
+        </div>
+		<!-- End NavBar -->
+
+<?php
+    $front = Zend_Controller_Front::getInstance();    
+    if (($front->getRequest()->getModuleName() == 'default') &&
+        ($front->getRequest()->getControllerName() == 'index') &&
+        ($front->getRequest()->getActionName() == 'index')) {
+?>
+        <!-- Begin Special Home -->
+        <div id="specialhome">
+            <table width="974" align="center">
+                <tr>
+                    <td class="odd firstitem" style="width: 300px; padding: 1em 0; padding-right: 20px;">
+                        <div style="font-size: x-large; color: #ab0000;">Discover China Stocks and realize the explosive growth of China's emerging market.</div>
+                        <div style="text-align: center; padding: 5px 0;"><img src="<?= $this->internal->vars->static_host ?>/css/community/scn-china/assets/specialhome/feather.png" /></div>
+                        <div style="font-style: italic; font-weight: bold;">China stocks have outperformed the U.S. markets now for 5 straight years and we believe the best is yet to come.</div>
+                        <div style="text-align: right; font-size: x-small; font-weight: bold; color: #767d80;">Adam Roseman</div>
+                    </td>
+                    <td class="even" style="text-align: center; padding: 1em 0;">
+<script type="text/javascript" src="<?= $this->internal->vars->static_host ?>/js/swfobject/swfobject.js"></script>
+<div id="video" style="text-align: center;"></div>
+<script type="text/javascript">
+var params = {
+    allowscriptaccess: "always",
+    allowfullscreen: "true",
+    wmode: "transparent",
+    flashvars: "file=http://access.smallcapnetwork.com/media/cgyv/cgyv.flv&image=https://static.viame.com/css/community/scn-china/assets/specialhome/movie.gif&stretching=fill"
+};
+swfobject.embedSWF('<?= $this->internal->vars->static_host ?>/flash/JWPlayer.swf', 'video', '300', '205', '9.0.0', null, null, params, null);
+</script>
+
+                    </td>
+                    <td class="odd lastitem" style="width: 220px; padding: 1em 0 1em 20px;">
+
+<?php
+$quotes = new ViaMe_Vm_Quotes();
+$symbols = array('^SSEC'); 
+$cur = 'USD';
+$MUL = 1;
+if (isset($this->internal->member) && $this->internal->member->currency != 'USD') {
+    $cur = $this->internal->member->currency;
+    $symbols[] = $this->internal->member->currency . '=X';
+}
+$results = $quotes->fetch($symbols, 'snxl1c1p2ophgkj');
+$SSEC = $results[0];
+if ($cur != 'USD') {
+    $MUL = $results[1][3];
+}
+
+$currency = new Zend_Currency($cur);
+?>
+<div class="title">Shanghai Composite Index</div>
+<table class="shanghai_composite_index">
+    <tr class="odd firstitem">
+        <td>Price</td>
+        <td><?= $currency->toCurrency($SSEC[3] * $MUL) ?></td>
+    </tr>
+    <tr class="even">
+        <td>Today's Change</td>
+        <td><span class="<?php if ($SSEC[4] > 0) { echo 'netup'; } elseif ($SSEC[4] < 0) { echo 'netdown'; } ?>"><?= $currency->toCurrency($SSEC[4] * $MUL) ?> (<?= $SSEC[5] ?>)</span></td>
+    </tr>
+    <tr class="odd">
+        <td>Open</td>
+        <td><?= $currency->toCurrency($SSEC[6] * $MUL) ?></td>
+    </tr>
+    <tr class="even">
+        <td>Prev Close</td>
+        <td><?= $currency->toCurrency($SSEC[7] * $MUL) ?></td>
+    </tr>
+    <tr class="odd">
+        <td>Day's High</td>
+        <td><?= $currency->toCurrency($SSEC[8] * $MUL) ?></td>
+    </tr>
+    <tr class="even">
+        <td>Day's Low</td>
+        <td><?= $currency->toCurrency($SSEC[9] * $MUL) ?></td>
+    </tr>
+    <tr class="odd">
+        <td>52-Week High</td>
+        <td><?= $currency->toCurrency($SSEC[10] * $MUL) ?></td>
+    </tr>
+    <tr class="even lastitem">
+        <td>52-Week Low</td>
+        <td><?= $currency->toCurrency($SSEC[11] * $MUL) ?></td>
+    </tr>
+</table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <!-- End Special Home -->
+<?php } ?>
+
+    </div>
+    <!-- End Page Header -->
+
+    
+    <!-- Begin Page Body -->
+    <div id="page_body" class="<?php $front = Zend_Controller_Front::getInstance(); echo $front->getRequest()->getModuleName() . '_module ' . $front->getRequest()->getControllerName() . '_controller ' . $front->getRequest()->getActionName() . '_action'; ?>">
+
+<?php
+    if (isset($this->internal->vars->sublayout)) {
+        echo $this->render($this->internal->vars->sublayout);
+    }
+    elseif (is_file(dirname(__FILE__) . '/../sublayouts/default.phtml')) {
+        echo $this->render('sublayouts/default.phtml');
+    }
+    else {
+        echo '<div id="doc4" class="page_body_internal"><div id="bd"><div id="yui-main"><div class="yui-b"><div id="content_area">' .
+             $this->layout()->content .
+             '</div></div></div></div></div>';
+    }
+?>
+        
+    </div>
+    <!-- End Page Body -->
+    
+    
+    <!-- Begin Page Footer -->
+    <div id="page_footer">
+        
+        
+        <ul class="straight decorated">
+            <li class="firstitem"><a href="/">Home</a></li>
+            <li><a href="/quote/">Stock Quotes</a></li>
+            <li><a href="/Terms-of-Use/s/page/view/p/mid/1/id/1/">Terms of Use</a></li>
+            <li><a href="/Disclaimer/s/page/view/p/mid/1/id/2/">Disclaimer</a></li>
+            <li><a href="/Privacy-Policy/s/page/view/p/mid/1/id/3/">Privacy Policy</a></li>
+            <li><a href="/Disclosure/s/page/view/p/mid/1/id/4/">Disclosure</a></li>
+            
+            <li><a href="https://www.smallcapnetwork.com/contact_us/">Contact Us</a></li>
+
+        </ul>
+        <p class="copyright">Copyright &copy; 2001-<?= date('Y') ?> SmallCapNetwork.com and TGR Group, LLC. All Rights Reserved.</p>
+        
+        
+    </div>
+    <!-- End Page Footer -->
+        
+        
+</div>
+<!-- End Page -->
+
+
+<!-- Begin Scratch Pad -->
+<div id="scratch_pad"></div>
+<!-- End Scratch Pad -->

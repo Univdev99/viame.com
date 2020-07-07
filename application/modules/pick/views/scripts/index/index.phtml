@@ -1,0 +1,470 @@
+<?php
+$module = 'pick';
+$date = new Zend_Date();
+?>
+
+<!-- Begin Module -->
+<div class="cm decorated padded m_<?= $module ?> m-<?= $this->internal->target->currentModule->module_id ?>-<?= $this->internal->target->currentModule->counter ?>">
+    <div class="hd">
+        <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div>
+        </div>
+        <div class="con">
+        	<table class="table">
+                <tr>
+                    <td class="lt"></td>
+
+                    <td class="mn1"><h1><a href="<?=(
+                    !(isset($this->internal->params->nomid) && $this->internal->params->nomid)
+                    ?
+                    '/' . $this->SEO_Urlify($this->internal->target->currentModule->display ? $this->internal->target->currentModule->display : $this->internal->target->currentModule->m_display) . '/s' . (isset($this->internal->target->pre) ? $this->internal->target->pre : '') . '/' . $this->internal->target->currentModule->m_name . '/p/mid/' . $this->internal->params->mid . '/'
+                    :
+                    '/' . $this->SEO_Urlify($this->internal->target->currentModule->display ? $this->internal->target->currentModule->display : $this->internal->target->currentModule->m_display) . '/s' . (isset($this->internal->target->pre) ? $this->internal->target->pre : '') . '/' . $this->internal->target->currentModule->m_name . '/p/nomid/1/'
+                    )?>">
+                    <?= $this->escape(isset($this->internal->target->currentModule->display) && $this->internal->target->currentModule->display ? $this->internal->target->currentModule->display : $this->internal->target->currentModule->m_display) ?></a></h1></td>
+                    <td class="sep"></td>
+                    <td class="mn2"><?php if (!$this->masked && !(isset($this->internal->params->nomid) && $this->internal->params->nomid) && ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_WRITE)) { ?>
+<div class="administer"><a href="<?= $this->internal->target->pre ?>/pick/create/p/mid/<?= $this->internal->params->mid ?>/" class="create">Create New Pick</a></div>
+<?php } ?></td>
+                    <td class="rt"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="bd">
+<?php
+if ($this->internal->target->currentModule->content) {
+    echo '<div class="index_content">' . $this->internal->target->currentModule->content . '</div>';
+}
+?>
+
+<?php
+$sim_vis = '';
+if (isset($this->internal->params->start_value) && $this->internal->params->start_value) {
+    $sim_vis = ' style="background-color: #dd0;"';
+}
+?>
+<table class="display" style="width: 100%; color: #6e858d; margin-bottom: 1em;">
+    <thead style="background-color: #ddd;">
+        <tr>
+            <th colspan="7" scope="col">Pick Details</th>
+            <th colspan="4" scope="col"> Current or Closing Value</th>
+            <th colspan="2" scope="col">Total Gain</th>
+        </tr>
+        <tr>
+            <th scope="col">L/S</th>
+            <th scope="col">Date</th>
+            <th scope="col">Symbol</th>
+            <th scope="col">Allocation</th>
+            <th scope="col">Price</th>
+            <th scope="col"<?= $sim_vis ?>>Shares</th>
+            <th scope="col"<?= $sim_vis ?>>Cost</th>
+            <th scope="col">Closed</th>
+            <th scope="col">Price</th>
+            <th colspan="2">Pick Change</th>
+            <th scope="col"<?= $sim_vis ?>>Value</th>
+            <th scope="col">%</th>
+        </tr>
+    </thead>
+
+<?php if (count($this->paginator)) {
+$currency = new ViaMe_Currency($this->form->getElement('currency_code')->getValue());
+$runner = 0;
+$counter = 0;
+$multiplier = 1;
+$inflow = false;
+$totals = array();
+
+// Does this module have INFLOW?  If so, show links to users spaces and don't display averages
+if ((isset($this->internal->target->currentModule->allow_community_inflow) && !is_null($this->internal->target->currentModule->allow_community_inflow)) ||
+    (isset($this->internal->target->currentModule->allow_network_inflow) && !is_null($this->internal->target->currentModule->allow_network_inflow)) ||
+    (isset($this->internal->target->currentModule->allow_profile_inflow) && !is_null($this->internal->target->currentModule->allow_profile_inflow))) {
+    $inflow = true;
+}
+
+if (isset($this->internal->params->start_value) && $this->internal->params->start_value) {
+    $cash = $this->internal->params->start_value;
+    if (isset($this->internal->params->multiplier) && $this->internal->params->multiplier) {
+        $multiplier = $this->internal->params->multiplier;
+    }
+}
+
+foreach ($this->paginator as $object) {
+    $runner++;
+    if (!(isset($this->internal->params->status) && $this->internal->params->status == 1 && $object->partial_close_parent_id)) {
+        $counter++;
+    }
+    
+    $bgcolor = '#fff';
+    switch (($counter - 1) % 4) {
+        case 0:
+            $bgcolor = '#e5f0f4';
+            break;
+        case 2:
+            $bgcolor = '#eee';
+            break;
+        default:
+            $bgcolor = '#fff';
+    }
+    
+    $allocation = $object->allocation;
+    $open_price = ($object->open_price ? $object->open_price : $object->open_temp_price) * $this->currency_conversion;
+    $close_price = ($object->close_price ? $object->close_price : ($object->close_temp_price ? $object->close_temp_price : (isset($this->quote_data[$object->symbol_id]->last) ? $this->quote_data[$object->symbol_id]->last : 0))) * $this->currency_conversion;
+    $shares = 0;
+    $cost = $open_price;
+    $exit = $close_price;
+    
+    if (isset($cash)) {
+        $shares = $cash * $allocation / 100 / $open_price * $multiplier;
+        
+        if (!(isset($this->internal->params->fractional)) || !$this->internal->params->fractional) {
+            $shares = floor($shares);
+        }
+        else {
+            $shares = sprintf("%.3f", $shares);
+        }
+        
+        $cost = $shares * $open_price;
+        $exit = $shares * $close_price;
+    }
+    
+    $change = ($close_price - $open_price) * $object->position;
+    $change_pct = ($open_price ? (($close_price - $open_price) * $object->position / $open_price * 100) : 0);
+    $value_change = ($exit - $cost) * $object->position * (isset($cash) ? 1 : ($allocation / 100));
+    $value_change_pct = ($open_price ? (($close_price - $open_price) * $object->position / $open_price * $allocation * $multiplier) : 0);
+    
+    // Totals
+    foreach (array('allocation', 'open_price', 'close_price', 'shares', 'cost', 'exit', 'change', 'change_pct', 'value_change', 'value_change_pct') as $temp) {
+        if (isset($totals[$temp])) {
+            $totals[$temp] += ${$temp};
+        }
+        else {
+            $totals[$temp] = ${$temp};
+        }
+        
+        if (isset($weighted_totals[$temp])) {
+            $weighted_totals[$temp] += ($allocation * ${$temp});
+        }
+        else {
+            $weighted_totals[$temp] = ($allocation * ${$temp});
+        }
+    }
+    
+?>
+    <tr class="calign" style="background-color: <?= $bgcolor ?>;">
+<?php if (isset($this->internal->params->status) && $this->internal->params->status == 1 && $object->partial_close_parent_id) { ?>
+        <td colspan="3">&nbsp;</td>
+<?php } else { ?>
+        <td>
+            <?php
+                // Edit Portfolio Link
+                if ((!$this->masked) &&
+                    (!$object->close_datestamp) &&
+                    (!$object->close_temp_price) &&
+                    (!$object->close_price) &&
+                    ($object->{strtolower($this->internal->target->type) . '_id'} == $this->internal->target->id) && 
+                    ($this->internal->target->acl->owner || ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_EDIT))) {
+                        
+                        // Only displaying edit link to non-closed, non-masked, SAME SPACE picks
+                ?>
+                    <a href="<?= $this->internal->target->pre ?>/pick/edit/p/mid/<?= $object->matrix_counter ?>/id/<?= $object->counter ?>/" title="Edit Pick" class="fakebutton tight"><?= ($object->position == -1) ? 'S' : 'L' ?></a>
+            <?php } else { ?>
+                    <?= ($object->position == -1) ? 'S' : 'L' ?>
+            <?php } ?>
+        </td>
+        <td>
+<?php
+    #$date = new Zend_Date();
+    $date->set($object->open_datestamp, Zend_Date::ISO_8601);
+    if (isset($this->internal->member)) {
+        $date->setTimezone($this->internal->member->timezone);
+    }
+    else {
+        $date->setTimezone($this->internal->config->timezone);
+    }
+    
+    /*
+    $link = '/' . $this->SEO_Urlify($object->title) . '/s';
+    if ($object->com_id && ((isset($this->internal->params->com_id) && $this->internal->params->com_id) || $object->com_id != $this->internal->community->id)) { $link .= '/com/' . $object->com_id; }
+    elseif ($object->net_id) { $link .= '/net/' . $object->net_id; }
+    elseif ($object->via_id) { $link .= '/via/' . $object->via_id; }
+    
+    $link .= "/$module/view/p/mid/" . $object->matrix_counter . '/id/' . $object->counter . '/';
+    */
+    $link = $this->ContentLink(array('object' => $object, 'view' => $this));
+?>
+            <a href="<?= $link ?>" title="View Pick Details"><?= $date->toString('FF'); ?></a>
+        </td>
+        <td><?= $this->Quote_SymbolDisplay(array('id' => $object->symbol_id, 'symbol' => $this->symbols_data[$object->symbol_id]->internal_symbol, 'name' => $this->symbols_data[$object->symbol_id]->name, 'active' => (isset($this->symbols_data[$object->symbol_id]->active) ? $this->symbols_data[$object->symbol_id]->active : null), 'internal' => $this->internal)) ?></td>
+<?php } ?>
+        <td><?= Zend_Locale_Format::toNumber($allocation, array('locale' => $this->internal->locale)) ?>%</td>
+        <td><?= $currency->toCurrency($open_price) ?></td>
+        <td><?= isset($cash) ? Zend_Locale_Format::toNumber($shares, array('locale' => $this->internal->locale)) : '-' ?></td>
+        <td><?= isset($cash) ? $currency->toCurrency($cost) : '-' ?></td>
+        <td>
+<?php
+    if ($object->close_datestamp) {
+        #$date = new Zend_Date();
+        $date->set($object->close_datestamp, Zend_Date::ISO_8601);
+        #if (isset($this->internal->member)) {
+        #    $date->setTimezone($this->internal->member->timezone);
+        #}
+        echo $date->toString('FF');
+    }
+    else {
+        if ((!$this->masked) &&
+            ($object->open_price) &&
+            (!$object->close_datestamp) &&
+            (!$object->close_temp_price) &&
+            (!$object->close_price) &&
+            ($object->{strtolower($this->internal->target->type) . '_id'} == $this->internal->target->id) && 
+            ($this->internal->target->acl->owner || ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_DELETE))) {
+            echo '<a href="' . $this->internal->target->pre . '/pick/close/p/mid/' . $object->matrix_counter . '/id/' . $object->counter . '/" title="Close Pick" class="fakebutton tight red">Close</a>';
+        }
+        else {
+            echo 'Open';
+        }
+    }
+?>
+        </td>
+        <td><?= $currency->toCurrency($close_price) ?></td>
+        <td class="<?= ($change > 0 ? 'netup' : ($change < 0 ? 'netdown' : '')) ?>"><?= $currency->toCurrency($change) ?></td>
+        <td class="<?= ($change > 0 ? 'netup' : ($change < 0 ? 'netdown' : '')) ?>"><?= Zend_Locale_Format::toNumber($change_pct, array('locale' => $this->internal->locale, 'precision' => 2)) ?>%</td>
+        <td class="<?= ($value_change > 0 ? 'netup' : ($value_change < 0 ? 'netdown' : '')) ?>"><?= $currency->toCurrency($value_change) ?></td>
+        <td class="<?= ($value_change > 0 ? 'netup' : ($value_change < 0 ? 'netdown' : '')) ?>"><?= Zend_Locale_Format::toNumber($value_change_pct, array('locale' => $this->internal->locale, 'precision' => 2)) ?>%</td>
+    </tr>
+    
+<?php
+    if (($inflow) || (!(isset($this->internal->params->status) && $this->internal->params->status == 1 && $object->partial_close_parent_id) && $object->notes)) {
+?>
+    <tr style="background-color: <?= $bgcolor ?>;">
+        <td>&nbsp;</td>
+        <td colspan="12">
+        
+        <?php if ($inflow) { ?>
+            <div style="font-size: smaller; margin-bottom: .25em;">Picked By <?= $this->ProfileDisplay(array('profile' => $object, 'internal' => $this->internal)) ?> - 
+            <?php
+            #$date = new Zend_Date();
+            $date->set($object->creation, Zend_Date::ISO_8601);
+            if (isset($this->internal->member)) {
+                $date->setTimezone($this->internal->member->timezone);
+                #echo $date->toString(Zend_Date::DATE_SHORT . ' ' . Zend_Date::TIME_SHORT);
+                echo $date->toString(Zend_Date::DATETIME_SHORT);
+            }
+            else {
+                $date->setTimezone($this->internal->config->timezone);
+                #echo $date->toString(Zend_Date::DATE_SHORT . ' ' . Zend_Date::TIME_SHORT . ' z');
+                echo $date->toString(Zend_Date::DATETIME_SHORT . ' z');
+            }
+            
+            // Create the link
+            #$link = '/' . $this->SEO_Urlify($object->title) . '/s';
+            $link = '';
+            if ($this->masked) {
+                $link .= $this->internal->target->pre . "/$module/p/mid/" . $this->masked . '/';
+            }
+            else {
+                if ($object->com_id && ((isset($this->internal->params->com_id) && $this->internal->params->com_id) || $object->com_id != $this->internal->community->id)) { $link .= '/com/' . $object->com_id; }
+                elseif ($object->net_id) { $link .= '/net/' . $object->net_id; }
+                elseif ($object->via_id) { $link .= '/via/' . $object->via_id; }
+                
+                $link .= "/$module/p/mid/" . $object->matrix_counter . '/';
+            }
+            ?>
+            -
+            <a href="<?= $link ?>">View All Picks</a>
+            </div>
+        <?php } ?>
+        
+        <?php if (!(isset($this->internal->params->status) && $this->internal->params->status == 1 && $object->partial_close_parent_id) && $object->notes) { ?>
+            <div style="font-size: smaller; font-weight: bold;">Notes: <?= $this->escape($object->notes) ?></div>
+        <?php } ?>
+        
+        </td>
+    </tr>
+<?php   
+    }
+?>
+
+
+
+<?php } // End Foreach ?>
+
+
+<?php if (!$inflow) { ?>
+    <tr>
+        <td colspan="14" style="border-top: 2px solid #000;"></td>
+    </tr>
+    <tr class="calign bold" style="background-color: #f5f5f5;">
+        <td colspan="9" class="lalign"><?= $counter ?> Pick(s)</td>
+        <td colspan="2" class="ralign">Totals:</td>
+        <td class="<?= ($totals['value_change'] > 0 ? 'netup' : ($totals['value_change'] < 0 ? 'netdown' : '')) ?>"><?= $currency->toCurrency($totals['value_change']) ?></td>
+        <td class="<?= ($totals['value_change_pct'] > 0 ? 'netup' : ($totals['value_change_pct'] < 0 ? 'netdown' : '')) ?>"><?= Zend_Locale_Format::toNumber($totals['value_change_pct'], array('locale' => $this->internal->locale, 'precision' => 2)) ?>%</td>
+    </tr>
+    <tr>
+        <td colspan="14">&nbsp;</td>
+    </tr>
+    <tr class="calign bold" style="background-color: #eee;">
+        <td colspan="3" class="ralign">Averages:</td>
+        <td><?= Zend_Locale_Format::toNumber($totals['allocation'] / $runner, array('locale' => $this->internal->locale, 'precision' => 2)) ?>%</td>
+        <td><?= $currency->toCurrency($totals['open_price'] / $runner) ?></td>
+        <td><?= isset($cash) ? Zend_Locale_Format::toNumber($totals['shares'] / $runner, array('locale' => $this->internal->locale, 'precision' => 2)) : '-' ?></td>
+        <td><?= isset($cash) ? $currency->toCurrency($totals['cost'] / $runner) : '-' ?></td>
+        <td>&nbsp;</td>
+        <td><?= $currency->toCurrency($totals['close_price'] / $runner) ?></td>
+        <td><?= $currency->toCurrency($totals['change'] / $runner) ?></td>
+        <td><?= Zend_Locale_Format::toNumber($totals['change_pct'] / $runner, array('locale' => $this->internal->locale, 'precision' => 2)) ?>%</td>
+        <td><?= $currency->toCurrency($totals['value_change'] / $runner) ?></td>
+        <td><?= Zend_Locale_Format::toNumber($totals['value_change_pct'] / $runner, array('locale' => $this->internal->locale, 'precision' => 2)) ?>%</td>
+    </tr>
+    <tr class="calign bold" style="background-color: #eee;">
+        <td colspan="3" class="ralign">Weighted Averages:</td>
+        <td>&nbsp;</td>
+        <td><?= $currency->toCurrency($weighted_totals['open_price'] / $totals['allocation']) ?></td>
+        <td>&nbsp;</td>
+        <td><?= isset($cash) ? $currency->toCurrency($weighted_totals['cost'] / $totals['allocation']) : '-' ?></td>
+        <td>&nbsp;</td>
+        <td><?= $currency->toCurrency($weighted_totals['close_price'] / $totals['allocation']) ?></td>
+        <td><?= $currency->toCurrency($weighted_totals['change'] / $totals['allocation']) ?></td>
+        <td><?= Zend_Locale_Format::toNumber($weighted_totals['change_pct'] / $totals['allocation'], array('locale' => $this->internal->locale, 'precision' => 2)) ?>%</td>
+        <td><?= $currency->toCurrency($weighted_totals['value_change'] / $totals['allocation']) ?></td>
+        <td><?= Zend_Locale_Format::toNumber($weighted_totals['value_change_pct'] / $totals['allocation'], array('locale' => $this->internal->locale, 'precision' => 2)) ?>%</td>
+    </tr>
+<?php } ?>
+
+
+<?php } // End if this->paginator ?>
+</table>
+
+
+
+<?php /*
+foreach ($this->paginator as $object) {
+    if ($this->internal->target->acl->owner ||
+        $object->allowed === null ||
+        $object->show_on_fail ||
+        ($object->allowed && ($object->privilege >= ViaMe_Controller_Action::ACL_READ)) ||
+        ($this->internal->target->acl->recursive && ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_READ))) {
+            
+        // Create the link
+        $link = '/' . $this->SEO_Urlify($object->title) . '/s';
+        if ($this->masked) {
+            $link .= $this->internal->target->pre . '/pick/view/p/mid/' . $this->masked . '/id/' . $object->counter . '/';
+        }
+        else {
+            if ($object->com_id && ((isset($this->internal->params->com_id) && $this->internal->params->com_id) || $object->com_id != $this->internal->community->id)) { $link .= '/com/' . $object->com_id; }
+            elseif ($object->net_id) { $link .= '/net/' . $object->net_id; }
+            elseif ($object->via_id) { $link .= '/via/' . $object->via_id; }
+            
+            $link .= '/pick/view/p/mid/' . $object->matrix_counter . '/id/' . $object->counter . '/';
+        }
+?>
+
+<h2><a href="<?= $link ?>"><?= $this->escape($object->title) ?></a></h2>
+
+<blockquote>
+<?php if ($this->internal->target->currentModule->interactive && ($this->masked ? $this->pick->x_interactive : true)) { ?>
+    <p class="interact"><a href="<?= $link ?>#comments_list"><?= $object->total_comments_count ?> Comment(s)</a> - Average Rating : <?= ($object->rating ? $object->rating : 'N/A') ?></p>
+<?php } ?>
+    <p class="datetime">
+<?php
+    #$date = new Zend_Date();
+    $date->set($object->creation, Zend_Date::ISO_8601);
+    if (isset($this->internal->member)) {
+        $date->setTimezone($this->internal->member->timezone);
+    }
+    echo $date->toString('EEEE  MMMM d, YYY h:mm a z');
+?>
+    </p>
+    
+    <p>By <?= $this->ProfileDisplay(array('profile' => $object, 'internal' => $this->internal)) ?></p>
+    
+    <?= isset($object->summary) && $object->summary ? '<p>'. $this->escape($object->summary) . '</p>' : '' ?>
+    
+    <p><a href="<?= $link ?>">&raquo; <?= $this->escape($object->more_link ? $object->more_link : 'More') ?></a></p>
+</blockquote>
+
+<?php
+    }
+}
+?>
+
+
+*/ ?>
+
+
+<?= $this->paginationControl($this->paginator, 'Sliding', 'index/paginator.phtml', array('internal' => $this->internal, 'form' => $this->form)); ?>
+
+
+
+<?php
+#Zend_Debug::Dump($this->form->getElement('risk')->getDecorators());
+
+$modify_elements = array('simulator', 'start_date', 'end_date', 'currency_code', 'status', 'start_value', 'multiplier', 'fractional');
+
+foreach ($modify_elements as $element) {
+    $this->form->getElement($element)->setDecorators(array(
+        'ViewHelper',
+        array('HtmlTag', array('tag' => 'div', 'class' => 'calign')),
+        'Errors',
+        array('Description', array('tag' => 'p', 'class' => 'description'))
+    ));
+}
+?>
+
+<div style="margin-top: 2em; border-bottom: 1px solid #000;">
+    <h2 style="margin-bottom: 0;">Portfolio Simulation Calculator</h2>
+    <p style="margin-bottom: 0;">Use this tool to find out what you would have made or lost with these Stock Picks.</p>
+</div>
+
+<form id="pick_index_form" method="<?= $this->form->getMethod() ?>" class="form" action="<?= $this->form->getAction() ?>" style="margin-top: .5em;"><dl class="zend_form" style="margin-bottom: 1em;">
+<?= $this->form->getDisplayGroup('hidden') ?>
+<table class="params" style="width: 100%;">
+    <thead>
+    	<tr>
+            <th scope="col"><?= $this->form->getElement('status')->getLabel() ?></th>
+            <th scope="col"><?= $this->form->getElement('start_date')->getLabel() ?></th>
+            <th scope="col"><?= $this->form->getElement('end_date')->getLabel() ?></th>
+            <th scope="col"><?= $this->form->getElement('start_value')->getLabel() ?></th>
+        </tr>
+    </thead>
+    <tr style="background-color: #f1f1f1;">
+        <td><?= $this->form->getElement('status') ?></td>
+        <td><?= $this->form->getElement('start_date') ?></td>
+        <td><?= $this->form->getElement('end_date') ?></td>
+        <td><?= $this->form->getElement('start_value') ?></td>
+    </tr>
+</table>
+<?= $this->form->getDisplayGroup('buttons') ?>
+</dl></form>
+
+
+
+<?php /*
+<p style="font-size: smallest;">
+    Quick Links : 
+    <A HREF="#"><B>Last 10</B></A> -
+    <A HREF="#">Today</A> - 
+    <A HREF="#">Yesterday</A> - 
+    <A HREF="#">This Week</A> -
+    <A HREF="#">Last Week</A> - 
+    <A HREF="#">This Month</A> -
+    <A HREF="#">Last Month</A> -
+    <A HREF="#">This Year</A> -
+    <A HREF="#">Last Year</A> -
+    <A HREF="#">All</A>
+</p>
+*/ ?>
+
+
+    </div>
+    
+    <div class="ft">
+        <div class="dec">
+            <div class="lt"></div><div class="mn"></div><div class="rt"></div>
+
+        </div>
+    </div>
+    <span class="icon"></span>
+</div>
+<!-- End Module -->

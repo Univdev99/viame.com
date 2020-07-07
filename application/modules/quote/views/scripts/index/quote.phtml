@@ -1,0 +1,265 @@
+<?php
+#Zend_Debug::Dump($this->results);
+#Zend_Debug::Dump($this->quote_data);
+#Zend_Debug::Dump($this->verification);
+
+reset($this->verification);
+$current = current($this->verification);
+$this->current = $current;
+$tick = $current->symbol;
+$dtick = $current->delayed_symbol;
+
+$date = new Zend_Date();
+?>
+
+<?php require_once 'simple_qf_nav.phtml'; ?>
+
+<div class="yui3-g-r">
+    <div class="yui3-u-2-3"><div style="margin-right: .25em;">
+
+<h2><?= $current->exchdisp ?>: <?= $current->internal_symbol ?> Stock Quote</h2>
+<table class="quote_table">
+    <tbody>
+        <tr class="first even">
+            <td class="col1">Last Trade:</td>
+            <td class="col2"><big><?= Zend_Locale_Format::toNumber($this->results[3], array('locale' => $this->internal->locale)) ?></big></td>
+            <td class="col3">&nbsp;</td>
+            <td class="col4">Day's Range:</td>
+            <td class="col5"><?= Zend_Locale_Format::toNumber($this->results[4], array('locale' => $this->internal->locale)) ?> - <?= Zend_Locale_Format::toNumber($this->results[5], array('locale' => $this->internal->locale)) ?></td>
+        </tr>
+        <tr class="odd">
+            <td class="col1">Trade Time:</td>
+            <td class="col2"><?= $this->results[6] ?></td>
+            <td class="col3">&nbsp;</td>
+            <td class="col4">52wk Range:</td>
+            <td class="col5"><?= Zend_Locale_Format::toNumber($this->results[7], array('locale' => $this->internal->locale)) ?> - <?= Zend_Locale_Format::toNumber($this->results[8], array('locale' => $this->internal->locale)) ?></td>
+        </tr>
+        <tr class="even">
+            <td class="col1">Change:</td>
+            <td class="col2"><span<?= ($this->results[9] > 0 ? ' class="uptick"' : ($this->results[9] < 0 ? ' class="downtick"' : '')) ?>><?= Zend_Locale_Format::toNumber($this->results[9], array('locale' => $this->internal->locale)) ?> (<?= $this->results[10] ?>)</span></td>
+            <td class="col3">&nbsp;</td>
+            <td class="col4">Volume:</td>
+            <td class="col5"><?= Zend_Locale_Format::toNumber($this->results[11], array('locale' => $this->internal->locale)) ?></td>
+        </tr>
+        <tr class="odd">
+            <td class="col1">Prev Close:</td>
+            <td class="col2"><?= Zend_Locale_Format::toNumber($this->results[12], array('locale' => $this->internal->locale)) ?></td>
+            <td class="col3">&nbsp;</td>
+            <td class="col4">Avg Vol <span class="small">(3m):</td>
+            <td class="col5"><?= Zend_Locale_Format::toNumber($this->results[13], array('locale' => $this->internal->locale)) ?></td>
+        </tr>
+        <tr class="even">
+            <td class="col1">Open:</td>
+            <td class="col2"><?= Zend_Locale_Format::toNumber($this->results[14], array('locale' => $this->internal->locale)) ?></td>
+            <td class="col3">&nbsp;</td>
+            <td class="col4">Market Cap:</td>
+            <td class="col5"><?= $this->results[15] ?></td>
+        </tr>
+        <tr class="odd">
+            <td class="col1">Bid:</td>
+            <td class="col2"><?= Zend_Locale_Format::toNumber($this->results[16], array('locale' => $this->internal->locale)) ?><small> x <?= Zend_Locale_Format::toNumber($this->results[17], array('locale' => $this->internal->locale)) ?></small></td>
+            <td class="col3">&nbsp;</td>
+            <td class="col4">P/E <small>(ttm):</small></td>
+            <td class="col5"><?= Zend_Locale_Format::toNumber($this->results[18], array('locale' => $this->internal->locale)) ?></td>
+        </tr>
+        <tr class="even">
+            <td class="col1">Ask:</td>
+            <td class="col2"><?= Zend_Locale_Format::toNumber($this->results[19], array('locale' => $this->internal->locale)) ?><small> x <?= Zend_Locale_Format::toNumber($this->results[20], array('locale' => $this->internal->locale)) ?></small></td>
+            <td class="col3">&nbsp;</td>
+            <td class="col4">EPS <small>(ttm):</small></td>
+            <td class="col5"><?= Zend_Locale_Format::toNumber($this->results[21], array('locale' => $this->internal->locale)) ?></td>
+        </tr>
+        <tr class="last odd">
+            <td class="col1">1y Target Est:</td>
+            <td class="col2"><?= Zend_Locale_Format::toNumber($this->results[22], array('locale' => $this->internal->locale)) ?></td>
+            <td class="col3">&nbsp;</td>
+            <td class="col4">Div &amp; Yield:</td>
+            <td class="col5"><?= Zend_Locale_Format::toNumber($this->results[23], array('locale' => $this->internal->locale)) ?> (<?= Zend_Locale_Format::toNumber($this->results[24], array('locale' => $this->internal->locale)) ?>)</td>
+        </tr>
+    </tbody>
+</table>
+
+<?php /*
+<p style="text-align: center; margin-top: 1em;"><iframe src="http://cdn.investingchannel.com/bw_600x55.html?s=smallcapnetwork" scrolling="no" width="600" height="55" frameborder="0"></iframe></p>
+<p style="text-align: center; margin-top: 1em;"><iframe src="http://cdn.investingchannel.com/quote_widget_4.html?s=smallcapnetwork " scrolling="no" width="600" height="70" frameborder="0"></iframe></p>
+*/ ?>
+
+<hr />
+
+<?php /*
+<script type="text/javascript">
+    var page_count = 'off';
+    if (typeof OAS_rdl == 'undefined') {
+        var OAS_rdl = '';
+        var OAS_CA = '';
+        page_count = 'on';
+        document.write('<script type="text/javascript" src="http://oasc17.247realmedia.com/Scripts/oas_analytics.js"></scr' + 'ipt>');
+    } 
+</script>
+<table width="100%"><tr>
+    <td align="center" valign="middle" style="text-align: center; vertical-align: middle;">
+<!--Include OAS Analytics Setup Script 120x60 Position1-->
+<script type="text/javascript">
+    var OAS_url = 'http://oascentral.investingmediasolutions.com';
+    var OAS_sitepage = 'smallcapnetworkbutton/quotes';
+    var OAS_pos = 'Position1,Position2,Position3,Position4!Position1';
+    var OAS_searchterms = '';
+    var OAS_taxonomy = '';
+    if (typeof OAS_RNS == 'undefined'){
+        var OAS_RN = new String (Math.random());
+        var OAS_RNS = OAS_RN.substring(2, 11);
+    }
+    if (OAS_searchterms != '') { OAS_searchterms += '&'; }
+    if (OAS_taxonomy != '') { OAS_taxonomy = '&' + OAS_taxonomy; }
+    if (page_count != 'on') { OAS_taxonomy = '&oas_pv=no_analytics' + OAS_taxonomy; }
+    document.write('<script type="text/javascript" src="' + OAS_url + '/RealMedia/ads/adstream_jx.ads/' + OAS_sitepage + '/1' + OAS_RNS + '@' + OAS_pos + '?' + OAS_searchterms + 'XE' + OAS_taxonomy + OAS_rdl + '&if_nt_CookieAccept=' + OAS_CA + '&XE"></scr' + 'ipt>');
+</script>
+    </td>
+    <td align="center" valign="middle" style="text-align: center; vertical-align: middle;">
+<script type="text/javascript">
+    var OAS_url = 'http://oascentral.investingmediasolutions.com';
+    var OAS_sitepage = 'smallcapnetworkbutton/quotes';
+    var OAS_pos = 'Position1,Position2,Position3,Position4!Position2';
+    var OAS_searchterms = '';
+    var OAS_taxonomy = '';
+    if (typeof OAS_RNS == 'undefined'){
+        var OAS_RN = new String (Math.random());
+        var OAS_RNS = OAS_RN.substring(2, 11);
+    }
+    if (OAS_searchterms != '') { OAS_searchterms += '&'; }
+    if (OAS_taxonomy != '') { OAS_taxonomy = '&' + OAS_taxonomy; }
+    if (page_count != 'on') { OAS_taxonomy = '&oas_pv=no_analytics' + OAS_taxonomy; }
+    document.write('<script type="text/javascript" src="' + OAS_url + '/RealMedia/ads/adstream_jx.ads/' + OAS_sitepage + '/1' + OAS_RNS + '@' + OAS_pos + '?' + OAS_searchterms + 'XE' + OAS_taxonomy + OAS_rdl + '&if_nt_CookieAccept=' + OAS_CA + '&XE"></scr' + 'ipt>');
+</script>
+    </td>
+    <td align="center" valign="middle" style="text-align: center; vertical-align: middle;">
+<script type="text/javascript">
+    var OAS_url = 'http://oascentral.investingmediasolutions.com';
+    var OAS_sitepage = 'smallcapnetworkbutton/quotes';
+    var OAS_pos = 'Position1,Position2,Position3,Position4!Position3';
+    var OAS_searchterms = '';
+    var OAS_taxonomy = '';
+    if (typeof OAS_RNS == 'undefined'){
+        var OAS_RN = new String (Math.random());
+        var OAS_RNS = OAS_RN.substring(2, 11);
+    }
+    if (OAS_searchterms != '') { OAS_searchterms += '&'; }
+    if (OAS_taxonomy != '') { OAS_taxonomy = '&' + OAS_taxonomy; }
+    if (page_count != 'on') { OAS_taxonomy = '&oas_pv=no_analytics' + OAS_taxonomy; }
+    document.write('<script type="text/javascript" src="' + OAS_url + '/RealMedia/ads/adstream_jx.ads/' + OAS_sitepage + '/1' + OAS_RNS + '@' + OAS_pos + '?' + OAS_searchterms + 'XE' + OAS_taxonomy + OAS_rdl + '&if_nt_CookieAccept=' + OAS_CA + '&XE"></scr' + 'ipt>');
+</script>
+    </td>
+    <td align="center" valign="middle" style="text-align: center; vertical-align: middle;">
+<script type="text/javascript">
+    var OAS_url = 'http://oascentral.investingmediasolutions.com';
+    var OAS_sitepage = 'smallcapnetworkbutton/quotes';
+    var OAS_pos = 'Position1,Position2,Position3,Position4!Position4';
+    var OAS_searchterms = '';
+    var OAS_taxonomy = '';
+    if (typeof OAS_RNS == 'undefined'){
+        var OAS_RN = new String (Math.random());
+        var OAS_RNS = OAS_RN.substring(2, 11);
+    }
+    if (OAS_searchterms != '') { OAS_searchterms += '&'; }
+    if (OAS_taxonomy != '') { OAS_taxonomy = '&' + OAS_taxonomy; }
+    if (page_count != 'on') { OAS_taxonomy = '&oas_pv=no_analytics' + OAS_taxonomy; }
+    document.write('<script type="text/javascript" src="' + OAS_url + '/RealMedia/ads/adstream_jx.ads/' + OAS_sitepage + '/1' + OAS_RNS + '@' + OAS_pos + '?' + OAS_searchterms + 'XE' + OAS_taxonomy + OAS_rdl + '&if_nt_CookieAccept=' + OAS_CA + '&XE"></scr' + 'ipt>');
+</script>
+    </td>
+</tr></table>
+
+<hr style="margin-top: 1em;" />
+*/ ?>
+
+<?php if (isset($this->symbol_data->description) && $this->symbol_data->description) { ?>
+    <p class="description">
+        <h2><?= $current->exchdisp ?>: <?= $current->internal_symbol ?> Overview<?= ($this->symbol_data->website_url ? ' - <a href="' . $this->symbol_data->website_url . '" rel="nofollow" target="_blank">Company Website</a>' : '') ?></h2></p>
+<?php 
+    if ($this->symbol_data->logo_url) {
+        if ($this->symbol_data->website_url) {
+            echo '<a href="' . $this->symbol_data->website_url . '" rel="nofollow" target="_blank">';
+        }
+        echo '<img src="' . $this->symbol_data->logo_url . '" class="company_logo" />';
+        if ($this->symbol_data->website_url) {
+            echo '</a>';
+        }
+    }
+?>
+        <div style="padding-left: 1em;">
+        <?= $this->symbol_data->description ?>
+        </div>
+    </p>
+<?php } ?>
+
+    </div></div>
+    <div class="yui3-u-1-3"><div style="margin-left: .25em;">
+
+
+<div>
+<!--Include OAS Analytics Setup Script Text link 300x30 Position1-->
+<script type="text/javascript">
+    var page_count = 'off';
+    if (typeof OAS_rdl == 'undefined') {
+        var OAS_rdl = '';
+        var OAS_CA = '';
+        page_count = 'on';
+        document.write('<script type="text/javascript" src="http://oasc17.247realmedia.com/Scripts/oas_analytics.js"></scr' + 'ipt>');
+    } 
+</script>
+<script type="text/javascript">
+    var OAS_url = 'http://oascentral.investingmediasolutions.com';
+    var OAS_sitepage = 'smallcapnetworkbutton/quotes';
+    var OAS_pos = 'x13!x13';
+    var OAS_searchterms = '';
+    var OAS_taxonomy = '';
+    if (typeof OAS_RNS == 'undefined'){
+        var OAS_RN = new String (Math.random());
+        var OAS_RNS = OAS_RN.substring(2, 11);
+    }
+    if (OAS_searchterms != '') { OAS_searchterms += '&'; }
+    if (OAS_taxonomy != '') { OAS_taxonomy = '&' + OAS_taxonomy; }
+    if (page_count != 'on') { OAS_taxonomy = '&oas_pv=no_analytics' + OAS_taxonomy; }
+    document.write('<script type="text/javascript" src="' + OAS_url + '/RealMedia/ads/adstream_jx.ads/' + OAS_sitepage + '/1' + OAS_RNS + '@' + OAS_pos + '?' + OAS_searchterms + 'XE' + OAS_taxonomy + OAS_rdl + '&if_nt_CookieAccept=' + OAS_CA + '&XE"></scr' + 'ipt>');
+</script>
+</div>
+
+<p style="text-align: center;"><img src="http://chart.finance.yahoo.com/t?lang=en-US&amp;region=US&amp;width=300&amp;height=180&amp;s=<?= $dtick ?>" alt="" /></p>
+
+<?php if ($current->internal_symbol == 'AAGC') { ?>
+<p style="text-align: center;" style="z-index: 0;">
+   <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="280" height="178" id="viddler_f6b522ce" style="z-index: 0;">
+   <param name="movie" value="http://www.viddler.com/simple/f6b522ce/" />
+   <param name="allowScriptAccess" value="always" />
+   <param name="allowFullScreen" value="true" />
+   <param name="WMODE" value="transparent"> 
+   <embed src="http://www.viddler.com/simple/f6b522ce/" width="280" height="178" type="application/x-shockwave-flash" allowScriptAccess="always" allowFullScreen="true" WMODE="transparent" name="viddler_f6b522ce" style="z-index: 0;"></embed>
+   </object>
+</p>
+<?php } elseif ($current->internal_symbol == 'AHRO') {?>
+<p style="font-size: 130%; padding: 1em .5em; border-top: 1px solid #dadee5; border-bottom: 1px solid #dadee5;"><strong>Investor Relations:</strong><br />Jeff Ramson<br />ProActive Capital Resources Group<br />(212) 792-4294</p>
+<p style="text-align: center;" style="z-index: 0;"><object style="height: 182px; width: 300px;"><param name="movie" value="http://www.youtube.com/v/iP3DydQI3DA?version=3&feature=player_profilepage&autohide=1"><param name="allowFullScreen" value="true"><param name="allowScriptAccess" value="always"><param name="wmode" value="opaque" /><embed src="http://www.youtube.com/v/iP3DydQI3DA?version=3&feature=player_profilepage&autohide=1" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="always" width="300" height="182" wmode="opaque"></object></p>
+
+<p style="text-align: center;" style="z-index: 0;"><object style="height: 182px; width: 300px;"><param name="movie" value="http://www.youtube.com/v/IW_8VJHBRrA?version=3&feature=player_profilepage&autohide=1"><param name="allowFullScreen" value="true"><param name="allowScriptAccess" value="always"><param name="wmode" value="opaque" /><embed src="http://www.youtube.com/v/IW_8VJHBRrA?version=3&feature=player_profilepage&autohide=1" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="always" width="300" height="182" wmode="opaque"></object></p>
+<?php } elseif ($current->internal_symbol == 'BBLU') {?>
+<p style="font-size: 130%; padding: 1em .5em; border-top: 1px solid #dadee5; border-bottom: 1px solid #dadee5;"><strong>Investor Relations:</strong><br />John C. Francis<br />Vice President<br />Blue Earth, Inc.<br />(702) 263-1808 x103<br /><a href="mailto:jfrancis@blueearthinc.com">jfrancis@blueearthinc.com</a></p>
+<?php } elseif ($current->internal_symbol == 'MFON') {?>
+<p style="font-size: 130%; padding: 1em .5em; border-top: 1px solid #dadee5; border-bottom: 1px solid #dadee5;"><strong>Investor Relations:</strong><br />Ted Haberfield<br />Managing Partner<br />MZ North America<br />(760) 755-2716<br /><a href="http://www2.marketwire.com/mw/emailprcntct?id=6CCB7C90D980AC8C">Email Contact</a><br /><a href="http://www.mz-ir.com/">http://www.mz-ir.com/</a></p>
+<?php } elseif ($current->internal_symbol == 'CDXC') {?>
+<p style="text-align: center;" style="z-index: 0;"><object style="height: 182px; width: 300px;"><param name="movie" value="http://www.youtube.com/v/VO1Z58yUN0Q?version=3&feature=player_profilepage&autohide=1"><param name="allowFullScreen" value="true"><param name="allowScriptAccess" value="always"><param name="wmode" value="opaque" /><embed src="http://www.youtube.com/v/VO1Z58yUN0Q?version=3&feature=player_profilepage&autohide=1" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="always" width="300" height="182" wmode="opaque"></object></p>
+<?php } ?>
+
+<?php /*
+<p style="text-align: center;"><iframe scrolling="no" height="352" frameborder="0" width="202" padding="0" src="http://trading.stockusa.com/QuoteSnapshot/Default.aspx?w=200&a=31b289fa-f7b0-4196-8150-07b2bd74a906&t=white&l=blue&s=<?= $tick ?>"></iframe></p>
+*/ ?>
+
+<?php /*
+<p style="text-align: center;"><iframe src="http://cdn.investingchannel.com/bw_300x260.html?s=smallcapnetwork" scrolling="no" width="300" height="250" frameborder="0"></iframe></p>
+*/ ?>
+
+
+    </div></div>
+</div>
+
+
+
+</div>

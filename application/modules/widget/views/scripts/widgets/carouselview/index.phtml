@@ -1,0 +1,61 @@
+<?php
+    $id = 'carouselview' . $this->widget->counter;
+    
+    #Number Visible, Reveal Amount, Circular, Vertical, Autoplay Interval, Content
+    $this->inlineScript()->captureStart()
+?>    
+YAHOO.util.Event.onContentReady("<?= $id ?>", function () {
+    var carouselcontainer<?= $this->widget->counter ?>  = new YAHOO.widget.Carousel("<?= $id ?>", {
+        animation: { speed: 0.5 },
+		numVisible: <?= (isset($this->params['dp_number_visible']) && $this->params['dp_number_visible'] ? $this->params['dp_number_visible'] : 1) ?>,
+		revealAmount: <?= (isset($this->params['dp_reveal']) && $this->params['dp_reveal'] ? $this->params['dp_reveal'] : 0) ?>,
+		isCircular: <?= (isset($this->params['dp_circular']) && $this->params['dp_circular'] ? 'true' : 'false') ?>,
+		isVertical: <?= (isset($this->params['dp_vertical']) && $this->params['dp_vertical'] ? 'true' : 'false') ?>,
+		
+		autoPlayInterval: <?= (isset($this->params['dp_autoplay']) && $this->params['dp_autoplay'] ? $this->params['dp_autoplay'] : 0) ?>
+    });
+                        
+    carouselcontainer<?= $this->widget->counter ?>.render(); // get ready for rendering the widget
+    
+    YAHOO.util.Dom.setStyle('<?= $id ?>', 'width', 'auto'); // Reset the width to auto
+
+    if (YAHOO.util.Dom.getStyle(YAHOO.util.Selector.query('div[class=yui-carousel-content]', '<?= $id ?>', true), 'height') == 'auto') {
+        YAHOO.util.Dom.setStyle(YAHOO.util.Selector.query('ol', '<?= $id ?>', true), 'height',
+            carouselcontainer<?= $this->widget->counter ?>.getElementForItem(0).offsetHeight +
+            YAHOO.util.Selector.query('div[class=yui-carousel-content]', '<?= $id ?>', true).offsetHeight + 
+             'px'); // Set height to height of first item
+    }
+    
+    //getElementForItem
+    
+    carouselcontainer<?= $this->widget->counter ?>.show();   // display the widget
+    carouselcontainer<?= $this->widget->counter ?>.startAutoPlay();
+});
+<?php $this->inlineScript()->captureEnd() ?>
+
+
+<div id="<?= $id ?>">
+    <ol>
+<?php foreach (preg_split('/\n/', $this->params['dp_widgets'], -1, PREG_SPLIT_NO_EMPTY) as $line) {
+        if ($line) {
+            list($id, $title) = explode(':', $line, 2);
+            $id = trim($id);
+            $title = trim($title);
+            
+            if ($id) {
+                $parts = explode('-', $id);
+                if (!(strtolower($parts[0]) == 'w' && $parts[1] == $this->widget->widget_id && $parts[2] == $this->widget->counter)) { // Prevent recursive
+                    $data = $this->DisplayWidget($id);
+                    
+                    if ($data) {
+?>
+        <li class="item"><?= $data ?></li>
+<?php
+                    }
+                }
+            }
+        }
+    }
+?>
+    </ol>
+</div>

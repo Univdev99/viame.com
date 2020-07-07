@@ -1,0 +1,58 @@
+<?php
+$verification_link = 'http://' . $this->internal->vars->host . ($this->internal->target->type == 'COM' && isset($this->internal->target->pre) ? $this->internal->target->pre : '') . '/member/register/verify/vmpd_bpip/1/vmpd_nar/1/id/' . $this->id . '/?key=' . $this->key;
+
+if (isset($this->no_email_add) && $this->no_email_add) {
+    $verification_link .= '&no_email_add=1';
+}
+if (isset($this->internal->params->autogo) && $this->internal->params->autogo) {
+    $verification_link .= '&autogo=1';
+}
+
+if (isset($this->internal->params->s_redirect) && $this->internal->params->s_redirect) {
+    // SUCCESS redirect link
+    $verification_link .= '&redirect=' . $this->internal->params->s_redirect;
+}
+elseif (isset($this->internal->params->redirect) && $this->internal->params->redirect) {
+    // Alternate redirect link
+    $verification_link .= '&redirect=' . $this->internal->params->redirect;
+}
+?>
+
+<h2>Congratulations! You're Only A Couple Quick Steps Away From Activating Your Free <?= $this->internal->community->display ?> Account.</h2>
+
+<p>We hope you find our exclusive small cap community and newsletter insightful and more importantly, <strong>PROFITABLE</strong>! But first, <u>you need to quickly confirm this is a valid email address by clicking the following link</u>:</p>
+
+<div style="text-align: center;"><div style="display: inline-block; text-align: center; margin: 1em auto; padding: .5em .8em; background-color: #74BB10;" class="fakebutton green"><a href="<?= $verification_link ?>" style="color: #fff; font-size: 18px; font-weight: normal; text-decoration: none;">Click Here To Verify Your Email<br>and Complete the Signup Process</a></div></div>
+
+<p>If the link above does not work, copy and paste the following URL into your browser's address bar:</p>
+
+<blockquote><kbd><a href="<?= $verification_link ?>"><?= $verification_link ?></a></kbd></blockquote>
+
+<p>Thank you for becoming a <strong>Member</strong> of the <strong><?= $this->internal->community->display ?> Community</strong>. You will now have <strong>free unlimited access</strong> to some of the world's most savvy small cap stock traders, comprehensive research from small cap investing gurus, the <strong>SCN's Trading Alert Newsletter</strong>, <strong>Premium Stock Picks</strong> and more!</p>
+    
+<p>We scour our Community and communicate directly with you to bring you stocks that have the potential for monster returns. You are now a member of our priority Member group and will be among the first to receive our daily email newsletter and alerts!</p>
+
+<p>You can even <strong>start publishing</strong> your own articles, analysis, stock picks and ratings, using our own <strong>proprietary stock rating system</strong>. Other traders and investors rely on our Community for comprehensive research, informative opinions and analysis, so let other traders and investors know what you like and dislike!</p>
+
+<p>Welcome Aboard!</p>
+
+<p><strong>Staff at SmallCap Network</strong></p>
+
+<?php /*
+<p>Thank you for becoming a Member of the SmallCap Network Community.  You will now have free unlimited access to some of the Web's most savvy small cap stock traders, comprehensive research from small cap investing gurus, the SCN's Trading Alert Newsletter, and so much more!</p>
+
+<p>But first, you need to confirm this is a valid email address by clicking this link:</p>
+
+<p style="text-align: center;"><strong><a href="<?= $verification_link ?>">Click here to complete the signup process.</a></strong><p>
+
+<p>If the link above does not work, copy and paste the following URL into your browser's address bar:</p>
+<p><?= $verification_link ?></p>
+
+<p>We scour our Community and communicate with investors in our Network every day to bring you stocks that have the potential for monster returns.  You are now a member of our priority trader group and will be among the first to receive our alerts.</p>
+
+<p>We hope that you find our site and newsletter insightful and most importantly, PROFITABLE!</p>
+
+<p>Sincerely,</p>
+
+<p>Staff at SmallCap Network</p>
+*/ ?>

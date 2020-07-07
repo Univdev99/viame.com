@@ -1,0 +1,83 @@
+<?php
+    $id = 'hmodulemenu';
+    
+    $this->headScript()->appendFile($this->internal->vars->static_host . '/js/vm/yui/menu_anim.js');
+    
+    $this->inlineScript()->captureStart()
+?>    
+YAHOO.util.Event.onContentReady("<?= $id ?>", function () {
+    var o<?= $id ?> = new YAHOO.widget.MenuBar("<?= $id ?>", {
+            autosubmenudisplay: true,
+            hidedelay: 750,
+            lazyload: true });
+    o<?= $id ?>.subscribe("beforeShow", onSubmenuBeforeShow);
+    o<?= $id ?>.subscribe("show", onSubmenuShow);
+    o<?= $id ?>.render();
+    o<?= $id ?>.show();           
+});
+<?php $this->inlineScript()->captureEnd() ?>
+
+<div id="<?= $id ?>" class="yuimenubar yuimenubarnav">
+
+    <div class="bd">
+        <ul class="first-of-type">
+            <li class="yuimenubaritem first-of-type"><a href="/<?= $this->SEO_Urlify(isset($this->internal->target->space->display) ? $this->internal->target->space->display : $this->internal->target->space->name) ?>/s<?= $this->internal->target->pre ?>/" class="yuimenubaritemlabel">Home</a>
+<?php if ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_OWNER) { ?>
+                <div class="yuimenu"><div class="bd"><ul>
+                    <li class="yuimenuitem"><a href="/<?= $this->SEO_Urlify(isset($this->internal->target->space->display) ? $this->internal->target->space->display : $this->internal->target->space->name) ?>/s<?= $this->internal->target->pre ?>/module/add/" class="yuimenuitemlabel"><em><b>+ Add A New Module</b></em></a></li>
+                    <li class="yuimenuitem"><a href="/<?= $this->SEO_Urlify(isset($this->internal->target->space->display) ? $this->internal->target->space->display : $this->internal->target->space->name) ?>/s<?= $this->internal->target->pre ?>/widget/add/" class="yuimenuitemlabel"><em><b>+ Add A New Widget</b></em></a></li>
+                </ul></div></div>
+<?php } ?>
+            </li>
+<?php
+if (isset($this->internal->target->modules)) {
+    // Load up which modules have sublinks
+    $modules_with_subs = array();
+    foreach ($this->internal->target->modules as $module) {
+        if (isset($module->display_stack) && $module->display_stack != 'none' && (!($module->display_stack === null))) {
+            $modules_with_subs[$module->display_stack] = true;
+        }
+    }
+    
+    _HdisplayLinks($this->internal->target->modules, null, $this->internal, $modules_with_subs, false, $this);
+}
+
+function _HdisplayLinks($modules, $stack, $internal, $modules_with_subs, $display_new_list = true, $parent) {
+    $new_list_displayed = false;
+    
+    if (isset($modules)) {
+        foreach ($modules as $module) {
+            if ($module->display_stack == $stack) {
+                if ($internal->target->acl->owner ||
+                    $module->allowed === null ||
+                    $module->show_on_fail ||
+                    ($module->allowed && ($module->privilege > 0)) ||
+                    ($internal->target->acl->recursive && ($internal->target->acl->privilege > 0))) {
+                    
+                    if ($display_new_list && !$new_list_displayed) {
+                        echo '<div class="yuimenu"><div class="bd"><ul>';
+                        $new_list_displayed = true;
+                    }
+                    
+                    echo '<li class="' . (!$stack ? 'yuimenubaritem' : 'yuimenuitem') . '">';
+                    echo '<a href="' . ('/' . $parent->SEO_Urlify(isset($module->display) && $module->display ? $module->display : ($module->m_display ? $module->m_display : $module->name)) . '/s') . $internal->target->pre . '/' . $module->m_name . '/p/mid/' . $module->counter . '/" class="' . (!$stack ? 'yuimenubaritemlabel' : 'yuimenuitemlabel') . '">' . $parent->escape($module->display ? $module->display : $module->m_display) . '</a>';
+                    $display_stack = $module->module_id . '-' . $module->counter;
+                    if (isset($modules_with_subs[$display_stack]) && $modules_with_subs[$display_stack]) {
+                        _HdisplayLinks($modules, $display_stack, $internal, $modules_with_subs, true, $parent);
+                    }
+                    echo '</li>';
+                }
+            }
+        }
+        
+        if ($new_list_displayed) {
+            echo '</ul></div></div>';
+        }
+    }
+}
+?>
+            
+        </ul>      
+    </div>
+
+</div>

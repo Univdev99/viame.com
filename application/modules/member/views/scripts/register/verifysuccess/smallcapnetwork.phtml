@@ -1,0 +1,242 @@
+<?php /*
+    TWO Parts to this view script
+*/ ?>
+
+<?php if (isset($this->internal->params->complete) && $this->internal->params->complete) { ?>
+<?php $this->placeholder('temp')->captureStart(); ?>
+
+    <p class="success">You have successfully verified your account and it is now active.</p>
+    
+    <h2>Welcome to the <?= $this->internal->community->display ?> Community! Immediately start publishing articles, analysis, stock picks and ratings or peruse the Internet's premier site online dedicated to uncovering small cap stocks for BIG returns!</h2>
+    
+    <table style="margin-top: 2em;">
+        <tr>
+            <td valign="top" style="width: 31%; padding-left: 55px; padding-right: 5px; background: url(<?= $this->internal->vars->static_host ?>/css/theme/default/assets/modules/member/register_verify/1.png) no-repeat;"><p><strong>Publish An Article</strong></p><p>Share your thoughts and opinions on your interests.</p></td>
+            <td style="width: 2%; border-left: 1px dotted #999;">&nbsp;</td>
+            <td valign="top" style="width: 31%; padding-left: 53px; padding-right: 5px; background: url(<?= $this->internal->vars->static_host ?>/css/theme/default/assets/modules/member/register_verify/2.png) no-repeat;"><p><strong>Publish An Analysis</strong></p><p>Create a customizable research report on stocks, mutual funds and other equities.</p></td>
+            <td style="width: 2%; border-left: 1px dotted #999;">&nbsp;</td>
+            <td valign="top" style="width: 31%; padding-left: 54px; background: url(<?= $this->internal->vars->static_host ?>/css/theme/default/assets/modules/member/register_verify/3.png) no-repeat;"><p><strong>Publish Stock Picks &amp; Ratings</strong></p><p>Let investors know which stocks you think are poised for big returns.</p></td>
+        </tr>
+    </table>
+    
+    <p style="text-align: center; margin-top: 3em;">
+        <a href="<?= $this->internal->target->pre ?>/member/login/verify/vmpd_nar/1/?redirect=<?= '%2Fvia%2F' . $this->member_profile_id . '%2F' ?>"><img src="<?= $this->internal->vars->static_host ?>/css/theme/default/assets/modules/member/register_verify/start_publishing.png" alt="Start Publishing"></a>
+    
+    <?php if (isset($this->internal->params->redirect) && $this->internal->params->redirect) { ?>
+        <a href="<?= $this->internal->target->pre ?>/member/login/verify/vmpd_nar/1/?redirect=<?= $this->internal->params->redirect ?>" style="margin-left: 5em;"><img src="<?= $this->internal->vars->static_host ?>/css/theme/default/assets/modules/member/register_verify/continue.png" alt="Continue"></a>
+    <?php } ?>
+    </p>
+    
+    <hr size="1" noshade="noshade" style="margin-bottom: 2em;" />
+    
+    <?php
+        if ($db = Zend_Registry::get('db')) {
+            if ( $resultsRow = $db->fetchRow('SELECT content,page_code FROM page_pages WHERE com_id=2 AND matrix_counter=1 AND counter=23')) {
+                $resultsRow->content = preg_replace('/Premium_Subscriptions_Page/', 'Verify_Success_Page', $resultsRow->content);
+                if (isset($resultsRow->page_code) && $resultsRow->page_code == 'PHP') {
+                    // Strip PHP
+                    $resultsRow->content = preg_replace('/\<\?(php|=).*?\?\>/s', '', $resultsRow->content);
+                }
+                
+                echo $resultsRow->content;
+                
+                echo '<style>#PremiumProducts .productContent {min-height: 200px;} @media (max-width: 767px) { #PremiumProducts .productContent {min-height: 0;} }</style>';
+            }
+        }
+    ?>
+    
+    <?php /*
+    <?php
+    $SCNEO_LINK = 'https://www.smallcapnetwork.com/?vmpd_ckstr[click_track]=SCN-Confirmed-Landing&vmpd_ckstr_redirect=/pages/SCNEO/v1/';
+    ?>
+    <div style="font-size: 120%; line-height: 140%;">
+        <p style="text-align: center;"><a href="<?= $SCNEO_LINK ?>"><img src="<?= $this->internal->vars->static_host ?>/pages/SCNEO/v1/inc/img/logo_EO.png" alt="SmallCap Network Elite Opportunity"></a></p>
+        <p>If you're dead serious about consistently outperforming the major indexes and identifying individual stocks poised for enormous returns, then considering a subscription to our premium service, the <strong><a href="<?= $SCNEO_LINK ?>">SmallCap Network Elite Opportunity (SCN EO)</a> is a must</strong>.</p>
+        
+        <p><strong><a href="<?= $SCNEO_LINK ?>">SCN EO</a></strong> is rapidly becoming one of the most sought after fee based services for professional traders and serious investors interested in knowing what these markets are on the verge of doing each and every day. Knowing when these markets are topping or bottoming out is one of the most critical components to savvy trading and investing. Knowing which sectors are hot and which ones are not can make the difference between modest and stellar returns.</p>
+        
+        <p>The <strong><a href="<?= $SCNEO_LINK ?>">SCN EO</a></strong> service is published in the middle of every trading day and provides daily market commentary, technical analysis, select ETF trades for a long or short market and more importantly, individual company ideas the <strong>SCN EO Analytical Team</strong> has identified as early opportunities for potentially blockbuster returns. In addition, when to buy, when to sell and how to manage one's dynamic portfolio are all just a few components to this all-encompassing valuable service.</p>
+        
+        <p>Now that you've become a Member of the SmallCap Network Community, we invite you to become a premium member by subscribing to <strong><a href="<?= $SCNEO_LINK ?>">SCN Elite Opportunity</a></strong>.</p>
+        
+        <p style="text-align: center; margin-top: 3em;">
+            <a href="<?= $SCNEO_LINK ?>"><img src="<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/modules/member/register_verify/scn_eo.png" alt="SmallCap Network Elite Opportunity"></a>
+        </p>
+    </div>
+    */ ?>
+    
+    <?php /* Already created the default modules in the verification
+    <p style="text-align: center; margin-top: 3em;"><a href="<?= $this->internal->target->pre ?>/member/login/verify/vmpd_nar/1/?redirect=%2Fvia%2F<?= $this->member_profile_id ?>%2Fprofile%2Fsetup%2Fp%2Fvmpd_nar%2F1%2F"><img src="<?= $this->internal->vars->static_host ?>/css/theme/default/assets/modules/member/register_verify/start_publishing.png"></a></p>
+    
+    <p style="text-align: right; color: #ccc; margin-top: 3em;"><a href="<?= $this->internal->target->pre ?>/member/login/verify/vmpd_nar/1/<?= (isset($this->internal->params->redirect) && $this->internal->params->redirect ? '?redirect=' . $this->internal->params->redirect : '') ?>" style="color: #ccc;">Continue and bypass default module setup &raquo;</a></p>
+    */ ?>
+    
+    <?php /* Investing Channel Co-Registration
+    <hr />
+    <p style="margin-top: 1em; font-size: 16px;"><strong>Thank you for signing up today. Below are some free offers you might be interested in. Please understand that they are completely optional and don't require a credit card.</strong></p>
+    <?php
+    $partner_url = 'http://valid1.net/default.aspx?bdlid=1124&';
+    foreach (array('email' => 'email', 'first_name' => 'first_name', 'last_name' => 'last_name', 'postal_code' => 'zip', 'country' => 'country', 'dob' => 'date_of_birth', 'gender' => 'gender') as $key => $val) {
+        if (isset($this->member->{$key}) && $this->member->{$key}) {
+            $partner_url .= $val . '=' . urlencode($this->member->{$key}) . '&';
+        }
+    }
+    $partner_url .= 'redirect_url=';
+    
+    if (isset($this->internal->params->redirect) && $this->internal->params->redirect) {
+        $partner_url .= $this->internal->params->redirect;
+    }
+    else {
+        $partner_url .= '%2Fvia%2F' . $this->member_profile_id . '%2F';
+    }
+    ?>
+    <iframe src ="<?= $partner_url ?>" width="100%" height="1200" align="middle" frameborder="0"></iframe>
+    */ ?>
+
+
+
+
+<?php $this->headScript()->captureStart(); ?>
+
+window.dataLayer = window.dataLayer || [];
+dataLayer.push({
+    'adwordsConversion_id': '1071423029',
+    'adwordsConversion_label': 'GEaDCIP3rwQQtbzy_gM'
+});
+
+<?php $this->headScript()->captureEnd(); ?>
+
+
+<?php /* MOVED TO GTM
+<!-- Google Code for SCN Community Conversion Page -->
+<script type="text/javascript">
+var google_conversion_id = 1071423029;
+var google_conversion_language = "en";
+var google_conversion_format = "3";
+var google_conversion_color = "ffffff";
+var google_conversion_label = "GEaDCIP3rwQQtbzy_gM";
+var google_remarketing_only = false;
+</script>
+<script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js">
+</script>
+<noscript>
+<div style="display:inline;">
+<img height="1" width="1" style="border-style:none;" alt="" src="//www.googleadservices.com/pagead/conversion/1071423029/?label=GEaDCIP3rwQQtbzy_gM&amp;guid=ON&amp;script=0"/>
+</div>
+</noscript>
+*/ ?>
+
+
+
+
+<?php $this->placeholder('temp')->captureEnd(); ?>
+<?php
+echo $this->CM(array(
+    'class' => 'cm decorated plain successmessage',
+    'hd' => 'Verification Successful',
+    'hd2' => 'Thank you for verifying your account',
+    'bd' => $this->placeholder('temp')
+));
+$this->placeholder('temp')->set(null);
+?>
+<?php } else { ?>
+
+<div class="multistep_header">
+    <table><tr>
+        <td align="left" class="header">
+            Mobile
+        </td>
+        <td align="right" class="steps">
+            <table class="ind_steps"><tr>
+                <td>
+                    <div class="step firstitem"><span class="stepnumber">1</span>Enter Info</div>
+                </td>
+                <td>
+                    <div class="step"><span class="stepnumber">2</span>Check Email</div>
+                </td>
+                <td>
+                    <div class="step"><span class="stepnumber">3</span>Confirmation</div>
+                </td>
+                <td>
+                    <div class="step lastitem selected"><span class="stepnumber">4</span>Account Setup</div>
+                </td>
+            </tr></table>
+        </td>
+    </tr></table>
+</div>
+
+<!-- Begin Module -->
+<div class="cm decorated plain successmessage">
+    <div class="hd">
+        <div class="dec"><div class="lt"></div><div class="mn"></div><div class="rt"></div>
+        </div>
+        <div class="con">
+        	<table class="table">
+                <tr>
+                    <td class="lt"></td>
+                    <td class="mn1">Setup Alerts</td>
+                    <td class="sep"></td>
+                    <td class="mn2">Receive Free Alerts Via Text Message</td>
+                    <td class="rt"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="bd">
+        <p class="success">Your email address has been confirmed and your account is activated.  Enter your mobile number for timely alerts.</p>
+        <p><strong>You're almost finished!</strong>  Avoid delays now by receiving our free mobile text alerts, which are far quicker and more timely than email.  <strong>Individuals who provide their mobile phone numbers will be the first to receive our alerts.</strong></p>
+        <p><strong>Please provide your mobile phone number below.</strong> Make sure to include your country code, area code and phone number. Once you have finished, hit the <strong>"Sign-Up For Mobile Alerts"</strong> button and a confirmation code will be sent via text directly to your mobile phone. Simply enter the confirmation code on the next page and you will be all dialed in to start receiving the <strong>SmallCap Network Elite Opportunity Free Mobile Text and Email Alerts</strong>.</p>
+
+<div style="width:400px; margin: 0 auto;">
+<form id="alert_form" name="alert_form" enctype="application/x-www-form-urlencoded" method="POST" action="/profile/alert/add/" class="form" onSubmit="return (YAHOO.viame.vivin_regula.validate(this, { groups: [regula.Group.alert_form] }) && YAHOO.viame.dubsub.check(this));">
+<input type="hidden" name="type" value="2" id="type" />
+<input type="hidden" name="vmpd_bpip" value="1" id="vmpd_bpip" />
+<input type="hidden" name="vmpd_npr" value="1" id="vmpd_npr" />
+<input type="hidden" name="vmpd_nar" value="1" id="vmpd_nar" />
+<input type="hidden" name="vmpd_nsslr" value="1" id="vmpd_nsslr" />
+<input type="hidden" name="redirect" value="/zfbp/display/p/id/scn_member_verify_success/complete/1/member_defined/1/vmpd_nar/1/?redirect=<?= urlencode(isset($this->internal->params->redirect) && $this->internal->params->redirect ? $this->internal->params->redirect : '') ?>" id="redirect" />
+  <dl class="zend_form">
+    <dt id="main-label">&#160;</dt>
+    <dd id="main-element">
+      <fieldset id="fieldset-main">
+        <dl>
+          <dt id="identifier-label">
+            <label for="identifier" class="required">Mobile # : <span class="netdown">US Numbers Should Start With "1"</span></label>
+          </dt>
+          <dd id="identifier-element">
+            <input type="text" name="identifier" id="identifier" value="" maxlength="256" class="regula-validation" data-constraints="@Required(label=&quot;mobile #&quot;, message=&quot;The {label} field cannot be empty.&quot;, groups=[alert_form])" />
+            <p class="description">Enter your phone number, <strong class="netdown">including full country code and area code</strong> for instant text alerts (i.e., 16195551212 for U.S. domestic users; International users should not include 011 or 00)</p>
+          </dd>
+        </dl>
+      </fieldset>
+    </dd>
+    <dt id="buttons-label">&#160;</dt>
+    <dd id="buttons-element">
+      <fieldset id="fieldset-buttons">
+        <dl>
+          <dt id="submit-label">&#160;</dt>
+          <dd id="submit-element">
+            <input type="button" value="No Thanks" onclick="location='/zfbp/display/p/id/scn_member_verify_success/complete/1/vmpd_nar/1/?redirect=<?= urlencode(isset($this->internal->params->redirect) && $this->internal->params->redirect ? $this->internal->params->redirect : '/') ?>';" />
+            <input type="submit" name="submit" id="submit" value="Sign-Up For Mobile Alerts" />
+          </dd>
+        </dl>
+      </fieldset>
+    </dd>
+  </dl>
+</form>
+</div>
+
+
+
+
+    </div>
+    <div class="ft">
+        <div class="dec">
+            <div class="lt"></div><div class="mn"></div><div class="rt"></div>
+        </div>
+    </div>
+    <span class="icon"></span>
+</div>
+<!-- End Module -->
+
+<?php } ?>

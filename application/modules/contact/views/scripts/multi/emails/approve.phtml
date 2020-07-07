@@ -1,0 +1,29 @@
+<p><?= $this->ProfileDisplay(array('profile' => $this->profile, 'internal' => $this->internal)) ?> has approved your request to add them to your  "<?= $this->tf->p_name ?>" profile contact list.</p>
+
+<?php
+if (isset($this->internal->params->r) && $this->internal->params->r) {
+    if (in_array($this->tf->p_id, $this->not_reciprocated)) {
+?>
+<p>In addition, <?= $this->ProfileDisplay(array('profile' => $this->profile, 'internal' => $this->internal)) ?> has requested to add your "<?= $this->tf->p_name ?>" profile to their contact list.</p>
+
+<p class="administer">
+    <a href="http://<?= $this->internal->vars->host ?>/profile/switch/p/id/<?= $this->tf->p_id ?>/?redirect=<?= urlencode('/contact/multi/approve/cid/' . $this->profile->p_id . '/') ?>">Approve</a> -
+
+    <a href="http://<?= $this->internal->vars->host ?>/profile/switch/p/id/<?= $this->tf->p_id ?>/?redirect=<?= urlencode('/contact/multi/deny/cid/' . $this->profile->p_id . '/') ?>">Deny</a>
+</p>
+<?php
+    }
+    else {
+?>
+<p>In addition, your  "<?= $this->tf->p_name ?>" profile has been added to their contact list.</p>
+<?php        
+    }
+}
+?>
+    
+
+
+
+<p>Thanks,</p>
+
+<p><?= $this->internal->community->display ?></p>

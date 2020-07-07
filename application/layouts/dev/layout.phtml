@@ -1,0 +1,106 @@
+<?php
+$VERSION = '201200828';
+
+echo $this->docType();
+?>
+
+<?php
+    // Capture the body first
+    $this->placeholder('body')->set($this->render('../default/includes/body.phtml'));
+    
+    
+    $this->headTitle('ViaMe');
+    $this->headTitle()->setSeparator(' : ');
+
+    $this->headMeta()->appendHttpEquiv('content-type', 'text/html; charset=UTF-8');
+    //$this->headMeta()->appendHttpEquiv('content-language', 'en-US');
+    //$this->headMeta()->appendHttpEquiv('refresh', '0; URL=http://www.yahoo.com');
+    //$this->headMeta()->appendName('author', 'Author Name');
+    //$this->headMeta()->appendName('copyright', 'Copyright by Author');
+    //$this->headMeta()->appendName('description', 'This is the page meta description.');
+    //$this->headMeta()->appendName('keywords', 'These, are, the, keywords');
+    $this->headMeta()->appendName('cache-control', 'no-cache');
+    $this->headMeta()->appendName('pragma', 'no-cache');
+    $this->headMeta()->appendName('expires', 'Wed, 01 Jan 1997 00:00:00 GMT');
+    #$this->headMeta()->appendName('robots', 'all');
+    //$this->internal->vars->static_host = str_replace('https','http',$this->internal->vars->static_host);
+    $this->headLink(array('rel' => 'icon', 'href' => $this->internal->vars->static_host . '/css/community/default/assets/favicon.ico'));
+    $this->headLink(array('rel' => 'shortcut icon', 'href' => $this->internal->vars->static_host . '/css/community/default/assets/favicon.ico'));
+    
+    $this->headLink()->appendStylesheet($this->internal->vars->static_host . '/css/community/default/stylesheet.css?v=' . $VERSION);
+    $this->headLink()->appendStylesheet($this->internal->vars->static_host . '/css/theme/big_blue/stylesheet.css?v=' . $VERSION, 'screen', false, array('title' => 'Big Blue'));    
+    $this->headLink()->appendStylesheet($this->internal->vars->static_host . '/css/community/viame/stylesheet.css?v=' . $VERSION);
+    $this->headLink()->appendStylesheet($this->internal->vars->static_host . '/css/community/default/print.css?v=' . $VERSION, 'print');
+    
+    /* Yahoo CDN JavaScript Rollup - ADDED YUI 3.0 SEED FILE
+    
+        http://developer.yahoo.com/yui/articles/hosting/?animation&autocomplete&button&calendar&carousel&connection&connectioncore&container&containercore&cookie&datasource&dom&dragdrop&editor&element&event&menu&resize&selector&simpleeditor&tabview&utilities&yahoo&yahoo-dom-event&yuiloader&yuiloader-dom-event&MIN
+        
+        http://yui.yahooapis.com/combo?2.9.0/build/utilities/utilities.js&2.9.0/build/datasource/datasource-min.js&2.9.0/build/autocomplete/autocomplete-min.js&2.9.0/build/container/container-min.js&2.9.0/build/menu/menu-min.js&2.9.0/build/button/button-min.js&2.9.0/build/calendar/calendar-min.js&2.9.0/build/carousel/carousel-min.js&2.9.0/build/cookie/cookie-min.js&2.9.0/build/editor/editor-min.js&2.9.0/build/resize/resize-min.js&2.9.0/build/selector/selector-min.js&2.9.0/build/tabview/tabview-min.js&3.7.3/build/yui/yui-min.js
+    */
+    //$this->headScript()->prependFile('http://yui.yahooapis.com/combo?2.9.0/build/utilities/utilities.js&2.9.0/build/datasource/datasource-min.js&2.9.0/build/autocomplete/autocomplete-min.js&2.9.0/build/container/container-min.js&2.9.0/build/menu/menu-min.js&2.9.0/build/button/button-min.js&2.9.0/build/calendar/calendar-min.js&2.9.0/build/carousel/carousel-min.js&2.9.0/build/cookie/cookie-min.js&2.9.0/build/editor/editor-min.js&2.9.0/build/resize/resize-min.js&2.9.0/build/selector/selector-min.js&2.9.0/build/tabview/tabview-min.js&3.7.3/build/yui/yui-min.js');
+    $this->headScript()->prependFile($this->internal->vars->static_host . '/js/yui/yui_combo_local.js');
+    $this->headScript()->prependFile($this->internal->vars->static_host . '/js/yui/yui3/build/yui/yui-min.js');
+    
+    $this->headScript()->prependFile('https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js');
+    $this->headScript()->appendFile($this->internal->vars->static_host . '/js/vm/vm.js');
+    $this->headScript()->appendFile($this->internal->vars->static_host . '/js/vm/yui/viame_form_helper.js');
+    $this->headScript()->appendFile($this->internal->vars->static_host . '/js/vivin/regula.js');
+    
+    // Google Admanager
+    $this->headScript()->appendFile('https://partner.googleadservices.com/gampad/google_service.js');
+    $this->headScript()->appendScript('GS_googleAddAdSenseService("ca-pub-3297144036592508");GS_googleEnableAllServices();');
+    $this->headScript()->appendScript('GA_googleUseIframeRendering();');
+    // Customize Google Ads
+    /*
+        * Border: param = google_color_border
+        * Title: param = google_color_link
+        * Background: param = google_color_bg
+        * Text: param = google_color_text
+        * URL: param = google_color_url
+        * Alternate ad URL: param = google_alternate_ad_url
+        * Ad unit (text, image, text/image): param = google_ad_type
+        * Corner style: param = google_ui_features
+        * Channel: param = google_ad_channel
+    */
+    /*
+    $this->headScript()->appendScript('
+        GA_googleAddAdSensePageAttr("google_color_border", "C3C3C3");
+        GA_googleAddAdSensePageAttr("google_color_bg", "FFFFFF");
+        GA_googleAddAdSensePageAttr("google_color_link", "30344B");
+        GA_googleAddAdSensePageAttr("google_color_text", "000000");
+        GA_googleAddAdSensePageAttr("google_color_url", "008000");
+        GA_googleAddAdSensePageAttr("google_ui_features", "rc:6");
+    ');
+    */
+?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<?= $this->render('../default/includes/header.phtml'); ?>
+</head>
+
+<body class="yui-skin-sam">
+
+<?php echo $this->placeholder('body'); ?>
+
+<?= $this->inlineScript() ?>
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-1218496-8']);
+  _gaq.push(['_setDomainName', 'none']);
+  _gaq.push(['_setAllowLinker', true]);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+<?php // Bad Bot Honey Pot // ?>
+<p style="display: none;"><a href="/zfbp/bbhp/" style="visibility: hidden;">This link should not be clicked.</a></p>
+
+</body>
+</html>

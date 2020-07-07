@@ -1,0 +1,38 @@
+<?= '<?xml version="1.0"?>' ?>
+
+<!DOCTYPE lookup_results SYSTEM "http://199.175.179.160/xml/quote.dtd">
+<lookup_results>
+<?php foreach ($this->results as $item) { ?>
+    <quote symbol="<?=$item[0]?>" company="<?= $item[1] ?>">
+        <last><?=$item[2]?></last>
+        <chg>
+            <points><?=$item[3]?></points>
+            <pct><?=$item[4]?></pct>
+        </chg>
+        <high><?=$item[5]?></high>
+        <low><?=$item[6]?></low>
+        <vol><?=$item[7]?></vol>
+        <bid><?=$item[8]?></bid>
+        <ask><?=$item[9]?></ask>
+        <lasttradetime><?=$item[10]?></lasttradetime>
+        <lasttradedate><?=$item[11]?></lasttradedate>
+        <hi52wk><?=$item[12]?></hi52wk>
+        <lo52wk><?=$item[13]?></lo52wk>
+        <pe><?=$item[14]?></pe>
+        <exch><?=$item[15]?></exch>
+        <bidsize><?=$item[16]?></bidsize>
+        <asksize><?=$item[17]?></asksize> 
+        <open><?=$item[18]?></open>
+        <prevclose><?=$item[19]?></prevclose>
+        <ticktype>N/A</ticktype>
+        <shareslasttrade><?=$item[21]?></shareslasttrade>
+        <earnpershare><?=$item[22]?></earnpershare>
+        <divpershare><?=$item[23]?></divpershare>
+        <currentdivyield><?=$item[24]?></currentdivyield> 
+        <exdividenddate><?=$item[25]?></exdividenddate>
+        <numberoftrades>N/A</numberoftrades>
+        <marketid>N/A</marketid>
+        <disclaimer>Powered by Yahoo!  Quotes delayed at least 15 minutes.</disclaimer>
+    </quote>
+<?php } ?>
+</lookup_results>

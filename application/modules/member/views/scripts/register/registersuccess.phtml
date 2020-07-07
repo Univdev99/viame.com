@@ -1,0 +1,51 @@
+<div class="multistep_header">
+    <table><tr>
+        <td align="left" class="header">
+            Check Email
+        </td>
+        <td align="right" class="steps">
+            <table class="ind_steps"><tr>
+                <td>
+                    <div class="step firstitem"><span class="stepnumber">1</span>Enter Info</div>
+                </td>
+                <td>
+                    <div class="step selected"><span class="stepnumber">2</span>Check Email</div>
+                </td>
+                <td>
+                    <div class="step lastitem"><span class="stepnumber">3</span>Confirmation</div>
+                </td>
+            </tr></table>
+        </td>
+    </tr></table>
+</div>
+
+<?php $this->placeholder('temp')->captureStart(); ?>
+
+<p class="success">Your registration was successful and your account has been created.</p>
+<div style="padding: 0 1em 1em 1em; font-size: 14px; line-height: 140%;">
+    <p><strong>Thank You for Becoming A <?= $this->internal->community->display ?> Member...</strong></p>
+    <div>To complete your registration, <strong>you must verify your email address</strong>. Don't worry, it's quick and easy!</div>
+    <div style="margin: 12px 0 5px 15px; padding-left: 29px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/check.png) top left no-repeat;">Go to your inbox now.</div>
+    <div style="margin: 5px 0 5px 15px; padding-left: 29px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/check.png) top left no-repeat;">Find the verification email from <?= $this->internal->community->display ?> <i>(you might need to check your spam folder)</i>.</div>
+    <div style="margin: 5px 0 5px 15px; padding-left: 29px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/check.png) top left no-repeat;"><strong>Click on the verification link</strong> provided in the email.</div>
+    <div style="margin: 5px 0 12px 15px; padding-left: 29px; background: url(<?= $this->internal->vars->static_host ?>/css/community/smallcapnetwork/assets/signup_modal/check.png) top left no-repeat;"><strong>Start reaping the benefits of your free <?= $this->internal->community->display ?> Membership!</strong></div>
+    
+    <p>Once you verify your email address, you will have immediate login access to the <?= $this->internal->community->display ?> Community.</p>
+
+    <p>If you fail to receive the verification email, <a href="<?= $this->internal->target->pre ?>/member/register/verify/vmpd_nar/1/vmpd_fp/1/?email=<?= $this->temp_email ?>">click here</a> to have the verification email resent.</p>
+    <p>If you have any problems registering or confirming this registration, please contact us at <a href="mailto:<?= ($this->internal->community->email ? $this->internal->community->email : $this->internal->config->admin->email) ?>"><?= ($this->internal->community->email ? $this->internal->community->email : $this->internal->config->admin->email) ?></a>.</p>
+</div>
+
+
+<?php
+$this->placeholder('temp')->captureEnd();
+
+echo $this->CM(array(
+    'class' => 'cm decorated plain successmessage',
+    'hd' => 'Registration Successful',
+    'hd2' => 'Thank you for signing up',
+    'bd' => $this->placeholder('temp')
+));
+
+$this->placeholder('temp')->set(null);
+?>
