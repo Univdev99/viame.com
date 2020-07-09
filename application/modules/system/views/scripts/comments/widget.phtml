@@ -2,7 +2,7 @@
 if (isset($this->objects) && $this->objects) {
     foreach ($this->objects as $comment) {
         // Create the link
-        $link = 'http://' . $this->internal->vars->host;
+        $link = 'https://' . $this->internal->vars->host;
         if ($this->masked) {
             $link .= $this->internal->target->pre . '/' . $this->internal->module_modules[$comment->module_id]->name . '/view/p/mid/' . $this->masked . '/id/' . $comment->item_counter . '/';
         }

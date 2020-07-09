@@ -17,7 +17,7 @@ class ViaMe_View_Helper_ContentLink extends Zend_View_Helper_Abstract
             $object = $model['object'];
             $view = $model['view'];
             
-            $host = 'http://' . $view->internal->vars->host;
+            $host = 'https://' . $view->internal->vars->host;
             
             $link = '';
             
@@ -40,7 +40,7 @@ class ViaMe_View_Helper_ContentLink extends Zend_View_Helper_Abstract
                     
                     if (($object->via_id == $object->profile_id) && ($object->c_id != $view->internal->community->id)) {
                         # New Hostname
-                        $host = 'http://' .
+                        $host = 'https://' .
                           (isset($view->internal->vars->language) ? $view->internal->vars->language . '.' : '') .
                           ($object->c_hostname ? $object->c_hostname : ($object->c_name != 'default' ? $object->c_name : 'www') . '.' . $view->internal->config->default_domain)
                         ;
@@ -49,7 +49,7 @@ class ViaMe_View_Helper_ContentLink extends Zend_View_Helper_Abstract
                 elseif ($object->com_id) {
                     if ($object->com_id != $view->internal->community->id) {
                         if ($object->com_id == $object->c_id) {
-                            $host = 'http://' .
+                            $host = 'https://' .
                               (isset($view->internal->vars->language) ? $view->internal->vars->language . '.' : '') .
                               ($object->c_hostname ? $object->c_hostname : ($object->c_name != 'default' ? $object->c_name : 'www') . '.' . $view->internal->config->default_domain)
                             ;

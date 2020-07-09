@@ -112,7 +112,7 @@ class Admin_PlivoController extends ViaMe_Controller_Action
                 'from' => $this->_getParam('origin'),
                 'to' => $this->_getParam('mynum'),
                 'ring_timeout' => '10',
-                'answer_url' => 'http://www.viame.com/zfbp/xml/?xml=<Response><Speak language="en-GB">Your call is now being connected to '.implode(' ,', str_split($this->_getParam('destination'))).'.<%2FSpeak><Wait length="2" %2F><Dial callerId="'.$this->_getParam('origin').'" callerName="'.(isset($origins[$this->_getParam('origin')]) && $origins[$this->_getParam('origin')] ? $origins[$this->_getParam('origin')] : 'Levelogic').'"><Number>'.$this->_getParam('destination').'<%2FNumber><%2FDial><%2FResponse>',
+                'answer_url' => 'https://www.viame.com/zfbp/xml/?xml=<Response><Speak language="en-GB">Your call is now being connected to '.implode(' ,', str_split($this->_getParam('destination'))).'.<%2FSpeak><Wait length="2" %2F><Dial callerId="'.$this->_getParam('origin').'" callerName="'.(isset($origins[$this->_getParam('origin')]) && $origins[$this->_getParam('origin')] ? $origins[$this->_getParam('origin')] : 'Levelogic').'"><Number>'.$this->_getParam('destination').'<%2FNumber><%2FDial><%2FResponse>',
                 'answer_method' => 'GET'
             ));
             #Zend_Debug::Dump($response);

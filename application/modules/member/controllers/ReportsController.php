@@ -230,9 +230,9 @@ class Member_ReportsController extends ViaMe_Controller_Action
                 $plivo = new ViaMe_Vm_Im_Plivo();
                 
                 $return = $plivo->make_call(array($redial->phone), array(
-                    'answer_url' => 'http://www.viame.com/zfbp/xml/?xml=<Response><Speak language="en-GB" loop="2">Your confirmation code is: ' . implode(',', str_split($redial->phone_confirm_code)) . '<%2FSpeak><%2FResponse>',
+                    'answer_url' => 'https://www.viame.com/zfbp/xml/?xml=<Response><Speak language="en-GB" loop="2">Your confirmation code is: ' . implode(',', str_split($redial->phone_confirm_code)) . '<%2FSpeak><%2FResponse>',
                     'answer_method' => 'GET',
-                    'hangup_url' => 'http://www.viame.com/zfbp/xml/?xmlid=default_hangup',
+                    'hangup_url' => 'https://www.viame.com/zfbp/xml/?xmlid=default_hangup',
                     'hangup_method' => 'GET',
                     'time_limit' => '60'
                 ));
@@ -301,9 +301,9 @@ class Member_ReportsController extends ViaMe_Controller_Action
                         }
                         else {
                             $return = $plivo->make_call(array($fPhone), array(
-                                'answer_url' => 'http://www.viame.com/zfbp/xml/?xml=<Response><Speak language="en-GB" loop="2">Your confirmation code is: ' . implode(',', str_split($rcode)) . '<%2FSpeak><%2FResponse>',
+                                'answer_url' => 'https://www.viame.com/zfbp/xml/?xml=<Response><Speak language="en-GB" loop="2">Your confirmation code is: ' . implode(',', str_split($rcode)) . '<%2FSpeak><%2FResponse>',
                                 'answer_method' => 'GET',
-                                'hangup_url' => 'http://www.viame.com/zfbp/xml/?xmlid=default_hangup',
+                                'hangup_url' => 'https://www.viame.com/zfbp/xml/?xmlid=default_hangup',
                                 'hangup_method' => 'GET',
                                 'time_limit' => '60'
                             ));

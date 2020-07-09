@@ -172,7 +172,7 @@ if ($db = Zend_Registry::get('db')) {
             $id = $object->via_id;
         }
         
-        $link = 'http://' . $this->internal->vars->host;
+        $link = 'https://' . $this->internal->vars->host;
         if ($title) { $link .= '/' . $this->SEO_Urlify($title) . '/s'; }
         $link .= "/$type/$id/pick/p/mid/$mid/?status=1";
         */
@@ -575,7 +575,7 @@ if ($rating->total && ((isset($db) && $db) || $db = Zend_Registry::get('db'))) {
         $counter = 0;
         echo '<div class="cm decorated"><div class="bd"><p><strong>People Who Rated This Stock Also Rated...</strong></p>';
         foreach ($others as $other) {
-            $other_link = 'http://' . $this->internal->vars->host . '/' . ($other->qx_name ? $this->SEO_Urlify($other->qx_name) . '/s/' : '' ) . 'quote/p/s/' . urlencode($other->qx_internal_symbol) . '/';
+            $other_link = 'https://' . $this->internal->vars->host . '/' . ($other->qx_name ? $this->SEO_Urlify($other->qx_name) . '/s/' : '' ) . 'quote/p/s/' . urlencode($other->qx_internal_symbol) . '/';
             $the_rating_value = sprintf("%.1f", (intval(($other->rating_rating + 1) / 2 * 9) + 1) / 2);
         
             echo "<div style=\"margin: 0 1em;\"><a href=\"$other_link\" class=\"quote_symbol\">" . $other->qx_name . ' (' . $this->escape($other->qx_internal_symbol) . ')</a></div>';
@@ -611,7 +611,7 @@ if ($db || $db = Zend_Registry::get('db')) {
         $counter = 0;
         echo '<div class="cm decorated"><div class="bd" style=""><p><strong>Stocks Trending Up In Ratings Activity...</strong></p>';
         foreach ($others as $other) {
-            $other_link = 'http://' . $this->internal->vars->host . '/' . ($other->qx_name ? $this->SEO_Urlify($other->qx_name) . '/s/' : '' ) . 'quote/p/s/' . urlencode($other->qx_internal_symbol) . '/';
+            $other_link = 'https://' . $this->internal->vars->host . '/' . ($other->qx_name ? $this->SEO_Urlify($other->qx_name) . '/s/' : '' ) . 'quote/p/s/' . urlencode($other->qx_internal_symbol) . '/';
             $the_rating_value = sprintf("%.1f", (intval(($other->rating_rating + 1) / 2 * 9) + 1) / 2);
         
             echo "<div style=\"margin: 0 1em;\"><a href=\"$other_link\" class=\"quote_symbol\">" . $other->qx_name . ' (' . $this->escape($other->qx_internal_symbol) . ')</a></div>';

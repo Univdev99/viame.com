@@ -1,5 +1,5 @@
 <?php
-$verification_link = 'http://' . $this->internal->vars->host . ($this->internal->target->type == 'COM' && isset($this->internal->target->pre) ? $this->internal->target->pre : '') . '/member/register/verify/vmpd_bpip/1/vmpd_nar/1/id/' . $this->id . '/?key=' . $this->key;
+$verification_link = 'https://' . $this->internal->vars->host . ($this->internal->target->type == 'COM' && isset($this->internal->target->pre) ? $this->internal->target->pre : '') . '/member/register/verify/vmpd_bpip/1/vmpd_nar/1/id/' . $this->id . '/?key=' . $this->key;
 
 if (isset($this->no_email_add) && $this->no_email_add) {
     $verification_link .= '&no_email_add=1';

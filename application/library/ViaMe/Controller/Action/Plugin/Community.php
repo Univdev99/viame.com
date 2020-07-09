@@ -100,7 +100,7 @@ class ViaMe_Controller_Action_Plugin_Community extends Zend_Controller_Plugin_Ab
                   $this->config->debug < 5 // Don't redirect in the staging/testing phase
                   ) {
                     $this->_response->setRedirect(
-                        'http://' .
+                        'https://' .
                         ((isset($this->vars->pre_lang) && $this->vars->pre_lang) ? $this->vars->pre_lang . '.' : '') .
                         ((isset($this->vars->language) && $this->vars->language) ? $this->vars->language . '.' : '') .
                         $community->hostname . ($request->getParam('com_id') ? str_ireplace("/com/" . $request->getParam('com_id'), '', $this->vars->request_uri) : $this->vars->request_uri)
@@ -157,7 +157,7 @@ class ViaMe_Controller_Action_Plugin_Community extends Zend_Controller_Plugin_Ab
                 $this->target->type = null;
                 
                 $this->target->id = $community->id;
-                #$this->target->pre = ((isset($community->hostname) && $community->hostname) ? 'http://' . $community->hostname : '');
+                #$this->target->pre = ((isset($community->hostname) && $community->hostname) ? 'https://' . $community->hostname : '');
                 $this->target->pre = '';
                 
                 $this->target->acl = new StdClass;

@@ -6,8 +6,8 @@
 
 <?php
 if ($this->link) { $link = $this->link; }
-elseif (isset($this->internal->vars->new_request_uri)) { $link = 'http://' . $_SERVER['SERVER_NAME'] . $this->internal->vars->new_request_uri; }
-else { $link = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']; }
+elseif (isset($this->internal->vars->new_request_uri)) { $link = 'https://' . $_SERVER['SERVER_NAME'] . $this->internal->vars->new_request_uri; }
+else { $link = 'https://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']; }
 
 $sep = (strpos($link, '?') ? '&' : '?');
 
@@ -16,8 +16,8 @@ $to_print_link = $link . $sep . 'to_print=1';
 if (isset($this->internal->member)) {
     $to_email_link = $link . $sep . 'to_email=1';
 } else {
-    if (strpos($link, 'http://') === false) {
-        $link = 'http://' . $_SERVER['SERVER_NAME'] . $link;
+    if (strpos($link, 'https://') === false) {
+        $link = 'https://' . $_SERVER['SERVER_NAME'] . $link;
     }
     $to_email_link = "mailto:?subject=Check Out This Content&body=Here's a link to some content that I wanted to share with you...%0A%0a" . urlencode($link);
 }

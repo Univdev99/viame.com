@@ -33,7 +33,7 @@ class IndexController extends ViaMe_Controller_Action
             $select = $this->db->select()
                 ->from(array('x' => 'module_matrix'),
                     array('*',
-                        "array_to_string(parameter_values, '" . $this->config->delimiter . "') as parameter_values_delimited",
+                        "REPLACE(array_to_string(parameter_values, '" . $this->config->delimiter . "'), 'http://', 'https://') as parameter_values_delimited",
                         $this->db->quoteInto('(b.id=? OR ', (isset($this->member->id) ? $this->member->id : 0)) . "$acl_clause.allowed) AS allowed",
                         "$acl_clause.privilege",
                         "$acl_clause.filter",
@@ -76,7 +76,7 @@ class IndexController extends ViaMe_Controller_Action
         $select = $this->db->select()
             ->from(array('x' => 'widget_matrix'),
                 array('*',
-                    "array_to_string(parameter_values, '" . $this->config->delimiter . "') as parameter_values_delimited"
+                    "REPLACE(array_to_string(parameter_values, '" . $this->config->delimiter . "'), 'http://', 'https://') as parameter_values_delimited"
                 )
             )
             ->where("x.active='t'")
@@ -95,6 +95,7 @@ class IndexController extends ViaMe_Controller_Action
             #->join(array('b' => 'member_members'), 'p.member_id = b.id', array())
             #->where('b.active=?', 't')
             ->order(array('x.orderby', 'x.display', 'w.display', 'w.name', 'x.counter', 'w.id'));
+
         
         $this->target->widgets = $this->db->fetchAll($select);
         
@@ -146,7 +147,7 @@ class IndexController extends ViaMe_Controller_Action
         
         // Alternate Feeds
         $temp_dn = ($this->internal->com->display ? $this->internal->com->display : $this->internal->com->name);
-        $link =  'http://' . $this->internal->vars->host . '/' . $this->view->SEO_Urlify($temp_dn) . '/s' . $this->target->pre . '/system/widget/p/format';
+        $link =  'https://' . $this->internal->vars->host . '/' . $this->view->SEO_Urlify($temp_dn) . '/s' . $this->target->pre . '/system/widget/p/format';
         foreach (array('atom' => 'application/atom+xml', 'rss' => 'application/rss+xml') as $key => $val) {
             $this->view->headLink()->appendAlternate(
                 "$link/$key/",
@@ -189,7 +190,7 @@ class IndexController extends ViaMe_Controller_Action
             if ( ($section == 'cx') && 
                  (!(isset($this->target->space->page_layout) || $this->target->space->page_layout)) ) {
                 continue;
-            } 
+            }
             
             if ( (preg_match('/^c[2-4]$/', $section)) &&
                  ( (!(isset($this->target->space->page_sublayout) || $this->target->space->page_sublayout)) ||

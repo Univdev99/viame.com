@@ -43,13 +43,13 @@ function goBack() {
             location.href = document.referrer;
         }
         else if (location.hostname) {
-            location.href = 'http://' + location.hostname;
+            location.href = 'https://' + location.hostname;
         }
         else if (history.length > 1) {
             history.back();
         }
         else {
-            location.href = 'http://<?= $this->internal->vars->host ?>';
+            location.href = 'https://<?= $this->internal->vars->host ?>';
         }
     }
 }

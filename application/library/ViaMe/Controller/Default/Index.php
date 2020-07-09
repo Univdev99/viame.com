@@ -184,7 +184,7 @@ class ViaMe_Controller_Default_Index extends ViaMe_Controller_Action
             #http://dev.viame.com/system/widget/symbol/p/symbol/YHOO/mid/15/format/atom/
             
             // HeadLinks
-            $link = 'http://' . $this->internal->vars->host . '/' . $this->view->SEO_Urlify($this->target->currentModule->display ? $this->target->currentModule->display : $this->target->currentModule->m_display) . '/s';
+            $link = 'https://' . $this->internal->vars->host . '/' . $this->view->SEO_Urlify($this->target->currentModule->display ? $this->target->currentModule->display : $this->target->currentModule->m_display) . '/s';
             
             $link .= '/system/widget/symbol/p/symbol/' . $this->_symbolData->internal_symbol . '/mid/' . $this->target->currentModule->module_id . '/format';
             
@@ -224,7 +224,7 @@ class ViaMe_Controller_Default_Index extends ViaMe_Controller_Action
             }
             
             // HeadLinks
-            $link = 'http://' . $this->internal->vars->host . '/' . $this->view->SEO_Urlify($this->target->currentModule->display ? $this->target->currentModule->display : $this->target->currentModule->m_display) . '/s';
+            $link = 'https://' . $this->internal->vars->host . '/' . $this->view->SEO_Urlify($this->target->currentModule->display ? $this->target->currentModule->display : $this->target->currentModule->m_display) . '/s';
             $link .= '/system/widget/profile/p/profile_id/' . $this->_getParam('profile_id') . '/format';
             $clink = $link;
             
@@ -276,7 +276,7 @@ class ViaMe_Controller_Default_Index extends ViaMe_Controller_Action
             }
             
             // HeadLinks
-            $link = 'http://' . $this->internal->vars->host . '/' . $this->view->SEO_Urlify($this->target->currentModule->display ? $this->target->currentModule->display : $this->target->currentModule->m_display) . '/s';
+            $link = 'https://' . $this->internal->vars->host . '/' . $this->view->SEO_Urlify($this->target->currentModule->display ? $this->target->currentModule->display : $this->target->currentModule->m_display) . '/s';
             $clink = $link;
             
             #if ($this->target->type == 'COM' && ((isset($this->internal->params->com_id) && $this->internal->params->com_id) || $this->target->id != $this->internal->community->id)) {
@@ -344,7 +344,7 @@ class ViaMe_Controller_Default_Index extends ViaMe_Controller_Action
             }
             
             // HeadLinks
-            $link = 'http://' . $this->internal->vars->host . '/' . $this->view->SEO_Urlify($this->target->currentModule->display ? $this->target->currentModule->display : $this->target->currentModule->m_display) . '/s';
+            $link = 'https://' . $this->internal->vars->host . '/' . $this->view->SEO_Urlify($this->target->currentModule->display ? $this->target->currentModule->display : $this->target->currentModule->m_display) . '/s';
             $clink = $link;
             
             if ($this->target->type == 'COM' && ((isset($this->internal->params->com_id) && $this->internal->params->com_id) || $this->target->id != $this->internal->community->id)) {
@@ -404,7 +404,7 @@ class ViaMe_Controller_Default_Index extends ViaMe_Controller_Action
             }
             
             // HeadLinks
-            $link = 'http://' . $this->internal->vars->host . '/' . $this->view->SEO_Urlify($this->target->currentModule->display ? $this->target->currentModule->display : $this->target->currentModule->m_display) . '/s';
+            $link = 'https://' . $this->internal->vars->host . '/' . $this->view->SEO_Urlify($this->target->currentModule->display ? $this->target->currentModule->display : $this->target->currentModule->m_display) . '/s';
             if (isset($this->target->currentModule->interactive, $this->target->currentModule->masked, $this->target->currentModule->x_interactive) && $this->target->currentModule->interactive && $this->target->currentModule->masked ? $this->target->currentModule->x_interactive : true) {
                 $clink = $link;
             }

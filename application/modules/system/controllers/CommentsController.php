@@ -182,7 +182,7 @@ class System_CommentsController extends ViaMe_Controller_Action
                 }
                 
                 // Create the link
-                $link = 'http://' . $this->internal->vars->host;
+                $link = 'https://' . $this->internal->vars->host;
                 if ($this->_subModule) {
                     $link .= '/' . $this->view->SEO_Urlify($this->_subModule->display ? $this->_subModule->display : $this->_subModule->m_display) . '/s';
                 }
@@ -228,7 +228,7 @@ class System_CommentsController extends ViaMe_Controller_Action
                     $published->set($object->creation, Zend_Date::ISO_8601);
                     
                     // Create the link
-                    $link = 'http://' . $this->internal->vars->host;
+                    $link = 'https://' . $this->internal->vars->host;
                     #$link .= '/' . $this->view->SEO_Urlify($object->title) . '/s';
                     if ($this->_masked) {
                         $link .= $this->internal->target->pre . '/' . $this->_subModule->m_name . '/view/p/mid/' . $this->_masked_counter . '/id/' . $object->item_counter . '/';
@@ -311,7 +311,7 @@ class System_CommentsController extends ViaMe_Controller_Action
             else {
                 // html feed; output in view script; add headlinks
                 // Create the link
-                $link = 'http://' . $this->internal->vars->host;
+                $link = 'https://' . $this->internal->vars->host;
                 if ($this->_masked) {
                     $link .= $this->internal->target->pre . '/' . $this->_subModule->m_name . '/comments/widget/mid/' . $this->_masked_counter . '/format';
                 }

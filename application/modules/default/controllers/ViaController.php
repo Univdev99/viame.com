@@ -84,7 +84,7 @@ class ViaController extends ViaMe_Controller_Action
                   $this->config->debug < 5 // Don't redirect in the staging/testing phase
                   ) {
                     $this->_redirect(
-                        'http://' .
+                        'https://' .
                         (isset($this->vars->language) ? $this->vars->language . '.' : '') .
                         (isset($via->c_hostname) ? $via->c_hostname : (($via->c_name != 'default' ? $via->c_name : 'www') . '.' . $this->config->default_domain)) .
                         $this->getRequest()->getServer('REQUEST_URI')
@@ -224,7 +224,7 @@ class ViaController extends ViaMe_Controller_Action
         }
         
         // Alternate Feeds        
-        $link =  'http://' . $this->internal->vars->host . '/' . $this->view->SEO_Urlify($via->name) . '/s' . $this->target->pre . '/system/widget/p/format';
+        $link =  'https://' . $this->internal->vars->host . '/' . $this->view->SEO_Urlify($via->name) . '/s' . $this->target->pre . '/system/widget/p/format';
         foreach (array('atom' => 'application/atom+xml', 'rss' => 'application/rss+xml') as $key => $val) {
             $this->view->headLink()->appendAlternate(
                 "$link/$key/",

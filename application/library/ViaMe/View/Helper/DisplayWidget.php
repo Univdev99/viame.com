@@ -93,6 +93,7 @@ class ViaMe_View_Helper_DisplayWidget extends Zend_View_Helper_Abstract
                             $data['hd2'] = ($widget->secondary_url ? '<a href="' . $this->view->escape($widget->secondary_url) . '">' : '') . $this->view->escape($widget->secondary) . ($widget->secondary_url ? '</a>' : '');
                         }
                         $data['bd'] = $this->view->action('index', 'widget', $this->view->internal->module_modules[$spec]->name, array_merge((array) $this->view->internal->params, array('widget' => $widget)));
+
                         $data['ft2'] = '<a href="/' . $this->view->SEO_Urlify($widget->display ? $widget->display : $widget->m_display) . '/s' . $this->view->internal->target->pre . '/' . $this->view->internal->module_modules[$spec]->name . '/p/mid/' . $counter . '/">Get More: ' . ($widget->display ? $widget->display : $widget->m_display) . '</a>';
                         $data['extra'] .= '<a href="/' . $this->view->SEO_Urlify($widget->display ? $widget->display : $widget->m_display) . '/s' . $this->view->internal->target->pre . '/' . $this->view->internal->module_modules[$spec]->name . '/widget/p/mid/' . $counter . '/format/atom/" rel="nofollow" title="' . ($widget->display ? $widget->display : $widget->m_display) . '" class="feeder">' . ($widget->display ? $widget->display : $widget->m_display) . '</a>';
                         

@@ -65,7 +65,7 @@ class ViaMe_Controller_Action_Plugin_Cache extends Zend_Controller_Plugin_Abstra
                 (!isset($this->vars->language) || !is_numeric($this->vars->language))
             ) {
                 $this->_response->setRedirect(
-                    'http://' .
+                    'https://' .
                     #((isset($this->vars->pre_lang) && $this->vars->pre_lang) ? $this->vars->pre_lang . '.' : '') .
                     (!preg_match('/^(root|en|en_us)$/i', $temp_locale)  ? $temp_locale . '.' : '') .
                     $this->vars->host_name . '.' . $this->vars->domain_name . $this->vars->request_uri
@@ -88,7 +88,7 @@ class ViaMe_Controller_Action_Plugin_Cache extends Zend_Controller_Plugin_Abstra
               
             ) {
                 $this->_response->setRedirect(
-                    'http://' .
+                    'https://' .
                     #((isset($this->vars->pre_lang) && $this->vars->pre_lang) ? $this->vars->pre_lang . '.' : '') .
                     ((!isset($this->vars->language) && ($temp_locale != 'en_us') && ($temp_locale != 'en') && 
                       (array_key_exists($temp_locale, $sl_hash) || ((!preg_match("/^en/i", $temp_locale)) && array_key_exists(preg_replace("/\_.*/", '', $temp_locale), $sl_hash))) ) ? $temp_locale . '.' : '') .

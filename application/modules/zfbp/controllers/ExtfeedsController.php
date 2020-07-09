@@ -69,7 +69,7 @@ class Zfbp_ExtfeedsController extends ViaMe_Controller_Action
         
         $data = array();
         $data['title'] = 'External Feeds';
-        $data['link'] = 'http://' . $this->vars->host;
+        $data['link'] = 'https://' . $this->vars->host;
         $data['published'] = time();
         $data['lastUpdate'] = time();
                     

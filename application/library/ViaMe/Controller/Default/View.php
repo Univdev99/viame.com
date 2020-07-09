@@ -202,10 +202,10 @@ class ViaMe_Controller_Default_View extends ViaMe_Controller_Action
         }
         
         // HeadLinks
-        $link = 'http://' . $this->internal->vars->host . '/' . $this->view->SEO_Urlify($this->target->currentModule->display ? $this->target->currentModule->display : $this->target->currentModule->m_display) . '/s';
+        $link = 'https://' . $this->internal->vars->host . '/' . $this->view->SEO_Urlify($this->target->currentModule->display ? $this->target->currentModule->display : $this->target->currentModule->m_display) . '/s';
         if (isset($this->target->currentModule->interactive, $this->target->currentModule->masked, $this->target->currentModule->x_interactive) && $this->target->currentModule->interactive && $this->target->currentModule->masked ? $this->target->currentModule->x_interactive : true) {
             $clink = $link;
-            $clinkone = 'http://' . $this->internal->vars->host . '/' . $this->view->SEO_Urlify($this->view->object->title ? $this->view->object->title : ($this->target->currentModule->display ? $this->target->currentModule->display : $this->target->currentModule->m_display)) . '/s';
+            $clinkone = 'https://' . $this->internal->vars->host . '/' . $this->view->SEO_Urlify($this->view->object->title ? $this->view->object->title : ($this->target->currentModule->display ? $this->target->currentModule->display : $this->target->currentModule->m_display)) . '/s';
         }
 
         if ($this->masked) {

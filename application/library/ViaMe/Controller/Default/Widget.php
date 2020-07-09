@@ -257,7 +257,7 @@ class ViaMe_Controller_Default_Widget extends ViaMe_Controller_Action
                 }
                 
                 // Create the link
-                $link = 'http://' . $this->internal->vars->host . '/' . $this->view->SEO_Urlify($widget->display ? $widget->display : $widget->m_display) . '/s';
+                $link = 'https://' . $this->internal->vars->host . '/' . $this->view->SEO_Urlify($widget->display ? $widget->display : $widget->m_display) . '/s';
                 if (isset($this->masked) && $this->masked) {
                     $link .= $this->internal->target->pre . '/' . $this->getRequest()->getModuleName() . '/widget/p/mid/' . $this->masked . '/format/' . $contextSwitch->getCurrentContext() . '/';
                 }
@@ -304,7 +304,7 @@ class ViaMe_Controller_Default_Widget extends ViaMe_Controller_Action
                     
                     // Create the link
                     /*
-                    $link = 'http://' . $this->internal->vars->host . '/' . $this->view->SEO_Urlify($object->title) . '/s';
+                    $link = 'https://' . $this->internal->vars->host . '/' . $this->view->SEO_Urlify($object->title) . '/s';
                     if ($this->masked) {
                         #$link .= $this->internal->target->pre . '/' . $this->getRequest()->getModuleName() . '/view/p/mid/' . $this->masked . '/id/' . $object->counter . '/';
                         $link .= $this->internal->target->pre . '/' . $this->internal->module_modules[$object->module_id]->name . '/view/p/mid/' . $this->masked . '/id/' . $object->counter . '/';
@@ -559,7 +559,7 @@ class ViaMe_Controller_Default_Widget extends ViaMe_Controller_Action
                 
                 /*  IS THIS NECESSARY ???  THIS WOULD BE FOR BUILDING A SYSTEM/WIDGET HTML PAGE - CURRENTLY THERE IS NONE.
                 
-                $link = 'http://' . $this->internal->vars->host . '/' . $this->view->SEO_Urlify($widget->display ? $widget->display : $widget->m_display) . '/s';
+                $link = 'https://' . $this->internal->vars->host . '/' . $this->view->SEO_Urlify($widget->display ? $widget->display : $widget->m_display) . '/s';
                 if (isset($widget->interactive, $widget->masked, $widget->x_interactive) && $widget->interactive && $widget->masked ? $widget->x_interactive : true) {
                     $clink = $link;
                 }

@@ -90,7 +90,7 @@ class ViaMe_Controller_Action_Plugin_PostData extends Zend_Controller_Plugin_Abs
         	    }
         	    
         	    $this->_response->setRedirect(
-                    #'http://' . $this->vars->host . $vmpd_ckstr_redirect
+                    #'https://' . $this->vars->host . $vmpd_ckstr_redirect
                     $vmpd_ckstr_redirect
                 , 301)->sendHeaders();
                 exit;
@@ -117,10 +117,10 @@ class ViaMe_Controller_Action_Plugin_PostData extends Zend_Controller_Plugin_Abs
             }
             
             if ($redirect_out || !$this->config->use_ssl) {
-                #Zend_Debug::Dump('http://' . $this->vars->host . $this->vars->request_uri);
+                #Zend_Debug::Dump('https://' . $this->vars->host . $this->vars->request_uri);
                 
                 $this->_response->setRedirect(
-                    'http://' . $this->vars->host . $this->vars->request_uri
+                    'https://' . $this->vars->host . $this->vars->request_uri
                 , 301)->sendHeaders();
                 exit;
             }

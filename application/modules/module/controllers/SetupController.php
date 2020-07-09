@@ -238,7 +238,7 @@ class Module_SetupController extends ViaMe_Controller_Action
         ));
         return $this->_helper->viewRenderer->setNoRender();
         
-        $this->_redirect('http://' . (isset($this->vars->language) ? $this->vars->language . '.' : '') . 'www.' . $this->config->default_domain);
+        $this->_redirect('https://' . (isset($this->vars->language) ? $this->vars->language . '.' : '') . 'www.' . $this->config->default_domain);
         
     }
 }

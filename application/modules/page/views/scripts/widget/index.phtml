@@ -83,7 +83,7 @@ if (isset($this->objects) && $this->objects) {
             ($this->internal->target->acl->recursive && ($this->internal->target->acl->privilege >= ViaMe_Controller_Action::ACL_READ))) {
             
             // Create the link
-            $link = 'http://' . $this->internal->vars->host . '/' . $this->SEO_Urlify($page->title) . '/s';
+            $link = 'https://' . $this->internal->vars->host . '/' . $this->SEO_Urlify($page->title) . '/s';
             if ($this->masked) {
                 $link .= $this->internal->target->pre . '/page/view/p/mid/' . $this->masked . '/id/' . $page->counter . '/';
             }

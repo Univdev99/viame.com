@@ -293,7 +293,7 @@ class Profile_AlertController extends ViaMe_Controller_Action
                         $voice = new ViaMe_Vm_Im_Plivo();
                         
                         $response = $voice->make_call(array(array('key' => $newAlert->member_id, 'id' => $newAlert->identifier)), array(
-                            'answer_url' => 'http://www.viame.com/zfbp/xml/?xml=<Response><Speak loop="2">Your confirmation code is: ' . implode(',', str_split($new_code)) . '<%2FSpeak><%2FResponse>',
+                            'answer_url' => 'https://www.viame.com/zfbp/xml/?xml=<Response><Speak loop="2">Your confirmation code is: ' . implode(',', str_split($new_code)) . '<%2FSpeak><%2FResponse>',
                             'answer_method' => 'GET',
                             'time_limit' => '60'
                         ));

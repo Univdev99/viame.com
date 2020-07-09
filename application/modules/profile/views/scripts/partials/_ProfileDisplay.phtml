@@ -38,7 +38,7 @@
 
 
 if ($this->profile->b_active && $this->profile->p_active) {
-    $link = 'http://' . (isset($this->internal->vars->language) ? $this->internal->vars->language . '.' : '') . ($this->profile->c_hostname ? $this->profile->c_hostname : ($this->profile->c_name != 'default' ? $this->profile->c_name : 'www') . '.' . $this->internal->config->default_domain) . '/' . $this->SEO_Urlify($this->profile->p_name) . '/s/via/' .  $this->profile->p_id . '/';
+    $link = 'https://' . (isset($this->internal->vars->language) ? $this->internal->vars->language . '.' : '') . ($this->profile->c_hostname ? $this->profile->c_hostname : ($this->profile->c_name != 'default' ? $this->profile->c_name : 'www') . '.' . $this->internal->config->default_domain) . '/' . $this->SEO_Urlify($this->profile->p_name) . '/s/via/' .  $this->profile->p_id . '/';
     
     if (isset($this->href_only) && $this->href_only) { echo $link; }
     else {

@@ -285,9 +285,9 @@ if(isset($_REQUEST['timestamp'])) $css->set_cfg('timestamp',true);
 
     if($url)
     {
-    	if(substr($_REQUEST['url'],0,7) != 'http://')
+    	if(substr($_REQUEST['url'],0,7) != 'https://')
 		{
-			$_REQUEST['url'] = 'http://'.$_REQUEST['url'];
+			$_REQUEST['url'] = 'https://'.$_REQUEST['url'];
 		}
         $result = $css->parse_from_url($_REQUEST['url'],0);
     }

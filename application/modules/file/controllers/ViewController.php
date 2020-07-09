@@ -28,7 +28,7 @@ class File_ViewController extends ViaMe_Controller_Default_View
     public function checkAction()
     {
         if ($this->_modObject->public_location) {
-            #$this->_redirect('http://' . $this->config->static_host . '/public_files' . ($this->_modObject->title ? '/' . $this->view->escape($this->view->SEO_Urlify($this->_modObject->title)) : '/No-Title') . '/' . $this->_modObject->file_dir . '/' . $this->_modObject->file_id . '/' . urlencode($this->_modObject->file_name));
+            #$this->_redirect('https://' . $this->config->static_host . '/public_files' . ($this->_modObject->title ? '/' . $this->view->escape($this->view->SEO_Urlify($this->_modObject->title)) : '/No-Title') . '/' . $this->_modObject->file_dir . '/' . $this->_modObject->file_id . '/' . urlencode($this->_modObject->file_name));
             $this->_redirect($this->config->upload->public_server . ($this->_modObject->title ? '/' . $this->view->escape($this->view->SEO_Urlify($this->_modObject->title)) : '/No-Title') . '/' . $this->_modObject->file_dir . '/' . $this->_modObject->file_id . '/' . urlencode($this->_modObject->file_name));
         }
         else {

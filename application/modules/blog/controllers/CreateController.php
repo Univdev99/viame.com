@@ -151,7 +151,7 @@ class Blog_CreateController extends ViaMe_Controller_Default_Create
                     
                     # Fat Ping Using PubHubSubbub
                     try {
-                        $topic =  'http://' . $this->internal->vars->host . '/' . $this->view->SEO_Urlify($this->community->display ? $this->community->display : $this->community->name) . '/s/system/widget/p/format/atom/no_cache/1/';
+                        $topic =  'https://' . $this->internal->vars->host . '/' . $this->view->SEO_Urlify($this->community->display ? $this->community->display : $this->community->name) . '/s/system/widget/p/format/atom/no_cache/1/';
                         foreach (array('https://pubsubhubbub.appspot.com', 'https://pubsubhubbub.superfeedr.com') as $hub) {
                             $p = new Publisher($hub);
                             $p->publish_update($topic);

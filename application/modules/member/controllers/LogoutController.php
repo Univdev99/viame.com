@@ -67,7 +67,7 @@ class Member_LogoutController extends ViaMe_Controller_Action
             $this->_autoredirect('/');
         }
         elseif ($this->_getParam('vmpd_dar')) {
-            $this->_redirect('http://' . (isset($this->vars->language) ? $this->vars->language . '.' : '') . 'www.' . $this->config->default_domain);
+            $this->_redirect('https://' . (isset($this->vars->language) ? $this->vars->language . '.' : '') . 'www.' . $this->config->default_domain);
         }
         
         // Didn't redirect; Display View

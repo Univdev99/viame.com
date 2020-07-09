@@ -391,7 +391,7 @@ if ($db = Zend_Registry::get('db')) {
             $id = $object->via_id;
         }
         
-        $link = 'http://' . $this->internal->vars->host;
+        $link = 'https://' . $this->internal->vars->host;
         if ($title) { $link .= '/' . $this->SEO_Urlify($title) . '/s'; }
         $link .= "/$type/$id/pick/p/mid/$mid/?status=1";
         */
