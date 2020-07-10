@@ -14,7 +14,7 @@ class VtestController extends ViaMe_Controller_Action
         $response = $voice->make_call(array(
             array('key' => 2, 'id' => '16192465264')
         ), array(
-            'answer_url' => 'http://www.viame.com/zfbp/xml/?xml=<Response><Wait length="2" %2F><Record recordSession="true" %2F><Speak language="en-GB">This is only a test.<%2FSpeak><Wait length="2" %2F><%2FResponse>',
+            'answer_url' => 'https://www.viame.com/zfbp/xml/?xml=<Response><Wait length="2" %2F><Record recordSession="true" %2F><Speak language="en-GB">This is only a test.<%2FSpeak><Wait length="2" %2F><%2FResponse>',
             'answer_method' => 'GET'
         ));
         Zend_Debug::Dump($response);
@@ -32,7 +32,7 @@ class VtestController extends ViaMe_Controller_Action
             array('key' => 2, 'id' => '18583128922'),
             array('key' => 2, 'id' => '16195736639'),
         ), array(
-            'answer_url' => 'http://www.viame.com/zfbp/xml/?xml=<Response><Speak loop="2">This is only a test.<%2FSpeak><%2FResponse>',
+            'answer_url' => 'https://www.viame.com/zfbp/xml/?xml=<Response><Speak loop="2">This is only a test.<%2FSpeak><%2FResponse>',
             'answer_method' => 'GET'
         ));
         Zend_Debug::Dump($response);
@@ -77,7 +77,7 @@ class VtestController extends ViaMe_Controller_Action
         /*
         $voice = new ViaMe_Vm_Im_Plivo();
         $response = $voice->make_call(array(array('key' => 2, 'id' => '16192465264'), array('key' => 2, 'id' => '16195990595')), array(
-            'answer_url' => 'http://www.viame.com/zfbp/xml/?xml=<Response><Speak loop="2">This is only a test.<%2FSpeak><%2FResponse>',
+            'answer_url' => 'https://www.viame.com/zfbp/xml/?xml=<Response><Speak loop="2">This is only a test.<%2FSpeak><%2FResponse>',
             'answer_method' => 'GET'
         ));
         Zend_Debug::Dump($response);
