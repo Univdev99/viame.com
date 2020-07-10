@@ -126,7 +126,7 @@ class ViaController extends ViaMe_Controller_Action
                 $select = $this->db->select()
                     ->from(array('x' => 'module_matrix'),
                         array('*',
-                            "array_to_string(parameter_values, '" . $this->config->delimiter . "') as parameter_values_delimited",
+                            "REPLACE(array_to_string(parameter_values, '" . $this->config->delimiter . "'), 'http://', 'https://') as parameter_values_delimited",
                             $this->db->quoteInto('(b.id=? OR ', (isset($this->member->id) ? $this->member->id : 0)) . "$acl_clause.allowed) AS allowed",
                             "$acl_clause.privilege",
                             "$acl_clause.filter",
@@ -169,7 +169,7 @@ class ViaController extends ViaMe_Controller_Action
                 $select = $this->db->select()
                     ->from(array('x' => 'widget_matrix'),
                         array('*',
-                            "array_to_string(parameter_values, '" . $this->config->delimiter . "') as parameter_values_delimited"
+                            "REPLACE(array_to_string(parameter_values, '" . $this->config->delimiter . "'), 'http://', 'https://') as parameter_values_delimited"
                         )
                     )
                     ->where("x.active='t'")
