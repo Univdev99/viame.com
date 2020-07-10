@@ -407,7 +407,7 @@ class Zend_OpenId
 
         // 7.2.3
         if (strpos($id, "://") === false) {
-            $id = 'http://' . $id;
+            $id = 'https://' . $id;
         }
 
         // 7.2.4

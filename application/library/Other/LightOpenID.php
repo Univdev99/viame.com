@@ -73,7 +73,7 @@ class LightOpenID
 
     function __construct($host)
     {
-        $this->trustRoot = (strpos($host, '://') ? $host : 'http://' . $host);
+        $this->trustRoot = (strpos($host, '://') ? $host : 'https://' . $host);
         if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')
             || (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])
             && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')

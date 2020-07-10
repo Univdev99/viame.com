@@ -232,8 +232,8 @@ class html2text
         '--',
         '-',
         '*',
-        '£',
-        'EUR',                                  // Euro sign. € ?
+        'ï¿½',
+        'EUR',                                  // Euro sign. ï¿½ ?
         '',                                     // Unknown/unhandled entities
         ' '                                     // Runs of spaces, post-handling
     );
@@ -387,7 +387,7 @@ class html2text
     {
         if ( empty($url) ) {
         	if ( !empty($_SERVER['HTTP_HOST']) ) {
-	            $this->url = 'http://' . $_SERVER['HTTP_HOST'];
+	            $this->url = 'https://' . $_SERVER['HTTP_HOST'];
         	} else {
 	            $this->url = '';
 	        }

@@ -298,9 +298,9 @@ class Zend_Service_WindowsAzure_Storage
 	public function getBaseUrl()
 	{
 		if ($this->_usePathStyleUri) {
-			return 'http://' . $this->_host . '/' . $this->_accountName;
+			return 'https://' . $this->_host . '/' . $this->_accountName;
 		} else {
-			return 'http://' . $this->_accountName . '.' . $this->_host;
+			return 'https://' . $this->_accountName . '.' . $this->_host;
 		}
 	}
 	

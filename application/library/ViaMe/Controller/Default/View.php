@@ -281,8 +281,8 @@ class ViaMe_Controller_Default_View extends ViaMe_Controller_Action
     public function postDispatch()
     {
         // Use currentModule for two params to account for masked modules.
-        #echo '<img src="http://' . $this->vars->host . '/zfbp/viewtracker/p/no_cache/1/t/' . strtolower($this->target->type) . '/i/' . $this->target->id . '/m/' . $this->target->currentModule->module_id . '/x/' . $this->target->currentModule->counter . '/c/' . $this->_modObject->counter . '/" alt="View Counter" height="0" width="0" border="0" style="height: 0; width: 0; border: none; display: none;" />';
+        #echo '<img src="https://' . $this->vars->host . '/zfbp/viewtracker/p/no_cache/1/t/' . strtolower($this->target->type) . '/i/' . $this->target->id . '/m/' . $this->target->currentModule->module_id . '/x/' . $this->target->currentModule->counter . '/c/' . $this->_modObject->counter . '/" alt="View Counter" height="0" width="0" border="0" style="height: 0; width: 0; border: none; display: none;" />';
         
-        echo '<img src="http://' . $this->vars->host . '/zfbp/viewtracker/p/t/' . strtolower($this->target->type) . '/i/' . $this->target->id . '/m/' . $this->target->currentModule->module_id . '/x/' . $this->target->currentModule->counter . '/c/' . $this->_modObject->counter . '/" alt="View Counter" height="0" width="0" border="0" style="height: 0; width: 0; border: none; display: none;" />';
+        echo '<img src="https://' . $this->vars->host . '/zfbp/viewtracker/p/t/' . strtolower($this->target->type) . '/i/' . $this->target->id . '/m/' . $this->target->currentModule->module_id . '/x/' . $this->target->currentModule->counter . '/c/' . $this->_modObject->counter . '/" alt="View Counter" height="0" width="0" border="0" style="height: 0; width: 0; border: none; display: none;" />';
     }
 }
