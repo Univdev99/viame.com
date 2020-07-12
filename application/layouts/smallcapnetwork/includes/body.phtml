@@ -1031,7 +1031,7 @@ src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
     }
     else {
         echo '<div id="doc4" class="page_body_internal"><div id="bd"><div id="yui-main"><div class="yui-b"><div id="content_area">' .
-             $this->layout()->content .
+            str_replace('http://', 'https://', $this->layout()->content) .
              '</div></div></div></div></div>';
     }
 ?>

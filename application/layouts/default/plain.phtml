@@ -48,7 +48,7 @@
 <!-- Begin SubLayout -->
 <div class="page_body_internal">					
 	<div id="bd"><div id="yui-main"><div class="yui-b">
-		<div id="content_area" style="margin: 1em;"><?= $this->layout()->content ?></div>
+		<div id="content_area" style="margin: 1em;"><?= str_replace('http://', 'https://', $this->layout()->content) ?></div>
 	</div></div></div>
 </div>
 <!-- End SubLayout -->
